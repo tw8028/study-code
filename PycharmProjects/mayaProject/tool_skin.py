@@ -1,4 +1,5 @@
-# coding:gbk
+#!/usr/bin/python
+# -*- coding:utf-8 -*-
 import pymel.core as pm
 
 
@@ -45,7 +46,7 @@ def copy_skin_weights(*args):
     pm.copySkinWeights(noMirror=True, ia=('closestJoint', 'oneToOne'), sa='closestPoint')
 
 
-if __name__ == '__main__':
+def main():
     if pm.window('skin_tools', ex=True):
         pm.deleteUI('skin_tools')
     pm.window('skin_tools')
@@ -57,3 +58,7 @@ if __name__ == '__main__':
 
     pm.window('skin_tools', title='skin_tools', e=True, wh=(240, 300))
     pm.showWindow('skin_tools')
+
+
+if __name__ == '__main__':
+    main()

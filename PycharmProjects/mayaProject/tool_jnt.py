@@ -1,7 +1,6 @@
 #!/usr/bin/python
 # -*- coding:utf-8 -*-
 import pymel.core as pm
-import package_tools.rigging as rg
 
 
 def reset_jnt(objs):
@@ -44,7 +43,6 @@ def joint_obj(*args):
         pm.select(cl=True)
         jnt = pm.joint(position=p, orientation=ro)
         pm.delete(dummy)
-        pm.pointConstraint(i, jnt)
 
 
 def joint_point(*args):
@@ -62,10 +60,26 @@ def locator_point(*args):
         pm.xform(pm.spaceLocator(), t=p)
 
 
-def insert_jnts(*args):
+def insert_jnt(*args):
+    def insert_jnts(start_jnt, num=1):
+        end_jnt = pm.listRelatives(start_jnt, children=True)[0]
+        jnt_offset = pm.PyNode(end_jnt).translateX.get() / (num + 1)
+        _roo = pm.xform(start_jnt, q=True, roo=True)
+        part_jnts = []
+        n = 1
+        pm.select(start_jnt)
+        while n < num + 1:
+            part_pn = pm.PyNode(pm.insertJoint())
+            part_jnts.append(part_pn)
+            # edit name and position
+            pm.joint(part_pn, e=True, co=True, r=True, p=(jnt_offset, 0, 0), n="{0}_part{1}".format(start_jnt, n),
+                     roo=_roo)
+            n += 1
+        return part_jnts
+
     jnt = pm.selected()[0]
-    num = pm.intField('num_insert', q=True, value=True)
-    rg.insert_jnts(jnt, num=num)
+    num_insert = pm.intField('num_insert', q=True, value=True)
+    insert_jnts(jnt, num=num_insert)
 
 
 def jnts_on_curve(*args):
@@ -80,33 +94,34 @@ def jnts_on_curve(*args):
     motion_path.fractionMode.set(1)
     curve_shape.worldSpace >> motion_path.geometryPath
     motion_path.allCoordinates >> loc.translate
+    jnt_p = None
     for n in range(num + 1):
         motion_path.uValue.set(n * u_value)
-        jnts.append(pm.joint(position=pm.xform(loc, q=True, t=True, ws=True)))
-    rg.parent_chain(jnts)
+        jnt = pm.joint(position=pm.xform(loc, q=True, t=True, ws=True))
+        if jnt_p is not None:
+            pm.parent(jnt, jnt_p)
+        jnt_p = jnt
     pm.delete(loc, motion_path)
 
 
 def create_ro_geo(*args):
     jnts = pm.selected()
     plane_p = None
-    geos = []
     for jnt in jnts:
-        plane = pm.polyPlane(w=1, h=1, sx=1, sy=1, name=jnt + '_ro_geo')[0]
-        geos.append(plane)
+        plane = pm.polyPlane(w=1, h=1, sx=1, sy=1, name='a_ro_geo')[0]
         pm.move(-0.5, 0, 0, plane.scalePivot, plane.rotatePivot, rpr=True)
         pm.delete(pm.parentConstraint(jnt, plane))
         if jnt.getChildren():
             plane.sx.set(jnt.getChildren()[0].tx.get())
         else:
-            plane.sx.set(5)
-            plane.sz.set(5)
+            plane.sx.set(2)
+            plane.sz.set(2)
         pm.makeIdentity(plane, apply=True, t=0, r=0, s=1, n=0, pn=1)
+
         if plane_p is not None:
             pm.parent(plane, plane_p)
         plane_p = plane
-
-        pm.pointConstraint(plane, jnt, n=jnt + '_ro_ptcon')
+        pm.pointConstraint(plane, jnt, n='a_ro_ptcon')
         plane.rotate >> jnt.jointOrient
 
 
@@ -115,7 +130,7 @@ def delete_ro_geo(*args):
     pm.delete('*_ro_geo')
 
 
-if __name__ == '__main__':
+def main():
     if pm.window('jntTool', ex=True):
         pm.deleteUI('jntTool')
     pm.window('jntTool')
@@ -140,7 +155,7 @@ if __name__ == '__main__':
     pm.text('insert joints')
     pm.rowLayout(numberOfColumns=2)
     pm.intField('num_insert', w=40)
-    pm.button(label='apply', c=insert_jnts)
+    pm.button(label='apply', c=insert_jnt)
     pm.setParent(column)
 
     pm.text('create joints on curve')
@@ -157,3 +172,7 @@ if __name__ == '__main__':
 
     pm.window('jntTool', title='joint tool', e=True, wh=(240, 300))
     pm.showWindow('jntTool')
+
+
+if __name__ == '__main__':
+    main()

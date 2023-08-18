@@ -59,7 +59,19 @@ def skin(*args):
         pm.skinCluster(tsb=True)
 
 
-if __name__ == '__main__':
+def show_line(*args):
+    global a_list
+    global b_list
+    for n in range(len(a_list)):
+        line = pm.curve(d=1, p=[(0, 0, 0), (1, 0, 0)], k=[0, 1])
+        line_shape = line.getShape()
+        line_shape.overrideEnabled.set(1)
+        line_shape.overrideColor.set(14)
+        a_list[n].getShape().worldPosition[0] >> line_shape.controlPoints[0]
+        b_list[n].getShape().worldPosition[0] >> line_shape.controlPoints[1]
+
+
+def main():
     if pm.window('batch', ex=True):
         pm.deleteUI('batch')
     pm.window('batch')
@@ -74,6 +86,7 @@ if __name__ == '__main__':
     pm.button(label='jnt inbetween(2)', c=jnt_inbetween)
     pm.button(label='create ik(3)', c=create_ik)
     pm.button(label='skinCluster(2)', c=skin)
+    pm.button(label='show line(2)', c=show_line)
 
     pm.rowLayout(nc=2)
     pm.checkBox('m_offset', label='maintainOffset', v=False)
@@ -82,3 +95,7 @@ if __name__ == '__main__':
 
     pm.window('batch', title='batch', e=True, wh=(240, 300))
     pm.showWindow('batch')
+
+
+if __name__ == '__main__':
+    main()

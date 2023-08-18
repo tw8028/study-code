@@ -17,9 +17,6 @@ def new_jnt(target, *, n='joint'):
     return jnt
 
 
-
-
-
 def reset_jnt(jnt):
     pm.xform(jnt, ro=(0, 0, 0))
     jnt.jointOrient.set(0, 0, 0)

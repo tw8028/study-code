@@ -32,7 +32,7 @@ def shape_click(*args):
 
 def color_click(*args):
     objs = pm.selected()
-    rg.set_color(pm.intField('color', q=True, value=True), objs)
+    set_color(pm.intField('color', q=True, value=True), objs)
 
 
 if __name__ == '__main__':

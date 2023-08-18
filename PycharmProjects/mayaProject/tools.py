@@ -3,7 +3,7 @@
 import pymel.core as pm
 
 
-# 1:create main
+# 1:create rig group
 # 2:copy skin
 # 3 create offset
 # 4 create locators to control cv
@@ -11,7 +11,7 @@ import pymel.core as pm
 
 
 # create main
-def main(*args):
+def rig_group(*args):
     pm.group(empty=True, name='Group')
     pm.group(empty=True, name='DeformationSystem')
     pm.group(empty=True, name='MotionSystem')
@@ -85,12 +85,12 @@ def path_cons(*args):
         point_info.result.position >> path_locator.translate
 
 
-if __name__ == '__main__':
+def main():
     if pm.window('Tools', ex=True):
         pm.deleteUI('Tools')
     pm.window('Tools')
     column = pm.columnLayout()
-    pm.button(label='create main', c=main)
+    pm.button(label='create main', c=rig_group)
     pm.button(label='copy skin', c=copy_skin)
     pm.button(label='create offset', c=create_offset)
 
@@ -103,3 +103,7 @@ if __name__ == '__main__':
 
     pm.window('Tools', title='Tools', e=True, wh=(240, 300))
     pm.showWindow('Tools')
+
+
+if __name__ == '__main__':
+    main()
