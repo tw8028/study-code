@@ -1,5 +1,5 @@
 #!/usr/bin/python
-# coding:gbk
+# -*- coding:utf-8 -*-
 import pymel.core as pm
 
 
@@ -163,27 +163,34 @@ def fk_tree(*args):
         pm.parent(create_fk(get_jnts(i)), root_jnt_ctrl)
 
 
-if __name__ == '__main__':
+def main():
     if pm.window('create_FK', ex=True):
         pm.deleteUI('create_FK')
     pm.window('create_FK')
-    column = pm.columnLayout()
-    pm.frameLayout('创建 FK 控制器')
-    pm.setParent(column)
+    column = pm.columnLayout(rowSpacing=20, columnAttach=('both', 5), columnWidth=250)
+    pm.columnLayout(columnAttach=('both', 5), columnWidth=180)
+    pm.text('create FK')
     pm.button(label='select root', c=click1)
     pm.button(label='select all', c=click2)
-
-    pm.frameLayout('创建 FK Tree')
     pm.setParent(column)
+
+    pm.columnLayout(columnAttach=('both', 5), columnWidth=180)
+    pm.text('create FK Tree')
     pm.button(label='select root', c=fk_tree)
-
-    pm.frameLayout('创建 IK 控制器')
     pm.setParent(column)
+
+    pm.columnLayout(columnAttach=('both', 5), columnWidth=180)
+    pm.text('create IK')
     pm.button(label='select root', c=click3)
-
-    pm.frameLayout('创建 IKFK 切换')
     pm.setParent(column)
+
+    pm.columnLayout(columnAttach=('both', 5), columnWidth=180)
+    pm.text('create IKFK blend')
     pm.button(label='select root', c=click4)
 
     pm.window('create_FK', title='IKFK', e=True, wh=(200, 300))
     pm.showWindow('create_FK')
+
+
+if __name__ == '__main__':
+    main()

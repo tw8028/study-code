@@ -1,5 +1,5 @@
 #!/usr/bin/python
-# coding:gbk
+# -*- coding:utf-8 -*-
 import pymel.core as pm
 import package_tools.cv as cv
 import package_tools.rigging as rg
@@ -41,7 +41,7 @@ def click(*args):
     neck_ctrl(jnt, num)
 
 
-if __name__ == '__main__':
+def main():
     if pm.window('rig_neck', ex=True):
         pm.deleteUI('rig_neck')
     pm.window('rig_neck')
@@ -50,5 +50,9 @@ if __name__ == '__main__':
     pm.columnLayout()
     pm.intField('numJoints')
     pm.button(label='Create', c=click)
-    pm.window('rig_neck', title='rig_neck', e=True, wh=(300, 100))
+    pm.window('rig_neck', title='rig_neck', e=True, wh=(280, 100))
     pm.showWindow('rig_neck')
+
+
+if __name__ == '__main__':
+    main()
