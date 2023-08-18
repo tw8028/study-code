@@ -25,10 +25,32 @@ def get_cv(shape, radius, *, name='curve1'):
         points = [(-1, 0, 0), (0, 0, -1), (1, 0, 0), (0, 0, 1), (-1, 0, 0), (0, 1, 0), (1, 0, 0), (0, -1, 0),
                   (-1, 0, 0), (0, 0, -1), (0, 1, 0), (0, 0, 1), (0, -1, 0), (0, 0, -1)]
         return pm.curve(n=name, d=1, p=[tuple(radius * x for x in i) for i in points], k=range(14))
+    if shape == 'arrow_up':
+        points = [(-1.0, 2.0, 0.0), (-2.0, 2.0, 0.0), (0.0, 4.0, 0.0), (2.0, 2.0, 0.0), (1.0, 2.0, 0.0),
+                  (1.0, -2.0, 0.0), (-1.0, -2.0, 0.0), (-1.0, 2.0, 0.0)]
+        return pm.curve(n=name, d=1, p=[tuple(radius * x for x in i) for i in points], k=range(8))
+    if shape == 'arrow2':
+        points = [(0, 1, 0), (3, 1, 0), (3, 2, 0), (5, 0, 0), (3, -2, 0), (3, -1, 0), (-3, -1, 0), (-3, -2, 0),
+                  (-5, 0, 0), (-3, 2, 0), (-3, 1, 0), (0, 1, 0)]
+        return pm.curve(n=name, d=1, p=[tuple(radius * x for x in i) for i in points], k=range(12))
+    if shape == 'square':
+        points = [(0.0, 1.0, 1.0), (0.0, -1.0, 1.0), (0.0, -1.0, -1.0), (0.0, 1.0, -1.0), (0.0, 1.0, 1.0)]
+        return pm.curve(n=name, d=1, p=[tuple(radius * x for x in i) for i in points], k=range(5))
+    if shape == 'triangle':
+        points = [(0.0, 0.0, 0.0), (-1.0, 2.0, 0.0), (1.0, 2.0, 0.0), (0.0, 0.0, 0.0), (0.0, -3.0, 0.0)]
+        return pm.curve(n=name, d=1, p=[tuple(radius * x for x in i) for i in points], k=range(5))
+    if shape == 'cross1':
+        points = [(-1, 1, 0), (-1, 3, 0), (1, 3, 0), (1, 1, 0), (3, 1, 0), (3, -1, 0), (1, -1, 0), (1, -3, 0),
+                  (-1, -3, 0), (-1, -1, 0), (-3, -1, 0), (-3, 1, 0), (-1, 1, 0)]
+        return pm.curve(n=name, d=1, p=[tuple(radius * x for x in i) for i in points], k=range(13))
+    if shape == 'cross2':
+        points = [(-1, 1, 0), (-1, 7, 0), (1, 7, 0), (1, 1, 0), (7, 1, 0), (7, -1, 0), (1, -1, 0), (1, -7, 0),
+                  (-1, -7, 0), (-1, -1, 0), (-7, -1, 0), (-7, 1, 0), (-1, 1, 0)]
+        return pm.curve(n=name, d=1, p=[tuple(radius * x for x in i) for i in points], k=range(13))
 
 
 def create(*args):
-    radio_collection = pm.radioCollection('objType', q=True, select=True)
+    radio_collection = pm.radioCollection('obj_type', q=True, select=True)
     shape = pm.radioButton(radio_collection, q=True, label=True)
     r = mc.floatField('radius1', q=True, value=True)
     get_cv(shape, r)
@@ -36,9 +58,9 @@ def create(*args):
 
 def change_shape(*args):
     objs = pm.selected()
-    radio_collection = pm.radioCollection('objType', q=True, select=True)
+    radio_collection = pm.radioCollection('obj_type', q=True, select=True)
     shape = pm.radioButton(radio_collection, q=True, label=True)
-    r = mc.floatField('radius1', q=True, value=True)
+    r = mc.floatField('radius2', q=True, value=True)
     for obj in objs:
         sel_shape = obj.getShape()
         target_curve = get_cv(shape, r, name=obj)
@@ -106,13 +128,19 @@ def main():
         pm.deleteUI(name)
     pm.window(name)
     column = pm.columnLayout()
-    pm.frameLayout('select a curve shape to create or change')
+    pm.frameLayout('create a curve or change the shape')
     pm.setParent(column)
-    pm.gridLayout(numberOfColumns=3, cellWidth=100)
-    pm.radioCollection('objType')
+    pm.gridLayout(numberOfColumns=2, cellWidth=100)
+    pm.radioCollection('obj_type')
     pm.radioButton(label='cube', select=True)
     pm.radioButton(label='circle')
     pm.radioButton(label='rhomb')
+    pm.radioButton(label='square')
+    pm.radioButton(label='arrow_up')
+    pm.radioButton(label='arrow2')
+    pm.radioButton(label='triangle')
+    pm.radioButton(label='cross1')
+    pm.radioButton(label='cross2')
     pm.setParent(column)
 
     pm.rowLayout(numberOfColumns=2)
@@ -137,7 +165,7 @@ def main():
     pm.button(label='mirror', c=mirror)
     pm.button(label='get message', c=get_message)
 
-    pm.window(name, title='curve tool', e=True, wh=(300, 360))
+    pm.window(name, title='curve tool', e=True, wh=(260, 400))
     pm.showWindow(name)
 
 
