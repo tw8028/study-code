@@ -158,7 +158,7 @@ def fk_tree(*args):
     children = pm.listRelatives(root_jnt, children=True, type='joint')
 
     root_jnt_ctrl = cv.cube(name=root_jnt + '_root_ctrl')
-    root_jnt_ctrl_offset = grp_offset(n=root_jnt_ctrl + '_offset', target=root_jnt, child=root_jnt_ctrl)
+    grp_offset(n=root_jnt_ctrl + '_offset', target=root_jnt, child=root_jnt_ctrl)
     for i in children:
         pm.parent(create_fk(get_jnts(i)), root_jnt_ctrl)
 
@@ -167,28 +167,29 @@ def main():
     if pm.window('create_FK', ex=True):
         pm.deleteUI('create_FK')
     pm.window('create_FK')
-    column = pm.columnLayout(rowSpacing=20, columnAttach=('both', 5), columnWidth=250)
-    pm.columnLayout(columnAttach=('both', 5), columnWidth=180)
+    column = pm.columnLayout(rowSpacing=10, columnAttach=('both', 5), adj=True)
+    pm.columnLayout(adj=True)
     pm.text('create FK')
     pm.button(label='select root', c=click1)
     pm.button(label='select all', c=click2)
     pm.setParent(column)
 
-    pm.columnLayout(columnAttach=('both', 5), columnWidth=180)
+    pm.columnLayout(adj=True)
     pm.text('create FK Tree')
     pm.button(label='select root', c=fk_tree)
     pm.setParent(column)
 
-    pm.columnLayout(columnAttach=('both', 5), columnWidth=180)
+    pm.columnLayout(adj=True)
     pm.text('create IK')
     pm.button(label='select root', c=click3)
     pm.setParent(column)
 
-    pm.columnLayout(columnAttach=('both', 5), columnWidth=180)
+    pm.columnLayout(adj=True)
     pm.text('create IKFK blend')
     pm.button(label='select root', c=click4)
+    pm.setParent(column)
 
-    pm.window('create_FK', title='IKFK', e=True, wh=(200, 300))
+    pm.window('create_FK', e=True, title='IKFK', wh=(200, 240))
     pm.showWindow('create_FK')
 
 

@@ -25,10 +25,10 @@ def mirror_jnt(*args):
     for i in sl:
         pm.select(cl=True)
         jnt = pm.joint()
-        T = pm.xform(i, q=True, t=True)
-        Ro = pm.xform(i, q=True, ro=True)
-        pm.xform(jnt, t=(-T[0], T[1], T[2]))
-        pm.xform(jnt, ro=(Ro[0], -Ro[1], Ro[2]))
+        tranlate = pm.xform(i, q=True, t=True)
+        rotate = pm.xform(i, q=True, ro=True)
+        pm.xform(jnt, t=(-tranlate[0], tranlate[1], tranlate[2]))
+        pm.xform(jnt, ro=(rotate[0], -rotate[1], rotate[2]))
         pm.rename(jnt, i.replace('R', 'L'))
 
 
@@ -41,7 +41,7 @@ def joint_obj(*args):
         p = pm.xform(dummy, q=True, t=True, ws=True)
         ro = pm.xform(dummy, q=True, ro=True, ws=True)
         pm.select(cl=True)
-        jnt = pm.joint(position=p, orientation=ro)
+        pm.joint(position=p, orientation=ro)
         pm.delete(dummy)
 
 
@@ -85,7 +85,6 @@ def insert_jnt(*args):
 def jnts_on_curve(*args):
     num = pm.intField('num_on_curve', q=True, v=True)
     u_value = 1 / num
-    jnts = []
     curve = pm.selected()[0]
     curve_shape = curve.getShape()
     loc = pm.spaceLocator()

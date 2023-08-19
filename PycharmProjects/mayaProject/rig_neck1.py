@@ -33,7 +33,7 @@ def create_neck_ctrl(neck_base, neck_ctrl, neck_joints):
         re_node.outputX >> pm.PyNode('{0}.{1}W1'.format(orcon, neck_base))
 
     n = 0
-    for i in neck_joints:
+    while n > len(neck_joints1) - 1:
         inbetwent = pm.group(n='inbetwent_{0}_part{1}'.format(neck_joints[0], n), empty=True)
         align(inbetwent, neck_joints[0])
         con_inbetwent(inbetwent, n)

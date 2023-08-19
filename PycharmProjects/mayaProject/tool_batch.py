@@ -46,9 +46,9 @@ def create_ik(*args):
 def parent_cons(*args):
     global a_list
     global b_list
-    maintainOffset = pm.checkBox('m_offset', q=True, v=True)
+    maintain_offset = pm.checkBox('m_offset', q=True, v=True)
     for n in range(len(a_list)):
-        pm.parentConstraint(a_list[n], b_list[n], mo=maintainOffset)
+        pm.parentConstraint(a_list[n], b_list[n], mo=maintain_offset)
 
 
 def skin(*args):
