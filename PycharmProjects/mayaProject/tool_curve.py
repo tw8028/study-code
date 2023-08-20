@@ -52,7 +52,7 @@ def get_cv(shape, radius, *, name='curve1'):
 def create(*args):
     radio_collection = pm.radioCollection('obj_type', q=True, select=True)
     shape = pm.radioButton(radio_collection, q=True, label=True)
-    r = mc.floatField('radius1', q=True, value=True)
+    r = pm.floatField('radius1', q=True, value=True)
     get_cv(shape, r)
 
 
@@ -60,7 +60,7 @@ def change_shape(*args):
     objs = pm.selected()
     radio_collection = pm.radioCollection('obj_type', q=True, select=True)
     shape = pm.radioButton(radio_collection, q=True, label=True)
-    r = mc.floatField('radius2', q=True, value=True)
+    r = pm.floatField('radius1', q=True, value=True)
     for obj in objs:
         sel_shape = obj.getShape()
         target_curve = get_cv(shape, r, name=obj)
@@ -122,51 +122,68 @@ def get_message(*args):
     print(round_p)
 
 
+# create cv point ctrl
+def point_ctrl(*args):
+    obj = pm.selected()[0]
+    for n in range(obj.controlPoints.get(size=True)):
+        locator = pm.spaceLocator()
+        pm.xform(locator, t=pm.xform(obj.cv[n], q=True, t=True, ws=True))
+        locator.getShape().worldPosition >> obj.getShape().controlPoints[n]
+
+
+# create cv pathConstraint
+def path_cons(*args):
+    obj = pm.selected()[0]
+    num = pm.intField('path_num', q=True, v=True)
+    u_value = 1 / (num - 1)
+    for n in range(num):
+        point_info = pm.createNode('pointOnCurveInfo', n='{0}_pocInfo{1}'.format(obj, n))
+        point_info.turnOnPercentage.set(1)
+        path_locator = pm.spaceLocator(n='{0}_path{1}'.format(obj, n))
+        pm.addAttr(path_locator, ln='u', at='double', min=0, max=1, dv=u_value * n, k=True)
+        path_locator.u >> point_info.parameter
+        obj.getShape().worldSpace[0] >> point_info.inputCurve
+        point_info.result.position >> path_locator.translate
+
+
 def main():
-    name = 'tool_controller'
+    name = 'tool_curve_win'
     if pm.window(name, q=True, ex=True):
         pm.deleteUI(name)
-    pm.window(name)
-    column = pm.columnLayout()
-    pm.frameLayout('create a curve or change the shape')
-    pm.setParent(column)
-    pm.gridLayout(numberOfColumns=2, cellWidth=100)
-    pm.radioCollection('obj_type')
-    pm.radioButton(label='cube', select=True)
-    pm.radioButton(label='circle')
-    pm.radioButton(label='rhomb')
-    pm.radioButton(label='square')
-    pm.radioButton(label='arrow_up')
-    pm.radioButton(label='arrow2')
-    pm.radioButton(label='triangle')
-    pm.radioButton(label='cross1')
-    pm.radioButton(label='cross2')
-    pm.setParent(column)
+    with pm.window(name):
+        with pm.columnLayout(rowSpacing=10, adj=True):
+            with pm.frameLayout('create a curve or change the shape'):
+                with pm.gridLayout(numberOfColumns=2, cellWidth=100):
+                    pm.radioCollection('obj_type')
+                    pm.radioButton(label='cube', select=True)
+                    pm.radioButton(label='circle')
+                    pm.radioButton(label='rhomb')
+                    pm.radioButton(label='square')
+                    pm.radioButton(label='arrow_up')
+                    pm.radioButton(label='arrow2')
+                    pm.radioButton(label='triangle')
+                    pm.radioButton(label='cross1')
+                    pm.radioButton(label='cross2')
+                with pm.rowLayout(numberOfColumns=3):
+                    pm.floatField('radius1', value=1)
+                    pm.button(label='Create', c=create)
+                    pm.button(label='Change', c=change_shape)
+            with pm.frameLayout('set color for curve'):
+                with pm.rowLayout(numberOfColumns=2):
+                    pm.intField('color', value=13, w=60)
+                    pm.button(label='apply', c=set_color)
+                pm.text('index: left(13,20) middle(17,21) right(6,18)')
+            with pm.frameLayout('others for curve'):
+                with pm.columnLayout():
+                    pm.button(label='mirror', c=mirror)
+                    pm.button(label='get message', c=get_message)
+                    pm.button(label='point ctrl', c=point_ctrl)
+                with pm.rowLayout(nc=2):
+                    pm.intField('path_num', value=0, w=40)
+                    pm.button(label='pathConstraint', c=path_cons)
 
-    pm.rowLayout(numberOfColumns=2)
-    pm.floatField('radius1', value=1)
-    pm.button(label='Create', c=create)
-    pm.setParent(column)
-    pm.rowLayout(numberOfColumns=2)
-    pm.floatField('radius2', value=1)
-    pm.button(label='Change', c=change_shape)
-    pm.setParent(column)
-
-    pm.frameLayout('set color for curve')
-    pm.setParent(column)
-    pm.rowLayout(numberOfColumns=2)
-    pm.intField('color', value=13, w=60)
-    pm.button(label='apply', c=set_color)
-    pm.setParent(column)
-    pm.text('index: left(13,20) middle(17,21) right(6,18)')
-
-    pm.frameLayout('others for curve')
-    pm.setParent(column)
-    pm.button(label='mirror', c=mirror)
-    pm.button(label='get message', c=get_message)
-
-    pm.window(name, title='curve tool', e=True, wh=(260, 400))
-    pm.showWindow(name)
+        pm.window(name, e=True, title='curve tool', wh=(240, 360))
+        pm.showWindow(name)
 
 
 if __name__ == '__main__':

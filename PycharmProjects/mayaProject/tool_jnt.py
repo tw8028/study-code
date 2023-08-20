@@ -132,45 +132,39 @@ def delete_ro_geo(*args):
 def main():
     if pm.window('jntTool', ex=True):
         pm.deleteUI('jntTool')
-    pm.window('jntTool')
-    column = pm.columnLayout()
-
-    pm.text('Reset jointOrient')
-    pm.rowLayout(numberOfColumns=2)
-    pm.button(label='selected', c=reset_selection)
-    pm.button(label='Children', c=reset_children)
-    pm.setParent(column)
-
-    pm.text('MirrorJnt (rotateY)')
-    pm.button(label='MirrorJnt', c=mirror_jnt)
-
-    pm.text('create joints')
-    pm.rowLayout(numberOfColumns=5)
-    pm.button(label='point', c=joint_point)
-    pm.button(label='obj', c=joint_obj)
-    pm.button(label='point_locator', c=locator_point)
-    pm.setParent(column)
-
-    pm.text('insert joints')
-    pm.rowLayout(numberOfColumns=2)
-    pm.intField('num_insert', w=40)
-    pm.button(label='apply', c=insert_jnt)
-    pm.setParent(column)
-
-    pm.text('create joints on curve')
-    pm.rowLayout(numberOfColumns=2)
-    pm.intField('num_on_curve', w=40)
-    pm.button(label='apply', c=jnts_on_curve)
-    pm.setParent(column)
-
-    pm.text('create rotate geo')
-    pm.rowLayout(numberOfColumns=2)
-    pm.button(label='create', c=create_ro_geo)
-    pm.button(label='delete', c=delete_ro_geo)
-    pm.setParent(column)
-
-    pm.window('jntTool', title='joint tool', e=True, wh=(240, 300))
-    pm.showWindow('jntTool')
+    with pm.window('jntTool'):
+        with pm.columnLayout(rowSpacing=5, columnAttach=('both', 5), adj=True):
+            with pm.columnLayout():
+                pm.text('Reset jointOrient')
+                with pm.rowLayout(numberOfColumns=2):
+                    pm.button(label='selected', c=reset_selection)
+                    pm.button(label='Children', c=reset_children)
+            with pm.columnLayout():
+                pm.text('MirrorJnt (rotateY)')
+                pm.button(label='MirrorJnt', c=mirror_jnt)
+            with pm.columnLayout():
+                pm.text('create joints')
+                with pm.rowLayout(numberOfColumns=5):
+                    pm.button(label='point', c=joint_point)
+                    pm.button(label='obj', c=joint_obj)
+                    pm.button(label='point_locator', c=locator_point)
+            with pm.columnLayout():
+                pm.text('insert joints')
+                with pm.rowLayout(numberOfColumns=2):
+                    pm.intField('num_insert', w=40)
+                    pm.button(label='apply', c=insert_jnt)
+            with pm.columnLayout():
+                pm.text('create joints on curve')
+                with pm.rowLayout(numberOfColumns=2):
+                    pm.intField('num_on_curve', w=40)
+                    pm.button(label='apply', c=jnts_on_curve)
+            with pm.columnLayout():
+                pm.text('create rotate geo')
+                with pm.rowLayout(numberOfColumns=2):
+                    pm.button(label='create', c=create_ro_geo)
+                    pm.button(label='delete', c=delete_ro_geo)
+        pm.window('jntTool', e=True, title='joint tool', wh=(240, 300))
+        pm.showWindow('jntTool')
 
 
 if __name__ == '__main__':

@@ -49,15 +49,15 @@ def copy_skin_weights(*args):
 def main():
     if pm.window('skin_tools', ex=True):
         pm.deleteUI('skin_tools')
-    pm.window('skin_tools')
-    pm.columnLayout(adj=True)
-    pm.button(label='create low_res_geo', c=low_res_geo)
-    pm.button(label='delete low_res_geo', c=del_res_geo)
-    pm.button(label='select skin jnts', c=select_skin_jnts)
-    pm.button(label='copy skin-weights', c=copy_skin_weights)
+    with pm.window('skin_tools'):
+        with pm.columnLayout(adj=True):
+            pm.button(label='create low_res_geo', c=low_res_geo)
+            pm.button(label='delete low_res_geo', c=del_res_geo)
+            pm.button(label='select skin jnts', c=select_skin_jnts)
+            pm.button(label='copy skin-weights', c=copy_skin_weights)
 
-    pm.window('skin_tools', title='skin_tools', e=True, wh=(240, 300))
-    pm.showWindow('skin_tools')
+        pm.window('skin_tools', e=True, title='skin_tools', wh=(240, 300))
+        pm.showWindow('skin_tools')
 
 
 if __name__ == '__main__':

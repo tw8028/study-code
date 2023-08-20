@@ -347,7 +347,7 @@ def mirror_ctrl_curve(target):
 class Spine:
     motion_system = 'MotionSystem'
     curve_system = 'CurveSystem'
-    cvgrp = 'SpineCv_grp' 
+    cvgrp = 'SpineCv_grp'
     spine_system = 'SpineSystem'
     dict_jnts = {'Root_M': 'root', 'Spine1_M': 'spine1', 'Spine2_M': 'spine2', 'Chest_M': 'chest', 'Neck_M': 'neck'}
 
@@ -574,9 +574,9 @@ class Limb:
         pm.parent(jnt_t01, self.IKjntGrp)
         distance = 12 if '_R' in self.name else -12
         jnt_t02.translateX.set(distance)
-        tHandle = pm.ikHandle(n=self.IKjnt0 + '_tHandle', sj=jnt_t01, ee=jnt_t02)
-        pm.poleVectorConstraint(jnt_t01, tHandle[0])
-        pm.parent(tHandle[0], self.IKjnt0)
+        handle_t = pm.ikHandle(n=self.IKjnt0 + '_tHandle', sj=jnt_t01, ee=jnt_t02)
+        pm.poleVectorConstraint(jnt_t01, handle_t[0])
+        pm.parent(handle_t[0], self.IKjnt0)
         part_jnts = insert_jnts(self.jnts[0], self.jnts[1])
         twist_drive(self.IKjnt0, jnt_t01, part_jnts)
 
@@ -592,11 +592,11 @@ class Limb:
 
     def constraint(self):
         jnt_t01 = self.IKjnt0 + '_t01'
-        conJnt = jnt_t01 if pm.objExists(jnt_t01) else self.IKjnt0
+        con_jnt = jnt_t01 if pm.objExists(jnt_t01) else self.IKjnt0
         aim_vector = (1, 0, 0) if '_R' in self.jnts[0] else (-1, 0, 0)
-        pm.pointConstraint(conJnt, self.jnts[0])
+        pm.pointConstraint(con_jnt, self.jnts[0])
         pm.aimConstraint(self.midCtrl, self.jnts[0], aimVector=aim_vector, worldUpType='objectrotation',
-                         worldUpObject=conJnt)
+                         worldUpObject=con_jnt)
         pm.pointConstraint(self.midCtrl, self.jnts[1])
         pm.aimConstraint(self.IKjnt2, self.jnts[1], aimVector=aim_vector, worldUpType='objectrotation',
                          worldUpObject=self.IKjnt1)
@@ -605,38 +605,38 @@ class Limb:
 
     @staticmethod
     def slide_motion(end, jnt):
-        disNode = pm.createNode('distanceBetween', name=jnt + '_dis')
-        end.translate >> disNode.point2
-        mdNode1 = pm.createNode('multiplyDivide', name=jnt + '_md1')
-        mdNode1.operation.set(2)
-        mdNode1.input2X.set(disNode.distance.get())
-        disNode.distance >> mdNode1.input1X
-        revNode = pm.createNode('reverse', name=jnt + 'rev')
-        mdNode1.outputX >> revNode.inputX
-        mdNode2 = pm.createNode('multiplyDivide', name=jnt + '_md2')
-        mdNode2.operation.set(1)
-        mdNode2.input2X.set(-1)
-        conditionNode = pm.createNode('condition', name=jnt + '_cd')
-        conditionNode.operation.set(4)
-        conditionNode.secondTerm.set(0)
-        revNode.outputX >> mdNode2.input1X
-        mdNode2.outputX >> conditionNode.colorIfTrueR
-        revNode.outputX >> conditionNode.colorIfFalseR
-        revNode.outputX >> conditionNode.firstTerm
-        mdNode3 = pm.createNode('multiplyDivide', name=jnt + '_md3')
-        mdNode3.operation.set(1)
-        mdNode3.input2X.set(jnt.translateY.get())
-        conditionNode.outColorR >> mdNode3.input1X
-        mdNode4 = pm.createNode('multiplyDivide', name=jnt + '_md4')
-        mdNode4.operation.set(1)
+        dis_node = pm.createNode('distanceBetween', name=jnt + '_dis')
+        end.translate >> dis_node.point2
+        md_node1 = pm.createNode('multiplyDivide', name=jnt + '_md1')
+        md_node1.operation.set(2)
+        md_node1.input2X.set(dis_node.distance.get())
+        dis_node.distance >> md_node1.input1X
+        rev_node = pm.createNode('reverse', name=jnt + 'rev')
+        md_node1.outputX >> rev_node.inputX
+        md_node2 = pm.createNode('multiplyDivide', name=jnt + '_md2')
+        md_node2.operation.set(1)
+        md_node2.input2X.set(-1)
+        condition_node = pm.createNode('condition', name=jnt + '_cd')
+        condition_node.operation.set(4)
+        condition_node.secondTerm.set(0)
+        rev_node.outputX >> md_node2.input1X
+        md_node2.outputX >> condition_node.colorIfTrueR
+        rev_node.outputX >> condition_node.colorIfFalseR
+        rev_node.outputX >> condition_node.firstTerm
+        md_node3 = pm.createNode('multiplyDivide', name=jnt + '_md3')
+        md_node3.operation.set(1)
+        md_node3.input2X.set(jnt.translateY.get())
+        condition_node.outColorR >> md_node3.input1X
+        md_node4 = pm.createNode('multiplyDivide', name=jnt + '_md4')
+        md_node4.operation.set(1)
         pm.addAttr(jnt, ln='slide', at='double', dv=2, k=True)
-        jnt.slide >> mdNode4.input2X
-        mdNode3.outputX >> mdNode4.input1X
-        plusNode = pm.createNode('plusMinusAverage', name=jnt + '_plus')
-        plusNode.operation.set(1)
-        mdNode4.outputX >> plusNode.input1D[0]
-        plusNode.input1D[1].set(jnt.translateY.get())
-        plusNode.output1D >> jnt.translateY
+        jnt.slide >> md_node4.input2X
+        md_node3.outputX >> md_node4.input1X
+        plus_node = pm.createNode('plusMinusAverage', name=jnt + '_plus')
+        plus_node.operation.set(1)
+        md_node4.outputX >> plus_node.input1D[0]
+        plus_node.input1D[1].set(jnt.translateY.get())
+        plus_node.output1D >> jnt.translateY
 
     def create_slide(self, slide=False):
         grp = self.name + '_slideGrp'
@@ -648,29 +648,29 @@ class Limb:
             slide1.translateY.set(6)
             slide2 = new_jnt(slide50, n=self.slide2)
             slide2.translateY.set(-6)
-            tempCon = pm.orientConstraint(self.IKjnt0, self.IKjnt1, slide50)
-            pm.delete(tempCon)
+            temp_con = pm.orientConstraint(self.IKjnt0, self.IKjnt1, slide50)
+            pm.delete(temp_con)
         yield
         # slide00 reference constraint slide50
         if slide:
             slide00 = pm.group(empty=True, n=self.jnts[1] + '_slide00')
-            slide00Offset = grp_offset(n=self.jnts[1] + '_slide00Offset', target=self.slide50, child=slide00)
-            pm.parentConstraint(self.jnts[0], slide00Offset, mo=True)
-            pm.parent(slide00Offset, grp)
+            slide00_offset = grp_offset(n=self.jnts[1] + '_slide00Offset', target=self.slide50, child=slide00)
+            pm.parentConstraint(self.jnts[0], slide00_offset, mo=True)
+            pm.parent(slide00_offset, grp)
             pm.orientConstraint(slide00, self.jnts[1], self.slide50, mo=True)
             # motion
             for i in [self.slide1, self.slide2]:
-                jntSlide = pm.PyNode(i)
-                start = pm.group(empty=True, n=jntSlide + '_start')
+                jnt_slide = pm.PyNode(i)
+                start = pm.group(empty=True, n=jnt_slide + '_start')
                 pm.parent(start, self.IKjnt0)
-                pm.xform(start, t=(pm.PyNode(self.IKjnt1).translateX.get() - jntSlide.translateY.get(), 0, 0))
+                pm.xform(start, t=(pm.PyNode(self.IKjnt1).translateX.get() - jnt_slide.translateY.get(), 0, 0))
                 pm.parent(start, grp)
                 pm.parentConstraint(self.jnts[0], start, mo=True)
-                end = pm.group(empty=True, n=jntSlide + '_end')
-                align(end, jntSlide)
+                end = pm.group(empty=True, n=jnt_slide + '_end')
+                align(end, jnt_slide)
                 pm.parent(end, start)
                 pm.parentConstraint(self.slide50, end, mo=True)
-                Limb.slide_motion(end, jntSlide)
+                Limb.slide_motion(end, jnt_slide)
         yield
 
     def create(self, ut=False, dt=False, slide=False):
@@ -844,7 +844,7 @@ def click1(*args):
     global arm_L_slide
     global leg_R_slide
     global leg_L_slide
-    slide_check = pm.checkBox(SlideCheck, q=True, value=True)
+    slide_check = pm.checkBox('Slide', q=True, value=True)
     arm_R_slide = arm_R.create_slide(slide=slide_check)
     arm_L_slide = arm_L.create_slide(slide=slide_check)
     leg_R_slide = leg_R.create_slide(slide=slide_check)
@@ -862,32 +862,32 @@ def click2(*args):
     next(leg_R_slide)
     next(leg_L_slide)
 
-    shoulder_check = pm.checkBox(ShoulderCheck, q=True, value=True)
-    elbow_check = pm.checkBox(ElbowCheck, q=True, value=True)
-    hip_check = pm.checkBox(HipCheck, q=True, value=True)
-    knee_check = pm.checkBox(KneeCheck, q=True, value=True)
+    shoulder_check = pm.checkBox('Shoulder', q=True, value=True)
+    elbow_check = pm.checkBox('Elbow', q=True, value=True)
+    hip_check = pm.checkBox('Hip', q=True, value=True)
+    knee_check = pm.checkBox('Knee', q=True, value=True)
 
     arm_R.create(ut=shoulder_check, dt=elbow_check)
     arm_L.create(ut=shoulder_check, dt=elbow_check)
     leg_R.create(ut=hip_check, dt=knee_check)
     leg_L.create(ut=hip_check, dt=knee_check)
 
-    hand_R = Hand('Wrist_R', arm_R.handleOffset)
-    hand_R.create()
-    hand_L = Hand('Wrist_L', arm_L.handleOffset)
-    hand_L.create()
+    hand_r = Hand('Wrist_R', arm_R.handleOffset)
+    hand_r.create()
+    hand_l = Hand('Wrist_L', arm_L.handleOffset)
+    hand_l.create()
 
-    foot_R = Foot(leg_R.handleOffset, 'Ankle_R', 'Toes_R', 'AnkleEnd_R', 'ToesEnd_R')
-    foot_R.create()
-    foot_L = Foot(leg_L.handleOffset, 'Ankle_L', 'Toes_L', 'AnkleEnd_L', 'ToesEnd_L')
-    foot_L.create()
+    foot_r = Foot(leg_R.handleOffset, 'Ankle_R', 'Toes_R', 'AnkleEnd_R', 'ToesEnd_R')
+    foot_r.create()
+    foot_l = Foot(leg_L.handleOffset, 'Ankle_L', 'Toes_L', 'AnkleEnd_L', 'ToesEnd_L')
+    foot_l.create()
 
     pm.select('DeformationSystem', hierarchy=True)
     cons = pm.ls(sl=True, type=['pointConstraint', 'orientConstraint', 'aimConstraint'])
     pm.parent(*cons, 'ConstraintSystem')
     pm.parent(arm_R.poleOffset, arm_L.poleOffset, 'Chest_ctrl')
-    pm.parent(leg_R.poleOffset, foot_R.ankle_ctrl)
-    pm.parent(leg_L.poleOffset, foot_L.ankle_ctrl)
+    pm.parent(leg_R.poleOffset, foot_r.ankle_ctrl)
+    pm.parent(leg_L.poleOffset, foot_l.ankle_ctrl)
 
 
 def click3(*args):
@@ -929,29 +929,28 @@ def del_ctrl(*args):
     pm.delete('MotionSystem')
 
 
-if __name__ == '__main__':
+def main():
     if pm.window('Rig', ex=True):
         pm.deleteUI('Rig')
-    pm.window('Rig')
-    column = pm.columnLayout()
-    pm.frameLayout('Twist setting')
-    pm.setParent(column)
-    pm.gridLayout(numberOfColumns=2, cellWidth=100)
-    ShoulderCheck = pm.checkBox(label='Shoulder', v=True)
-    ElbowCheck = pm.checkBox(label='Elbow', v=True)
-    HipCheck = pm.checkBox(label='Hip', v=True)
-    KneeCheck = pm.checkBox(label='Knee')
+    with pm.window('Rig'):
+        with pm.columnLayout(rowSpacing=5, adj=True):
+            with pm.frameLayout('Twist setting'):
+                with pm.gridLayout(numberOfColumns=2, cellWidth=100):
+                    pm.checkBox(label='Shoulder', v=True)
+                    pm.checkBox(label='Elbow', v=True)
+                    pm.checkBox(label='Hip', v=True)
+                    pm.checkBox(label='Knee')
+            with pm.frameLayout('Slide setting'):
+                pm.checkBox(label='Slide')
+            with pm.frameLayout('Create spine and then create others'):
+                with pm.columnLayout():
+                    pm.button(label='Create Spine', c=click1)
+                    pm.button(label='Create Others', c=click2)
+                    pm.button(label='del ctrls', c=del_ctrl)
+                    pm.button(label='Mirror ctrl shape', c=click3)
+        pm.window('Rig', e=True, title='Rig 2.1', wh=(240, 360))
+        pm.showWindow('Rig')
 
-    pm.frameLayout('Slide setting')
-    pm.setParent(column)
-    SlideCheck = pm.checkBox(label='Slide')
 
-    pm.frameLayout('Create spine and then create others')
-    pm.columnLayout()
-    pm.button(label='Create Spine', c=click1)
-    pm.button(label='Create Others', c=click2)
-    pm.button(label='del ctrls', c=del_ctrl)
-    pm.button(label='Mirror ctrl shape', c=click3)
-
-    pm.window('Rig', title='Rig 2.0', e=True, wh=(300, 200))
-    pm.showWindow('Rig')
+if __name__ == '__main__':
+    main()

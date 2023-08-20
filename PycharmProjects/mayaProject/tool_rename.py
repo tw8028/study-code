@@ -1,71 +1,53 @@
-import maya.cmds as mc
+#!/usr/bin/python
+# -*- coding:utf-8 -*-
+import pymel.core as pm
 
 
-def check():
-    L = mc.ls(sl=1)
-    n = len(L) - 1
-    while n >= 0:
-        mc.rename(L[n], L[n] + '_t')
-        L = mc.ls(sl=1)
-        n = n - 1
+def rename_click(*args):
+    name = pm.textFieldButtonGrp('re', q=True, tx=True, )
+    objs = pm.selected()
+    new_list = []
+    for i in objs:
+        new_list.append(pm.rename(i, i + '_mlwxj'))
+    n = 1
+    for j in new_list:
+        pm.rename(j, name + str(n))
+        n += 1
 
 
-def re(name):
-    check()
-    L = mc.ls(sl=1)
-
-    def f(x):
-        n = L.index(x) + 1
-        mc.rename(x, '{0}{1:0>2d}'.format(name, n))
-
-    list(map(f, L))
+def suf_click(*args):
+    suffix = pm.textFieldButtonGrp('suf', q=True, tx=True, )
+    ojbs = pm.selected()
+    for i in ojbs:
+        pm.rename(i, i + '_' + suffix)
 
 
-def suf(suffix):
-    L = mc.ls(sl=1)
-    n = len(L) - 1
-    while n >= 0:
-        mc.rename(L[n], L[n] + '_' + suffix)
-        L = mc.ls(sl=1)
-        n = n - 1
+def replace_click(*args):
+    ser = pm.textFieldGrp('seach', q=True, tx=True)
+    rep = pm.textFieldButtonGrp('replace', q=True, tx=True)
+    objs = pm.selected()
+    for i in objs:
+        pm.rename(i, i.replace(ser, rep))
 
 
-def replace(ser, rep):
-    L = mc.ls(sl=1)
-    for i in L:
-        mc.rename(i, i.replace(ser, rep))
-
-
-def click1(*args):
-    name = mc.textFieldButtonGrp('re', q=True, tx=True, )
-    re(name)
-
-
-def click2(*args):
-    suffix = mc.textFieldButtonGrp('suf', q=True, tx=True, )
-    suf(suffix)
-
-
-def click3(*args):
-    ser = mc.textFieldGrp('seach', q=True, tx=True)
-    rep = mc.textFieldButtonGrp('replace', q=True, tx=True)
-    replace(ser, rep)
+def main():
+    win = 'rename_win'
+    if pm.window(win, ex=True):
+        pm.deleteUI(win)
+    with pm.window(win):
+        with pm.columnLayout(adj=True, rowSpacing=5):
+            with pm.frameLayout('rename'):
+                pm.textFieldButtonGrp('re', label='name', cw3=(60, 180, 40), text='', buttonLabel='apply',
+                                      bc=rename_click)
+                pm.textFieldButtonGrp('suf', label='suffix', cw3=(60, 180, 40), text='', buttonLabel='apply',
+                                      bc=suf_click)
+            with pm.frameLayout('replace'):
+                pm.textFieldGrp('seach', label='seach', cw2=(60, 180), text='')
+                pm.textFieldButtonGrp('replace', label='replace', cw3=(60, 180, 40), text='', buttonLabel='apply',
+                                      bc=replace_click)
+    pm.window(win, e=True, t='rename', wh=(330, 180))
+    pm.showWindow(win)
 
 
 if __name__ == '__main__':
-    if mc.window('rename', ex=True):
-        mc.deleteUI('rename')
-    mc.window('rename')
-    column = mc.columnLayout()
-    mc.frameLayout('rename')
-    mc.setParent(column)
-    mc.textFieldButtonGrp('re', label='name', text='', buttonLabel='apply', bc=click1)
-    mc.textFieldButtonGrp('suf', label='suffix', text='', buttonLabel='apply', bc=click2)
-
-    mc.frameLayout('replace')
-    mc.setParent(column)
-    mc.textFieldGrp('seach', label='seach', text='')
-    mc.textFieldButtonGrp('replace', label='replace', text='', buttonLabel='apply', bc=click3)
-
-    mc.window('rename', e=True, wh=(540, 200))
-    mc.showWindow('rename')
+    main()

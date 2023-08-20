@@ -66,7 +66,7 @@ def show_line(*args):
         line = pm.curve(d=1, p=[(0, 0, 0), (1, 0, 0)], k=[0, 1])
         line_shape = line.getShape()
         line_shape.overrideEnabled.set(1)
-        line_shape.overrideColor.set(14)
+        line_shape.overrideColor.set(13)
         a_list[n].getShape().worldPosition[0] >> line_shape.controlPoints[0]
         b_list[n].getShape().worldPosition[0] >> line_shape.controlPoints[1]
 
@@ -74,27 +74,24 @@ def show_line(*args):
 def main():
     if pm.window('batch', ex=True):
         pm.deleteUI('batch')
-    pm.window('batch')
-    column = pm.columnLayout(adj=True)
-    pm.text('get global variables form selected objs')
-    pm.rowLayout(numberOfColumns=3)
-    pm.button(label='get a_list', c=get_a)
-    pm.button(label='get b_list', c=get_b)
-    pm.button(label='get c_list', c=get_c)
-    pm.setParent(column)
-    pm.text('batch')
-    pm.button(label='jnt inbetween(2)', c=jnt_inbetween)
-    pm.button(label='create ik(3)', c=create_ik)
-    pm.button(label='skinCluster(2)', c=skin)
-    pm.button(label='show line(2)', c=show_line)
-
-    pm.rowLayout(nc=2)
-    pm.checkBox('m_offset', label='maintainOffset', v=False)
-    pm.button(label='parent constraint(2)', c=parent_cons)
-    pm.setParent(column)
-
-    pm.window('batch', title='batch', e=True, wh=(240, 300))
-    pm.showWindow('batch')
+    with pm.window('batch'):
+        with pm.columnLayout(adj=True, rowSpacing=10):
+            with pm.frameLayout('global variables'):
+                with pm.columnLayout(rowSpacing=5):
+                    pm.button(label='get a_list', c=get_a)
+                    pm.button(label='get b_list', c=get_b)
+                    pm.button(label='get c_list', c=get_c)
+            with pm.frameLayout('batch'):
+                with pm.columnLayout(rowSpacing=5):
+                    pm.button(label='jnt inbetween(2)', c=jnt_inbetween)
+                    pm.button(label='create ik(3)', c=create_ik)
+                    pm.button(label='skinCluster(2)', c=skin)
+                    pm.button(label='show line(2)', c=show_line)
+                    with pm.rowLayout(nc=2):
+                        pm.checkBox('m_offset', label='maintainOffset', v=False)
+                        pm.button(label='parent constraint(2)', c=parent_cons)
+        pm.window('batch', e=True, title='batch', wh=(240, 300))
+        pm.showWindow('batch')
 
 
 if __name__ == '__main__':

@@ -5,7 +5,7 @@ import package_tools.cv as cv
 import package_tools.rigging as rg
 
 
-def neck_ctrl(jnt0, inset_num):
+def neck_stretch(jnt0, inset_num):
     jnt1 = pm.listRelatives(jnt0, children=True)[0]
     jnt0_ctrl = pm.circle(nr=(1, 0, 0), c=(0, 0, 0), r=2, n=jnt0 + '_ctrl', ch=False)[0]
     jnt0_ctrl_offset = rg.offset(name=jnt0_ctrl + '_offset', target=jnt0, child=jnt0_ctrl)
@@ -38,20 +38,21 @@ def neck_ctrl(jnt0, inset_num):
 def click(*args):
     jnt = pm.selected()[0]
     num = pm.intField('numJoints', q=True, value=True)
-    neck_ctrl(jnt, num)
+    neck_stretch(jnt, num)
 
 
 def main():
     if pm.window('rig_neck', ex=True):
         pm.deleteUI('rig_neck')
-    pm.window('rig_neck')
-    pm.columnLayout()
-    pm.frameLayout('select neck joint')
-    pm.columnLayout()
-    pm.intField('numJoints')
-    pm.button(label='Create', c=click)
-    pm.window('rig_neck', title='rig_neck', e=True, wh=(280, 100))
-    pm.showWindow('rig_neck')
+    with pm.window('rig_neck', wh=(280, 100)):
+        with pm.columnLayout():
+            pm.frameLayout('select neck joint to create')
+            with pm.columnLayout():
+                pm.intField('numJoints', w=60)
+                pm.button(label='mode 1', c=click)
+
+        pm.window('rig_neck', e=True, title='rig neck', wh=(240, 120))
+        pm.showWindow('rig_neck')
 
 
 if __name__ == '__main__':

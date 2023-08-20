@@ -164,33 +164,25 @@ def fk_tree(*args):
 
 
 def main():
-    if pm.window('create_FK', ex=True):
-        pm.deleteUI('create_FK')
-    pm.window('create_FK')
-    column = pm.columnLayout(rowSpacing=10, columnAttach=('both', 5), adj=True)
-    pm.columnLayout(adj=True)
-    pm.text('create FK')
-    pm.button(label='select root', c=click1)
-    pm.button(label='select all', c=click2)
-    pm.setParent(column)
-
-    pm.columnLayout(adj=True)
-    pm.text('create FK Tree')
-    pm.button(label='select root', c=fk_tree)
-    pm.setParent(column)
-
-    pm.columnLayout(adj=True)
-    pm.text('create IK')
-    pm.button(label='select root', c=click3)
-    pm.setParent(column)
-
-    pm.columnLayout(adj=True)
-    pm.text('create IKFK blend')
-    pm.button(label='select root', c=click4)
-    pm.setParent(column)
-
-    pm.window('create_FK', e=True, title='IKFK', wh=(200, 240))
-    pm.showWindow('create_FK')
+    if pm.window('IKFK', ex=True):
+        pm.deleteUI('IKFK')
+    with pm.window('IKFK', wh=(200, 240)):
+        with pm.columnLayout(rowSpacing=5, columnAttach=('both', 5), adj=True):
+            with pm.columnLayout(adj=True):
+                pm.text('create FK')
+                pm.button(label='select root', c=click1)
+                pm.button(label='select all', c=click2)
+            with pm.columnLayout(adj=True):
+                pm.text('create FK Tree')
+                pm.button(label='select root', c=fk_tree)
+            with pm.columnLayout(adj=True):
+                pm.text('create IK')
+                pm.button(label='select root', c=click3)
+            with pm.columnLayout(adj=True):
+                pm.text('create IKFK blend')
+                pm.button(label='select root', c=click4)
+        pm.window('IKFK', e=True, title='Rig 2.1', wh=(240, 360))
+        pm.showWindow('IKFK')
 
 
 if __name__ == '__main__':

@@ -2,11 +2,10 @@ import pymel.core as pm
 
 
 def rename(objs):
+    sl = pm.selected()[0]
     for i in objs:
-        sl = pm.selected()[0]
         pm.rename(sl, i)
-        child = pm.listRelatives(sl)
-        pm.select(child)
+        sl = pm.listRelatives(sl)
 
 
 def click1(*args):
