@@ -146,6 +146,20 @@ def path_cons(*args):
         point_info.result.position >> path_locator.translate
 
 
+def connect(*args):
+    objs = pm.selected()
+    point1 = pm.spaceLocator(n=objs[0] + '_point_loc')
+    pm.parentConstraint(objs[0], point1)
+    point2 = pm.spaceLocator(n=objs[1] + '_point_loc')
+    pm.parentConstraint(objs[1], point2)
+    line = pm.curve(d=1, p=[(0, 0, 0), (1, 0, 0)], k=[0, 1])
+    line_shape = line.getShape()
+    line_shape.overrideEnabled.set(1)
+    line_shape.overrideDisplayType.set(1)
+    point1.getShape().worldPosition[0] >> line_shape.controlPoints[0]
+    point2.getShape().worldPosition[0] >> line_shape.controlPoints[1]
+
+
 def main():
     name = 'tool_curve_win'
     if pm.window(name, q=True, ex=True):
@@ -175,6 +189,7 @@ def main():
                 pm.text('index: left(13,20) middle(17,21) right(6,18)')
             with pm.frameLayout('others for curve'):
                 with pm.columnLayout():
+                    pm.button(label='connect line',c=connect)
                     pm.button(label='mirror', c=mirror)
                     pm.button(label='get message', c=get_message)
                     pm.button(label='point ctrl', c=point_ctrl)

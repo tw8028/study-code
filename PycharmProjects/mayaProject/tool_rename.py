@@ -45,7 +45,7 @@ def main():
                 pm.textFieldGrp('seach', label='seach', cw2=(60, 180), text='')
                 pm.textFieldButtonGrp('replace', label='replace', cw3=(60, 180, 40), text='', buttonLabel='apply',
                                       bc=replace_click)
-    pm.window(win, e=True, t='rename', wh=(330, 180))
+    pm.window(win, e=True, t='rename', wh=(330, 200))
     pm.showWindow(win)
 
 

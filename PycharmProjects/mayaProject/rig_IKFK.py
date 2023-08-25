@@ -81,6 +81,23 @@ def create_ik(jnt0):
     pm.orientConstraint(handle_ctrl, jnt2)
     grp = pm.group(n='{0}_ctrl_offset'.format(jnt0), empty=True)
     pm.parent(handle, handle_offset, pole_offset, grp)
+
+    def connect(ctrl, jnt):
+        point1 = pm.spaceLocator(n=ctrl + '_point_loc1')
+        pm.parentConstraint(ctrl, point1)
+        point2 = pm.spaceLocator(n=ctrl + '_point_loc2')
+        pm.parentConstraint(jnt, point2)
+        line = pm.curve(d=1, p=[(0, 0, 0), (1, 0, 0)], k=[0, 1], name=ctrl + '_line')
+        line_shape = line.getShape()
+        line_shape.overrideEnabled.set(1)
+        line_shape.overrideDisplayType.set(1)
+        point1.getShape().worldPosition[0] >> line_shape.controlPoints[0]
+        point2.getShape().worldPosition[0] >> line_shape.controlPoints[1]
+        grp_line = pm.group(empty=True, name=ctrl + '_line_offset')
+        pm.parent(point1, point2, line, grp_line)
+        return grp_line
+
+    pm.parent(connect(pole_ctrl, jnt1), grp)
     return grp
 
 
@@ -156,11 +173,10 @@ def click4(*args):
 def fk_tree(*args):
     root_jnt = pm.selected()[0]
     children = pm.listRelatives(root_jnt, children=True, type='joint')
-
-    root_jnt_ctrl = cv.cube(name=root_jnt + '_root_ctrl')
-    grp_offset(n=root_jnt_ctrl + '_offset', target=root_jnt, child=root_jnt_ctrl)
+    root_jnt_offset = pm.group(empty=True, n=root_jnt + '_ctrl_offset')
+    pm.parentConstraint(root_jnt, root_jnt_offset)
     for i in children:
-        pm.parent(create_fk(get_jnts(i)), root_jnt_ctrl)
+        pm.parent(create_fk(get_jnts(i)), root_jnt_offset)
 
 
 def main():
@@ -181,7 +197,7 @@ def main():
             with pm.columnLayout(adj=True):
                 pm.text('create IKFK blend')
                 pm.button(label='select root', c=click4)
-        pm.window('IKFK', e=True, title='Rig 2.1', wh=(240, 360))
+        pm.window('IKFK', e=True, wh=(240, 360))
         pm.showWindow('IKFK')
 
 

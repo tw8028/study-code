@@ -56,7 +56,7 @@ def locator_point(*args):
     sel = pm.ls(sl=True, flatten=True)
     print(sel)
     for i in sel:
-        p = pm.xform(i, q=True, t=True, ws=True)
+        p = pm.xform(i, q=True, rp=True, ws=True)
         pm.xform(pm.spaceLocator(), t=p)
 
 
@@ -163,7 +163,7 @@ def main():
                 with pm.rowLayout(numberOfColumns=2):
                     pm.button(label='create', c=create_ro_geo)
                     pm.button(label='delete', c=delete_ro_geo)
-        pm.window('jntTool', e=True, title='joint tool', wh=(240, 300))
+        pm.window('jntTool', e=True, title='joint tool', wh=(240, 320))
         pm.showWindow('jntTool')
 
 

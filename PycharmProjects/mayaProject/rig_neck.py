@@ -36,16 +36,17 @@ def neck_stretch(jnt0, inset_num):
 
 
 def neck_mode2(jnt, num):
+    jnt_end = jnt.getChildren()[0]
     neck_base = pm.group(empty=True, n=jnt + '_base')
     pm.delete(pm.parentConstraint(jnt, neck_base))
     neck_ctrl = pm.circle(nr=(1, 0, 0), c=(0, 0, 0), r=2, n=jnt + '_ctrl', ch=False)[0]
     ctrl_offset = rg.offset(name=jnt + '_ctrl_offset', target=jnt, child=neck_ctrl)
     pm.parent(neck_base, ctrl_offset)
-    neck_joints = rg.insert_jnts(jnt, num=num)
+    neck_joints = [jnt] + rg.insert_jnts(jnt, num=num)
 
     amount = 10 / len(neck_joints)
     inbetwent_parent = pm.group(n='Inbetwent_{0}'.format(neck_joints[0]), empty=True)
-    pm.delete(pm.parentConstraint(inbetwent_parent, neck_joints[0]))
+    pm.delete(pm.parentConstraint(neck_joints[0], inbetwent_parent))
 
     def con_inbetwent(_inbetwent, n_value):
         pm.select(neck_ctrl)
@@ -62,14 +63,17 @@ def neck_mode2(jnt, num):
         re_node.outputX >> pm.PyNode('{0}.{1}W1'.format(orcon, neck_base))
 
     n = 0
-    while n > len(neck_joints) - 1:
+    while n < len(neck_joints):
         inbetwent = pm.group(n='inbetwent_{0}_part{1}'.format(neck_joints[0], n), empty=True)
-        align(inbetwent, neck_joints[0])
+        pm.delete(pm.parentConstraint(neck_joints[0], inbetwent))
         con_inbetwent(inbetwent, n)
         pm.parent(inbetwent, inbetwent_parent)
         inbetwent_parent = inbetwent
         n += 1
-
+    head_ctrl = cv.cube(name=jnt_end + '_ctrl', r=10)
+    head_ctrl_offset = rg.offset(name=jnt_end + '_ctrl_offset', target=jnt_end, child=head_ctrl)
+    pm.orientConstraint(head_ctrl, jnt_end)
+    pm.pointConstraint(jnt_end,head_ctrl_offset)
 
 def click1(*args):
     jnt = pm.selected()[0]
@@ -90,7 +94,7 @@ def main():
         with pm.columnLayout():
             pm.frameLayout('select neck joint to create')
             with pm.columnLayout():
-                pm.intField('numJoints', w=60)
+                pm.intField('numJoints')
                 pm.button(label='mode 1', c=click1)
                 pm.button(label='mode 2', c=click2)
         pm.window('rig_neck', e=True, title='rig neck', wh=(240, 120))

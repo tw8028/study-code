@@ -86,11 +86,11 @@ def main():
                     pm.button(label='jnt inbetween(2)', c=jnt_inbetween)
                     pm.button(label='create ik(3)', c=create_ik)
                     pm.button(label='skinCluster(2)', c=skin)
-                    pm.button(label='show line(2)', c=show_line)
+                    pm.button(label='connect 2 locator with line(2)', c=show_line)
                     with pm.rowLayout(nc=2):
                         pm.checkBox('m_offset', label='maintainOffset', v=False)
                         pm.button(label='parent constraint(2)', c=parent_cons)
-        pm.window('batch', e=True, title='batch', wh=(240, 300))
+        pm.window('batch', e=True, title='batch', wh=(240, 330))
         pm.showWindow('batch')
 
 
