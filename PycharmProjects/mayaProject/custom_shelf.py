@@ -1,6 +1,16 @@
 #!/usr/bin/python
 # -*- coding:utf-8 -*-
 import pymel.core as pm
+import importlib
+
+import tool_batch as batch
+import tool_curve as curve
+import tool_jnt as jnt
+import tool_rename as rename
+import tool_skin as skin
+import rig_biped as bip
+import rig_IKFK as ikfk
+import rig_neck as neck
 
 
 def zero(*args):
@@ -64,7 +74,7 @@ class CustomShelf:
                 for each in pm.shelfLayout(self.name, q=True, childArray=True):
                     pm.deleteUI(each)
 
-    def add_button(self, label, icon='pythonFamily.png', iol='pymel', command='command'):
+    def add_button(self, label, iol, icon='pythonFamily.png', command='command'):
         pm.setParent(self.name)
         pm.shelfButton(label=label, image=icon, imageOverlayLabel=iol, command=command, olb=self.label_background,
                        olc=self.label_colour)
@@ -75,9 +85,28 @@ class CustomShelf:
         self.add_button('grp_rig', iol='G_rig', command=rig_grp)
         self.add_button('grp_offset', iol='Offset', command=offset_grp)
 
+        self.add_button('tool batch', iol='tBat', command=batch.main)
+        self.add_button('tool curve', iol='tCv', command=curve.main)
+        self.add_button('tool jnt', iol='tJnt', command=jnt.main)
+        self.add_button('tool rename', iol='tReN', command=rename.main)
+        self.add_button('tool skin', iol='tSkin', command=skin.main)
+
+        self.add_button('rig biped', iol='rBip', command=bip.main)
+        self.add_button('rig IKFK', iol='rIKFK', command=ikfk.main)
+        self.add_button('rig neck', iol='rNeck', command=neck.main)
+
 
 def main():
+    importlib.reload(batch)
+    importlib.reload(curve)
+    importlib.reload(jnt)
+    importlib.reload(rename)
+    importlib.reload(skin)
+    importlib.reload(bip)
+    importlib.reload(ikfk)
+    importlib.reload(neck)
     CustomShelf()
+    print('relord custom shelf...')
 
 
 if __name__ == '__main__':

@@ -825,7 +825,7 @@ global leg_L_slide
 
 def click1(*args):
     pm.select('DeformationSystem', hierarchy=True)
-    mel.eval("FreezeTransformations();")
+    pm.mel.eval("FreezeTransformations();")
     check_jnt()
     set_jnt_roo()
     create_grp()
@@ -844,7 +844,7 @@ def click1(*args):
     global arm_L_slide
     global leg_R_slide
     global leg_L_slide
-    slide_check = pm.checkBox('Slide', q=True, value=True)
+    slide_check = pm.checkBox('slide_check', q=True, value=True)
     arm_R_slide = arm_R.create_slide(slide=slide_check)
     arm_L_slide = arm_L.create_slide(slide=slide_check)
     leg_R_slide = leg_R.create_slide(slide=slide_check)
@@ -862,10 +862,10 @@ def click2(*args):
     next(leg_R_slide)
     next(leg_L_slide)
 
-    shoulder_check = pm.checkBox('Shoulder', q=True, value=True)
-    elbow_check = pm.checkBox('Elbow', q=True, value=True)
-    hip_check = pm.checkBox('Hip', q=True, value=True)
-    knee_check = pm.checkBox('Knee', q=True, value=True)
+    shoulder_check = pm.checkBox('shoulder_check', q=True, value=True)
+    elbow_check = pm.checkBox('elbow_check', q=True, value=True)
+    hip_check = pm.checkBox('hip_check', q=True, value=True)
+    knee_check = pm.checkBox('knee_check', q=True, value=True)
 
     arm_R.create(ut=shoulder_check, dt=elbow_check)
     arm_L.create(ut=shoulder_check, dt=elbow_check)
@@ -925,7 +925,7 @@ def del_ctrl(*args):
             except pm.MayaObjectError:
                 pass
 
-    mel.eval("MLdeleteUnused();")
+    pm.mel.eval("MLdeleteUnused();")
     pm.delete('MotionSystem')
 
 
@@ -936,12 +936,12 @@ def main():
         with pm.columnLayout(rowSpacing=5, adj=True):
             with pm.frameLayout('Twist setting'):
                 with pm.gridLayout(numberOfColumns=2, cellWidth=100):
-                    pm.checkBox(label='Shoulder', v=True)
-                    pm.checkBox(label='Elbow', v=True)
-                    pm.checkBox(label='Hip', v=True)
-                    pm.checkBox(label='Knee')
+                    pm.checkBox('shoulder_check', label='Shoulder', v=True)
+                    pm.checkBox('elbow_check', label='Elbow', v=True)
+                    pm.checkBox('hip_check', label='Hip', v=True)
+                    pm.checkBox('knee_check', label='Knee')
             with pm.frameLayout('Slide setting'):
-                pm.checkBox(label='Slide')
+                pm.checkBox('slide_check', label='Slide')
             with pm.frameLayout('Create spine and then create others'):
                 with pm.columnLayout():
                     pm.button(label='Create Spine', c=click1)
@@ -950,6 +950,7 @@ def main():
                     pm.button(label='Mirror ctrl shape', c=click3)
         pm.window('Rig', e=True, title='Rig 2.1', wh=(240, 360))
         pm.showWindow('Rig')
+        print('fff')
 
 
 if __name__ == '__main__':
