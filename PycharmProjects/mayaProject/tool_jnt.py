@@ -90,6 +90,8 @@ def jnts_on_curve(*args):
     loc = pm.spaceLocator()
     pm.select(cl=True)
     motion_path = pm.createNode('motionPath')
+    # set Parametirc Length false
+    # Getting uniform positions along a curve
     motion_path.fractionMode.set(1)
     curve_shape.worldSpace >> motion_path.geometryPath
     motion_path.allCoordinates >> loc.translate

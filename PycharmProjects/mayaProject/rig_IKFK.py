@@ -26,6 +26,12 @@ def pole_cv(name):
     return pm.curve(n=name, d=1, p=p, k=range(14))
 
 
+def cross_cv(name):
+    points = [(-1, 1, 0), (-1, 3, 0), (1, 3, 0), (1, 1, 0), (3, 1, 0), (3, -1, 0), (1, -1, 0), (1, -3, 0),
+              (-1, -3, 0), (-1, -1, 0), (-3, -1, 0), (-3, 1, 0), (-1, 1, 0)]
+    return pm.curve(n=name, d=1, p=points, k=range(13))
+
+
 def parent_chain(*objs):
     list_children = list(objs)
     # remove the last
@@ -75,10 +81,16 @@ def create_ik(jnt0):
     handle.visibility.set(0)
     pole_ctrl = pole_cv(jnt0 + '_poleCtrl')
     pole_offset = grp_offset(jnt0 + '_poleOffset', target=jnt1, child=pole_ctrl)
+    vec0 = pm.xform(jnt0, q=True, t=True, ws=True)
+    vec1 = pm.xform(jnt1, q=True, t=True, ws=True)
+    vec2 = pm.xform(jnt2, q=True, t=True, ws=True)
+    pm.xform(pole_offset, t=[vec1[n] + (vec1[n] - vec0[n] + vec1[n] - vec2[n]) * 4 for n in range(3)], ws=True)
+
     handle_ctrl = cube_cv(handle + '_ctrl')
     handle_offset = grp_offset(jnt0 + '_handleOffset', target=jnt2, child=handle_ctrl)
     pm.pointConstraint(handle_ctrl, handle)
     pm.orientConstraint(handle_ctrl, jnt2)
+    pm.poleVectorConstraint(pole_ctrl, handle)
     grp = pm.group(n='{0}_ctrl_offset'.format(jnt0), empty=True)
     pm.parent(handle, handle_offset, pole_offset, grp)
 
@@ -129,9 +141,11 @@ def blend_ikfk(jnt0):
     pm.parent(ik_jnt_offset, ik_ctrl_offset, grp)
     pm.parent(fk_jnt_offset, fk_ctrl_offset, grp)
     # set the attr
-    pm.select('Main')
-    pm.addAttr(ln=jnt0 + '_IKFK', at='float', min=0, max=1, dv=0, k=1)
-    ikfk_attr = pm.PyNode('Main.{}_IKFK'.format(jnt0))
+    attr_obj = cross_cv(jnt0 + '_switch')
+    grp_offset(n=attr_obj + '_offset', target=jnt2, child=attr_obj)
+    pm.select(attr_obj)
+    pm.addAttr(ln='IKFK', at='float', min=0, max=1, dv=0, k=1)
+    ikfk_attr = pm.PyNode('{0}.IKFK'.format(attr_obj))
     reverse_nd = pm.createNode('reverse', n=jnt0 + '_IKFK_reverse')
     ikfk_attr >> reverse_nd.inputX
 
@@ -179,6 +193,28 @@ def fk_tree(*args):
         pm.parent(create_fk(get_jnts(i)), root_jnt_offset)
 
 
+def ik2fk(jnt0, jnt1, jnt2, ctrl0, ctrl1, ctrl2, attr):
+    pm.xform(ctrl0, ro=pm.xform(jnt0, q=True, ro=True))
+    pm.xform(ctrl1, ro=pm.xform(jnt1, q=True, ro=True))
+    pm.xform(ctrl2, ro=pm.xform(jnt2, q=True, ro=True))
+    attr.set(0)
+
+
+def fk2ik(jnt0, jnt1, jnt2, pvctrl, handlectrl, attr):
+    t = pm.xform(jnt2, q=True, t=True, ws=True)
+    ro = pm.xform(jnt2, q=True, ro=True, ws=True)
+    pm.xform(handlectrl, t=t, ro=ro, ws=True)
+    vec0 = pm.xform(jnt0, q=True, t=True, ws=True)
+    vec1 = pm.xform(jnt1, q=True, t=True, ws=True)
+    vec2 = pm.xform(jnt2, q=True, t=True, ws=True)
+    pm.xform(pvctrl, t=[vec1[n] + (vec1[n] - vec0[n] + vec1[n] - vec2[n]) * 4 for n in range(3)], ws=True)
+    attr.set(1)
+
+
+def switch(*args):
+    pass
+
+
 def main():
     if pm.window('IKFK', ex=True):
         pm.deleteUI('IKFK')
@@ -197,6 +233,9 @@ def main():
             with pm.columnLayout(adj=True):
                 pm.text('create IKFK blend')
                 pm.button(label='select root', c=click4)
+            with pm.columnLayout(adj=True):
+                pm.text('IK FK Switch')
+                pm.button(label='select controller', c=switch)
         pm.window('IKFK', e=True, wh=(240, 360))
         pm.showWindow('IKFK')
 

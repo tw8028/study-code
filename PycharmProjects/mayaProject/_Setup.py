@@ -1,6 +1,6 @@
-# maya.env
+# maya.env  PYTHONPATH = D:\github\study-code\PycharmProjects\mayaProject
 # file path = C:\Users\Administrator\Documents\maya\2022
-# PYTHONPATH = D:\github\study-code\PycharmProjects\mayaProject
+
 # userSetup.py
 # file path = C:\Users\Administrator\Documents\maya\2022\scripts
 
