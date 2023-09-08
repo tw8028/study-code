@@ -23,20 +23,22 @@ class CVGNode(OpenMayaMPx.MPxNode):
         # DG callback
         self.idCallback.append(OpenMaya.MDGMessage.addNodeRemovedCallback(self.remove, 'dependNode'))
 
-    def callbackFunc(self, *args):
+    @staticmethod
+    def get_sel_name():
         obj = OpenMaya.MSelectionList()
         OpenMaya.MGlobal.getActiveSelectionList(obj)
         mDagPath = OpenMaya.MDagPath()
         dagNodeFn = OpenMaya.MFnDagNode()
+        try:
+            obj.getDagPath(0, mDagPath)
+            dagNodeFn.setObject(mDagPath)
+            return dagNodeFn.name()
+        except:
+            pass
 
-        if obj.length() > 0:
-            try:
-                for i in range(obj.length()):
-                    obj.getDagPath(i, mDagPath)
-                    dagNodeFn.setObject(mDagPath)
-                    print(dagNodeFn.name())
-            except:
-                pass
+
+    def callbackFunc(self, *args):
+        print(CVGNode.get_sel_name())
 
     def remove(self, *args):
         try:
