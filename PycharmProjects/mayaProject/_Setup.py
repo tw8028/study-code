@@ -4,7 +4,7 @@
 # userSetup.py
 # file path = C:\Users\Administrator\Documents\maya\2022\scripts
 
-import pymel.core as pm
+import maya.cmds as cmds
 import custom_shelf
 import importlib
 
@@ -12,8 +12,8 @@ import importlib
 # so we are not sure if the shelfLayout is already in place as it gets executed.
 # Therefore, evalDeferred() helps us call our script after maya has been initialized.
 
-pm.evalDeferred("importlib.reload(custom_shelf)")
-pm.evalDeferred("custom_shelf.main()")
+cmds.evalDeferred("importlib.reload(custom_shelf)")
+cmds.evalDeferred("custom_shelf.main()")
 
-if not pm.commandPort(":4434", query=True):
-    pm.commandPort(name=":4434")
+if not cmds.commandPort(":4434", query=True):
+    cmds.commandPort(name=":4434")

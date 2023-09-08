@@ -223,7 +223,7 @@ class Switch:
         vec0 = pm.xform('FK' + self.jnt0, q=True, t=True, ws=True)
         vec1 = pm.xform('FK' + self.jnt1, q=True, t=True, ws=True)
         vec2 = pm.xform('FK' + self.jnt2, q=True, t=True, ws=True)
-        pm.xform(self.poleCtrl, t=[vec1[n] + (vec1[n] - vec0[n] + vec1[n] - vec2[n]) * 4 for n in range(3)], ws=True)
+        pm.xform(self.poleCtrl, t=[vec1[n] + (vec1[n] - vec0[n] + vec1[n] - vec2[n]) * 1 for n in range(3)], ws=True)
         self.attr.set(1)
 
 

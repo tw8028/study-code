@@ -20,15 +20,20 @@ class WheelNode(OpenMayaMPx.MPxNode):
 
     def __init__(self):
         OpenMayaMPx.MPxNode.__init__(self)
-
+    # plug : The parameter informs us of which plug we are cleaning with our computation.
+    # dataBlock :
     def compute(self, plug, dataBlock):
         if plug == WheelNode.outRotate:
+            # Get inputPlugs
             dateHandleRadius = dataBlock.inputValue(WheelNode.inRadius)
             dateHandleTranslate = dataBlock.inputValue(WheelNode.inTranslate)
+            # compute
             inRadiusVal = dateHandleRadius.asFloat()
             inTranslateVal = dateHandleTranslate.asFloat()
             outRotate = inTranslateVal / float(2 * 3.14 * inRadiusVal) * (-360)
+            # Get outPlug
             dataHandleRotate = dataBlock.outputValue(WheelNode.outRotate)
+            # Set outputValue for Plug
             dataHandleRotate.setFloat(outRotate)
             dataBlock.setClean(plug)
         else:
