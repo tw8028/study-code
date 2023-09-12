@@ -31,7 +31,15 @@ class CVGNode(om2.MPxNode):
         return switch_cvs
 
     def callbackFunc(self, *args):
-        print('change change')
+        sel = om2.MGlobal.getActiveSelectionList()  # return MSelectionList
+        # Get attribute by DependencyNode
+        dependencyNode_Fn = om2.MFnDependencyNode()
+        dependencyNode_Fn.setObject(sel.getDependNode(0))
+        plug = dependencyNode_Fn.findPlug('IKFK', False)
+        if plug.asFloat() == 0:
+            psss
+        else:
+            pass
 
     def remove(self, *args):
         try:
