@@ -9,7 +9,7 @@ import tool_jnt as jnt
 import tool_rename as rename
 import tool_skin as skin
 import rig_biped as bip
-import rig_IKFK as ikfk
+import rig_IKFK_switch as ikfk
 import rig_neck as neck
 
 
@@ -21,8 +21,11 @@ def zero(*args):
 
 def align(*args):
     objs = pm.selected()
+    target = objs[-1]
+    _roo = pm.xform(target, q=True, roo=True)
     for i in objs[0:-1]:
-        pm.delete(pm.parentConstraint(objs[-1], i))
+        pm.delete(pm.parentConstraint(target, i))
+        pm.xform(i, roo=_roo)
 
 
 # create rig group

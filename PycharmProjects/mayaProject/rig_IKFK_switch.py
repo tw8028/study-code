@@ -64,6 +64,7 @@ def create_fk(jnts):
         ctrl = pm.circle(nr=(1, 0, 0), c=(0, 0, 0), r=2, n=i + '_ctrl', ch=False)[0]
         list_grp.append(ctrl)
         pm.delete(pm.parentConstraint(i, ctrl))
+        pm.xform(ctrl, roo=pm.xform(i, q=True, roo=True))
         # constraint jonts
         pm.pointConstraint(ctrl, i)
         pm.orientConstraint(ctrl, i)
@@ -86,7 +87,7 @@ def create_ik(jnt0):
     vec2 = pm.xform(jnt2, q=True, t=True, ws=True)
     pm.xform(pole_offset, t=[vec1[n] + (vec1[n] - vec0[n] + vec1[n] - vec2[n]) * 4 for n in range(3)], ws=True)
 
-    handle_ctrl = cube_cv(handle + '_ctrl')
+    handle_ctrl = cube_cv(handle + 'Ctrl')
     handle_offset = grp_offset(jnt0 + '_handleOffset', target=jnt2, child=handle_ctrl)
     pm.pointConstraint(handle_ctrl, handle)
     pm.orientConstraint(handle_ctrl, jnt2)
@@ -207,7 +208,7 @@ class Switch:
         self.fkctrl2 = 'FK' + self.jnt2 + '_ctrl'
 
         self.poleCtrl = 'IK' + self.jnt0 + '_poleCtrl'
-        self.handleCtrl = 'IK' + self.jnt0 + '_handle_ctrl'
+        self.handleCtrl = 'IK' + self.jnt0 + '_handleCtrl'
 
     # Check the Rotate Order if it not work well
     def ik2fk(self):
