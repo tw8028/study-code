@@ -31,13 +31,15 @@ class CVGNode(om2.MPxNode):
         return switch_cvs
 
     def callbackFunc(self, *args):
-        sel = om2.MGlobal.getActiveSelectionList()  # return MSelectionList
+        # Get selected
+        # return MSelectionList
+        sel = om2.MGlobal.getActiveSelectionList()
         # Get attribute by DependencyNode
         dependencyNode_Fn = om2.MFnDependencyNode()
         dependencyNode_Fn.setObject(sel.getDependNode(0))
         plug = dependencyNode_Fn.findPlug('IKFK', False)
         if plug.asFloat() == 0:
-            psss
+            pass
         else:
             pass
 
@@ -62,19 +64,17 @@ def nodeInitializer():
     pass
 
 
-def initializePlugin(plugin):
-    vendor = 'tengwei'
-    version = '1.0'
-    mplugin = om2.MFnPlugin(plugin, vendor, version)
+def initializePlugin(mobject):
+    mplugin = om2.MFnPlugin(mobject, 'teng wei', '1.0')
     try:
         mplugin.registerNode(nodeName, nodeID, nodeCreator, nodeInitializer)
     except:
         print("Failed to register command :" + nodeName)
 
 
-def uninitializePlugin(plugin):
-    mplugin = om2.MFnPlugin(plugin)
+def uninitializePlugin(mobject):
+    mplugin = om2.MFnPlugin(mobject)
     try:
         mplugin.deregisterNode(nodeID)
     except:
-        print("Failed to register command:" + nodeName)
+        print("Failed to deregister command:" + nodeName)

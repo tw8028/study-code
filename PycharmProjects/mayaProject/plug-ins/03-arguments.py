@@ -18,6 +18,7 @@ class pluginCommand(OpenMayaMPx.MPxCommand):
 
     def __init__(self):
         OpenMayaMPx.MPxCommand.__init__(self)
+        self.undoable = False
 
     def argument_pares(self, arglist):
         syntax = self.syntax()
