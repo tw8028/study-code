@@ -33,8 +33,8 @@ class AlignCmd(om2.MPxCommand):
         self.obj_paths = []
         for i in range(self.sel_list.length()):
             obj_path = self.sel_list.getDagPath(i)
-            if obj_path.apiType() is not om2.MFn.kTransform:
-                raise RuntimeError('This command requires transform node')
+            # if obj_path.apiType() is not om2.MFn.kTransform:
+            #     raise RuntimeError('This command requires transform node')
             self.obj_paths.append(obj_path)
 
         self.target_matrix = self.obj_paths[0].inclusiveMatrix()

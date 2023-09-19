@@ -145,7 +145,7 @@ def blend_ikfk(jnt0):
     attr_obj = cross_cv(jnt0 + '_switch_ctrl')
     grp_offset(n=attr_obj + '_offset', target=jnt2, child=attr_obj)
     pm.select(attr_obj)
-    pm.addAttr(ln='IKFK', at='float', min=0, max=1, dv=0, k=1)
+    pm.addAttr(ln='IKFK', at='bool', dv=0, k=1)
     ikfk_attr = pm.PyNode('{0}.IKFK'.format(attr_obj))
     reverse_nd = pm.createNode('reverse', n=jnt0 + '_IKFK_reverse')
     ikfk_attr >> reverse_nd.inputX

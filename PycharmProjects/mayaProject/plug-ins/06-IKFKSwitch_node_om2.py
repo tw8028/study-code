@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # -*- coding:utf-8 -*-
 import maya.api.OpenMaya as om2
+import maya.cmds as cmds
 
 maya_useNewAPI = True
 
@@ -37,11 +38,66 @@ class CVGNode(om2.MPxNode):
         # Get attribute by DependencyNode
         dependencyNode_Fn = om2.MFnDependencyNode()
         dependencyNode_Fn.setObject(sel.getDependNode(0))
-        plug = dependencyNode_Fn.findPlug('IKFK', False)
-        if plug.asFloat() == 0:
-            pass
+        try:
+            plug = dependencyNode_Fn.findPlug('IKFK', False)
+        except:
+            return
+
+        ctrl_name = dependencyNode_Fn.name()
+        jnt0_name = ctrl_name.replace('_switch_ctrl', '')
+        jnt1_name = CVGNode.child_name(jnt0_name)
+        jnt2_name = CVGNode.child_name(jnt1_name)
+        # FKctrl123 ---> IKjnt123
+        if plug.asBool() == False:
+            fk_ctrl_0 = 'FK' + jnt0_name + '_ctrl'
+            fk_ctrl_1 = 'FK' + jnt1_name + '_ctrl'
+            fk_ctrl_2 = 'FK' + jnt2_name + '_ctrl'
+            ik_jnt_0 = 'IK' + jnt0_name
+            ik_jnt_1 = 'IK' + jnt1_name
+            ik_jnt_2 = 'IK' + jnt2_name
+
+            CVGNode.align(ik_jnt_0, fk_ctrl_0)
+            CVGNode.align(ik_jnt_1, fk_ctrl_1)
+            CVGNode.align(ik_jnt_2, fk_ctrl_2)
+
+        # IKhandle, pole ----> FKjnt2 ,vecor
         else:
-            pass
+            handle_ctrl = 'IK' + jnt0_name + '_handleCtrl'
+            pole_ctrl = 'IK' + jnt0_name + '_poleCtrl'
+            fk_jnt_0 = 'FK' + jnt0_name
+            fk_jnt_1 = 'FK' + jnt1_name
+            fk_jnt_2 = 'FK' + jnt2_name
+
+            CVGNode.align(fk_jnt_1, pole_ctrl)
+            CVGNode.align(fk_jnt_2, handle_ctrl)
+
+    @staticmethod
+    def child_name(parent_name):
+        m_list = om2.MSelectionList()
+        m_list.add(parent_name)
+        parent_path = m_list.getDagPath(0)
+        child_dag_fn = om2.MFnDagNode(parent_path.child(0))
+        return child_dag_fn.name()
+
+    @staticmethod
+    def align(target, obj):
+        obj_list = om2.MSelectionList()
+        # Parameters: pattern - string
+        # Parameters: item - MObject, MDagPath, MPlug or tuple of (MDagPath, MObject)
+        obj_list.add(target)
+        obj_list.add(obj)
+        target_path = obj_list.getDagPath(0)
+        obj_path = obj_list.getDagPath(1)
+
+        # compute matrix
+        target_matrix = target_path.inclusiveMatrix()
+        obj_parent_reverse_matrix = obj_path.exclusiveMatrixInverse()
+        new_obj_matrix = target_matrix * obj_parent_reverse_matrix
+
+        # set matrix
+        new_transformation_Matrix = om2.MTransformationMatrix(new_obj_matrix)
+        transform_fn = om2.MFnTransform(obj_path)
+        transform_fn.setTransformation(new_transformation_Matrix)
 
     def remove(self, *args):
         try:
@@ -78,3 +134,18 @@ def uninitializePlugin(mobject):
         mplugin.deregisterNode(nodeID)
     except:
         print("Failed to deregister command:" + nodeName)
+
+
+def main():
+    cmds.file(new=True, force=True)
+    plugin_name = '06-IKFKSwitch_node_om2.py'
+    # if it is loaded, reload it
+    cmds.evalDeferred('if cmds.pluginInfo("{0}",q=True,loaded=True):cmds.unloadPlugin("{0}")'.format(plugin_name))
+    cmds.evalDeferred('if not cmds.pluginInfo("{0}",q=True,loaded=True):cmds.loadPlugin("{0}")'.format(plugin_name))
+
+    cmds.evalDeferred('cmds.file("D:\maya\callback-test.mb", open=True, force=True)')
+    cmds.evalDeferred('cmds.createNode("IKFKSwitchNode")')
+
+
+if __name__ == '__main__':
+    main()

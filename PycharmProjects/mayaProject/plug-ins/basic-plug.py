@@ -7,6 +7,7 @@ obj = sel.getDependNode(0)
 
 # Check if function set is compatible with the MObject
 if obj.hasFn(om2.MFn.kTransform):
+
     transform_fn = om2.MFnTransform(obj)
 
     # plug = transform_fn.findPlug('translateY', False)
@@ -15,6 +16,7 @@ if obj.hasFn(om2.MFn.kTransform):
     # plug.setDouble(0.5)
 
     translation = transform_fn.translation(om2.MSpace.kTransform)
-    translation[2] = 50
+    translation[2] = 0
     transform_fn.setTranslation(translation, om2.MSpace.kTransform)
+
 
