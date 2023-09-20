@@ -1,6 +1,12 @@
 #!/usr/bin/python
 # -*- coding:utf-8 -*-
 import pymel.core as pm
+import math
+
+
+def normalaize(vector):
+    norm = (vector[0] ** 2 + vector[1] ** 2 + vector[2] ** 2) ** 0.5
+    return [vector[n] / norm for n in range(3)]
 
 
 def grp_offset(n='offset', *, target, child):
@@ -82,10 +88,16 @@ def create_ik(jnt0):
     handle.visibility.set(0)
     pole_ctrl = pole_cv(jnt0 + '_poleCtrl')
     pole_offset = grp_offset(jnt0 + '_poleOffset', target=jnt1, child=pole_ctrl)
+
+    # get the pole_offset vector
     vec0 = pm.xform(jnt0, q=True, t=True, ws=True)
     vec1 = pm.xform(jnt1, q=True, t=True, ws=True)
     vec2 = pm.xform(jnt2, q=True, t=True, ws=True)
-    pm.xform(pole_offset, t=[vec1[n] + (vec1[n] - vec0[n] + vec1[n] - vec2[n]) * 4 for n in range(3)], ws=True)
+    vec_up = normalaize([vec1[n] - vec0[n] for n in range(3)])
+    vec_down = normalaize([vec1[n] - vec2[n] for n in range(3)])
+    direction_poleVector = normalaize([vec_up[n] + vec_down[n] for n in range(3)])
+
+    pm.xform(pole_offset, t=[vec1[n] + direction_poleVector[n] * 40 for n in range(3)], ws=True)
 
     handle_ctrl = cube_cv(handle + 'Ctrl')
     handle_offset = grp_offset(jnt0 + '_handleOffset', target=jnt2, child=handle_ctrl)
@@ -118,15 +130,17 @@ def blend_ikfk(jnt0):
     # create jnts
     jnt1 = pm.listRelatives(jnt0, children=True)[0]
     jnt2 = pm.listRelatives(jnt1, children=True)[0]
+
     pm.select(jnt0)
-    ik_jnt0 = pm.joint(n='IK' + jnt0)
-    fk_jnt0 = pm.joint(n='FK' + jnt0)
+    ik_jnt0 = pm.joint(n='IK' + jnt0, roo=pm.xform(jnt0, q=True, roo=True))
+    fk_jnt0 = pm.joint(n='FK' + jnt0, roo=pm.xform(jnt0, q=True, roo=True))
     pm.select(jnt1)
-    ik_jnt1 = pm.joint(n='IK' + jnt1)
-    fk_jnt1 = pm.joint(n='FK' + jnt1)
+    ik_jnt1 = pm.joint(n='IK' + jnt1, roo=pm.xform(jnt1, q=True, roo=True))
+    fk_jnt1 = pm.joint(n='FK' + jnt1, roo=pm.xform(jnt1, q=True, roo=True))
     pm.select(jnt2)
-    ik_jnt2 = pm.joint(n='IK' + jnt2)
-    fk_jnt2 = pm.joint(n='FK' + jnt2)
+    ik_jnt2 = pm.joint(n='IK' + jnt2, roo=pm.xform(jnt2, q=True, roo=True))
+    fk_jnt2 = pm.joint(n='FK' + jnt2, roo=pm.xform(jnt2, q=True, roo=True))
+
     ik_jnt_offset = grp_offset(n='IK' + jnt0 + '_offset', target=jnt0, child=ik_jnt0)
     fk_jnt_offset = grp_offset(n='FK' + jnt0 + '_offset', target=jnt0, child=fk_jnt0)
     parent_chain(ik_jnt2, ik_jnt1, ik_jnt0)
@@ -134,6 +148,7 @@ def blend_ikfk(jnt0):
     con0 = pm.parentConstraint(ik_jnt0, fk_jnt0, jnt0)
     con1 = pm.parentConstraint(ik_jnt1, fk_jnt1, jnt1)
     con2 = pm.parentConstraint(ik_jnt2, fk_jnt2, jnt2)
+
     # create ikfk ctrl
     fk_ctrl_offset = create_fk([fk_jnt0, fk_jnt1, fk_jnt2])
     ik_ctrl_offset = create_ik(ik_jnt0)
@@ -141,7 +156,8 @@ def blend_ikfk(jnt0):
     grp = pm.group(n=jnt0 + '_system', empty=True)
     pm.parent(ik_jnt_offset, ik_ctrl_offset, grp)
     pm.parent(fk_jnt_offset, fk_ctrl_offset, grp)
-    # set the attr
+
+    # set the attribute
     attr_obj = cross_cv(jnt0 + '_switch_ctrl')
     grp_offset(n=attr_obj + '_offset', target=jnt2, child=attr_obj)
     pm.select(attr_obj)
@@ -159,39 +175,6 @@ def blend_ikfk(jnt0):
 
     reverse_nd.outputX >> fk_ctrl_offset.visibility
     ikfk_attr >> ik_ctrl_offset.visibility
-
-
-# select root joint to create fk line except the end joint
-def fk_click1(*args):
-    jnts = get_jnts(pm.selected()[0])
-    create_fk(jnts)
-
-
-# create fk by selection
-def fk_click2(*args):
-    jnts = pm.selected()
-    create_fk(jnts)
-
-
-# select root joint to create IK ctrl
-def ik_click(*args):
-    jnt = pm.selected()[0]
-    create_ik(jnt)
-
-
-# blend ikfk
-def blend_ikfk_click(*args):
-    jnt = pm.selected()[0]
-    blend_ikfk(jnt)
-
-
-def fk_tree_click(*args):
-    root_jnt = pm.selected()[0]
-    children = pm.listRelatives(root_jnt, children=True, type='joint')
-    root_jnt_offset = pm.group(empty=True, n=root_jnt + '_ctrl_offset')
-    pm.parentConstraint(root_jnt, root_jnt_offset)
-    for i in children:
-        pm.parent(create_fk(get_jnts(i)), root_jnt_offset)
 
 
 class Switch:
@@ -221,11 +204,21 @@ class Switch:
         t = pm.xform('FK' + self.jnt2, q=True, t=True, ws=True)
         ro = pm.xform('FK' + self.jnt2, q=True, ro=True, ws=True)
         pm.xform(self.handleCtrl, t=t, ro=ro, ws=True)
+
         vec0 = pm.xform('FK' + self.jnt0, q=True, t=True, ws=True)
         vec1 = pm.xform('FK' + self.jnt1, q=True, t=True, ws=True)
         vec2 = pm.xform('FK' + self.jnt2, q=True, t=True, ws=True)
-        pm.xform(self.poleCtrl, t=[vec1[n] + (vec1[n] - vec0[n] + vec1[n] - vec2[n]) * 1 for n in range(3)], ws=True)
+        vec_up = normalaize([vec1[n] - vec0[n] for n in range(3)])
+        vec_down = normalaize([vec1[n] - vec2[n] for n in range(3)])
+        dir_poleVector = normalaize([vec_up[n] + vec_down[n] for n in range(3)])
+
+        pm.xform(self.poleCtrl, t=[vec1[n] + dir_poleVector[n] * 40 for n in range(3)], ws=True)
         self.attr.set(1)
+
+
+# create fk by selection
+def fk_all_click(*args):
+    create_fk(pm.selected())
 
 
 def switch_click(*args):
@@ -237,27 +230,51 @@ def switch_click(*args):
         switch.ik2fk()
 
 
+def ikfk_click(*args):
+    radio_collection = pm.radioCollection('ikfk_type', q=True, select=True)
+    type = pm.radioButton(radio_collection, q=True, label=True)
+    print(type)
+    if type == 'FK':
+        # select root joint to create fk line except the end joint
+        jnts = get_jnts(pm.selected()[0])
+        create_fk(jnts)
+
+    elif type == 'FK tree':
+        root_jnt = pm.selected()[0]
+        children = pm.listRelatives(root_jnt, children=True, type='joint')
+        print(children)
+        root_jnt_offset = pm.group(empty=True, n=root_jnt + '_ctrl_offset')
+        pm.parentConstraint(root_jnt, root_jnt_offset)
+        for i in children:
+            pm.parent(create_fk(get_jnts(i)), root_jnt_offset)
+
+    elif type == 'IK':
+        create_ik(pm.selected()[0])
+
+    elif type == 'IKFK switch':
+        blend_ikfk(pm.selected()[0])
+
+
 def main():
     if pm.window('IKFK', ex=True):
         pm.deleteUI('IKFK')
     with pm.window('IKFK', wh=(200, 240)):
-        with pm.columnLayout(rowSpacing=5, columnAttach=('both', 5), adj=True):
-            with pm.columnLayout(adj=True):
-                pm.text('create FK')
-                pm.button(label='select root', c=fk_click1)
-                pm.button(label='select all', c=fk_click2)
-            with pm.columnLayout(adj=True):
-                pm.text('create FK Tree')
-                pm.button(label='select root', c=fk_tree_click)
-            with pm.columnLayout(adj=True):
-                pm.text('create IK')
-                pm.button(label='select root', c=ik_click)
-            with pm.columnLayout(adj=True):
-                pm.text('create IKFK blend')
-                pm.button(label='select root', c=blend_ikfk_click)
-            with pm.columnLayout(adj=True):
-                pm.text('IK FK Switch')
-                pm.button(label='select controller', c=switch_click)
+        with pm.columnLayout(rowSpacing=15, columnAttach=('both', 5), adj=True):
+            with pm.frameLayout('Create FK for all selection'):
+                with pm.columnLayout():
+                    pm.button(label='apply', c=fk_all_click)
+            with pm.frameLayout('Create IK FK for root'):
+                with pm.gridLayout(numberOfColumns=2, cellWidth=100):
+                    pm.radioCollection('ikfk_type')
+                    pm.radioButton(label='FK', select=True)
+                    pm.radioButton(label='FK tree')
+                    pm.radioButton(label='IK')
+                    pm.radioButton(label='IKFK switch')
+                with pm.columnLayout():
+                    pm.button(label='apply', c=ikfk_click)
+            with pm.frameLayout('Switch operation'):
+                with pm.columnLayout():
+                    pm.button(label='apply', c=switch_click)
 
         pm.window('IKFK', e=True, wh=(240, 360))
         pm.showWindow('IKFK')
