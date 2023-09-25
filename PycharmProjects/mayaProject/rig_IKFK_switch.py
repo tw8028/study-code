@@ -1,7 +1,6 @@
 #!/usr/bin/python
 # -*- coding:utf-8 -*-
 import pymel.core as pm
-import math
 
 
 def normalaize(vector):
@@ -263,7 +262,7 @@ def main():
             with pm.frameLayout('Create FK for all selection'):
                 with pm.columnLayout():
                     pm.button(label='apply', c=fk_all_click)
-            with pm.frameLayout('Create IK FK for root'):
+            with pm.frameLayout('Create IK FK by selecting root'):
                 with pm.gridLayout(numberOfColumns=2, cellWidth=100):
                     pm.radioCollection('ikfk_type')
                     pm.radioButton(label='FK', select=True)

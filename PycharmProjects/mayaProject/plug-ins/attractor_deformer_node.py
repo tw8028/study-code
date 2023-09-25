@@ -46,14 +46,18 @@ class AttractorDeformerNode(ommpx.MPxDeformerNode):
         while not geo_iter.isDone():
             pt_local = geo_iter.position()
 
-            # point on geom to target
+            # vector from geom's vetrix  to target
             target_vector = target_position - om.MFloatVector(pt_local)
             distance = target_vector.length()
 
             if distance <= max_distance:
-                offset = target_vector * ((max_distance - distance) / max_distance)
-                new_pt_local = pt_local + om.MVector(offset)
-                geo_iter.setPosition(new_pt_local)
+                normal = om.MVector(normals[geo_iter.index()])
+                normal = om.MFloatVector(normal)
+                angle = normal.angle(target_vector)
+                if angle <= 0.5 * 3.14159265:
+                    offset = target_vector * ((max_distance - distance) / max_distance)
+                    new_pt_local = pt_local + om.MVector(offset)
+                    geo_iter.setPosition(new_pt_local)
 
             geo_iter.next()
 
