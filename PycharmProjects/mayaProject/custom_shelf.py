@@ -61,6 +61,24 @@ def offset_grp(*args):
         create(i)
 
 
+def create_offset_ctrl(*args):
+    sel = pm.selected()
+    n = 0
+    grp = []
+    while n < len(sel):
+        offset = sel[n]
+        trans = pm.group(empty=True, n=offset + '_trans')
+        pm.xform(trans, t=pm.xform(offset, q=True, t=True, ws=True))
+        pm.xform(trans, ro=pm.xform(offset, q=True, ro=True, ws=True))
+        grp.append(trans)
+        if n > 0:
+            pm.parent(trans, grp[n - 1])
+        trans.translate >> offset.translate
+        trans.rotate >> offset.rotate
+        trans.scale >> offset.scale
+        n = n + 1
+
+
 class CustomShelf:
     def __init__(self, name='Custom'):
         self.name = name
@@ -87,6 +105,7 @@ class CustomShelf:
         self.add_button('align', iol='Align', command=align)
         self.add_button('grp_rig', iol='G_rig', command=rig_grp)
         self.add_button('grp_offset', iol='Offset', command=offset_grp)
+        self.add_button('offset_ctrl', iol='OffsetCtrl', command=create_offset_ctrl)
 
         self.add_button('tool batch', iol='tBat', command=batch.main)
         self.add_button('tool curve', iol='tCv', command=curve.main)

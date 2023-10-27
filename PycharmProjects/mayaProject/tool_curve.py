@@ -140,7 +140,8 @@ def path_cons(*args):
         point_info = pm.createNode('pointOnCurveInfo', n='{0}_pocInfo{1}'.format(obj, n))
         point_info.turnOnPercentage.set(1)
         path_locator = pm.spaceLocator(n='{0}_path{1}'.format(obj, n))
-        pm.addAttr(path_locator, ln='u', at='double', min=0, max=1, dv=u_value * n, k=True)
+        pm.addAttr(path_locator, ln='u', at='double', min=0, max=1, dv=u_value * n, k=True, writable=True)
+        pm.addAttr(path_locator, ln='pos', at='double', min=0, max=1, dv=u_value * n, k=True)
         path_locator.u >> point_info.parameter
         obj.getShape().worldSpace[0] >> point_info.inputCurve
         point_info.result.position >> path_locator.translate
@@ -189,7 +190,7 @@ def main():
                 pm.text('index: left(13,20) middle(17,21) right(6,18)')
             with pm.frameLayout('others for curve'):
                 with pm.columnLayout():
-                    pm.button(label='connect line',c=connect)
+                    pm.button(label='connect line', c=connect)
                     pm.button(label='mirror', c=mirror)
                     pm.button(label='get message', c=get_message)
                     pm.button(label='point ctrl', c=point_ctrl)

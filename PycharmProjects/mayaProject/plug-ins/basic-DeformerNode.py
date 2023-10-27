@@ -64,7 +64,7 @@ def main():
     cmds.evalDeferred('if cmds.pluginInfo("{0}",q=True,loaded=True):cmds.unloadPlugin("{0}")'.format(plugin_name))
     cmds.evalDeferred('if not cmds.pluginInfo("{0}",q=True,loaded=True):cmds.loadPlugin("{0}")'.format(plugin_name))
     # help speed to testing
-    cmds.evalDeferred('cmds.file("D:\maya\deformer_text.mb", open=True, force=True)')
+    cmds.evalDeferred('cmds.file("D:\maya\deformer_test.mb", open=True, force=True)')
     cmds.evalDeferred('cmds.select("nurbsPlane1"); cmds.deformer(type="deformerNode")')
 
 

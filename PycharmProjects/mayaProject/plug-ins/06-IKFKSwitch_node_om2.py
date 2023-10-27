@@ -68,8 +68,31 @@ class CVGNode(om2.MPxNode):
             fk_jnt_1 = 'FK' + jnt1_name
             fk_jnt_2 = 'FK' + jnt2_name
 
-            CVGNode.align(fk_jnt_1, pole_ctrl)
             CVGNode.align(fk_jnt_2, handle_ctrl)
+
+            vector0 = CVGNode.get_vector_by_name(fk_jnt_0)
+            vector1 = CVGNode.get_vector_by_name(fk_jnt_1)
+            vector2 = CVGNode.get_vector_by_name(fk_jnt_2)
+
+            vector_up = (vector1 - vector0).normalize()
+            vector_down = (vector1 - vector2).normalize()
+            vector_pole_dir = (vector_up + vector_down).normalize() * 40
+            vector_pole = vector1 + vector_pole_dir
+
+            m_list = om2.MSelectionList()
+            m_list.add(pole_ctrl)
+            pole_ctrl_path = m_list.getDagPath(0)
+            transform_fn = om2.MFnTransform(pole_ctrl_path)
+            transform_fn.setTranslation(vector_pole, om2.MSpace.kWorld)
+
+    @staticmethod
+    def get_vector_by_name(obj_name):
+        m_list = om2.MSelectionList()
+        m_list.add(obj_name)
+        obj_path = m_list.getDagPath(0)
+        transform_fn = om2.MFnTransform(obj_path)
+        obj_vector = transform_fn.translation(om2.MSpace.kWorld)
+        return obj_vector
 
     @staticmethod
     def child_name(parent_name):

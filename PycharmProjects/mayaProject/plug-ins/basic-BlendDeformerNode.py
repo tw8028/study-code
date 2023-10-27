@@ -93,7 +93,7 @@ def main():
     cmds.evalDeferred('if cmds.pluginInfo("{0}",q=True,loaded=True):cmds.unloadPlugin("{0}")'.format(plugin_name))
     cmds.evalDeferred('if not cmds.pluginInfo("{0}",q=True,loaded=True):cmds.loadPlugin("{0}")'.format(plugin_name))
     # help speed to testing
-    cmds.evalDeferred('cmds.file(r"D:/maya/blend_deformer_text.mb", open=True, force=True)')
+    cmds.evalDeferred('cmds.file(r"D:/maya/blend_deformer_test.mb", open=True, force=True)')
     cmds.evalDeferred('cmds.select("pSphere1"); cmds.deformer(type="blendDeformerNode")')
     cmds.evalDeferred("cmds.connectAttr('pSphereShape2.outMesh', 'blendDeformerNode1.blendMesh')")
 
