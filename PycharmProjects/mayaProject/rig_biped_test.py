@@ -344,6 +344,48 @@ def mirror_ctrl_curve(target):
     pm.delete(copy)
 
 
+def matrix_constraint(driver, driven):
+    driver_node = pm.PyNode(driver)
+    driven_node = pm.PyNode(driven)
+    mult_matrix_node = pm.createNode('multMatrix', n=driven + '_matrixConstraint')
+
+    driver_node.worldMatrix[0] >> mult_matrix_node.matrixIn[0]
+    if pm.listRelatives(driven, parent=True):
+        driven_parent_node = pm.listRelatives(driven, parent=True)[0]
+        driven_parent_node.worldInverseMatrix >> mult_matrix_node.matrixIn[1]
+    mult_matrix_node.matrixSum >> driven_node.offsetParentMatrix
+
+    # set local transform
+    pm.xform(driven, t=(0, 0, 0), ro=(0, 0, 0), roo=pm.xform(driver, q=True, roo=True))
+    try:
+        driven_node.jointOrient.set(0, 0, 0)
+    except exception:
+        pass
+
+
+def create_fk(jnt, p=None):
+    grp = None
+    if pm.listRelatives(jnt, c=True):
+        offset = pm.group(empty=True, n=jnt + '_ctrl_offset')
+        ctrl = pm.circle(nr=(1, 0, 0), c=(0, 0, 0), r=2, n=jnt + '_ctrl', ch=False)[0]
+        t = pm.xform(jnt, q=True, t=True, ws=True)
+        ro = pm.xform(jnt, q=True, ro=True, ws=True)
+        roo = pm.xform(jnt, q=True, roo=True)
+        pm.xform(offset, t=t, ro=ro, roo=roo)
+        pm.xform(ctrl, t=t, ro=ro, roo=roo)
+        pm.parent(ctrl, offset)
+        # noinspection PyBroadException
+        try:
+            pm.parent(offset, p)
+        except Exception:
+            pass
+        if grp is None:
+            grp = offset
+        matrix_constraint(ctrl, jnt)
+        create_fk(pm.listRelatives(jnt, c=True)[0], ctrl)
+    return grp
+
+
 class Spine:
     motion_system = 'MotionSystem'
     curve_system = 'CurveSystem'
@@ -478,8 +520,7 @@ class Spine:
         con = {'Root_M': 'root', 'Spine1_M': 'spine1', 'Spine2_M': 'spine2', 'Chest_M': 'chest', 'Neck_M': 'neck',
                'Head_M': 'Head_ctrl', 'Scapula_R': 'Scapula_R_ctrl', 'Scapula_L': 'Scapula_L_ctrl'}
         for k, v in con.items():
-            pm.pointConstraint(v, k)
-            pm.orientConstraint(v, k)
+            matrix_constraint(v, k)
         # set visibility
         pm.PyNode(Spine.cvgrp).visibility.set(0)
 
@@ -698,40 +739,10 @@ class Hand:
         align(self.grp, self.ctrl)
         parent_chain(handle_offset, self.ctrl, self.grp, Hand.fk_system, Hand.motion_system)
 
-    @staticmethod
-    def getfingers(finger1):
-        fingers = []
-        jnt = finger1
-        while pm.listRelatives(jnt, children=True):
-            fingers.append(jnt)
-            jnt = pm.listRelatives(jnt, children=True)[0]
-        return fingers
-
     def create(self):
-        ctrls = []
         for j in self.list_finger1:
-            finger123 = Hand.getfingers(j)
-            list_grp = []
-            for i in finger123:
-                # offset
-                offset = pm.group(empty=True, name=i + '_offset')
-                list_grp.append(offset)
-                align(offset, i)
-                # ctrl
-                ctrl = Cv.finger(i + '_ctrl')
-                list_grp.append(ctrl)
-                ctrls.append(ctrl)
-                align(ctrl, i)
-                # constraint jonts
-                pm.pointConstraint(ctrl, i)
-                pm.orientConstraint(ctrl, i)
-                # parent
-            try:
-                pm.parent(list_grp[0], self.ctrl)
-            except pm.MayaObjectError:
-                pass
-            list_grp.reverse()
-            parent_chain(*list_grp)
+            finger_grp = create_fk(j)
+            pm.parent(finger_grp, self.ctrl)
 
 
 class Foot:

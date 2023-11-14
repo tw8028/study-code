@@ -58,25 +58,27 @@ def get_jnts(jnt_head):
     return jnts
 
 
-def create_fk(jnts):
-    list_grp = []
-    for i in jnts:
-        # offset
-        offset = pm.group(empty=True, name=i + '_ctrl_offset')
-        list_grp.append(offset)
-        pm.delete(pm.parentConstraint(i, offset))
-        # ctrl
-        ctrl = pm.circle(nr=(1, 0, 0), c=(0, 0, 0), r=2, n=i + '_ctrl', ch=False)[0]
-        list_grp.append(ctrl)
-        pm.delete(pm.parentConstraint(i, ctrl))
-        pm.xform(ctrl, roo=pm.xform(i, q=True, roo=True))
-        # constraint jonts
-        pm.pointConstraint(ctrl, i)
-        pm.orientConstraint(ctrl, i)
-    # list_grp = [offset1,ctrl1,offset2,ctrl2....]
-    list_grp.reverse()
-    parent_chain(*list_grp)
-    return list_grp[-1]
+def create_fk(jnt, p=None):
+    grp = None
+    if pm.listRelatives(jnt, c=True):
+        offset = pm.group(empty=True, n=jnt + '_ctrl_offset')
+        ctrl = pm.circle(nr=(1, 0, 0), c=(0, 0, 0), r=2, n=jnt + '_ctrl', ch=False)[0]
+        t = pm.xform(jnt, q=True, t=True, ws=True)
+        ro = pm.xform(jnt, q=True, ro=True, ws=True)
+        roo = pm.xform(jnt, q=True, roo=True)
+        pm.xform(offset, t=t, ro=ro, roo=roo)
+        pm.xform(ctrl, t=t, ro=ro, roo=roo)
+        pm.parent(ctrl, offset)
+        # noinspection PyBroadException
+        try:
+            pm.parent(offset, p)
+        except Exception:
+            pass
+        if grp is None:
+            grp = offset
+        pm.parentConstraint(ctrl, jnt)
+        create_fk(pm.listRelatives(jnt, c=True)[0], ctrl)
+    return grp
 
 
 def create_ik(jnt0):
@@ -149,7 +151,11 @@ def blend_ikfk(jnt0):
     con2 = pm.parentConstraint(ik_jnt2, fk_jnt2, jnt2)
 
     # create ikfk ctrl
-    fk_ctrl_offset = create_fk([fk_jnt0, fk_jnt1, fk_jnt2])
+    pm.select(fk_jnt2)
+    end = pm.joint()
+    fk_ctrl_offset = create_fk(fk_jnt0)
+    pm.delete(end)
+
     ik_ctrl_offset = create_ik(ik_jnt0)
     # grp
     grp = pm.group(n=jnt0 + '_system', empty=True)
@@ -174,6 +180,10 @@ def blend_ikfk(jnt0):
 
     reverse_nd.outputX >> fk_ctrl_offset.visibility
     ikfk_attr >> ik_ctrl_offset.visibility
+
+
+def hind_leg_ik():
+    pass
 
 
 class Switch:
@@ -215,11 +225,6 @@ class Switch:
         self.attr.set(1)
 
 
-# create fk by selection
-def fk_all_click(*args):
-    create_fk(pm.selected())
-
-
 def switch_click(*args):
     switch_ctrl = pm.selected()[0]
     switch = Switch(switch_ctrl)
@@ -231,26 +236,25 @@ def switch_click(*args):
 
 def ikfk_click(*args):
     radio_collection = pm.radioCollection('ikfk_type', q=True, select=True)
-    type = pm.radioButton(radio_collection, q=True, label=True)
-    print(type)
-    if type == 'FK':
+    ikfk_type = pm.radioButton(radio_collection, q=True, label=True)
+    print(ikfk_type)
+    if ikfk_type == 'FK':
         # select root joint to create fk line except the end joint
-        jnts = get_jnts(pm.selected()[0])
-        create_fk(jnts)
+        create_fk(pm.selected()[0])
 
-    elif type == 'FK tree':
+    elif ikfk_type == 'FK tree':
         root_jnt = pm.selected()[0]
         children = pm.listRelatives(root_jnt, children=True, type='joint')
         print(children)
         root_jnt_offset = pm.group(empty=True, n=root_jnt + '_ctrl_offset')
         pm.parentConstraint(root_jnt, root_jnt_offset)
         for i in children:
-            pm.parent(create_fk(get_jnts(i)), root_jnt_offset)
+            pm.parent(create_fk(i), root_jnt_offset)
 
-    elif type == 'IK':
+    elif ikfk_type == 'IK':
         create_ik(pm.selected()[0])
 
-    elif type == 'IKFK switch':
+    elif ikfk_type == 'IKFK switch':
         blend_ikfk(pm.selected()[0])
 
 
@@ -259,9 +263,6 @@ def main():
         pm.deleteUI('IKFK')
     with pm.window('IKFK', wh=(200, 240)):
         with pm.columnLayout(rowSpacing=15, columnAttach=('both', 5), adj=True):
-            with pm.frameLayout('Create FK for all selection'):
-                with pm.columnLayout():
-                    pm.button(label='apply', c=fk_all_click)
             with pm.frameLayout('Create IK FK by selecting root'):
                 with pm.gridLayout(numberOfColumns=2, cellWidth=100):
                     pm.radioCollection('ikfk_type')

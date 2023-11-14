@@ -3,7 +3,6 @@
 import pymel.core as pm
 import importlib
 
-import tool_batch as batch
 import tool_curve as curve
 import tool_jnt as jnt
 import tool_rename as rename
@@ -61,7 +60,8 @@ def offset_grp(*args):
         create(i)
 
 
-def create_offset_ctrl(*args):
+# select the offset of ik chain then copy it and then control it
+def create_trans(*args):
     sel = pm.selected()
     n = 0
     grp = []
@@ -77,6 +77,14 @@ def create_offset_ctrl(*args):
         trans.rotate >> offset.rotate
         trans.scale >> offset.scale
         n = n + 1
+
+
+def create_sub(*args):
+    sel = pm.selected()
+    for obj in sel:
+        sub = pm.group(empty=True, n=obj + '_sub')
+        pm.parent(sub, obj)
+        pm.xform(sub, t=(0, 0, 0), ro=(0, 0, 0), roo=pm.xform(obj, q=True, roo=True))
 
 
 class CustomShelf:
@@ -103,19 +111,20 @@ class CustomShelf:
     def build(self):
         self.add_button('zero', iol='Zero', command=zero)
         self.add_button('align', iol='Align', command=align)
-        self.add_button('grp_rig', iol='G_rig', command=rig_grp)
-        self.add_button('grp_offset', iol='Offset', command=offset_grp)
-        self.add_button('offset_ctrl', iol='OffsetCtrl', command=create_offset_ctrl)
+        self.add_button('rig_grp', iol='Grp', command=rig_grp)
+        self.add_button('offset_grp', iol='Offset', command=offset_grp)
+        self.add_button('trans', iol='Trans', command=create_trans)
+        self.add_button('sub', iol='Sub', command=create_sub)
 
-        self.add_button('tool batch', iol='tBat', command=batch.main)
         self.add_button('tool curve', iol='tCv', command=curve.main)
         self.add_button('tool jnt', iol='tJnt', command=jnt.main)
-        self.add_button('tool rename', iol='tReN', command=rename.main)
         self.add_button('tool skin', iol='tSkin', command=skin.main)
 
         self.add_button('rig biped', iol='rBip', command=bip.main)
         self.add_button('rig IKFK', iol='rIKFK', command=ikfk.main)
         self.add_button('rig neck', iol='rNeck', command=neck.main)
+
+        self.add_button('tool rename', iol='tReN', command=rename.main)
 
 
 def main():

@@ -36,9 +36,6 @@ def get_cv(shape, radius, *, name='curve1'):
     if shape == 'square':
         points = [(0.0, 1.0, 1.0), (0.0, -1.0, 1.0), (0.0, -1.0, -1.0), (0.0, 1.0, -1.0), (0.0, 1.0, 1.0)]
         return pm.curve(n=name, d=1, p=[tuple(radius * x for x in i) for i in points], k=range(5))
-    if shape == 'triangle':
-        points = [(0.0, 0.0, 0.0), (-1.0, 2.0, 0.0), (1.0, 2.0, 0.0), (0.0, 0.0, 0.0), (0.0, -3.0, 0.0)]
-        return pm.curve(n=name, d=1, p=[tuple(radius * x for x in i) for i in points], k=range(5))
     if shape == 'cross1':
         points = [(-1, 1, 0), (-1, 3, 0), (1, 3, 0), (1, 1, 0), (3, 1, 0), (3, -1, 0), (1, -1, 0), (1, -3, 0),
                   (-1, -3, 0), (-1, -1, 0), (-3, -1, 0), (-3, 1, 0), (-1, 1, 0)]
@@ -47,6 +44,31 @@ def get_cv(shape, radius, *, name='curve1'):
         points = [(-1, 1, 0), (-1, 7, 0), (1, 7, 0), (1, 1, 0), (7, 1, 0), (7, -1, 0), (1, -1, 0), (1, -7, 0),
                   (-1, -7, 0), (-1, -1, 0), (-7, -1, 0), (-7, 1, 0), (-1, 1, 0)]
         return pm.curve(n=name, d=1, p=[tuple(radius * x for x in i) for i in points], k=range(13))
+    if shape == 'triangle':
+        points = [(0.0, 0.0, 0.0), (-1.0, 2.0, 0.0), (1.0, 2.0, 0.0), (0.0, 0.0, 0.0), (0.0, -3.0, 0.0)]
+        return pm.curve(n=name, d=1, p=[tuple(radius * x for x in i) for i in points], k=range(5))
+    if shape == 'None':
+        return
+    if shape == 'foot_R_ctrl':
+        p1 = [(3.2, 0.0, 0.8), (-3.2, 0.0, 0.6), (-5.9, 0.0, 19.6), (-5.6, 0.0, 26.3), (-0.0, 0.0, 31.1),
+              (4.4, 0.0, 28.1), (5.8, 0.0, 21.2), (3.2, 0.0, 0.8)]
+        k1 = range(8)
+        p2 = [(-6.1, 2.2, 18.3), (-3.4, 5.0, -0.2), (2.9, 5.0, 0.4), (5.3, 2.7, 16.5)]
+        k2 = range(4)
+        cv1 = pm.curve(d=1, p=p1, k=k1, n=name)
+        cv2 = pm.curve(d=1, p=p2, k=k2, n=name)
+        pm.parent(pm.listRelatives(cv2, s=True)[0], cv1, add=True, s=True)
+        pm.delete(cv2)
+        return cv1
+    if shape == 'roll_ctrl':
+        c1 = pm.circle(nr=(1, 0, 0), c=(0, 0, 0), r=radius, n=name, ch=False)
+        c2 = pm.circle(nr=(0, 1, 0), c=(0, 0, 0), r=radius, n=name, ch=False)
+        c3 = pm.circle(nr=(0, 0, 1), c=(0, 0, 0), r=radius, n=name, ch=False)
+        pm.parent(pm.listRelatives(c2, s=True)[0], c1, add=True, s=True)
+        pm.delete(c2)
+        pm.parent(pm.listRelatives(c3, s=True)[0], c1, add=True, s=True)
+        pm.delete(c3)
+        return c1
 
 
 def create(*args):
@@ -75,9 +97,9 @@ def set_color(*args):
     objs = pm.selected()
     color = pm.intField('color', q=True, value=True)
     for obj in objs:
-        shape = obj.getShape()
-        shape.overrideEnabled.set(1)
-        shape.overrideColor.set(color)
+        for shape in pm.listRelatives(obj, s=True):
+            shape.overrideEnabled.set(1)
+            shape.overrideColor.set(color)
 
 
 def mirror(*args):
@@ -96,7 +118,7 @@ def mirror(*args):
 
     def mirror_ctrl_curve(target):
         target_name = target.name()
-        obj_name = target_name.replace('R_', 'L_') if 'R_' in target_name else target_name.replace('L_', 'R_')
+        obj_name = target_name.replace('_R', '_L') if '_R' in target_name else target_name.replace('_L', '_R')
         obj = pm.PyNode(obj_name)
         old_shapes = pm.listRelatives(obj, s=True)
         color = old_shapes[0].overrideColor.get()
@@ -166,7 +188,7 @@ def main():
     if pm.window(name, q=True, ex=True):
         pm.deleteUI(name)
     with pm.window(name):
-        with pm.columnLayout(rowSpacing=10, adj=True):
+        with pm.columnLayout(rowSpacing=20, adj=True):
             with pm.frameLayout('create a curve or change the shape'):
                 with pm.gridLayout(numberOfColumns=2, cellWidth=100):
                     pm.radioCollection('obj_type')
@@ -176,9 +198,14 @@ def main():
                     pm.radioButton(label='square')
                     pm.radioButton(label='arrow_up')
                     pm.radioButton(label='arrow2')
-                    pm.radioButton(label='triangle')
                     pm.radioButton(label='cross1')
                     pm.radioButton(label='cross2')
+                    pm.radioButton(label='triangle')
+                    pm.radioButton(label='None')
+
+                    pm.radioButton(label='foot_R_ctrl')
+                    pm.radioButton(label='roll_ctrl')
+
                 with pm.rowLayout(numberOfColumns=3):
                     pm.floatField('radius1', value=1)
                     pm.button(label='Create', c=create)
