@@ -128,7 +128,6 @@ class CustomShelf:
 
 
 def main():
-    importlib.reload(batch)
     importlib.reload(curve)
     importlib.reload(jnt)
     importlib.reload(rename)

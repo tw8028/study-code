@@ -357,10 +357,12 @@ def matrix_constraint(driver, driven):
 
     # set local transform
     pm.xform(driven, t=(0, 0, 0), ro=(0, 0, 0), roo=pm.xform(driver, q=True, roo=True))
+    # noinspection PyBroadException
     try:
         driven_node.jointOrient.set(0, 0, 0)
-    except exception:
+    except Exception:
         pass
+    return mult_matrix_node
 
 
 def create_fk(jnt, p=None):
@@ -551,8 +553,8 @@ class Limb:
         align(self.IKjntOffset, self.jntParent)
         self.IKjntGrp = pm.group(empty=True, n=self.name + '_jntGrp')
         align(self.IKjntGrp, self.jnts[0])
-        pm.pointConstraint(self.jntParent, self.IKjntOffset)
-        pm.orientConstraint(self.jntParent, self.IKjntOffset)
+        matrix_constraint(self.jntParent, self.IKjntOffset)
+
         self.IKjnt0 = new_jnt(self.jnts[0], n='IK_' + self.jnts[0])
         self.IKjnt1 = new_jnt(self.jnts[1], n='IK_' + self.jnts[1])
         self.IKjnt2 = new_jnt(self.jnts[2], n='IK_' + self.jnts[2])
@@ -641,8 +643,7 @@ class Limb:
         pm.pointConstraint(self.midCtrl, self.jnts[1])
         pm.aimConstraint(self.IKjnt2, self.jnts[1], aimVector=aim_vector, worldUpType='objectrotation',
                          worldUpObject=self.IKjnt1)
-        pm.orientConstraint(self.IKjnt2, self.jnts[2])
-        pm.pointConstraint(self.IKjnt2, self.jnts[2])
+        matrix_constraint(self.IKjnt2, self.jnts[2])
         pm.orientConstraint(self.handleOffset, self.IKjnt2)
 
     @staticmethod
@@ -893,10 +894,6 @@ def click2(*args):
     foot_r.create()
     foot_l = Foot(leg_L.handleOffset, 'Ankle_L', 'Toes_L', 'AnkleEnd_L', 'ToesEnd_L')
     foot_l.create()
-
-    pm.select('DeformationSystem', hierarchy=True)
-    cons = pm.ls(sl=True, type=['pointConstraint', 'orientConstraint', 'aimConstraint'])
-    pm.parent(*cons, 'ConstraintSystem')
 
 
 def click3(*args):
