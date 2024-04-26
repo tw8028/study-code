@@ -2,47 +2,50 @@
 # -*- coding:utf-8 -*-
 import pymel.core as pm
 import package_tools.cv as cv
-import package_tools.rigging as rg
+import package_tools.grp as grp
+import package_tools.jnt as jnt
+import package_tools.rig as rig
 
 
-def neck_stretch(jnt0, inset_num):
-    jnt1 = pm.listRelatives(jnt0, children=True)[0]
-    jnt0_ctrl = pm.circle(nr=(1, 0, 0), c=(0, 0, 0), r=2, n=jnt0 + '_ctrl', ch=False)[0]
-    jnt0_ctrl_offset = rg.offset(name=jnt0_ctrl + '_offset', target=jnt0, child=jnt0_ctrl)
-    jnt1_ctrl = cv.cube(name=jnt1 + '_ctrl')
-    jnt1_ctrl_offset = rg.offset(name=jnt1_ctrl + '_offset', target=jnt1, child=jnt1_ctrl)
+def neck_stretch(neck_01, inset_num):
+    head = pm.listRelatives(neck_01, children=True)[0]
+    neck_ctrl = pm.circle(nr=(1, 0, 0), c=(0, 0, 0), r=2, n=neck_01 + '_ctrl', ch=False)[0]
+    neck_offset = grp.offset(name=neck_ctrl + '_offset', pos=neck_01, child=neck_ctrl)
+    head_ctrl = cv.cube(name=head + '_ctrl')
+    head_offset = grp.offset(name=head_ctrl + '_offset', pos=head, child=head_ctrl)
 
-    ik_jnt0 = rg.new_jnt(jnt0, n='IK' + jnt0)
-    ik_jnt1 = rg.new_jnt(jnt1, n='IK' + jnt1)
-    ik_jnt_offset = rg.offset(name=ik_jnt0 + '_offset', target=jnt0, child=ik_jnt0)
+    ik_jnt0 = jnt.new(neck_01, name='IK_jnt0')
+    ik_jnt1 = jnt.new(head, name='IK_jnt1')
+    ik_offset = pm.group(n="IK_offset", empty=True)
     pm.parent(ik_jnt1, ik_jnt0)
-    pm.pointConstraint(jnt0_ctrl, ik_jnt0)
-    pm.orientConstraint(jnt1_ctrl, ik_jnt1)
+    pm.parent(ik_jnt0,ik_offset)
+    pm.pointConstraint(neck_ctrl, ik_jnt0)
+    pm.orientConstraint(head_ctrl, ik_jnt1)
 
-    t_handle = pm.ikHandle(n=ik_jnt0 + '_tHandle', sj=ik_jnt0, ee=ik_jnt1)
+    t_handle = pm.ikHandle(n='IK_tHandle', sj=ik_jnt0, ee=ik_jnt1)
     pm.poleVectorConstraint(ik_jnt0, t_handle[0])
-    pm.parent(t_handle[0], jnt1_ctrl)
-    pm.parent(jnt1_ctrl_offset, jnt0_ctrl)
-    part_jnts = rg.insert_jnts(jnt0, inset_num)
+    pm.parent(t_handle[0], head_ctrl)
+    pm.parent(head_offset, neck_ctrl)
+    part_jnts = jnt.insert(neck_01, inset_num)
 
-    rg.stretch_jnt(jnt0_ctrl, jnt1_ctrl, ik_jnt0, jnt0, *part_jnts)
-    rg.twist_drive(jnt1_ctrl, ik_jnt0, part_jnts)
+    rig.stretch_jnt(neck_ctrl, head_ctrl, ik_jnt0, neck_01, *part_jnts)
+    rig.twist_drive(head_ctrl, ik_jnt0, part_jnts)
 
-    pm.parentConstraint(ik_jnt0, jnt0)
-    pm.parentConstraint(ik_jnt1, jnt1)
+    pm.parentConstraint(ik_jnt0, neck_01)
+    pm.parentConstraint(ik_jnt1, head)
 
-    system_grp = pm.group(n=jnt0 + '_system', empty=True)
-    pm.parent(ik_jnt_offset, jnt0_ctrl_offset, system_grp)
+    system_grp = pm.group(n='neck_system', empty=True)
+    pm.parent(ik_offset, neck_offset, system_grp)
 
 
-def neck_mode2(jnt, num):
-    jnt_end = jnt.getChildren()[0]
-    neck_base = pm.group(empty=True, n=jnt + '_base')
-    pm.delete(pm.parentConstraint(jnt, neck_base))
-    neck_ctrl = pm.circle(nr=(1, 0, 0), c=(0, 0, 0), r=2, n=jnt + '_ctrl', ch=False)[0]
-    ctrl_offset = rg.offset(name=jnt + '_ctrl_offset', target=jnt, child=neck_ctrl)
+def neck_mode2(neck_01, num):
+    jnt_end = neck_01.getChildren()[0]
+    neck_base = pm.group(empty=True, n=neck_01 + '_base')
+    pm.delete(pm.parentConstraint(neck_01, neck_base))
+    neck_ctrl = pm.circle(nr=(1, 0, 0), c=(0, 0, 0), r=2, n=neck_01 + '_ctrl', ch=False)[0]
+    ctrl_offset = grp.offset(name=neck_01 + '_ctrl_offset', pos=neck_01, child=neck_ctrl)
     pm.parent(neck_base, ctrl_offset)
-    neck_joints = [jnt] + rg.insert_jnts(jnt, num=num)
+    neck_joints = [neck_01] + jnt.insert(neck_01, num=num)
 
     amount = 10 / len(neck_joints)
     inbetwent_parent = pm.group(n='Inbetwent_{0}'.format(neck_joints[0]), empty=True)
@@ -71,20 +74,20 @@ def neck_mode2(jnt, num):
         inbetwent_parent = inbetwent
         n += 1
     head_ctrl = cv.cube(name=jnt_end + '_ctrl', r=10)
-    head_ctrl_offset = rg.offset(name=jnt_end + '_ctrl_offset', target=jnt_end, child=head_ctrl)
+    head_ctrl_offset = grp.offset(name=jnt_end + '_ctrl_offset', pos=jnt_end, child=head_ctrl)
     pm.orientConstraint(head_ctrl, jnt_end)
     pm.pointConstraint(jnt_end,head_ctrl_offset)
 
 def click1(*args):
-    jnt = pm.selected()[0]
+    neck_01 = pm.selected()[0]
     num = pm.intField('numJoints', q=True, value=True)
-    neck_stretch(jnt, num)
+    neck_stretch(neck_01, num)
 
 
 def click2(*args):
-    jnt = pm.selected()[0]
+    neck_01 = pm.selected()[0]
     num = pm.intField('numJoints', q=True, value=True)
-    neck_mode2(jnt, num)
+    neck_mode2(neck_01, num)
 
 
 def main():

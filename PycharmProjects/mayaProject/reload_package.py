@@ -1,7 +1,11 @@
-import package_tools.cv
-import package_tools.rigging
+import package_tools.cv as cv
+import package_tools.grp as grp
+import package_tools.jnt as jnt
+import package_tools.rig as rig
 
 import importlib
 
-importlib.reload(package_tools.cv)
-importlib.reload(package_tools.rigging)
+importlib.reload(cv)
+importlib.reload(grp)
+importlib.reload(jnt)
+importlib.reload(rig)

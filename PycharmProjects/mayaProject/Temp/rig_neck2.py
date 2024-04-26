@@ -8,13 +8,13 @@ import package_tools.rigging as rg
 def neck_stretch(jnt0, inset_num):
     jnt1 = pm.listRelatives(jnt0, children=True)[0]
     jnt0_ctrl = pm.circle(nr=(1, 0, 0), c=(0, 0, 0), r=2, n=jnt0 + '_ctrl', ch=False)[0]
-    jnt0_ctrl_offset = rg.offset(name=jnt0_ctrl + '_offset', target=jnt0, child=jnt0_ctrl)
+    jnt0_ctrl_offset = rg.offset(name=jnt0_ctrl + '_offset', pos=jnt0, child=jnt0_ctrl)
     jnt1_ctrl = cv.cube(name=jnt1 + '_ctrl')
-    jnt1_ctrl_offset = rg.offset(name=jnt1_ctrl + '_offset', target=jnt1, child=jnt1_ctrl)
+    jnt1_ctrl_offset = rg.offset(name=jnt1_ctrl + '_offset', pos=jnt1, child=jnt1_ctrl)
 
     ik_jnt0 = rg.new_jnt(jnt0, n='IK' + jnt0)
     ik_jnt1 = rg.new_jnt(jnt1, n='IK' + jnt1)
-    ik_jnt_offset = rg.offset(name=ik_jnt0 + '_offset', target=jnt0, child=ik_jnt0)
+    ik_jnt_offset = rg.offset(name=ik_jnt0 + '_offset', pos=jnt0, child=ik_jnt0)
     pm.parent(ik_jnt1, ik_jnt0)
     pm.pointConstraint(jnt0_ctrl, ik_jnt0)
     pm.orientConstraint(jnt1_ctrl, ik_jnt1)

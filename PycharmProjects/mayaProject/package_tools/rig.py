@@ -1,59 +1,22 @@
 import pymel.core as pm
 
 
-def show_line(point1, point2, *, name='line1'):
-    line = pm.curve(d=1, p=[(0, 0, 0), (1, 0, 0)], k=[0, 1], n=name)
-    line_shape = line.getShape()
-    point1.getShape().worldPosition[0] >> line_shape.controlPoints[0]
-    point2.getShape().worldPosition[0] >> line_shape.controlPoints[1]
-    set_color(14, line)
-
-
-def new_jnt(target, *, n='joint'):
+# Align to target
+def align(obj, target, *, t=True, ro=True):
     _roo = pm.xform(target, q=True, roo=True)
-    pm.select(target)
-    jnt = pm.joint(n=n, roo=_roo)
-    pm.select(cl=True)
-    return jnt
+    pm.parent(obj, target)
+    if t:
+        pm.xform(obj, t=(0, 0, 0), roo=_roo)
+    if ro:
+        pm.xform(obj, ro=(0, 0, 0), roo=_roo)
+    pm.parent(obj, w=True)
 
 
-def reset_jnt(jnt):
-    pm.xform(jnt, ro=(0, 0, 0))
-    jnt.jointOrient.set(0, 0, 0)
 
 
-# Insert part joints
-def insert_jnts(start_jnt, num=1):
-    end_jnt = pm.listRelatives(start_jnt, children=True)[0]
-    jnt_offset = pm.PyNode(end_jnt).translateX.get() / (num + 1)
-    _roo = pm.xform(start_jnt, q=True, roo=True)
-    part_jnts = []
-    n = 1
-    pm.select(start_jnt)
-    while n < num + 1:
-        part_pn = pm.PyNode(pm.insertJoint())
-        part_jnts.append(part_pn)
-        # edit name and position
-        pm.joint(part_pn, e=True, co=True, r=True, p=(jnt_offset, 0, 0), n="{0}_part{1}".format(start_jnt, n),
-                 roo=_roo)
-        n += 1
-    return part_jnts
-
-
-def offset(name='offset', *, target, child):
-    grp = pm.group(empty=True, n=name)
-    _roo = pm.xform(target, q=True, roo=True)
-    pm.parent(grp, target)
-    pm.xform(grp, t=(0, 0, 0), ro=(0, 0, 0), roo=_roo)
-    pm.parent(grp, w=True)
-    pm.parent(child, grp)
-    pm.xform(child, t=(0, 0, 0), ro=(0, 0, 0), roo=_roo)
-    return grp
-
-
+# parent chain
 def parent_chain(*objs):
     list_children = list(objs)
-    # remove the last
     list_children.pop()
     for i in list_children:
         pm.parent(i, w=True)
@@ -63,13 +26,31 @@ def parent_chain(*objs):
         n = n + 1
 
 
-# set color
-def set_color(index, *objs):
-    for i in objs:
-        shapes = pm.listRelatives(i, s=True)
-        for j in shapes:
-            j.overrideEnabled.set(1)
-            j.overrideColor.set(index)
+# stretch IK joints
+def stretch_ikjnt(jnt0_offset, handle_offset, ik_jnt0, ik_jnt1, ik_jnt2):
+    point1 = pm.PyNode(jnt0_offset)
+    point2 = pm.PyNode(handle_offset)
+    jnt0 = pm.PyNode(ik_jnt0)
+    jnt1 = pm.PyNode(ik_jnt1)
+    jnt2 = pm.PyNode(ik_jnt2)
+
+    length = abs(jnt1.translateX.get()) + abs(jnt2.translateX.get())
+    distance_between = pm.createNode('distanceBetween', name=handle_offset + '_dis')
+    multiply_divide = pm.createNode('multiplyDivide', name=handle_offset + '_md')
+    multiply_divide.operation.set(2)
+    multiply_divide.input2X.set(length)
+    condition = pm.createNode('condition', name=handle_offset + '_condition')
+    condition.secondTerm.set(length)
+    condition.operation.set(2)
+    condition.colorIfFalseR.set(length)
+
+    point1.worldMatrix[0] >> distance_between.inMatrix1
+    point2.worldMatrix[0] >> distance_between.inMatrix2
+    distance_between.distance >> condition.firstTerm
+    distance_between.distance >> condition.colorIfTrue.colorIfTrueR
+    condition.outColor.outColorR >> multiply_divide.input1.input1X
+    multiply_divide.outputX >> jnt0.scaleX
+    multiply_divide.outputX >> jnt1.scaleX
 
 
 # stretch joints
@@ -104,6 +85,9 @@ def stretch_jnt(point1, point2, *driven):
             pass
 
 
+
+
+
 # Twist drive
 def twist_drive(driver, no_roll, part_jnt):
     driver_pn = pm.PyNode(driver)
@@ -123,3 +107,5 @@ def twist_drive(driver, no_roll, part_jnt):
     for i in part_jnt:
         part_pn = pm.PyNode(i)
         multiply_divide.outputX >> part_pn.rotateX
+
+
