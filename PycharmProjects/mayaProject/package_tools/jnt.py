@@ -24,7 +24,7 @@ def insert(start_jnt, num=1):
         part_pn = pm.PyNode(pm.insertJoint())
         part_jnts.append(part_pn)
         # edit name and position
-        pm.joint(part_pn, e=True, co=True, r=True, p=(jnt_offset, 0, 0), n="{0}_part{1}".format(start_jnt, n),
+        pm.joint(part_pn, e=True, co=True, r=True, p=(jnt_offset, 0, 0), n="neck_0{0}".format(n + 1),
                  roo=_roo)
         n += 1
     return part_jnts
