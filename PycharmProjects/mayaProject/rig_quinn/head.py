@@ -10,7 +10,7 @@ import package_tools.rig as rig
 class Head:
     # neck_01 >> neck_02 >> neck_n >>>> head
     # joints must be freeze transformation
-    def __init__(self, *joints):
+    def __init__(self, *joints, mode="inbetwent"):
         self.jnts = joints
 
         self.neck_01 = self.jnts[0]
@@ -21,22 +21,29 @@ class Head:
         self.head_ctrl = cv.head("head_ctrl")
         self.head_offset = grp.offset("head_offset", pos=self.head, child=self.head_ctrl)
 
-    def dirve_neck(self):
+        self.head_system = pm.group(n="head_system", empty=True)
+        if(mode == "inbetwent"):
+            self.inbetwent_offset = "Inbetwent_neck_offset"
+            self.drive_neck()
+            pm.parent(self.inbetwent_offset, self.neck_offset)
+            pm.parent(self.neck_offset, self.head_offset, self.head_system)
+
+    def drive_neck(self):
         neck_base = grp.target(name="neck_base", pos=self.neck_ctrl)
         pm.parent(neck_base, self.neck_offset)
         neck_joints = list(self.jnts)
         neck_joints.pop()
         print(neck_joints)
         amount = 10 / len(neck_joints)
-        inbetwent_parent = pm.group(n='Inbetwent_{0}'.format(neck_joints[0]), empty=True)
-        rig.align(inbetwent_parent,neck_joints[0])
-
+        inbetwent_parent = pm.group(n=self.inbetwent_offset, empty=True)
+        rig.align(inbetwent_parent, neck_joints[0])
 
         def con_inbetwent(_inbetwent, n_value):
             pm.select(self.neck_ctrl)
             pm.addAttr(ln='w{0}'.format(n_value), min=0, max=10, dv=amount * (n_value + 1), k=True)
             orcon = pm.orientConstraint(self.neck_ctrl, neck_base, _inbetwent)
-            _inbetwent.rotate >> pm.PyNode(neck_joints[n_value]).rotate
+            # _inbetwent.rotate >> pm.PyNode(neck_joints[n_value]).rotate
+            pm.orientConstraint(_inbetwent, neck_joints[n_value])
 
             re_node = pm.createNode('reverse', n=_inbetwent + '_re')
             unit_node = pm.createNode('unitConversion', n=_inbetwent + '_unit')
@@ -49,21 +56,12 @@ class Head:
         n = 0
         while n < len(neck_joints):
             inbetwent = pm.group(n='inbetwent_{0}_part{1}'.format(neck_joints[0], n), empty=True)
-            rig.align(inbetwent,neck_joints[0])
+            rig.align(inbetwent, neck_joints[0])
 
             con_inbetwent(inbetwent, n)
             pm.parent(inbetwent, inbetwent_parent)
             inbetwent_parent = inbetwent
             n += 1
 
-
         pm.orientConstraint(self.head_ctrl, self.head)
         pm.pointConstraint(self.head, self.head_offset)
-
-
-def test():
-    Head("neck_01", "neck_02", "head").dirve_neck()
-
-
-if __name__ == '__main__':
-    pass

@@ -79,10 +79,10 @@ def scapula(name):
     return cv
 
 
-def pole(name):
+def pole(name, r=4):
     p = [(-1, 0, 0), (0, 0, -1), (1, 0, 0), (0, 0, 1), (-1, 0, 0), (0, 1, 0), (1, 0, 0), (0, -1, 0), (-1, 0, 0),
          (0, 0, -1), (0, 1, 0), (0, 0, 1), (0, -1, 0), (0, 0, -1)]
-    cv = pm.curve(d=1, p=p, k=range(14), n=name)
+    cv = pm.curve(d=1, p=[(i*r for i in x) for x in p], k=range(14), n=name)
     color = 13 if '_r_' in name else 6
     set_color(color, cv)
     return cv

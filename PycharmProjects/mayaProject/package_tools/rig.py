@@ -105,3 +105,28 @@ def twist_drive(driver, no_roll, driven, value):
 def normalaize(vector):
     norm = (vector[0] ** 2 + vector[1] ** 2 + vector[2] ** 2) ** 0.5
     return [vector[n] / norm for n in range(3)]
+
+
+# 使用 offset parent Matrix 做矩阵约束的优势:
+# 1 少使用一个节点(decomposeMatrix)
+# 2 能够移动，比如先约束，再对齐某个目标
+def parent_constraint(driver, driven):
+    driver_nd = pm.PyNode(driver)
+    driven_nd = pm.PyNode(driven)
+    pm.xform(driven, t=(0, 0, 0), ro=(0, 0, 0))
+    try:
+        driver_nd.jointOrient.set(0, 0, 0)
+        print("is Joint")
+    except:
+        print("is not joint")
+    try:
+        driven_parent = pm.listRelatives(driven_nd, parent=True)[0]
+        print("has a parent")
+        multMatrix_nd = pm.createNode("multMatrix", n="multMatrix_" + driven)
+        # driver worldMatrix * driven_parent worldInverseMatrix
+        driver_nd.worldMatrix[0] >> multMatrix_nd.matrixIn[0]
+        driven_parent.worldInverseMatrix[0] >> multMatrix_nd.matrixIn[1]
+        multMatrix_nd.matrixSum >> driven_nd.offsetParentMatrix
+    except:
+        driver_nd.worldMatrix[0] >> driven_nd.offsetParentMatrix
+        print("has no parent")

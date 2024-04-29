@@ -10,8 +10,16 @@ importlib.reload(grp)
 importlib.reload(jnt)
 importlib.reload(rig)
 
-import rig_quinn.quinn_clavicle
-import rig_quinn.quinn_limb
+import rig_quinn.head
+import rig_quinn.spine
+import rig_quinn.clavicle
+import rig_quinn.limb
+import rig_quinn.hand
+import rig_quinn.foot
 
-importlib.reload(rig_quinn.quinn_clavicle)
-importlib.reload(rig_quinn.quinn_limb)
+importlib.reload(rig_quinn.head)
+importlib.reload(rig_quinn.spine)
+importlib.reload(rig_quinn.clavicle)
+importlib.reload(rig_quinn.limb)
+importlib.reload(rig_quinn.hand)
+importlib.reload(rig_quinn.foot)

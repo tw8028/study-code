@@ -18,7 +18,8 @@ import package_tools.rig as rig
 # lowerarm_twist_01_l
 # hand_l
 class Limb:
-    def __init__(self, up, up_t1, up_t2, low, low_t2, low_t1, end):
+    def __init__(self, up, up_t1, up_t2, low, low_t2, low_t1, end, aim_vector):
+        self.grp_system = pm.group(n=up + "_system", empty=True)
         self.upper = up
         self.upper_t1 = up_t1
         self.upper_t2 = up_t2
@@ -26,26 +27,29 @@ class Limb:
         self.lower_t2 = low_t2
         self.lower_t1 = low_t1
         self.end = end
-        self.ikjnt01 = jnt.new(up, name=up + "_ik01")
-        self.ikjnt02 = jnt.new(low, name=up + "_ik02")
-        self.ikjnt03 = jnt.new(end, name=up + "_ik03")
+        self.ik_upper = jnt.new(up, name="IK_" + up)
+        self.ik_lower = jnt.new(low, name="IK_" + low)
+        self.ik_end = jnt.new(end, name="IK_" + end)
 
         self.upper_offset = None
         self.mid_ctrl = cv.square(up + "_mid_ctrl")
+        self.end_ctrl = None
+        self.handle_offset= None
 
-        self.upper_system = pm.group(n=up + "_system", empty=True)
+        self.aim_vector = aim_vector
+        self.create_all()
 
     def create_ik(self):
-        jnt0 = self.ikjnt01
-        jnt1 = self.ikjnt02
-        jnt2 = self.ikjnt03
+        jnt0 = self.ik_upper
+        jnt1 = self.ik_lower
+        jnt2 = self.ik_end
         self.upper_offset = pm.group(name=self.upper + "_ikjnt_offset", empty=True)
         rig.align(self.upper_offset, self.upper)
         rig.parent_chain(jnt2, jnt1, jnt0, self.upper_offset)
 
         handle = pm.ikHandle(n=jnt0 + '_handle', sj=jnt0, ee=jnt2)[0]
         handle.visibility.set(0)
-        pole_ctrl = cv.pole(jnt0 + '_poleCtrl')
+        pole_ctrl = cv.pole(jnt0 + '_poleCtrl', r=5)
         pole_offset = grp.offset(jnt0 + '_poleOffset', pos=jnt1, child=pole_ctrl)
 
         # get the pole_offset vector
@@ -58,7 +62,7 @@ class Limb:
 
         pm.xform(pole_offset, t=[vec1[n] + direction_pole_vector[n] * 40 for n in range(3)], ws=True)
 
-        handle_ctrl = cv.cube(handle + 'Ctrl')
+        handle_ctrl = cv.cube(handle + 'Ctrl', r=4)
         handle_offset = grp.offset(jnt0 + '_handleOffset', pos=jnt2, child=handle_ctrl)
         pm.parent(handle, handle_ctrl)
         pm.orientConstraint(handle_ctrl, jnt2)
@@ -66,6 +70,9 @@ class Limb:
         grp_ikctrl = pm.group(n='{0}_ikctrl_offset'.format(self.upper), empty=True)
         pm.parent(handle_offset, pole_offset, grp_ikctrl)
 
+        self.end_ctrl = handle_ctrl
+        self.handle_offset = handle_offset
+        pm.parent(self.upper_offset, grp_ikctrl, self.grp_system)
 
         def connect(ctrl, joint):
             point1 = pm.spaceLocator(n=ctrl + '_point_loc1')
@@ -85,20 +92,24 @@ class Limb:
         # create pole vector line
         pm.parent(connect(pole_ctrl, jnt1), grp_ikctrl)
 
+    # set middle controller and constraint joints
     def constraint(self):
         # set middle controller
         mid_offset = grp.offset(name=self.upper + "_mid_offset", pos=self.lower, child=self.mid_ctrl)
-        pm.orientConstraint(self.ikjnt01, self.ikjnt02, mid_offset)
-        pm.pointConstraint(self.ikjnt02, mid_offset)
+        pm.orientConstraint(self.ik_upper, self.ik_lower, mid_offset)
+        pm.pointConstraint(self.ik_lower, mid_offset)
+        pm.parent(mid_offset, self.grp_system)
 
         # constraint upper
-        pm.pointConstraint(self.ikjnt01, self.upper)
-        pm.aimConstraint(self.mid_ctrl, self.upper, worldUpType='objectrotation', worldUpObject=self.ikjnt01)
+        pm.pointConstraint(self.ik_upper, self.upper)
+        pm.aimConstraint(self.mid_ctrl, self.upper, aimVector=self.aim_vector, worldUpType='objectrotation',
+                         worldUpObject=self.ik_upper)
         # constraint lower
         pm.pointConstraint(self.mid_ctrl, self.lower)
-        pm.aimConstraint(self.ikjnt03, self.lower, worldUpType='objectrotation', worldUpObject=self.ikjnt02)
+        pm.aimConstraint(self.ik_end, self.lower, aimVector=self.aim_vector, worldUpType='objectrotation',
+                         worldUpObject=self.ik_lower)
         # constraint end
-        pm.parentConstraint(self.ikjnt03, self.end)
+        pm.parentConstraint(self.ik_end, self.end)
 
     def upper_twist(self):
         no_roll = pm.group(name=self.upper_offset + "_noroll", empty=True)
@@ -106,20 +117,26 @@ class Limb:
         pm.parent(no_roll, self.upper_offset)
         pm.xform(no_roll, t=(0, 0, 0), ro=(0, 0, 0))
         # 反向驱动
-        rig.twist_drive(self.ikjnt01, no_roll, self.upper_t1, -1 / 2)
+        rig.twist_drive(self.ik_upper, no_roll, self.upper_t1, -1 / 2)
 
     def lower_twist(self):
-        driver = grp.target(name=self.ikjnt03 + "_driver", pos=self.lower)
+        driver = grp.target(name=self.ik_end + "_driver", pos=self.lower)
         # 将 driver p给手腕，被手腕控制旋转
-        pm.parent(driver, self.ikjnt03)
+        pm.parent(driver, self.ik_end)
         pm.xform(driver, t=(0, 0, 0), ro=(0, 0, 0))
         # 将 driver 旋转对齐到手肘，使其与 driven 方向保持一致
         pm.delete(pm.orientConstraint(self.lower, driver))
         # 根据 lower,lower_twist_02,lower_twist_01 骨骼蒙皮分配 twist 幅度，一般靠近手肘的骨骼不分配 twist
-        rig.twist_drive(driver, self.ikjnt02, self.lower_t2, 1 / 3)
-        rig.twist_drive(driver, self.ikjnt02, self.lower_t1, 2 / 3)
+        rig.twist_drive(driver, self.ik_lower, self.lower_t2, 1 / 3)
+        rig.twist_drive(driver, self.ik_lower, self.lower_t1, 2 / 3)
 
     def stretch(self):
+        # 首先拉伸ik骨骼，ik骨骼的拉伸 将带动 mid_ctrl 的位置，利用其位置计算 蒙皮骨骼的拉伸
+        rig.stretch_ikjnt(self.upper_offset, self.end_ctrl, self.ik_upper, self.ik_lower, self.ik_end)
+        rig.stretch_jnt(self.upper_offset, self.mid_ctrl, self.upper, self.upper_t1, self.upper_t2)
+        rig.stretch_jnt(self.mid_ctrl, self.end_ctrl, self.lower, self.lower_t2, self.lower_t1)
+
+    def no_flip_ik(self):
         pass
 
     def create_all(self):
@@ -127,3 +144,5 @@ class Limb:
         self.constraint()
         self.lower_twist()
         self.upper_twist()
+        self.stretch()
+        self.no_flip_ik()
