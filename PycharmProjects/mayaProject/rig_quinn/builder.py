@@ -13,7 +13,7 @@ def create():
     yield
 
     spine.create_ctrl()
-    Clavicle("clavicle_l", "clavicle_r", spine.end_ctrl)
+    clavicle_l = Clavicle("clavicle_l", "clavicle_r", spine.end_ctrl)
 
     arm_l = Limb("upperarm_l",
                  "upperarm_twist_01_l",
@@ -23,6 +23,7 @@ def create():
                  "lowerarm_twist_01_l",
                  "hand_l")
     arm_l.create_all()
+    pm.parentConstraint(clavicle_l.clavicle_l_ctrl, arm_l.upper_offset, mo=True)
     yield
 
 

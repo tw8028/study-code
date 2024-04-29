@@ -33,6 +33,8 @@ class Limb:
         self.upper_offset = None
         self.mid_ctrl = cv.square(up + "_mid_ctrl")
 
+        self.upper_system = pm.group(n=up + "_system", empty=True)
+
     def create_ik(self):
         jnt0 = self.ikjnt01
         jnt1 = self.ikjnt02
@@ -61,8 +63,9 @@ class Limb:
         pm.parent(handle, handle_ctrl)
         pm.orientConstraint(handle_ctrl, jnt2)
         pm.poleVectorConstraint(pole_ctrl, handle)
-        grp_system = pm.group(n='{0}_ikctrl_offset'.format(self.upper), empty=True)
-        pm.parent(handle_offset, pole_offset, grp_system)
+        grp_ikctrl = pm.group(n='{0}_ikctrl_offset'.format(self.upper), empty=True)
+        pm.parent(handle_offset, pole_offset, grp_ikctrl)
+
 
         def connect(ctrl, joint):
             point1 = pm.spaceLocator(n=ctrl + '_point_loc1')
@@ -80,7 +83,7 @@ class Limb:
             return grp_line
 
         # create pole vector line
-        pm.parent(connect(pole_ctrl, jnt1), grp_system)
+        pm.parent(connect(pole_ctrl, jnt1), grp_ikctrl)
 
     def constraint(self):
         # set middle controller
@@ -98,16 +101,23 @@ class Limb:
         pm.parentConstraint(self.ikjnt03, self.end)
 
     def upper_twist(self):
-        pass
+        no_roll = pm.group(name=self.upper_offset + "_noroll", empty=True)
+        # no_roll p给upper_offset，不随upper骨骼旋转
+        pm.parent(no_roll, self.upper_offset)
+        pm.xform(no_roll, t=(0, 0, 0), ro=(0, 0, 0))
+        # 反向驱动
+        rig.twist_drive(self.ikjnt01, no_roll, self.upper_t1, -1 / 2)
 
     def lower_twist(self):
-        driver = grp.target(name=self.ikjnt03 + "_base", pos=self.lower)
+        driver = grp.target(name=self.ikjnt03 + "_driver", pos=self.lower)
+        # 将 driver p给手腕，被手腕控制旋转
         pm.parent(driver, self.ikjnt03)
         pm.xform(driver, t=(0, 0, 0), ro=(0, 0, 0))
+        # 将 driver 旋转对齐到手肘，使其与 driven 方向保持一致
         pm.delete(pm.orientConstraint(self.lower, driver))
-
-        rig.twist_drive(driver, self.ikjnt02, self.lower_t2, 1 / 4)
-        rig.twist_drive(driver, self.ikjnt02, self.lower_t1, 1 / 2)
+        # 根据 lower,lower_twist_02,lower_twist_01 骨骼蒙皮分配 twist 幅度，一般靠近手肘的骨骼不分配 twist
+        rig.twist_drive(driver, self.ikjnt02, self.lower_t2, 1 / 3)
+        rig.twist_drive(driver, self.ikjnt02, self.lower_t1, 2 / 3)
 
     def stretch(self):
         pass
@@ -116,3 +126,4 @@ class Limb:
         self.create_ik()
         self.constraint()
         self.lower_twist()
+        self.upper_twist()
