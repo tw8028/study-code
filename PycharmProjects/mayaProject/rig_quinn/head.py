@@ -33,7 +33,6 @@ class Head:
         pm.parent(neck_base, self.neck_offset)
         neck_joints = list(self.jnts)
         neck_joints.pop()
-        print(neck_joints)
         amount = 10 / len(neck_joints)
         inbetwent_parent = pm.group(n=self.inbetwent_offset, empty=True)
         rig.align(inbetwent_parent, neck_joints[0])

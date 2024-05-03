@@ -85,6 +85,7 @@ def change_shape(*args):
     r = pm.floatField('radius1', q=True, value=True)
     for obj in objs:
         sel_shape = obj.getShape()
+        # create a new curve
         target_curve = get_cv(shape, r, name=obj)
         target_shape = target_curve.getShape()
         target_shape.overrideEnabled.set(1)
@@ -118,12 +119,21 @@ def mirror(*args):
 
     def mirror_ctrl_curve(target):
         target_name = target.name()
-        obj_name = target_name.replace('_R', '_L') if '_R' in target_name else target_name.replace('_L', '_R')
-        obj = pm.PyNode(obj_name)
+        try:
+            target_name = target_name.replace('_r', '_l') if '_r' in target_name else target_name.replace('_l', '_r')
+            print(f'{target_name}')
+        except:
+            pass
+        try:
+            target_name = target_name.replace('_R', '_L') if '_R' in target_name else target_name.replace('_L', '_R')
+            print(f'{target_name}')
+        except:
+            pass
+        obj = pm.PyNode(target_name)
         old_shapes = pm.listRelatives(obj, s=True)
         color = old_shapes[0].overrideColor.get()
         pm.delete(old_shapes)
-        copy = pm.duplicate(target, name=obj_name)
+        copy = pm.duplicate(target, name=obj)
         copy_shapes = pm.listRelatives(copy, s=True)
         for i in copy_shapes:
             mirror_points(i)

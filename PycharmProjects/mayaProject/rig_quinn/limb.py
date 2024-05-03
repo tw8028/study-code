@@ -34,7 +34,7 @@ class Limb:
         self.upper_offset = None
         self.mid_ctrl = cv.square(up + "_mid_ctrl")
         self.end_ctrl = None
-        self.handle_offset= None
+        self.handle_offset = None
 
         self.aim_vector = aim_vector
         self.create_all()
@@ -109,10 +109,11 @@ class Limb:
         pm.aimConstraint(self.ik_end, self.lower, aimVector=self.aim_vector, worldUpType='objectrotation',
                          worldUpObject=self.ik_lower)
         # constraint end
-        pm.parentConstraint(self.ik_end, self.end)
+        pm.pointConstraint(self.ik_end, self.end)
+        pm.orientConstraint(self.ik_end, self.end)
 
     def upper_twist(self):
-        no_roll = pm.group(name=self.upper_offset + "_noroll", empty=True)
+        no_roll = pm.group(name=self.upper + "_twistNoroll", empty=True)
         # no_roll p给upper_offset，不随upper骨骼旋转
         pm.parent(no_roll, self.upper_offset)
         pm.xform(no_roll, t=(0, 0, 0), ro=(0, 0, 0))
@@ -120,9 +121,9 @@ class Limb:
         rig.twist_drive(self.ik_upper, no_roll, self.upper_t1, -1 / 2)
 
     def lower_twist(self):
-        driver = grp.target(name=self.ik_end + "_driver", pos=self.lower)
+        driver = grp.target(name=self.ik_end + "_twistDriver", pos=self.lower)
         # 将 driver p给手腕，被手腕控制旋转
-        pm.parent(driver, self.ik_end)
+        pm.parent(driver, self.end_ctrl)
         pm.xform(driver, t=(0, 0, 0), ro=(0, 0, 0))
         # 将 driver 旋转对齐到手肘，使其与 driven 方向保持一致
         pm.delete(pm.orientConstraint(self.lower, driver))

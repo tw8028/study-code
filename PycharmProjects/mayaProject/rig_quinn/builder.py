@@ -1,8 +1,9 @@
 #!/usr/bin/python
 # -*- coding:utf-8 -*-
 import pymel.core as pm
+import importlib
 import package_tools.grp as grp
-
+import rig_quinn
 from rig_quinn.head import Head
 from rig_quinn.spine import Spine
 from rig_quinn.clavicle import Clavicle
@@ -11,17 +12,28 @@ from rig_quinn.hand import Hand
 from rig_quinn.foot import Foot
 
 
+def relord():
+    importlib.reload(rig_quinn.head)
+    importlib.reload(rig_quinn.spine)
+    importlib.reload(rig_quinn.clavicle)
+    importlib.reload(rig_quinn.limb)
+    importlib.reload(rig_quinn.hand)
+    importlib.reload(rig_quinn.foot)
+
+
 # drive by using offset parent matrix
 # 只适用driven父级在原点，否则，使用 package_tools.rig.parent_constraint
 def connect(driver, driven):
     # create output group on driver
     output = grp.target(name="output_to_" + driven, pos=driven)
     pm.parent(output, driver)
+
     output.worldMatrix[0] >> pm.PyNode(driven).offsetParentMatrix
     pm.xform(driven, t=(0, 0, 0), ro=(0, 0, 0))
 
 
 def create():
+    print("a")
     spine = Spine("spine_05", "spine_04", "spine_03", "spine_02", "spine_01", "pelvis")
     spine.create_ikjnts()
     spine.create_cv()
@@ -91,18 +103,15 @@ def create():
     yield
 
 
-global builder
+func = create()
 
 
 def step1(*args):
-    global builder
-    builder = create()
-    next(builder)
+    next(func)
 
 
 def step2(*args):
-    global builder
-    next(builder)
+    next(func)
 
 
 def main():
@@ -120,4 +129,5 @@ def main():
 
 
 if __name__ == '__main__':
+    relord()
     main()

@@ -78,7 +78,7 @@ def click0(*args):
 def click1(*args):
     name = mc.textFieldButtonGrp('body', q=True, tx=True)
     file_fbx = path + '/' + name + '.fbx'
-    # set foot_fype
+    # set foot_type
     mc.setAttr("Main.Foot_type", 0)
     # bake joints
     for i in body_jnts:
