@@ -7,9 +7,7 @@ import package_tools.jnt as jnt
 import package_tools.rig as rig
 
 
-# mode one: ik + stretch + mid
-# mode two: ik + fk + switch
-
+# mode: ik + mid + stretch + twist
 # upperarm_l
 # upperarm_twist_01_l
 # upperarm_twist_02_l
@@ -35,27 +33,30 @@ class Limb:
         self.mid_ctrl = cv.square(up + "_mid_ctrl")
         self.end_ctrl = None
         self.handle_offset = None
+        self.pole_offset = None
+        self.end_base = None
 
         self.aim_vector = aim_vector
         self.create_all()
 
     def create_ik(self):
-        jnt0 = self.ik_upper
-        jnt1 = self.ik_lower
-        jnt2 = self.ik_end
+        upper = self.ik_upper
+        lower = self.ik_lower
+        end = self.ik_end
         self.upper_offset = pm.group(name=self.upper + "_ikjnt_offset", empty=True)
         rig.align(self.upper_offset, self.upper)
-        rig.parent_chain(jnt2, jnt1, jnt0, self.upper_offset)
+        rig.parent_chain(end, lower, upper, self.upper_offset)
 
-        handle = pm.ikHandle(n=jnt0 + '_handle', sj=jnt0, ee=jnt2)[0]
+        handle = pm.ikHandle(n=upper + '_handle', sj=upper, ee=end)[0]
         handle.visibility.set(0)
-        pole_ctrl = cv.pole(jnt0 + '_poleCtrl', r=5)
-        pole_offset = grp.offset(jnt0 + '_poleOffset', pos=jnt1, child=pole_ctrl)
+        pole_ctrl = cv.pole(upper + '_poleCtrl', r=5)
+        pole_offset = grp.offset(upper + '_poleOffset', pos=lower, child=pole_ctrl)
+        self.pole_offset = pole_offset
 
         # get the pole_offset vector
-        vec0 = pm.xform(jnt0, q=True, t=True, ws=True)
-        vec1 = pm.xform(jnt1, q=True, t=True, ws=True)
-        vec2 = pm.xform(jnt2, q=True, t=True, ws=True)
+        vec0 = pm.xform(upper, q=True, t=True, ws=True)
+        vec1 = pm.xform(lower, q=True, t=True, ws=True)
+        vec2 = pm.xform(end, q=True, t=True, ws=True)
         vec_up = rig.normalaize([vec1[n] - vec0[n] for n in range(3)])
         vec_down = rig.normalaize([vec1[n] - vec2[n] for n in range(3)])
         direction_pole_vector = rig.normalaize([vec_up[n] + vec_down[n] for n in range(3)])
@@ -63,18 +64,18 @@ class Limb:
         pm.xform(pole_offset, t=[vec1[n] + direction_pole_vector[n] * 40 for n in range(3)], ws=True)
 
         handle_ctrl = cv.cube(handle + 'Ctrl', r=4)
-        handle_offset = grp.offset(jnt0 + '_handleOffset', pos=jnt2, child=handle_ctrl)
+        handle_offset = grp.offset(upper + '_handleOffset', pos=end, child=handle_ctrl)
         pm.parent(handle, handle_ctrl)
-        pm.orientConstraint(handle_ctrl, jnt2)
+        pm.orientConstraint(handle_ctrl, end)
         pm.poleVectorConstraint(pole_ctrl, handle)
-        grp_ikctrl = pm.group(n='{0}_ikctrl_offset'.format(self.upper), empty=True)
+        grp_ikctrl = pm.group(n='{0}_ikctrl_grp'.format(self.upper), empty=True)
         pm.parent(handle_offset, pole_offset, grp_ikctrl)
 
         self.end_ctrl = handle_ctrl
         self.handle_offset = handle_offset
         pm.parent(self.upper_offset, grp_ikctrl, self.grp_system)
 
-        def connect(ctrl, joint):
+        def create_line(ctrl, joint):
             point1 = pm.spaceLocator(n=ctrl + '_point_loc1')
             pm.parentConstraint(ctrl, point1)
             point2 = pm.spaceLocator(n=ctrl + '_point_loc2')
@@ -86,11 +87,12 @@ class Limb:
             point1.getShape().worldPosition[0] >> line_shape.controlPoints[0]
             point2.getShape().worldPosition[0] >> line_shape.controlPoints[1]
             grp_line = pm.group(empty=True, name=ctrl + '_line_offset')
+            grp_line.inheritsTransform.set(0)
             pm.parent(point1, point2, line, grp_line)
             return grp_line
 
         # create pole vector line
-        pm.parent(connect(pole_ctrl, jnt1), grp_ikctrl)
+        pm.parent(create_line(pole_ctrl, lower), grp_ikctrl)
 
     # set middle controller and constraint joints
     def constraint(self):
@@ -121,7 +123,8 @@ class Limb:
         rig.twist_drive(self.ik_upper, no_roll, self.upper_t1, -1 / 2)
 
     def lower_twist(self):
-        driver = grp.target(name=self.ik_end + "_twistDriver", pos=self.lower)
+        driver = grp.target(name=self.ik_end + "_base", pos=self.lower)
+        self.end_base = driver
         # 将 driver p给手腕，被手腕控制旋转
         pm.parent(driver, self.end_ctrl)
         pm.xform(driver, t=(0, 0, 0), ro=(0, 0, 0))
@@ -138,7 +141,48 @@ class Limb:
         rig.stretch_jnt(self.mid_ctrl, self.end_ctrl, self.lower, self.lower_t2, self.lower_t1)
 
     def no_flip_ik(self):
-        pass
+        top_grp = grp.target(name=self.upper + '_topNoFlip_grp', pos=self.upper)
+        bot_grp = grp.target(name=self.upper + '_botNoFlip_grp', pos=self.end_base)
+        # on top
+        top = jnt.new(self.upper, name=self.upper + '_topNoFlip')
+        top_end = jnt.new(self.end_base, name=self.upper + '_topNoFlipEnd')
+        pm.parent(top_end, top)
+        pm.parent(top, top_grp)
+
+        top_handle = pm.ikHandle(n=self.upper + '_topHandle', sj=top, ee=top_end)[0]
+        pm.parent(top_handle, bot_grp)
+        top_pv = pm.spaceLocator(n=self.upper + '_topNoFlip_pv')
+        pm.parent(top_pv, top_grp)
+        pm.xform(top_pv, t=(0, 0, 6), ro=(0, 0, 0))
+        pm.poleVectorConstraint(top_pv, top_handle)
+
+        # on bottom
+        bot = jnt.new(self.end_base, name=self.upper + '_botNoFlip')
+        bot_end = jnt.new(self.upper, name=self.upper + '_botNoFlipEnd')
+        pm.parent(bot_end, bot)
+        pm.parent(bot, bot_grp)
+
+        bot_handle = pm.ikHandle(n=self.upper + '_botHandle', sj=bot, ee=bot_end)[0]
+        pm.parent(bot_handle, top_grp)
+        bot_pv = pm.spaceLocator(n=self.upper + '_botNoFlip_pv')
+        pm.parent(bot_pv, bot_grp)
+        pm.xform(bot_pv, t=(0, 0, 6), ro=(0, 0, 0))
+        pm.poleVectorConstraint(bot_pv, bot_handle)
+
+        # # top locator and bot locator 分别被 top and end_ctrl 控制
+        top_loc = pm.spaceLocator(n=self.upper + '_toploc')
+        rig.align(top_loc, self.pole_offset)
+        pm.parent(top_loc, top)
+
+        bot_loc = pm.spaceLocator(n=self.upper + '_botloc')
+        rig.align(bot_loc, self.pole_offset)
+        pm.parent(bot_loc, bot)
+
+        # pole_offset 同时被 top_lor and bot_loc 约束
+        pm.parentConstraint(top_loc, bot_loc, self.pole_offset)
+
+        pm.parent(bot_grp, self.end_base)
+        pm.parent(top_grp, self.upper_offset)
 
     def create_all(self):
         self.create_ik()

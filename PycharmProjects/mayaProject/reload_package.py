@@ -11,7 +11,7 @@ import rig_quinn.clavicle
 import rig_quinn.limb
 import rig_quinn.hand
 import rig_quinn.foot
-
+import rig_quinn.switch_limb
 
 def main():
     importlib.reload(package_tools.cv)
@@ -25,7 +25,7 @@ def main():
     importlib.reload(rig_quinn.limb)
     importlib.reload(rig_quinn.hand)
     importlib.reload(rig_quinn.foot)
-
+    importlib.reload(rig_quinn.switch_limb)
 
 if __name__ == '__main__':
     main()

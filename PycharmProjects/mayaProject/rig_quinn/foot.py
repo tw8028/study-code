@@ -4,15 +4,18 @@ import pymel.core as pm
 import package_tools.grp as grp
 import package_tools.cv as cv
 import package_tools.rig as rig
+import package_tools.jnt as jnt
 
 
 class Foot:
 
-    def __init__(self, foot, ball, ball_end, foot_end):
+    def __init__(self, foot, ball):
         self.foot = foot
         self.ball = ball
-        self.foot_end = foot_end
-        self.ball_end = ball_end
+        self.foot_end = jnt.new(foot, name=foot + '_end')
+        pm.xform(self.foot_end, t=(-8, 5, 0) if '_l' in self.foot else (8, -5, 0))
+        self.ball_end = jnt.new(ball, name=ball + '_end')
+        pm.xform(self.ball_end, t=(7, 0, 0) if '_l' in self.foot else (-7, 0, 0))
 
         self.foot_trp = pm.group(empty=True, n=self.foot + '_grp')
         self.foot_ctrl = None
@@ -49,3 +52,4 @@ class Foot:
 
         for i in [mid_ctrl, front_ctrl, ankle_ctrl, toes_ctrl]:
             i.translate.set(lock=True)
+        pm.delete(self.foot_end, self.ball_end)

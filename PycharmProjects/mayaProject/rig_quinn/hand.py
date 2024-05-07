@@ -11,6 +11,7 @@ class Hand:
         self.hand = hand
         self.roots = fingers_roots
         self.hand_offset = grp.target(name=hand + "_offset", pos=hand)
+        self.hand_offset.inheritsTransform.set(0)
 
     def create_fingers(self):
         # 开始父物体可以为空

@@ -13,6 +13,7 @@ class Spine:
         self.jnts = joints
         self.grp_system = pm.group(empty=True, name="spine_system")
         self.grp_cv = pm.group(empty=True, name="spine_cv_grp")
+        self.grp_cv.inheritsTransform.set(0)
 
         self.grp_IKjnt = None
         self.IKjnts = None

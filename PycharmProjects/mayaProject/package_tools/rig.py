@@ -115,13 +115,13 @@ def parent_constraint(driver, driven):
     driven_nd = pm.PyNode(driven)
     pm.xform(driven, t=(0, 0, 0), ro=(0, 0, 0))
     try:
-        driver_nd.jointOrient.set(0, 0, 0)
-        print("is Joint")
+        driven_nd.jointOrient.set(0, 0, 0)
+        print("driven is Joint")
     except:
-        print("is not joint")
+        print("driven is not joint")
     try:
         driven_parent = pm.listRelatives(driven_nd, parent=True)[0]
-        print("has a parent")
+        print("driven has a parent")
         multMatrix_nd = pm.createNode("multMatrix", n="multMatrix_" + driven)
         # driver worldMatrix * driven_parent worldInverseMatrix
         driver_nd.worldMatrix[0] >> multMatrix_nd.matrixIn[0]
@@ -129,4 +129,21 @@ def parent_constraint(driver, driven):
         multMatrix_nd.matrixSum >> driven_nd.offsetParentMatrix
     except:
         driver_nd.worldMatrix[0] >> driven_nd.offsetParentMatrix
-        print("has no parent")
+        print("driven has no parent")
+
+
+def create_line(ctrl, joint):
+    point1 = pm.spaceLocator(n=ctrl + '_point_loc1')
+    pm.parentConstraint(ctrl, point1)
+    point2 = pm.spaceLocator(n=ctrl + '_point_loc2')
+    pm.parentConstraint(joint, point2)
+    line = pm.curve(d=1, p=[(0, 0, 0), (1, 0, 0)], k=[0, 1], name=ctrl + '_line')
+    line_shape = line.getShape()
+    line_shape.overrideEnabled.set(1)
+    line_shape.overrideDisplayType.set(1)
+    point1.getShape().worldPosition[0] >> line_shape.controlPoints[0]
+    point2.getShape().worldPosition[0] >> line_shape.controlPoints[1]
+    grp_line = pm.group(empty=True, name=ctrl + '_line_offset')
+    grp_line.inheritsTransform.set(0)
+    pm.parent(point1, point2, line, grp_line)
+    return grp_line

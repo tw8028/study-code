@@ -85,6 +85,7 @@ def change_shape(*args):
     r = pm.floatField('radius1', q=True, value=True)
     for obj in objs:
         sel_shape = obj.getShape()
+        name = sel_shape.name()
         # create a new curve
         target_curve = get_cv(shape, r, name=obj)
         target_shape = target_curve.getShape()
@@ -92,6 +93,7 @@ def change_shape(*args):
         target_shape.overrideColor.set(sel_shape.overrideColor.get())
         pm.parent(target_shape, obj, add=True, s=True)
         pm.delete(sel_shape, target_curve)
+        pm.rename(target_shape, name)
 
 
 def set_color(*args):
