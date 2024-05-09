@@ -1,4 +1,5 @@
 import pymel.core as pm
+import package_tools.grp as grp
 
 
 # Align to target
@@ -110,26 +111,78 @@ def normalaize(vector):
 # 使用 offset parent Matrix 做矩阵约束的优势:
 # 1 少使用一个节点(decomposeMatrix)
 # 2 能够移动，比如先约束，再对齐某个目标
-def parent_constraint(driver, driven):
-    driver_nd = pm.PyNode(driver)
-    driven_nd = pm.PyNode(driven)
-    pm.xform(driven, t=(0, 0, 0), ro=(0, 0, 0))
+def joint_connect(driver, driven):
+    output = grp.target(name="output_" + driven, pos=driven)
+    pm.xform(output, ro=pm.xform(driver, q=1, ro=1, ws=1))
+    pm.parent(output, driver)
+    input_point = grp.target(name='input_' + driver, pos=output)
+    pm.parent(driven, input_point)
+
+    mult_nd = pm.createNode("multMatrix", n="multMatrix_" + driven)
+    decompose_nd = pm.createNode('decomposeMatrix', n='decomposeMatrix_' + driven)
+    output.worldMatrix[0] >> mult_nd.matrixIn[0]
+    input_point.parentInverseMatrix[0] >> mult_nd.matrixIn[1]
+    mult_nd.matrixSum >> decompose_nd.inputMatrix
+
+    decompose_nd.outputTranslate >> input_point.translate
+    decompose_nd.outputRotate >> input_point.rotate
+    return input_point
+
+
+def constraint(driver, driven, *, t=False, ro=False, s=False, mo=True):
+    if mo:
+        output = grp.target(name="output_to_" + driven, pos=driven)
+        pm.parent(output, driver)
+    else:
+        output = pm.PyNode(driver)
+    driven_node = pm.PyNode(driven)
+
+    mult_nd = pm.createNode("multMatrix", n="multMatrix_" + driven)
+    decompose_nd = pm.createNode('decomposeMatrix', n='decomposeMatrix_' + driven)
+    output.worldMatrix[0] >> mult_nd.matrixIn[0]
+    driven_node.parentInverseMatrix[0] >> mult_nd.matrixIn[1]
+    mult_nd.matrixSum >> decompose_nd.inputMatrix
+    if t:
+        decompose_nd.outputTranslate >> driven_node.translate
+    if ro:
+        decompose_nd.outputRotate >> driven_node.rotate
+    if s:
+        decompose_nd.outputScale >> driven_node.scale
+    # noinspection PyBroadException
     try:
-        driven_nd.jointOrient.set(0, 0, 0)
+        driven_node.jointOrient.set(0, 0, 0)
         print("driven is Joint")
     except:
-        print("driven is not joint")
+        pass
+
+
+# offset parent matrix, 自身可以移动，比如对齐某个物体，因此没有必要设置output
+def constraint_opm(driver, driven, *, mo=False):
+    driver_node = pm.PyNode(driver)
+    driven_node = pm.PyNode(driven)
+    # 获取 driven transform
+    _t = pm.xform(driven, q=1, t=1, ws=1)
+    _ro = pm.xform(driven, q=1, ro=1, ws=1)
+    # noinspection PyBroadException
     try:
-        driven_parent = pm.listRelatives(driven_nd, parent=True)[0]
-        print("driven has a parent")
-        multMatrix_nd = pm.createNode("multMatrix", n="multMatrix_" + driven)
+        driven_parent = pm.listRelatives(driven_node, parent=True)[0]
+        print("has parent")
+        mult_matrix_nd = pm.createNode("multMatrix", n="multMatrix_" + driven)
         # driver worldMatrix * driven_parent worldInverseMatrix
-        driver_nd.worldMatrix[0] >> multMatrix_nd.matrixIn[0]
-        driven_parent.worldInverseMatrix[0] >> multMatrix_nd.matrixIn[1]
-        multMatrix_nd.matrixSum >> driven_nd.offsetParentMatrix
+        driver_node.worldMatrix[0] >> mult_matrix_nd.matrixIn[0]
+        driven_parent.worldInverseMatrix[0] >> mult_matrix_nd.matrixIn[1]
+        mult_matrix_nd.matrixSum >> driven_node.offsetParentMatrix
     except:
-        driver_nd.worldMatrix[0] >> driven_nd.offsetParentMatrix
-        print("driven has no parent")
+        driver_node.worldMatrix[0] >> driven_node.offsetParentMatrix
+    # noinspection PyBroadException
+    try:
+        pm.xform(driven, t=(0, 0, 0), ro=(0, 0, 0))
+        driven_node.jointOrient.set(0, 0, 0)
+    except:
+        pass
+    # 设置原来transform，保持偏移
+    if mo:
+        pm.xform(driven, t=_t, ro=_ro, ws=1)
 
 
 def create_line(ctrl, joint):
@@ -147,3 +200,12 @@ def create_line(ctrl, joint):
     grp_line.inheritsTransform.set(0)
     pm.parent(point1, point2, line, grp_line)
     return grp_line
+
+
+def main():
+    sel = pm.selected()
+    constraint_opm(sel[0], sel[1], mo=True)
+
+
+if __name__ == '__main__':
+    main()

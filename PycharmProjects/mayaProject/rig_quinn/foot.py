@@ -20,6 +20,8 @@ class Foot:
         self.foot_trp = pm.group(empty=True, n=self.foot + '_grp')
         self.foot_ctrl = None
 
+        self.create()
+
     def create(self):
         # back
         back_ctrl = cv.heel(self.foot + '_backCtrl')

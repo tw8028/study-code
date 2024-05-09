@@ -32,7 +32,7 @@ class Spine:
         # IK_pelvis parent to grp_IKjnt
         pm.parent(self.IKjnts[-1], self.grp_IKjnt)
         # constraint joints to IK-joints
-        list(map(lambda x, y: pm.parentConstraint(x, y), self.IKjnts, self.jnts))
+        list(map(lambda x, y: rig.constraint_opm(x, y), self.IKjnts, self.jnts))
 
     def create_cv(self):
         # create spineIK on cv_point(spine_05 to spine_01)
