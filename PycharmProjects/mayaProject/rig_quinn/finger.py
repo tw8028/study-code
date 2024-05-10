@@ -11,8 +11,9 @@ class Finger:
     def __init__(self, hand, *fingers_roots):
         self.hand = hand
         self.roots = fingers_roots
-        self.fingers_system = pm.group(n=hand + '_fingers_system', empty=True)
-        self.fingers_offset = pm.group(n=hand + "_fingers_offset", empty=True)
+        name = hand.replace('hand', 'fingers')
+        self.fingers_system = pm.group(n=name + '_system', empty=True)
+        self.fingers_offset = pm.group(n=name + "_offset", empty=True)
 
         pm.parent(self.fingers_offset, self.fingers_system)
         # 直接用hand骨骼约束finger_offset
@@ -20,7 +21,7 @@ class Finger:
         self.create_fingers()
 
     def create_fingers(self):
-        # 开始时，上一级控制器为空
+        # 开始时，last_ctrl 可以为空
         def create_finger(jnt, last_ctrl=None, group=None):
             # 在传入的骨骼上创建fk控制器
             ctrl = pm.circle(nr=(1, 0, 0), c=(0, 0, 0), r=2, n=jnt + '_ctrl', ch=False)[0]
@@ -44,5 +45,4 @@ class Finger:
             return group
 
         for root in self.roots:
-            finger_grp = create_finger(root)
-            pm.parent(finger_grp, self.fingers_offset)
+            create_finger(root, self.fingers_offset)

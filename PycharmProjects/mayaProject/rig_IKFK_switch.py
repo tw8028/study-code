@@ -96,9 +96,9 @@ def create_ik(jnt0):
     vec2 = pm.xform(jnt2, q=True, t=True, ws=True)
     vec_up = normalaize([vec1[n] - vec0[n] for n in range(3)])
     vec_down = normalaize([vec1[n] - vec2[n] for n in range(3)])
-    direction_poleVector = normalaize([vec_up[n] + vec_down[n] for n in range(3)])
+    direction_pole_vector = normalaize([vec_up[n] + vec_down[n] for n in range(3)])
 
-    pm.xform(pole_offset, t=[vec1[n] + direction_poleVector[n] * 40 for n in range(3)], ws=True)
+    pm.xform(pole_offset, t=[vec1[n] + direction_pole_vector[n] * 40 for n in range(3)], ws=True)
 
     handle_ctrl = cube_cv(handle + 'Ctrl')
     handle_offset = grp_offset(jnt0 + '_handleOffset', target=jnt2, child=handle_ctrl)
@@ -219,9 +219,9 @@ class Switch:
         vec2 = pm.xform('FK' + self.jnt2, q=True, t=True, ws=True)
         vec_up = normalaize([vec1[n] - vec0[n] for n in range(3)])
         vec_down = normalaize([vec1[n] - vec2[n] for n in range(3)])
-        dir_poleVector = normalaize([vec_up[n] + vec_down[n] for n in range(3)])
+        dir_pole_vector = normalaize([vec_up[n] + vec_down[n] for n in range(3)])
 
-        pm.xform(self.poleCtrl, t=[vec1[n] + dir_poleVector[n] * 40 for n in range(3)], ws=True)
+        pm.xform(self.poleCtrl, t=[vec1[n] + dir_pole_vector[n] * 40 for n in range(3)], ws=True)
         self.attr.set(1)
 
 

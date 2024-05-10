@@ -159,7 +159,11 @@ class SwitchLimb:
 
     def constraint(self):
         # add attr for ikfk switch
-        attr_obj = 'Main'
+        # noinspection PyBroadException
+        try:
+            attr_obj = pm.listRelatives(self.upper, parent=True)[0].name() + "_ctrl"
+        except:
+            attr_obj = 'Main'
         pm.select(attr_obj)
         pm.addAttr(ln=f'{self.upper}_IKFK', at='bool', dv=1, k=1)
         ikfk_attr = pm.PyNode(f'{attr_obj}.{self.upper}_IKFK')

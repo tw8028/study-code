@@ -1,8 +1,9 @@
 #!/usr/bin/python
 # -*- coding:utf-8 -*-
 import pymel.core as pm
-import package_tools.grp as grp
-import package_tools.rig as rig
+
+from package_tools import *
+
 import rig_quinn.config as config
 
 from rig_quinn.head import Head
@@ -19,9 +20,10 @@ def connect(driver, driven):
     # create output group on driver 并保持偏移
     output = grp.target(name="output_" + driven, pos=driven)
     pm.parent(output, driver)
+    # noinspection PyBroadException
     try:
         driven_parent = pm.listRelatives(driven, parent=True)[0]
-        mult_matrix_nd = pm.createNode("multMatrix", n="multMatrix_" + driven)
+        mult_matrix_nd = pm.createNode("multMatrix", n="multMatrix_" + driver)
         # driver worldMatrix * driven_parent worldInverseMatrix
         output.worldMatrix[0] >> mult_matrix_nd.matrixIn[0]
         driven_parent.worldInverseMatrix[0] >> mult_matrix_nd.matrixIn[1]
@@ -29,10 +31,18 @@ def connect(driver, driven):
     except:
         output.worldMatrix[0] >> pm.PyNode(driven).offsetParentMatrix
     pm.xform(driven, t=(0, 0, 0), ro=(0, 0, 0))
+    # noinspection PyBroadException
+    try:
+        pm.xform(driven, t=(0, 0, 0), ro=(0, 0, 0))
+        pm.PyNode(driven).jointOrient.set(0, 0, 0)
+    except:
+        pass
 
 
 def create():
-    connect('Main', 'root')
+    rig.constraint_opm('Main', 'root', mo=True)
+    foot_l = Foot('foot_l', 'ball_l')
+    foot_r = Foot('foot_r', 'ball_r')
 
     spine = Spine("spine_05", "spine_04", "spine_03", "spine_02", "spine_01", "pelvis")
     spine.create_ikjnts()
@@ -91,10 +101,10 @@ def create():
 
     hand_r = Finger('hand_r', 'thumb_01_r', 'index_01_r', 'middle_01_r', 'ring_01_r', 'pinky_01_r')
 
-    foot_l = Foot('foot_l', 'ball_l')
+    foot_l.create()
     connect(foot_l.foot_ctrl, leg_l.handle_offset)
 
-    foot_r = Foot('foot_r', 'ball_r')
+    foot_r.create()
     connect(foot_r.foot_ctrl, leg_r.handle_offset)
 
     yield
@@ -103,11 +113,7 @@ def create():
 func = create()
 
 
-def step1(*args):
-    next(func)
-
-
-def step2(*args):
+def nect_create(*args):
     next(func)
 
 
@@ -117,10 +123,9 @@ def main():
         pm.deleteUI(win)
     with pm.window(win, wh=(280, 100)):
         with pm.columnLayout():
-            pm.frameLayout('quinn rigging test')
+            pm.frameLayout('quinn rigging builder')
             with pm.columnLayout():
-                pm.button(label='step1', c=step1)
-                pm.button(label='step2', c=step2)
+                pm.button(label='step1', c=nect_create)
                 pm.button(label='read_shape', c=config.read)
                 pm.button(label='write_shape', c=config.write)
         pm.window(win, e=True, title='quinn builder', wh=(240, 120))

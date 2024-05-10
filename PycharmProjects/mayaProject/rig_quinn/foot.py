@@ -17,10 +17,8 @@ class Foot:
         self.ball_end = jnt.new(ball, name=ball + '_end')
         pm.xform(self.ball_end, t=(7, 0, 0) if '_l' in self.foot else (-7, 0, 0))
 
-        self.foot_trp = pm.group(empty=True, n=self.foot + '_grp')
+        self.foot_system = pm.group(empty=True, n=self.foot + '_system')
         self.foot_ctrl = None
-
-        self.create()
 
     def create(self):
         # back
@@ -47,10 +45,9 @@ class Foot:
         pm.parent(ankle_offset, toes_offset, front_ctrl)
         pm.parent(front_offset, mid_ctrl)
         pm.parent(mid_offset, back_ctrl)
-        pm.parent(back_offset, self.foot_trp)
+        pm.parent(back_offset, self.foot_system)
         # constraint deform
-        pm.pointConstraint(toes_ctrl, self.ball)
-        pm.orientConstraint(toes_ctrl, self.ball, mo=True)
+        rig.constraint_opm(toes_ctrl, self.ball, mo=True)
 
         for i in [mid_ctrl, front_ctrl, ankle_ctrl, toes_ctrl]:
             i.translate.set(lock=True)

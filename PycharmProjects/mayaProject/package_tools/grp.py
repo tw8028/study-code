@@ -10,6 +10,11 @@ def offset(name='offset', *, pos, child):
     _roo = pm.xform(pos, q=True, roo=True)
     pm.parent(child, grp)
     pm.xform(child, t=(0, 0, 0), ro=(0, 0, 0), roo=_roo)
+    # noinspection PyBroadException
+    try:
+        pm.PyNode(child).jointOrient.set(0, 0, 0)
+    except:
+        pass
     pm.parent(grp, pos)
     pm.xform(grp, t=(0, 0, 0), ro=(0, 0, 0), roo=_roo)
     pm.parent(grp, w=True)

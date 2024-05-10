@@ -42,7 +42,7 @@ class Head:
             pm.addAttr(ln='w{0}'.format(n_value), min=0, max=10, dv=amount * (n_value + 1), k=True)
             orcon = pm.orientConstraint(self.neck_ctrl, neck_base, _inbetwent)
             # _inbetwent.rotate >> pm.PyNode(neck_joints[n_value]).rotate
-            pm.orientConstraint(_inbetwent, neck_joints[n_value])
+            rig.constraint(_inbetwent, neck_joints[n_value], ro=True)
 
             re_node = pm.createNode('reverse', n=_inbetwent + '_re')
             unit_node = pm.createNode('unitConversion', n=_inbetwent + '_unit')
@@ -62,5 +62,5 @@ class Head:
             inbetwent_parent = inbetwent
             n += 1
 
-        pm.orientConstraint(self.head_ctrl, self.head)
         pm.pointConstraint(self.head, self.head_offset)
+        rig.constraint(self.head_ctrl, self.head, ro=True, mo=False)

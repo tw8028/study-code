@@ -16,6 +16,6 @@ class Clavicle:
         self.clavicle_l_offset = grp.offset(name=clavicle_l + "_offset", pos=clavicle_l, child=self.clavicle_l_ctrl)
         self.clavicle_r_ctrl = cv.cube(name=clavicle_r + "_ctrl", r=5)
         self.clavicle_r_offset = grp.offset(name=clavicle_r + "_offset", pos=clavicle_r, child=self.clavicle_r_ctrl)
-        pm.parentConstraint(self.clavicle_l_ctrl, clavicle_l)
-        pm.parentConstraint(self.clavicle_r_ctrl, clavicle_r)
+        rig.constraint_opm(self.clavicle_l_ctrl, clavicle_l)
+        rig.constraint_opm(self.clavicle_r_ctrl, clavicle_r)
         pm.parent(self.clavicle_l_offset, self.clavicle_r_offset, chest_end)

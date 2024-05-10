@@ -111,8 +111,7 @@ class Limb:
         pm.aimConstraint(self.ik_end, self.lower, aimVector=self.aim_vector, worldUpType='objectrotation',
                          worldUpObject=self.ik_lower)
         # constraint end
-        pm.pointConstraint(self.ik_end, self.end)
-        pm.orientConstraint(self.ik_end, self.end)
+        rig.constraint_opm(self.ik_end, self.end)
 
     def upper_twist(self):
         no_roll = pm.group(name=self.upper + "_twistNoroll", empty=True)

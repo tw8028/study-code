@@ -84,7 +84,7 @@ def stretch_jnt(point1, point2, *driven):
             pass
 
 
-# Twist drive
+# driver 与 driven 不能反，即不能两头控制。
 def twist_drive(driver, no_roll, driven, value):
     driver_pn = pm.PyNode(driver)
     no_roll_pn = pm.PyNode(no_roll)
@@ -94,8 +94,10 @@ def twist_drive(driver, no_roll, driven, value):
     multiply_divide = pm.createNode('multiplyDivide', name=driver_pn + '_md')
     multiply_divide.operation.set(1)
     multiply_divide.input2X.set(value)
+
     driver_pn.worldMatrix[0] >> mult_matrix.matrixIn[0]
     no_roll_pn.worldInverseMatrix[0] >> mult_matrix.matrixIn[1]
+
     mult_matrix.matrixSum >> decompose_matrix.inputMatrix
     decompose_matrix.outputQuatX >> quat2euler.inputQuatX
     decompose_matrix.outputQuatW >> quat2euler.inputQuatW
@@ -129,17 +131,21 @@ def joint_connect(driver, driven):
     return input_point
 
 
-def constraint(driver, driven, *, t=False, ro=False, s=False, mo=True):
+# 在driver上创建对齐到driven的output组，通过约束driven到output组，使driven保持偏移
+# 此函数不考虑 scale offset
+def constraint(driver, driven, *, t=False, ro=False, s=False, mo=False):
     if mo:
-        output = grp.target(name="output_to_" + driven, pos=driven)
-        pm.parent(output, driver)
+        # create output group 实现保持偏移
+        driver_node = grp.target(name="output_" + driven, pos=driven)
+        pm.parent(driver_node, driver)
     else:
-        output = pm.PyNode(driver)
+        driver_node = pm.PyNode(driver)
+
     driven_node = pm.PyNode(driven)
 
     mult_nd = pm.createNode("multMatrix", n="multMatrix_" + driven)
     decompose_nd = pm.createNode('decomposeMatrix', n='decomposeMatrix_' + driven)
-    output.worldMatrix[0] >> mult_nd.matrixIn[0]
+    driver_node.worldMatrix[0] >> mult_nd.matrixIn[0]
     driven_node.parentInverseMatrix[0] >> mult_nd.matrixIn[1]
     mult_nd.matrixSum >> decompose_nd.inputMatrix
     if t:
@@ -151,7 +157,6 @@ def constraint(driver, driven, *, t=False, ro=False, s=False, mo=True):
     # noinspection PyBroadException
     try:
         driven_node.jointOrient.set(0, 0, 0)
-        print("driven is Joint")
     except:
         pass
 
@@ -166,8 +171,7 @@ def constraint_opm(driver, driven, *, mo=False):
     # noinspection PyBroadException
     try:
         driven_parent = pm.listRelatives(driven_node, parent=True)[0]
-        print("has parent")
-        mult_matrix_nd = pm.createNode("multMatrix", n="multMatrix_" + driven)
+        mult_matrix_nd = pm.createNode("multMatrix", n="multMatrix_" + driver)
         # driver worldMatrix * driven_parent worldInverseMatrix
         driver_node.worldMatrix[0] >> mult_matrix_nd.matrixIn[0]
         driven_parent.worldInverseMatrix[0] >> mult_matrix_nd.matrixIn[1]
