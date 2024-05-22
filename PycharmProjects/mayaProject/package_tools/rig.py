@@ -5,12 +5,11 @@ import package_tools.grp as grp
 # Align to target
 def align(obj, target, *, t=True, ro=True):
     _roo = pm.xform(target, q=True, roo=True)
-    pm.parent(obj, target)
     if t:
-        pm.xform(obj, t=(0, 0, 0), roo=_roo)
+        pm.delete(pm.pointConstraint(target, obj))
     if ro:
-        pm.xform(obj, ro=(0, 0, 0), roo=_roo)
-    pm.parent(obj, w=True)
+        pm.delete(pm.orientConstraint(target, obj))
+    pm.xform(obj, roo=_roo)
 
 
 # parent chain
@@ -26,7 +25,7 @@ def parent_chain(*objs):
 
 
 # stretch IK joints
-def stretch_ikjnt(jnt0_offset, handle_offset, ik_jnt0, ik_jnt1, ik_jnt2):
+def stretch_ikjnt(attr_stretch, jnt0_offset, handle_offset, ik_jnt0, ik_jnt1, ik_jnt2):
     point1 = pm.PyNode(jnt0_offset)
     point2 = pm.PyNode(handle_offset)
     jnt0 = pm.PyNode(ik_jnt0)
@@ -42,12 +41,18 @@ def stretch_ikjnt(jnt0_offset, handle_offset, ik_jnt0, ik_jnt1, ik_jnt2):
     condition.secondTerm.set(length)
     condition.operation.set(2)
     condition.colorIfFalseR.set(length)
+    blend_attr = pm.createNode('blendTwoAttr', name=handle_offset + '_blendAttr')
 
     point1.worldMatrix[0] >> distance_between.inMatrix1
     point2.worldMatrix[0] >> distance_between.inMatrix2
     distance_between.distance >> condition.firstTerm
     distance_between.distance >> condition.colorIfTrue.colorIfTrueR
-    condition.outColor.outColorR >> multiply_divide.input1.input1X
+
+    condition.secondTerm >> blend_attr.input[0]
+    condition.outColor.outColorR >> blend_attr.input[1]
+    blend_attr.output >> multiply_divide.input1.input1X
+    pm.PyNode(attr_stretch) >> blend_attr.attributesBlender
+
     multiply_divide.outputX >> jnt0.scaleX
     multiply_divide.outputX >> jnt1.scaleX
 
@@ -207,8 +212,9 @@ def create_line(ctrl, joint):
 
 
 def main():
-    sel = pm.selected()
-    constraint_opm(sel[0], sel[1], mo=True)
+    pass
+    # sel = pm.selected()
+    # constraint_opm(sel[0], sel[1], mo=True)
 
 
 if __name__ == '__main__':

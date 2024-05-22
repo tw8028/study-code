@@ -22,7 +22,7 @@ class Head:
         self.head_offset = grp.offset("head_offset", pos=self.head, child=self.head_ctrl)
 
         self.head_system = pm.group(n="head_system", empty=True)
-        if(mode == "inbetwent"):
+        if mode == "inbetwent":
             self.inbetwent_offset = "Inbetwent_neck_offset"
             self.drive_neck()
             pm.parent(self.inbetwent_offset, self.neck_offset)

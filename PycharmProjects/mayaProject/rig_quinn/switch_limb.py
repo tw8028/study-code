@@ -13,20 +13,17 @@ import package_tools.rig as rig
 
 
 class SwitchLimb:
-    def __init__(self, up, up_t1, up_t2, low, low_t2, low_t1, end, aim_vector):
-        self.upper = up
-        self.upper_t1 = up_t1
-        self.upper_t2 = up_t2
-        self.lower = low
-        self.lower_t2 = low_t2
-        self.lower_t1 = low_t1
+    def __init__(self, upper, lower, end, aim_vector):
+        self.upper = upper
+        self.lower = lower
         self.end = end
         self.aim_vector = aim_vector
-        self.grp_system = pm.group(n=up + "_system", empty=True)
-        self.joint_point = grp.target(name=up + '_jointPoint', pos=up)
 
-        self.ik_upper = jnt.new(up, name="IK_" + up)
-        self.ik_lower = jnt.new(low, name="IK_" + low)
+        self.grp_system = pm.group(n=upper + "_system", empty=True)
+        self.joint_point = grp.target(name=upper + '_jointPoint', pos=upper)
+
+        self.ik_upper = jnt.new(upper, name="IK_" + upper)
+        self.ik_lower = jnt.new(lower, name="IK_" + lower)
         self.ik_end = jnt.new(end, name="IK_" + end)
         self.ik_grp = pm.group(n=self.ik_upper + "_grp", empty=True)
         self.handle_ctrl = None
@@ -34,12 +31,22 @@ class SwitchLimb:
         self.pole_offset = None
         self.bot_point = None
 
-        self.fk_upper = jnt.new(up, name="FK_" + up)
-        self.fk_lower = jnt.new(low, name="FK_" + low)
+        self.fk_upper = jnt.new(upper, name="FK_" + upper)
+        self.fk_lower = jnt.new(lower, name="FK_" + lower)
         self.fk_end = jnt.new(end, name="FK_" + end)
         self.fk_grp = pm.group(n=self.fk_upper + '_grp', empty=True)
 
-        self.create_ikfk()
+        # noinspection PyBroadException
+        try:
+            self.stretch_attr = pm.PyNode('Main.stretch')
+        except:
+            # add attr for stretch
+            pm.addAttr('Main', ln='stretch', at='bool', dv=1, k=1)
+            self.stretch_attr = pm.PyNode('Main.stretch')
+
+        self.create_ik()
+        self.create_fk()
+        self.constraint()
 
     def create_ik(self):
         rig.parent_chain(self.ik_end, self.ik_lower, self.ik_upper, self.joint_point)
@@ -68,10 +75,14 @@ class SwitchLimb:
         # create pole vector line
         pm.parent(rig.create_line(pole_ctrl, self.ik_lower), self.ik_grp)
 
+        # 拉伸ik骨骼
+        rig.stretch_ikjnt(self.stretch_attr, self.joint_point, self.handle_ctrl, self.ik_upper, self.ik_lower,
+                          self.ik_end)
+
     def no_flip_ik(self):
         # create end point 方向与 lower 相同
         self.bot_point = grp.target(name=self.end + '_point', pos=self.end)
-        pm.xform(self.bot_point, t=pm.xform(self.end, q=1, t=1, ws=1), ro=pm.xform(self.lower, q=1, ro=1, ws=1))
+        pm.xform(self.bot_point, ro=pm.xform(self.lower, q=1, ro=1, ws=1), ws=True)
         # end point 将通过 botNoFilp 影响 ik effector，所以，当end point p给被ik影响的物体，比如ik_end,end等骨骼，会产生循环effect。
         # 这里将end point p给ikhandle控制器
         pm.parent(self.bot_point, self.handle_ctrl)
@@ -104,7 +115,7 @@ class SwitchLimb:
         pm.xform(bot_pv, t=(0, 0, 6), ro=(0, 0, 0))
         pm.poleVectorConstraint(bot_pv, bot_handle)
 
-        # # top locator and bot locator 分别被 top and end_ctrl 控制
+        # top locator and bot locator 分别被 top and end_ctrl 控制
         top_loc = pm.spaceLocator(n=self.upper + '_toploc')
         rig.align(top_loc, self.pole_offset)
         pm.parent(top_loc, top)
@@ -118,24 +129,6 @@ class SwitchLimb:
 
         pm.parent(bot_grp, self.bot_point)
         pm.parent(top_grp, self.joint_point)
-
-    # def create_fk(self):
-    #     rig.parent_chain(self.fk_end, self.fk_lower, self.fk_upper)
-    #     fkjnt_offset = grp.target(name=self.fk_upper + '_offset', pos=self.upper)
-    #     rig.parent_chain(self.fk_upper, fkjnt_offset, self.grp_system)
-    #
-    #     fk_upper_ctrl = pm.circle(nr=(1, 0, 0), c=(0, 0, 0), r=5, n=self.fk_upper + '_ctrl', ch=False)[0]
-    #     self.fk_upper_offset = grp.offset(name=self.fk_upper + '_0ffset', pos=self.fk_upper, child=fk_upper_ctrl)
-    #     fk_lower_ctrl = pm.circle(nr=(1, 0, 0), c=(0, 0, 0), r=5, n=self.fk_lower + '_ctrl', ch=False)[0]
-    #     fk_lower_offset = grp.offset(name=self.fk_lower + '_offset', pos=self.fk_lower, child=fk_lower_ctrl)
-    #     fk_end_ctrl = pm.circle(nr=(1, 0, 0), c=(0, 0, 0), r=5, n=self.fk_end + '_ctrl', ch=False)[0]
-    #     fk_end_offset = grp.offset(name=self.fk_end + '_offset', pos=self.fk_end, child=fk_end_ctrl)
-    #     pm.parent(fk_end_offset, fk_lower_ctrl)
-    #     pm.parent(fk_lower_offset, fk_upper_ctrl)
-    #     pm.parent(self.fk_upper_offset, self.jnt_point)
-    #     pm.parentConstraint(fk_upper_ctrl, self.fk_upper)
-    #     pm.parentConstraint(fk_lower_ctrl, self.fk_lower)
-    #     pm.parentConstraint(fk_end_ctrl, self.fk_end)
 
     def create_fk(self):
         # 这是一个fk缩放方案，关键是 joint_connect方法。
@@ -157,24 +150,34 @@ class SwitchLimb:
         rig.constraint_opm(fk_lower_ctrl, self.fk_lower)
         rig.constraint_opm(fk_end_ctrl, self.fk_end)
 
+        # 拉伸fk骨骼
+        fk_upper_ctrl.scaleX >> self.fk_upper.scaleX
+        fk_lower_ctrl.scaleX >> self.fk_lower.scaleX
+
     def constraint(self):
+
         # add attr for ikfk switch
         # noinspection PyBroadException
         try:
-            attr_obj = pm.listRelatives(self.upper, parent=True)[0].name() + "_ctrl"
+            p = pm.listRelatives(self.upper, parent=True)[0]
+            switch_obj = pm.PyNode(p.name() + "_ctrl")
         except:
-            attr_obj = 'Main'
-        pm.select(attr_obj)
-        pm.addAttr(ln=f'{self.upper}_IKFK', at='bool', dv=1, k=1)
-        ikfk_attr = pm.PyNode(f'{attr_obj}.{self.upper}_IKFK')
-        reverse_nd = pm.createNode('reverse', n=self.upper + '_IKFK_reverse')
+            switch_obj = 'Main'
+        pm.addAttr(switch_obj, ln=f'IKFK_{self.upper}', at='bool', dv=1, k=1)
+        ikfk_attr = pm.PyNode(f'{switch_obj}.IKFK_{self.upper}')
+        reverse_nd = pm.createNode('reverse', n='IKFK_reverse_' + self.upper)
         ikfk_attr >> reverse_nd.inputX
 
         def connect_attr(ik_jnt, fk_jnt, skin_jnt):
-            con = pm.parentConstraint(ik_jnt, fk_jnt, skin_jnt)
-            ikfk_attr >> pm.PyNode(f'{con}.{ik_jnt}W0')
-            reverse_nd.outputX >> pm.PyNode(f'{con}.{fk_jnt}W1')
+            # 使用父子约束有问题，这里使用点约束和方向约束
+            con1 = pm.pointConstraint(ik_jnt, fk_jnt, skin_jnt)
+            ikfk_attr >> pm.PyNode(f'{con1}.{ik_jnt}W0')
+            reverse_nd.outputX >> pm.PyNode(f'{con1}.{fk_jnt}W1')
 
+            con2 = pm.orientConstraint(ik_jnt, fk_jnt, skin_jnt)
+            ikfk_attr >> pm.PyNode(f'{con2}.{ik_jnt}W0')
+            reverse_nd.outputX >> pm.PyNode(f'{con2}.{fk_jnt}W1')
+            # scaleConstraint对骨骼使用有问题，这里使用 blendTwoAttr node 缩放蒙皮骨骼
             # 使用 blendTwoAttr节点，Switch缩放
             blend_node = pm.createNode('blendTwoAttr', n=skin_jnt + '_bta')
             ikfk_attr >> blend_node.attributesBlender
@@ -195,32 +198,6 @@ class SwitchLimb:
         reverse_nd.outputX >> self.fk_grp.visibility
         ikfk_attr >> self.ik_grp.visibility
 
-    def upper_twist(self):
-        no_roll = grp.target(name=self.upper + "_twistNoroll", pos=self.joint_point)
-        # no_roll p给jointPoint，不随upper骨骼旋转
-        pm.parent(no_roll, self.joint_point)
-        # 反向驱动
-        rig.twist_drive(self.upper, no_roll, self.upper_t1, -1 / 2)
 
-    def lower_twist(self):
-        driver = grp.target(name="twistDriver_" + self.end, pos=self.end)
-        pm.delete(pm.orientConstraint(self.lower, driver))
-        pm.parentConstraint(self.end, driver, mo=1)
-        pm.parent(driver, self.grp_system)
-        # 根据 lower,lower_twist_02,lower_twist_01 骨骼蒙皮分配 twist 幅度，一般靠近手肘的骨骼不分配 twist
-        rig.twist_drive(driver, self.lower, self.lower_t2, 1 / 3)
-        rig.twist_drive(driver, self.lower, self.lower_t1, 2 / 3)
-
-    def stretch(self):
-        rig.stretch_ikjnt(self.joint_point, self.handle_ctrl, self.ik_upper, self.ik_lower, self.ik_end)
-        # 拉伸fk骨骼，pass
-        # scaleConstraint对骨骼使用有问题，这里使用 blendTwoAttr node 缩放蒙皮骨骼
-
-    def create_ikfk(self):
-        self.create_ik()
-        # self.no_flip_ik()
-        self.create_fk()
-        self.stretch()
-        self.constraint()
-        self.upper_twist()
-        self.lower_twist()
+if __name__ == '__main__':
+    arm_l = SwitchLimb("upperarm_l", "lowerarm_l", "hand_l", (1, 0, 0))

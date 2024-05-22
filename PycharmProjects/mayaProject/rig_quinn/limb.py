@@ -7,36 +7,36 @@ import package_tools.jnt as jnt
 import package_tools.rig as rig
 
 
-# mode: ik + mid + stretch + twist
+# mode: ik + mid + stretch + no_flip_ik
 # upperarm_l
-# upperarm_twist_01_l
-# upperarm_twist_02_l
 # lowerarm_l
-# lowerarm_twist_02_l
-# lowerarm_twist_01_l
 # hand_l
 class Limb:
-    def __init__(self, up, up_t1, up_t2, low, low_t2, low_t1, end, aim_vector):
-        self.grp_system = pm.group(n=up + "_system", empty=True)
-        self.upper = up
-        self.upper_t1 = up_t1
-        self.upper_t2 = up_t2
-        self.lower = low
-        self.lower_t2 = low_t2
-        self.lower_t1 = low_t1
+    def __init__(self, upper, lower, end, aim_vector):
+        self.grp_system = pm.group(n=upper + "_system", empty=True)
+        self.upper = upper
+        self.lower = lower
         self.end = end
-        self.ik_upper = jnt.new(up, name="IK_" + up)
-        self.ik_lower = jnt.new(low, name="IK_" + low)
+        self.aim_vector = aim_vector
+
+        self.ik_upper = jnt.new(upper, name="IK_" + upper)
+        self.ik_lower = jnt.new(lower, name="IK_" + lower)
         self.ik_end = jnt.new(end, name="IK_" + end)
 
         self.upper_offset = None
-        self.mid_ctrl = cv.square(up + "_mid_ctrl")
+        self.mid_ctrl = cv.square(upper + "_mid_ctrl")
         self.end_ctrl = None
         self.handle_offset = None
         self.pole_offset = None
-        self.end_base = None
+        self.bot_point = None
+        # noinspection PyBroadException
+        try:
+            self.stretch_attr = pm.PyNode('Main.stretch')
+        except:
+            # add attr for stretch
+            pm.addAttr('Main', ln='stretch', at='bool', dv=1, k=1)
+            self.stretch_attr = pm.PyNode('Main.stretch')
 
-        self.aim_vector = aim_vector
         self.create_all()
 
     def create_ik(self):
@@ -113,38 +113,22 @@ class Limb:
         # constraint end
         rig.constraint_opm(self.ik_end, self.end)
 
-    def upper_twist(self):
-        no_roll = pm.group(name=self.upper + "_twistNoroll", empty=True)
-        # no_roll p给upper_offset，不随upper骨骼旋转
-        pm.parent(no_roll, self.upper_offset)
-        pm.xform(no_roll, t=(0, 0, 0), ro=(0, 0, 0))
-        # 反向驱动
-        rig.twist_drive(self.ik_upper, no_roll, self.upper_t1, -1 / 2)
-
-    def lower_twist(self):
-        driver = grp.target(name=self.ik_end + "_base", pos=self.lower)
-        self.end_base = driver
-        # 将 driver p给手腕，被手腕控制旋转
-        pm.parent(driver, self.end_ctrl)
-        pm.xform(driver, t=(0, 0, 0), ro=(0, 0, 0))
-        # 将 driver 旋转对齐到手肘，使其与 driven 方向保持一致
-        pm.delete(pm.orientConstraint(self.lower, driver))
-        # 根据 lower,lower_twist_02,lower_twist_01 骨骼蒙皮分配 twist 幅度，一般靠近手肘的骨骼不分配 twist
-        rig.twist_drive(driver, self.ik_lower, self.lower_t2, 1 / 3)
-        rig.twist_drive(driver, self.ik_lower, self.lower_t1, 2 / 3)
-
     def stretch(self):
         # 首先拉伸ik骨骼，ik骨骼的拉伸 将带动 mid_ctrl 的位置，利用其位置计算 蒙皮骨骼的拉伸
-        rig.stretch_ikjnt(self.upper_offset, self.end_ctrl, self.ik_upper, self.ik_lower, self.ik_end)
-        rig.stretch_jnt(self.upper_offset, self.mid_ctrl, self.upper, self.upper_t1, self.upper_t2)
-        rig.stretch_jnt(self.mid_ctrl, self.end_ctrl, self.lower, self.lower_t2, self.lower_t1)
+        rig.stretch_ikjnt(self.stretch_attr, self.upper_offset, self.end_ctrl, self.ik_upper, self.ik_lower,
+                          self.ik_end)
+        rig.stretch_jnt(self.upper_offset, self.mid_ctrl, self.upper)
+        rig.stretch_jnt(self.mid_ctrl, self.end_ctrl, self.lower)
 
     def no_flip_ik(self):
+        self.bot_point = grp.target(name=self.end + '_point', pos=self.end_ctrl)
+        pm.parent(self.bot_point, self.end_ctrl)
+        pm.xform(self.bot_point, ro=pm.xform(self.lower, q=1, ro=1, ws=1), ws=True)
         top_grp = grp.target(name=self.upper + '_topNoFlip_grp', pos=self.upper)
-        bot_grp = grp.target(name=self.upper + '_botNoFlip_grp', pos=self.end_base)
+        bot_grp = grp.target(name=self.upper + '_botNoFlip_grp', pos=self.bot_point)
         # on top
         top = jnt.new(self.upper, name=self.upper + '_topNoFlip')
-        top_end = jnt.new(self.end_base, name=self.upper + '_topNoFlipEnd')
+        top_end = jnt.new(self.bot_point, name=self.upper + '_topNoFlipEnd')
         pm.parent(top_end, top)
         pm.parent(top, top_grp)
 
@@ -156,7 +140,7 @@ class Limb:
         pm.poleVectorConstraint(top_pv, top_handle)
 
         # on bottom
-        bot = jnt.new(self.end_base, name=self.upper + '_botNoFlip')
+        bot = jnt.new(self.bot_point, name=self.upper + '_botNoFlip')
         bot_end = jnt.new(self.upper, name=self.upper + '_botNoFlipEnd')
         pm.parent(bot_end, bot)
         pm.parent(bot, bot_grp)
@@ -180,13 +164,15 @@ class Limb:
         # pole_offset 同时被 top_lor and bot_loc 约束
         pm.parentConstraint(top_loc, bot_loc, self.pole_offset)
 
-        pm.parent(bot_grp, self.end_base)
+        pm.parent(bot_grp, self.bot_point)
         pm.parent(top_grp, self.upper_offset)
 
     def create_all(self):
         self.create_ik()
         self.constraint()
-        self.lower_twist()
-        self.upper_twist()
         self.stretch()
         self.no_flip_ik()
+
+
+if __name__ == '__main__':
+    leg_l = Limb('thigh_l', 'calf_l', 'foot_l', (-1, 0, 0))

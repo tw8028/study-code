@@ -30,7 +30,7 @@ def twist_drive(no_roll, driver, driven, value):
 class Twist:
     # 对上臂创建twist，bottom可为空
     def __init__(self, top, bottom=None, *, upper=False, x_axis=1):
-        self.grp = pm.group(n=f'twist_{top}_grp', empty=True)
+        self.grp = pm.group(n=f'{top}_twistGrp', empty=True)
         # noinspection PyBroadException
         try:
             pm.parent(self.grp, 'twist_system')
@@ -57,16 +57,45 @@ class Twist:
             self.noroll = top
             self.driver = bot_driver
 
+        self.top = top
+
+    # 传入被控制的twist骨骼并设置权重
     def create(self, twist_jnt, weight):
         twist_drive(self.noroll, self.driver, twist_jnt, weight)
+        # stretch twist joint
+        pm.PyNode(self.top).scaleX >> pm.PyNode(twist_jnt).scaleX
 
 
 if __name__ == '__main__':
     # example
-    upper_l_t = Twist('upperarm_l', upper=True, x_axis=1)
-    upper_l_t.create('upperarm_twist_01_l', -2 / 3)
-    upper_l_t.create('upperarm_twist_02_l', -1 / 3)
+    # upper_l_twist = Twist('upperarm_l', upper=True, x_axis=1)
+    # upper_l_twist.create('upperarm_twist_01_l', -2 / 3)
+    # upper_l_twist.create('upperarm_twist_02_l', -1 / 3)
+    #
+    # lower_l_twist = Twist('lowerarm_l', 'hand_l')
+    # lower_l_twist.create('lowerarm_twist_02_l', 1 / 3)
+    # lower_l_twist.create('lowerarm_twist_01_l', 2 / 3)
 
-    lower_l_t = Twist('lowerarm_l', 'hand_l')
-    lower_l_t.create('lowerarm_twist_02_l', 1 / 3)
-    lower_l_t.create('lowerarm_twist_01_l', 2 / 3)
+    upper_r_twist = Twist('upperarm_r', upper=True, x_axis=-1)
+    upper_r_twist.create('upperarm_twist_01_r', -2 / 3)
+    upper_r_twist.create('upperarm_twist_02_r', -1 / 3)
+
+    lower_r_twist = Twist('lowerarm_r', 'hand_r')
+    lower_r_twist.create('lowerarm_twist_02_r', 1 / 3)
+    lower_r_twist.create('lowerarm_twist_01_r', 2 / 3)
+
+    thigh_l_twist = Twist('thigh_l', upper=True, x_axis=-1)
+    thigh_l_twist.create('thigh_twist_01_l', -2 / 3)
+    thigh_l_twist.create('thigh_twist_02_l', -1 / 3)
+
+    calf_l_twist = Twist('calf_l', 'foot_l')
+    calf_l_twist.create('calf_twist_02_l', 1 / 3)
+    calf_l_twist.create('calf_twist_01_l', 2 / 3)
+
+    thigh_r_twist = Twist('thigh_r', upper=True, x_axis=1)
+    thigh_r_twist.create('thigh_twist_01_r', -2 / 3)
+    thigh_r_twist.create('thigh_twist_02_r', -1 / 3)
+
+    calf_r_twist = Twist('calf_r', 'foot_r')
+    calf_r_twist.create('calf_twist_02_r', 1 / 3)
+    calf_r_twist.create('calf_twist_01_r', 2 / 3)

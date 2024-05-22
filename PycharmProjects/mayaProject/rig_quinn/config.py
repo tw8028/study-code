@@ -31,9 +31,9 @@ def write2file(objs):
 
 
 # data 是一个字典，key=shape，value=控制点列表
-def read_file():
-    scene_name = pm.sceneName()
-    path = os.path.split(scene_name)[0]
+def read_file(path):
+    # scene_name = pm.sceneName()
+    # path = os.path.split(scene_name)[0]
     with open(f'{path}/curve_info.json', 'r', encoding='utf-8') as f:
         data = json.load(f)
         for i in data.keys():
@@ -59,8 +59,14 @@ def write(*args):
     write2file(m_list)
 
 
-def read(*args):
-    read_file()
+def read_base(*args):
+    read_file('D:/Maya/quinn')
+
+
+def read_local(*args):
+    scene_name = pm.sceneName()
+    path = os.path.split(scene_name)[0]
+    read_file(path)
 
 
 def main():
@@ -72,7 +78,8 @@ def main():
             pm.frameLayout('curve info config')
             with pm.columnLayout():
                 pm.button(label='write curve info', c=write)
-                pm.button(label='read curve info', c=read)
+                pm.button(label='read curve info from base', c=read_base)
+                pm.button(label='read curve info from local', c=read_local)
         pm.window(win, e=True, title=win, wh=(240, 120))
         pm.showWindow(win)
 
