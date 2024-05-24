@@ -1,18 +1,18 @@
 #!/usr/bin/python
 # -*- coding:utf-8 -*-
+
 import pymel.core as pm
-
-from package_tools import *
-
+import package_tools.grp as grp
+import package_tools.rig as rig
+import package_tools.jnt as jnt
 import rig_quinn.config as config
-import ngSkinCreateLayers
 
-from rig_quinn.head import Head
-from rig_quinn.spine import Spine
 from rig_quinn.clavicle import Clavicle
-from rig_quinn.limb import Limb
 from rig_quinn.finger import Finger
 from rig_quinn.foot import Foot
+from rig_quinn.head import Head
+from rig_quinn.limb import Limb
+from rig_quinn.spine import Spine
 from rig_quinn.switch_limb import SwitchLimb
 from rig_quinn.twist import Twist
 
@@ -194,7 +194,7 @@ def main():
         with pm.columnLayout():
             pm.frameLayout('rigging builder')
             with pm.columnLayout():
-                pm.button(label='nect_func for builder', c=nect_create)
+                pm.button(label='next_func for builder', c=nect_create)
 
             pm.frameLayout('shape config')
             with pm.columnLayout():
@@ -204,7 +204,6 @@ def main():
 
             pm.frameLayout('skin tools')
             with pm.columnLayout():
-                pm.button(label='create ngskin layer', c=ngSkinCreateLayers.create_ng_layers)
                 pm.button(label='select skin jnt', c=select_skin_jnt)
                 pm.button(label='select controller', c=select_ctrl)
 

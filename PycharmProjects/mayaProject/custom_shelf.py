@@ -8,7 +8,7 @@ import tool_jnt as jnt
 import tool_rename as rename
 import tool_skin as skin
 import rig_biped as bip
-import rig_IKFK_switch as ikfk
+import rig_ikfk_switch as switch
 import rig_neck as neck
 
 
@@ -89,42 +89,44 @@ def create_sub(*args):
 
 class CustomShelf:
     def __init__(self, name='Custom'):
-        self.name = name
+        self.shelf = name
         self.label_background = (0, 0, 0, 0)
         self.label_colour = (0.9, 0.9, 0.9)
-        self._clean_oldshelf()
-        pm.setParent(self.name)
+        self.clear()
         self.build()
 
-    def _clean_oldshelf(self):
+    def clear(self):
         # Checks if the shelf exists and empties it if it does or creates it if it does not.
-        if pm.shelfLayout(self.name, ex=True):
-            if pm.shelfLayout(self.name, q=True, childArray=True):
-                for each in pm.shelfLayout(self.name, q=True, childArray=True):
+        if pm.shelfLayout(self.shelf, ex=True):
+            try:
+                shelf_buttons = pm.shelfLayout(self.shelf, q=True, childArray=True)
+                for each in shelf_buttons:
                     pm.deleteUI(each)
+            except:
+                pass
 
     def add_button(self, label, iol, icon='pythonFamily.png', command='command'):
-        pm.setParent(self.name)
+        # a shelf button must be parented to a shelf.
         pm.shelfButton(label=label, image=icon, imageOverlayLabel=iol, command=command, olb=self.label_background,
-                       olc=self.label_colour)
+                       parent=self.shelf, olc=self.label_colour)
 
     def build(self):
-        self.add_button('zero', iol='Zero', command=zero)
-        self.add_button('align', iol='Align', command=align)
-        self.add_button('rig_grp', iol='Grp', command=rig_grp)
-        self.add_button('offset_grp', iol='Offset', command=offset_grp)
-        self.add_button('trans', iol='Trans', command=create_trans)
-        self.add_button('sub', iol='Sub', command=create_sub)
+        self.add_button(label='zero', iol='Zero', command='import custom_shelf;custom_shelf.zero()')
+        self.add_button(label='align', iol='Align', command='import align_om2;align_om2.main()')
+        self.add_button(label='rig_grp', iol='Grp', command='import custom_shelf;custom_shelf.rig_grp()')
+        self.add_button(label='offset_grp', iol='Offset', command='import custom_shelf;custom_shelf.offset_grp()')
+        self.add_button(label='trans', iol='Trans', command='import custom_shelf;custom_shelf.create_trans()')
+        self.add_button(label='sub', iol='Sub', command='import custom_shelf;custom_shelf.create_sub()')
 
-        self.add_button('tool curve', iol='tCv', command=curve.main)
-        self.add_button('tool jnt', iol='tJnt', command=jnt.main)
-        self.add_button('tool skin', iol='tSkin', command=skin.main)
+        self.add_button(label='tool curve', iol='tCv', command='import tool_curve;tool_curve.main()')
+        self.add_button(label='tool jnt', iol='tJnt', command='import tool_jnt;tool_jnt.main()')
+        self.add_button(label='tool skin', iol='tSkin', command='import tool_skin;tool_skin.main()')
 
-        self.add_button('rig biped', iol='rBip', command=bip.main)
-        self.add_button('rig IKFK', iol='rIKFK', command=ikfk.main)
-        self.add_button('rig neck', iol='rNeck', command=neck.main)
+        self.add_button(label='rig biped', iol='rBip', command='import rig_biped;rig_biped.main()')
+        self.add_button(label='rig IKFK', iol='rIKFK', command='import rig_ikfk_switch;rig_ikfk_switch.main()')
+        self.add_button(label='rig neck', iol='rNeck', command='import rig_neck;rig_neck.main()')
 
-        self.add_button('tool rename', iol='tReN', command=rename.main)
+        self.add_button(label='tool rename', iol='tReN', command='import tool_rename;tool_rename.main()')
 
 
 def main():
@@ -133,7 +135,7 @@ def main():
     importlib.reload(rename)
     importlib.reload(skin)
     importlib.reload(bip)
-    importlib.reload(ikfk)
+    importlib.reload(switch)
     importlib.reload(neck)
     CustomShelf()
     print('relord custom shelf...')

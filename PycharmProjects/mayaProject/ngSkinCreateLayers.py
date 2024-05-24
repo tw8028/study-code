@@ -4,7 +4,7 @@ import pymel.core as pm
 from ngSkinTools2.api import *
 
 
-class NgLayersBulider:
+class NgLayersBuilder:
     def __init__(self, target: str):
         self.target = target
         self.layers = init_layers(target)
@@ -16,7 +16,8 @@ class NgLayersBulider:
         influences = target_info.list_influences(self.target)
 
         def is_not_right(influence):
-            return '_r' not in pm.PyNode(influence.path_name()).name()
+            inf_nd = pm.PyNode(influence.path_name())
+            return '_r' not in inf_nd.name()
 
         return list(filter(is_not_right, influences))
 
@@ -31,8 +32,8 @@ class NgLayersBulider:
         def has_name(inf):
             return name in pm.PyNode(inf.path_name()).name()
 
-        infs = filter(has_name, self.influences)
-        for i in infs:
+        influences = filter(has_name, self.influences)
+        for i in influences:
             # 只接收influences index或者'mask'做为参数
             weights_list = self.base_layer.get_weights(i.logicalIndex)
             layer.set_weights(i.logicalIndex, weights_list)
@@ -41,21 +42,21 @@ class NgLayersBulider:
 
 
 def click(*args):
-    bulider = NgLayersBulider(pm.selected()[0].name())
+    builder = NgLayersBuilder(pm.selected()[0].name())
     for i in ["spine", "neck", "head"]:
-        bulider.add_layer(i)
+        builder.add_layer(i)
 
-    arm = bulider.add_layer('grp_arm', empty=True)
+    arm = builder.add_layer('grp_arm', empty=True)
     for i in ["clavicle", "upperarm", "lowerarm"]:
-        bulider.add_layer(i, parent=arm)
+        builder.add_layer(i, parent=arm)
 
-    hand = bulider.add_layer('grp_hand', empty=True)
+    hand = builder.add_layer('grp_hand', empty=True)
     for i in ["hand", "thumb", "index", "middle", "ring", "pinky"]:
-        bulider.add_layer(i, parent=hand)
+        builder.add_layer(i, parent=hand)
 
-    leg = bulider.add_layer('grp_leg', empty=True)
+    leg = builder.add_layer('grp_leg', empty=True)
     for i in ["thigh", "calf", "foot"]:
-        bulider.add_layer(i, parent=leg)
+        builder.add_layer(i, parent=leg)
 
 
 def main():
@@ -63,7 +64,7 @@ def main():
         pm.deleteUI('ng_layerBuilder')
     with pm.window('ng_layerBuilder', wh=(280, 100)):
         with pm.columnLayout():
-            pm.frameLayout('ngSkinTool layer bulider')
+            pm.frameLayout('ngSkinTool layer builder')
             with pm.columnLayout():
                 pm.text('select skin mesh')
                 pm.button(label='apply', c=click)
