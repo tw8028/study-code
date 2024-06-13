@@ -20,6 +20,7 @@ from rig_quinn.twist import Twist
 # 添加stretch twist属性，使用属性开启关闭功能
 # drive by using offset parent matrix
 def connect(driver, driven):
+    driven_nd= pm.PyNode(driven)
     # create output group on driver 并保持偏移
     output = grp.target(name="output_" + driven, pos=driven)
     pm.parent(output, driver)
@@ -30,14 +31,14 @@ def connect(driver, driven):
         # driver worldMatrix * driven_parent worldInverseMatrix
         output.worldMatrix[0] >> mult_matrix_nd.matrixIn[0]
         driven_parent.worldInverseMatrix[0] >> mult_matrix_nd.matrixIn[1]
-        mult_matrix_nd.matrixSum >> pm.PyNode(driven).offsetParentMatrix
+        mult_matrix_nd.matrixSum >> driven_nd.offsetParentMatrix
     except:
-        output.worldMatrix[0] >> pm.PyNode(driven).offsetParentMatrix
+        output.worldMatrix[0] >> driven_nd.offsetParentMatrix
     pm.xform(driven, t=(0, 0, 0), ro=(0, 0, 0))
     # noinspection PyBroadException
     try:
         pm.xform(driven, t=(0, 0, 0), ro=(0, 0, 0))
-        pm.PyNode(driven).jointOrient.set(0, 0, 0)
+        driven_nd.jointOrient.set(0, 0, 0)
     except:
         pass
 
