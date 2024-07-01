@@ -3,7 +3,7 @@ import pymel.core as pm
 
 def insert_jnts(start_jnt, num=1):
     end_jnt = pm.listRelatives(start_jnt, children=True)[0]
-    jnt_offset = pm.PyNode(end_jnt).translateX.get() / (num + 1)
+    jnt_offset = end_jnt.translateX.get() / (num + 1)
     _roo = pm.xform(start_jnt, q=True, roo=True)
     part_jnts = []
     n = 1

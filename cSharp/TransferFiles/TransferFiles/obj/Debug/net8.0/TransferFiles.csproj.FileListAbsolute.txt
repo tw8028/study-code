@@ -1,0 +1,15 @@
+D:\GitHub\study-code\cSharp\TransferFiles\TransferFiles\obj\Debug\net8.0\TransferFiles.GeneratedMSBuildEditorConfig.editorconfig
+D:\GitHub\study-code\cSharp\TransferFiles\TransferFiles\obj\Debug\net8.0\TransferFiles.AssemblyInfoInputs.cache
+D:\GitHub\study-code\cSharp\TransferFiles\TransferFiles\obj\Debug\net8.0\TransferFiles.AssemblyInfo.cs
+D:\GitHub\study-code\cSharp\TransferFiles\TransferFiles\obj\Debug\net8.0\TransferFiles.csproj.CoreCompileInputs.cache
+D:\GitHub\study-code\cSharp\TransferFiles\TransferFiles\obj\Debug\net8.0\TransferFiles.sourcelink.json
+D:\GitHub\study-code\cSharp\TransferFiles\TransferFiles\bin\Debug\net8.0\TransferFiles.exe
+D:\GitHub\study-code\cSharp\TransferFiles\TransferFiles\bin\Debug\net8.0\TransferFiles.deps.json
+D:\GitHub\study-code\cSharp\TransferFiles\TransferFiles\bin\Debug\net8.0\TransferFiles.runtimeconfig.json
+D:\GitHub\study-code\cSharp\TransferFiles\TransferFiles\bin\Debug\net8.0\TransferFiles.dll
+D:\GitHub\study-code\cSharp\TransferFiles\TransferFiles\bin\Debug\net8.0\TransferFiles.pdb
+D:\GitHub\study-code\cSharp\TransferFiles\TransferFiles\obj\Debug\net8.0\TransferFiles.dll
+D:\GitHub\study-code\cSharp\TransferFiles\TransferFiles\obj\Debug\net8.0\refint\TransferFiles.dll
+D:\GitHub\study-code\cSharp\TransferFiles\TransferFiles\obj\Debug\net8.0\TransferFiles.pdb
+D:\GitHub\study-code\cSharp\TransferFiles\TransferFiles\obj\Debug\net8.0\TransferFiles.genruntimeconfig.cache
+D:\GitHub\study-code\cSharp\TransferFiles\TransferFiles\obj\Debug\net8.0\ref\TransferFiles.dll
