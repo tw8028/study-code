@@ -1,6 +1,6 @@
 macroscript AniExport
 category:"custom tools"
-tooltip:"AniExport"
+tooltip:"Ani_Export"
 (
 fn AniExport x=(
 	sel = selection

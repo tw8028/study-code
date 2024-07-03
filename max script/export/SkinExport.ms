@@ -1,6 +1,6 @@
 macroscript SkinExport
 category:"custom tools"
-tooltip:"SkinExport"
+tooltip:"Skin_Export"
 (
 fn SkinExport x=(
 	sel = selection
