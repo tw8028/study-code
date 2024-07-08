@@ -16,9 +16,9 @@ fn SkinExport x=(
 	if Blist.count !=0 then throw bones
 		
 	--find nub bone then deselect it
-	for item in sel do( 
-		if findString item.name "Nub"!=undefined then deselect item
-		)
+	--for item in sel do( 
+	--	if findString item.name "Nub"!=undefined then deselect item
+	--	)
 	
 	exportPath = maxFilePath + getFilenameFile maxFileName + ".fbx"
 	pluginManager.loadClass FbxExporter

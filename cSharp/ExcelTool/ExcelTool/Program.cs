@@ -10,7 +10,7 @@ internal class Program
 {
     static void Main(string[] args)
     {
-        string excelPath = @"D:\Code\纳罗达人设总表.xlsx";
+        string excelPath = @"D:\纳罗达人设总表.xlsx";
         string workSheet = "Sheet1";
         int row = 121;
         int column = 32;
@@ -28,7 +28,7 @@ internal class Program
             { 31, "ani_1" }
         };
 
-        string jsonPath = @"D:\Code\a.json";
+        string jsonPath = @"D:\PersonsData.json";
 
         DataTable data = GetDataFromExcel(excelPath, workSheet, row, column);
         DataTable dataColumns = SelectColumnsByName(data, col);
@@ -91,14 +91,46 @@ internal class Program
         }
         foreach (var item in arr)
         {
-            if (item["weapon"] != null)
-            {
-                item["weapon"] = "G" + item["weapon"].ToString().PadLeft(5, '0');
-            }
-
+            string setName = "";
             if (item["aniSet"].ToString().Length >= 3)
             {
-                item["aniSet"] = item["aniSet"].ToString().Substring(0, 3);
+                string set = item["aniSet"].ToString().Substring(0, 3);
+                item["aniSet"] = set;
+                switch (set)
+                {
+                    case "G01":
+                        setName = "_ar_g01";
+                        break;
+                    case "G02":
+                        setName = "_dmr_g02";
+                        break;
+                    case "G03":
+                        setName = "_bar_g03";
+                        break;
+
+                    case "G04":
+                        setName = "_bow_g04";
+                        break;
+
+                    case "G05":
+                        setName = "_sg_g05";
+                        break;
+
+                    case "G06":
+                        setName = "_sar_lever_g06";
+                        break;
+
+                    case "G08":
+                        setName = "_lmg_g08";
+                        break;
+                    case "G11":
+                        setName = "_hf_g11";
+                        break;
+                }
+                if (item["weapon"] != null)
+                {
+                    item["weapon"] = "G" + item["weapon"].ToString().PadLeft(5, '0') + setName;
+                }
             }
         }
         root.Add(rootName, arr);

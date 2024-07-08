@@ -1408,19 +1408,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\TengWei\\.nuget\\packages\\": {}
+    "C:\\Users\\user\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Code\\cSharp\\ExcelTool\\ExcelTool\\ExcelTool.csproj",
+      "projectUniqueName": "D:\\GitHub\\study-code\\cSharp\\ExcelTool\\ExcelTool\\ExcelTool.csproj",
       "projectName": "ExcelTool",
-      "projectPath": "D:\\Code\\cSharp\\ExcelTool\\ExcelTool\\ExcelTool.csproj",
-      "packagesPath": "C:\\Users\\TengWei\\.nuget\\packages\\",
-      "outputPath": "D:\\Code\\cSharp\\ExcelTool\\ExcelTool\\obj\\",
+      "projectPath": "D:\\GitHub\\study-code\\cSharp\\ExcelTool\\ExcelTool\\ExcelTool.csproj",
+      "packagesPath": "C:\\Users\\user\\.nuget\\packages\\",
+      "outputPath": "D:\\GitHub\\study-code\\cSharp\\ExcelTool\\ExcelTool\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\TengWei\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\user\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -1481,7 +1481,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.302/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.300/PortableRuntimeIdentifierGraph.json"
       }
     }
   }
