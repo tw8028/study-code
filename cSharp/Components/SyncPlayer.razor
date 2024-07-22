@@ -1,0 +1,75 @@
+﻿@rendermode InteractiveServer
+
+<h3>SyncPlayer</h3>
+
+<ul>
+	@foreach (SyncItem item in items)
+	{
+		<li>
+			<input type="checkbox" @bind="@item.IsSync" />
+			@item.Id
+			@if (item.State == State.Equal)
+			{
+				<span class="alert-success">&#10004</span>
+			}
+			else
+			{
+				<span class="alert-warning">@Enum.GetName(typeof(State), item.State)</span>
+			}
+		</li>
+	}
+</ul>
+
+<button class="btn btn-primary" @onclick="SelectAll">All</button>
+<button class="btn btn-primary" @onclick="Deselect">Cancel</button>
+<button class="btn btn-primary" @onclick="Sync">Sync to Unity</button>
+
+@code {
+	private const string PATH_FILE = "D:/Projects/03动作/角色蒙皮";
+	private const string PATH_UNITY = "D:/Projects/Test/Assets/Art/Models/Players/";
+	List<SyncItem> items = GetItems();
+
+	static private List<SyncItem> GetItems()
+	{
+		List<SyncItem> list = new();
+		var files = FileHelper.GetFiles(new DirectoryInfo(PATH_FILE), new Dictionary<string, string>());
+		foreach (var file in files)
+		{
+			// 使用文件名生成导入路径
+			string targetFolder = Path.Combine(PATH_UNITY, file.Key.Remove(2, 1).Insert(2, "0"));
+			// 创建对象
+			list.Add(new SyncItem(file.Key, file.Value, targetFolder));
+		}
+		return list;
+	}
+	private void SelectAll()
+	{
+		foreach (var item in items)
+		{
+			item.IsSync = true;
+		}
+	}
+	private void Deselect()
+	{
+		foreach (var item in items)
+		{
+			item.IsSync = false;
+		}
+	}
+	private void Sync()
+	{
+		foreach (var item in items)
+		{
+
+			if (item.ExistsTargetFolder())
+			{
+				item.CopeTo();
+			}
+			else
+			{
+				Directory.CreateDirectory(item.TargetFolder);
+				item.CopeTo();
+			}
+		}
+	}
+}
