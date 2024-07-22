@@ -2,23 +2,35 @@
 
 <h3>SyncPlayer</h3>
 
-<ul>
-	@foreach (SyncItem item in items)
-	{
-		<li>
-			<input type="checkbox" @bind="@item.IsSync" />
-			@item.Id
-			@if (item.State == State.Equal)
-			{
-				<span class="alert-success">&#10004</span>
-			}
-			else
-			{
-				<span class="alert-warning">@Enum.GetName(typeof(State), item.State)</span>
-			}
-		</li>
-	}
-</ul>
+<table class="table">
+	<thead>
+		<tr>
+			<th></th>
+			<th>ID</th>
+			<th>State</th>
+		</tr>
+	</thead>
+
+	<tbody>
+		@foreach (var item in items)
+		{
+			<tr>
+				<th><input type="checkbox" @bind="@item.IsSync" /></th>
+				<th>@item.Id</th>
+				<th>
+					@if (item.State == State.Equal)
+					{
+						<span>&#10003</span>
+					}
+					else
+					{
+						<span class="alert-warning">@item.State</span>
+					}
+				</th>
+			</tr>
+		}
+	</tbody>
+</table>
 
 <button class="btn btn-primary" @onclick="SelectAll">All</button>
 <button class="btn btn-primary" @onclick="Deselect">Cancel</button>
@@ -26,7 +38,7 @@
 
 @code {
 	private const string PATH_FILE = "D:/Projects/03动作/角色蒙皮";
-	private const string PATH_UNITY = "D:/Projects/Test/Assets/Art/Models/Players/";
+	private const string PATH_UNITY = "D:/Projects/Test/Assets/Art/Models/Players";
 	List<SyncItem> items = GetItems();
 
 	static private List<SyncItem> GetItems()
@@ -60,16 +72,7 @@
 	{
 		foreach (var item in items)
 		{
-
-			if (item.ExistsTargetFolder())
-			{
-				item.CopeTo();
-			}
-			else
-			{
-				Directory.CreateDirectory(item.TargetFolder);
-				item.CopeTo();
-			}
+			item.CopeTo();
 		}
 	}
 }
