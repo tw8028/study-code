@@ -1,0 +1,14 @@
+﻿@page "/player"
+@rendermode InteractiveServer
+@inject FileService fileService
+
+<h3>Import Player</h3>
+<_Role Roles="CreateRoles()"></_Role>
+
+@code {
+    private List<Role> CreateRoles()
+    {
+        RoleFactory roleFactory = new(RoleCategory.Player, fileService);
+        return roleFactory.CreateRoles();
+    }
+}

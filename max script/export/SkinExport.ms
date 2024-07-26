@@ -24,6 +24,7 @@ fn SkinExport x=(
 	pluginManager.loadClass FbxExporter
 	FBXExporterSetParam "ResetExport"
 	FBXExporterSetParam "Animation" false
+	FBXExporterSetParam "Triangulate" true
 	--FBXExporterSetParam "BakeAnimation" true
 	exportFile exportPath #noPrompt selectedOnly:true using:FBXEXP	
 	)	

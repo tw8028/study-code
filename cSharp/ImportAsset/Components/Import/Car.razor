@@ -1,0 +1,13 @@
+﻿@page "/car"
+@* @rendermode InteractiveServer *@
+@inject FileService fileService
+
+<_Role Roles="CreateRoles()"></_Role>
+
+@code {
+    private List<Role> CreateRoles()
+    {
+        RoleFactory roleFactory = new(RoleCategory.Vehicle, fileService);
+        return roleFactory.CreateRoles();
+    }
+}
