@@ -14,7 +14,9 @@ fn SkinExport x=(
 		bones = bones + " " + item
 		)
 	if Blist.count !=0 then throw bones
-		
+	
+	if findString (getFilenameFile maxFileName) " "!=undefined then throw "文件名有空格"
+	
 	--find nub bone then deselect it
 	--for item in sel do( 
 	--	if findString item.name "Nub"!=undefined then deselect item

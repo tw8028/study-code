@@ -1,0 +1,80 @@
+﻿@page "/counter"
+
+<PageTitle>Counter</PageTitle>
+
+<MudButton Color="Color.Primary" Variant="Variant.Filled" @onclick="CreateNew">New</MudButton>
+<MudTable Items="@_configList" Hover="true" Breakpoint="Breakpoint.Sm" Loading="true" LoadingProgressColor="Color.Info">
+    <HeaderContent>
+        <MudTh>Id</MudTh>
+        <MudTh>Name</MudTh>
+        <MudTh>Key</MudTh>
+        <MudTh>Source</MudTh>
+        <MudTh>Dest</MudTh>
+        <MudTh>Action</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTh>@context.Id</MudTh>
+        <MudTh>@context.Name</MudTh>
+        <MudTh>@context.Key</MudTh>
+        <MudTh>@context.SourceRoot</MudTh>
+        <MudTh>@context.DestRoot</MudTh>
+        <MudTh>
+            <MudButton Color="Color.Success" Variant="Variant.Outlined" @onclick="Edite">edite</MudButton>
+            <MudButton Color="Color.Warning" Variant="Variant.Text" @onclick="Delete">delete</MudButton>
+        </MudTh>
+    </RowTemplate>
+</MudTable>
+
+<MudMessageBox @ref="_messageBox" Title="new" CancelText="Cancel">
+    <MessageContent>
+        <EditForm Model="@model"></EditForm>
+        <MudGrid>
+            <MudItem xs="12" sm="7">
+                <MudCard>
+                    <MudTextField Label="Name" @bind-Value="model.Name" For="@(()=>model.Name)" />
+                    <MudTextField Label="Key" @bind-Value="model.Key" For="@(()=>model.Key)" />
+                    <MudTextField Label="Source" @bind-Value="model.SourceRoot" For="@(()=>model.SourceRoot)" />
+                    <MudTextField Label="Dest" @bind-Value="model.DestRoot" For="@(()=>model.DestRoot)" />
+                </MudCard>
+            </MudItem>
+        </MudGrid>
+
+    </MessageContent>
+    <YesButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Error" StartIcon="@Icons.Material.Filled.Done">Ok</MudButton>
+    </YesButton>
+</MudMessageBox>
+
+
+
+@inject FileService fileService
+@code {
+    CategoryConfig model;
+    private List<CategoryConfig> _configList = new();
+    private MudMessageBox _messageBox;
+    protected override void OnInitialized()
+    {
+        string categoryData = fileService.ReadFile("Config/Categorys.json");
+        _configList = JsonConvert.DeserializeObject<List<CategoryConfig>>(categoryData);
+    }
+
+    private async Task CreateNew()
+    {
+        model = new();
+        bool? result =  await _messageBox.ShowAsync();
+        if(result is not null)
+        {
+            model.Id = _configList.Max(a => a.Id) + 1;
+            _configList.Add(model);
+        }
+        StateHasChanged();
+    }
+    private async Task Edite()
+    {
+
+    }
+    private async Task Delete()
+    {
+        
+    }
+}
