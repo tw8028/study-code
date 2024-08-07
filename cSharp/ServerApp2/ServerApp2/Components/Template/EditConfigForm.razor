@@ -1,0 +1,33 @@
+﻿<EditForm Model="FormData" OnValidSubmit="Submit">
+    <label>Name:</label><br />
+    <InputText @bind-Value="FormData.Name" /><br /><br />
+
+    <label>Key:</label><br />
+    <InputText @bind-Value="FormData.Key" /><br /><br />
+
+    <label>Source:</label><br />
+    <InputText @bind-Value="FormData.SourceRoot" /><br /><br />
+
+    <label>Dest:</label><br />
+    <InputText @bind-Value="FormData.DestRoot" /><br /><br />
+
+    <button class="btn btn-primary" style="float:left" type="submit">Ok</button>
+    <button class="btn btn-secondary" style="float:right" @onclick="Cancel">Cancel</button>
+</EditForm>
+
+
+@code {
+    [Parameter] public CategoryConfig FormData { get; set; }
+    [CascadingParameter] BlazoredModalInstance Modal { get; set; } = default!;
+    protected override void OnInitialized()
+    {
+    }
+    private async Task Submit()
+    {
+        await Modal.CloseAsync(ModalResult.Ok(FormData));
+    }
+    private async Task Cancel()
+    {
+        await Modal.CancelAsync();
+    }
+}

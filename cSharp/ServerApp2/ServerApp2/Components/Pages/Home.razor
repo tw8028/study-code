@@ -1,0 +1,59 @@
+﻿@page "/"
+@inject FileService fileService
+@using ServerApp2.Components.Template
+
+<PageTitle>Home</PageTitle>
+
+<TddTable @ref="_table" Data="@configData">
+    <HeaderTemplate>
+        <th>Id</th>
+        <th>Name</th>
+        <th>Key</th>
+        <th>Source</th>
+        <th>Destination</th>
+        <th>Action</th>
+    </HeaderTemplate>
+    <RowTemplate>
+        <td>@context.Id</td>
+        <td>@context.Name</td>
+        <td>@context.Key</td>
+        <td>@context.SourceRoot</td>
+        <td>@context.DestRoot</td>
+    </RowTemplate>
+    <Action Context="row">
+        <td>
+            <button class="btn btn-primary btn-sm" @onclick="()=>ShowModal(row)">edit</button>
+            <button class="btn btn-secondary btn-sm" @onclick="()=>Delete(row)">delete</button>
+        </td>
+    </Action>
+</TddTable>
+
+
+@code {
+    List<CategoryConfig>? configData = new();
+    TddTable<CategoryConfig>? _table;
+    [CascadingParameter] public IModalService? Modal { get; set; }
+    protected override void OnInitialized()
+    {
+        string dataFromJson = fileService.ReadFile("Config/Categorys.json");
+        configData = JsonConvert.DeserializeObject<List<CategoryConfig>>(dataFromJson);
+    }
+
+    void Delete(CategoryConfig row)
+    {
+        configData?.Remove(row);
+    }
+    async void ShowModal(CategoryConfig row)
+    {
+        var parameters = new ModalParameters().Add(nameof(EditConfigForm.FormData), row with { });
+        var configForm = Modal.Show<EditConfigForm>("Edit Category1", parameters);
+        var result = await configForm.Result;
+        if (result.Confirmed && result.Data is not null && configData is not null)
+        {
+            var returnData = (CategoryConfig)result.Data;
+            var index = configData.FindIndex(x => x.Id == returnData.Id);
+            configData[index] = returnData;
+            StateHasChanged();
+        }
+    }
+}
