@@ -1,42 +1,14 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "D:\\BlazorApp\\ServerApp2\\",
+  "WorkspaceRootPath": "D:\\GitHub\\study-code\\cSharp\\ServerApp2\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{1BCC7E68-E978-48CF-90DD-902224025F0F}|ServerApp2\\ServerApp2.csproj|d:\\blazorapp\\serverapp2\\serverapp2\\components\\pages\\home.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "AbsoluteMoniker": "D:0:0:{1BCC7E68-E978-48CF-90DD-902224025F0F}|ServerApp2\\ServerApp2.csproj|d:\\github\\study-code\\csharp\\serverapp2\\serverapp2\\components\\template\\tddmodal.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{1BCC7E68-E978-48CF-90DD-902224025F0F}|ServerApp2\\ServerApp2.csproj|solutionrelative:serverapp2\\components\\template\\tddmodal.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1BCC7E68-E978-48CF-90DD-902224025F0F}|ServerApp2\\ServerApp2.csproj|d:\\github\\study-code\\csharp\\serverapp2\\serverapp2\\components\\pages\\home.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{1BCC7E68-E978-48CF-90DD-902224025F0F}|ServerApp2\\ServerApp2.csproj|solutionrelative:serverapp2\\components\\pages\\home.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{1BCC7E68-E978-48CF-90DD-902224025F0F}|ServerApp2\\ServerApp2.csproj|d:\\blazorapp\\serverapp2\\serverapp2\\components\\template\\editconfigform.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{1BCC7E68-E978-48CF-90DD-902224025F0F}|ServerApp2\\ServerApp2.csproj|solutionrelative:serverapp2\\components\\template\\editconfigform.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{1BCC7E68-E978-48CF-90DD-902224025F0F}|ServerApp2\\ServerApp2.csproj|d:\\blazorapp\\serverapp2\\serverapp2\\components\\template\\tddtable.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{1BCC7E68-E978-48CF-90DD-902224025F0F}|ServerApp2\\ServerApp2.csproj|solutionrelative:serverapp2\\components\\template\\tddtable.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{1BCC7E68-E978-48CF-90DD-902224025F0F}|ServerApp2\\ServerApp2.csproj|d:\\blazorapp\\serverapp2\\serverapp2\\categoryconfig.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{1BCC7E68-E978-48CF-90DD-902224025F0F}|ServerApp2\\ServerApp2.csproj|solutionrelative:serverapp2\\categoryconfig.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{1BCC7E68-E978-48CF-90DD-902224025F0F}|ServerApp2\\ServerApp2.csproj|d:\\blazorapp\\serverapp2\\serverapp2\\components\\routes.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{1BCC7E68-E978-48CF-90DD-902224025F0F}|ServerApp2\\ServerApp2.csproj|solutionrelative:serverapp2\\components\\routes.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{1BCC7E68-E978-48CF-90DD-902224025F0F}|ServerApp2\\ServerApp2.csproj|d:\\blazorapp\\serverapp2\\serverapp2\\fileservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{1BCC7E68-E978-48CF-90DD-902224025F0F}|ServerApp2\\ServerApp2.csproj|solutionrelative:serverapp2\\fileservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{1BCC7E68-E978-48CF-90DD-902224025F0F}|ServerApp2\\ServerApp2.csproj|d:\\blazorapp\\serverapp2\\serverapp2\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{1BCC7E68-E978-48CF-90DD-902224025F0F}|ServerApp2\\ServerApp2.csproj|solutionrelative:serverapp2\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{1BCC7E68-E978-48CF-90DD-902224025F0F}|ServerApp2\\ServerApp2.csproj|d:\\blazorapp\\serverapp2\\serverapp2\\components\\_imports.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{1BCC7E68-E978-48CF-90DD-902224025F0F}|ServerApp2\\ServerApp2.csproj|solutionrelative:serverapp2\\components\\_imports.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{1BCC7E68-E978-48CF-90DD-902224025F0F}|ServerApp2\\ServerApp2.csproj|d:\\blazorapp\\serverapp2\\serverapp2\\serverapp2.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
-      "RelativeMoniker": "D:0:0:{1BCC7E68-E978-48CF-90DD-902224025F0F}|ServerApp2\\ServerApp2.csproj|solutionrelative:serverapp2\\serverapp2.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
     }
   ],
   "DocumentGroupContainers": [
@@ -46,127 +18,32 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 6,
+          "SelectedChildIndex": 1,
           "Children": [
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{3ae79031-e1bc-11d0-8f78-00a0c9110057}"
-            },
             {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "EditConfigForm.razor",
-              "DocumentMoniker": "D:\\BlazorApp\\ServerApp2\\ServerApp2\\Components\\Template\\EditConfigForm.razor",
-              "RelativeDocumentMoniker": "ServerApp2\\Components\\Template\\EditConfigForm.razor",
-              "ToolTip": "D:\\BlazorApp\\ServerApp2\\ServerApp2\\Components\\Template\\EditConfigForm.razor",
-              "RelativeToolTip": "ServerApp2\\Components\\Template\\EditConfigForm.razor",
-              "ViewState": "AQIAAAMAAAAAAAAAAAAAABoAAAA5AAAA",
+              "Title": "Home.razor",
+              "DocumentMoniker": "D:\\GitHub\\study-code\\cSharp\\ServerApp2\\ServerApp2\\Components\\Pages\\Home.razor",
+              "RelativeDocumentMoniker": "ServerApp2\\Components\\Pages\\Home.razor",
+              "ToolTip": "D:\\GitHub\\study-code\\cSharp\\ServerApp2\\ServerApp2\\Components\\Pages\\Home.razor",
+              "RelativeToolTip": "ServerApp2\\Components\\Pages\\Home.razor",
+              "ViewState": "AQIAACoAAAAAAAAAAAAAAEAAAAAaAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-08-07T08:02:41.482Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "Routes.razor",
-              "DocumentMoniker": "D:\\BlazorApp\\ServerApp2\\ServerApp2\\Components\\Routes.razor",
-              "RelativeDocumentMoniker": "ServerApp2\\Components\\Routes.razor",
-              "ToolTip": "D:\\BlazorApp\\ServerApp2\\ServerApp2\\Components\\Routes.razor",
-              "RelativeToolTip": "ServerApp2\\Components\\Routes.razor",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAUAAAAQAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-08-07T07:44:29.764Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "_Imports.razor",
-              "DocumentMoniker": "D:\\BlazorApp\\ServerApp2\\ServerApp2\\Components\\_Imports.razor",
-              "RelativeDocumentMoniker": "ServerApp2\\Components\\_Imports.razor",
-              "ToolTip": "D:\\BlazorApp\\ServerApp2\\ServerApp2\\Components\\_Imports.razor",
-              "RelativeToolTip": "ServerApp2\\Components\\_Imports.razor",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAwAAAAeAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-08-07T05:14:18.282Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "ServerApp2",
-              "DocumentMoniker": "D:\\BlazorApp\\ServerApp2\\ServerApp2\\ServerApp2.csproj",
-              "RelativeDocumentMoniker": "ServerApp2\\ServerApp2.csproj",
-              "ToolTip": "D:\\BlazorApp\\ServerApp2\\ServerApp2\\ServerApp2.csproj",
-              "RelativeToolTip": "ServerApp2\\ServerApp2.csproj",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2024-08-07T05:11:59.461Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "CategoryConfig.cs",
-              "DocumentMoniker": "D:\\BlazorApp\\ServerApp2\\ServerApp2\\CategoryConfig.cs",
-              "RelativeDocumentMoniker": "ServerApp2\\CategoryConfig.cs",
-              "ToolTip": "D:\\BlazorApp\\ServerApp2\\ServerApp2\\CategoryConfig.cs",
-              "RelativeToolTip": "ServerApp2\\CategoryConfig.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAIAAAAcAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-08-07T05:12:21.149Z",
+              "WhenOpened": "2024-08-07T14:40:39.302Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "Home.razor",
-              "DocumentMoniker": "D:\\BlazorApp\\ServerApp2\\ServerApp2\\Components\\Pages\\Home.razor",
-              "RelativeDocumentMoniker": "ServerApp2\\Components\\Pages\\Home.razor",
-              "ToolTip": "D:\\BlazorApp\\ServerApp2\\ServerApp2\\Components\\Pages\\Home.razor",
-              "RelativeToolTip": "ServerApp2\\Components\\Pages\\Home.razor",
-              "ViewState": "AQIAAB4AAAAAAAAAAAAAADkAAAAFAAAA",
+              "Title": "TddModal.razor",
+              "DocumentMoniker": "D:\\GitHub\\study-code\\cSharp\\ServerApp2\\ServerApp2\\Components\\Template\\TddModal.razor",
+              "RelativeDocumentMoniker": "ServerApp2\\Components\\Template\\TddModal.razor",
+              "ToolTip": "D:\\GitHub\\study-code\\cSharp\\ServerApp2\\ServerApp2\\Components\\Template\\TddModal.razor",
+              "RelativeToolTip": "ServerApp2\\Components\\Template\\TddModal.razor",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAsAAAADAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-08-07T05:07:16.072Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "TddTable.razor",
-              "DocumentMoniker": "D:\\BlazorApp\\ServerApp2\\ServerApp2\\Components\\Template\\TddTable.razor",
-              "RelativeDocumentMoniker": "ServerApp2\\Components\\Template\\TddTable.razor",
-              "ToolTip": "D:\\BlazorApp\\ServerApp2\\ServerApp2\\Components\\Template\\TddTable.razor",
-              "RelativeToolTip": "ServerApp2\\Components\\Template\\TddTable.razor",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAABsAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-08-07T04:57:54.622Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "Program.cs",
-              "DocumentMoniker": "D:\\BlazorApp\\ServerApp2\\ServerApp2\\Program.cs",
-              "RelativeDocumentMoniker": "ServerApp2\\Program.cs",
-              "ToolTip": "D:\\BlazorApp\\ServerApp2\\ServerApp2\\Program.cs",
-              "RelativeToolTip": "ServerApp2\\Program.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAVAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-08-07T04:48:25.777Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "FileService.cs",
-              "DocumentMoniker": "D:\\BlazorApp\\ServerApp2\\ServerApp2\\FileService.cs",
-              "RelativeDocumentMoniker": "ServerApp2\\FileService.cs",
-              "ToolTip": "D:\\BlazorApp\\ServerApp2\\ServerApp2\\FileService.cs",
-              "RelativeToolTip": "ServerApp2\\FileService.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAYAAAALAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-08-07T04:48:13.91Z",
+              "WhenOpened": "2024-08-07T13:49:40.292Z",
               "EditorCaption": ""
             }
           ]

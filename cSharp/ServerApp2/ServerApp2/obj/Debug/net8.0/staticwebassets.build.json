@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "vsNotmLylQZwtUqUD/R/pEA0Jh2RTnx/YhTmY8KcuP8=",
+  "Hash": "966V5Criklsb6bvGjAErx0DXa9SspWH8B0hAd9Ubty4=",
   "Source": "ServerApp2",
   "BasePath": "_content/ServerApp2",
   "Mode": "Default",
@@ -10,17 +10,17 @@
     {
       "Name": "ServerApp2\\wwwroot",
       "Source": "ServerApp2",
-      "ContentRoot": "D:\\BlazorApp\\ServerApp2\\ServerApp2\\wwwroot\\",
+      "ContentRoot": "D:\\GitHub\\study-code\\cSharp\\ServerApp2\\ServerApp2\\wwwroot\\",
       "BasePath": "_content/ServerApp2",
       "Pattern": "**"
     }
   ],
   "Assets": [
     {
-      "Identity": "C:\\Users\\user\\.nuget\\packages\\blazored.modal\\7.3.1\\staticwebassets\\Blazored.Modal.bundle.scp.css",
+      "Identity": "C:\\Users\\TengWei\\.nuget\\packages\\blazored.modal\\7.3.1\\staticwebassets\\Blazored.Modal.bundle.scp.css",
       "SourceId": "Blazored.Modal",
       "SourceType": "Package",
-      "ContentRoot": "C:\\Users\\user\\.nuget\\packages\\blazored.modal\\7.3.1\\staticwebassets\\",
+      "ContentRoot": "C:\\Users\\TengWei\\.nuget\\packages\\blazored.modal\\7.3.1\\staticwebassets\\",
       "BasePath": "_content/Blazored.Modal",
       "RelativePath": "Blazored.Modal.bundle.scp.css",
       "AssetKind": "All",
@@ -33,13 +33,13 @@
       "AssetTraitValue": "ProjectBundle",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "C:\\Users\\user\\.nuget\\packages\\blazored.modal\\7.3.1\\staticwebassets\\Blazored.Modal.bundle.scp.css"
+      "OriginalItemSpec": "C:\\Users\\TengWei\\.nuget\\packages\\blazored.modal\\7.3.1\\staticwebassets\\Blazored.Modal.bundle.scp.css"
     },
     {
-      "Identity": "C:\\Users\\user\\.nuget\\packages\\blazored.modal\\7.3.1\\staticwebassets\\BlazoredModal.razor.js",
+      "Identity": "C:\\Users\\TengWei\\.nuget\\packages\\blazored.modal\\7.3.1\\staticwebassets\\BlazoredModal.razor.js",
       "SourceId": "Blazored.Modal",
       "SourceType": "Package",
-      "ContentRoot": "C:\\Users\\user\\.nuget\\packages\\blazored.modal\\7.3.1\\staticwebassets\\",
+      "ContentRoot": "C:\\Users\\TengWei\\.nuget\\packages\\blazored.modal\\7.3.1\\staticwebassets\\",
       "BasePath": "_content/Blazored.Modal",
       "RelativePath": "BlazoredModal.razor.js",
       "AssetKind": "All",
@@ -52,13 +52,13 @@
       "AssetTraitValue": "",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "C:\\Users\\user\\.nuget\\packages\\blazored.modal\\7.3.1\\staticwebassets\\BlazoredModal.razor.js"
+      "OriginalItemSpec": "C:\\Users\\TengWei\\.nuget\\packages\\blazored.modal\\7.3.1\\staticwebassets\\BlazoredModal.razor.js"
     },
     {
-      "Identity": "D:\\BlazorApp\\ServerApp2\\ServerApp2\\obj\\Debug\\net8.0\\scopedcss\\bundle\\ServerApp2.styles.css",
+      "Identity": "D:\\GitHub\\study-code\\cSharp\\ServerApp2\\ServerApp2\\obj\\Debug\\net8.0\\scopedcss\\bundle\\ServerApp2.styles.css",
       "SourceId": "ServerApp2",
       "SourceType": "Computed",
-      "ContentRoot": "D:\\BlazorApp\\ServerApp2\\ServerApp2\\obj\\Debug\\net8.0\\scopedcss\\bundle\\",
+      "ContentRoot": "D:\\GitHub\\study-code\\cSharp\\ServerApp2\\ServerApp2\\obj\\Debug\\net8.0\\scopedcss\\bundle\\",
       "BasePath": "_content/ServerApp2",
       "RelativePath": "ServerApp2.styles.css",
       "AssetKind": "All",
@@ -71,13 +71,13 @@
       "AssetTraitValue": "ApplicationBundle",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "D:\\BlazorApp\\ServerApp2\\ServerApp2\\obj\\Debug\\net8.0\\scopedcss\\bundle\\ServerApp2.styles.css"
+      "OriginalItemSpec": "D:\\GitHub\\study-code\\cSharp\\ServerApp2\\ServerApp2\\obj\\Debug\\net8.0\\scopedcss\\bundle\\ServerApp2.styles.css"
     },
     {
-      "Identity": "D:\\BlazorApp\\ServerApp2\\ServerApp2\\obj\\Debug\\net8.0\\scopedcss\\projectbundle\\ServerApp2.bundle.scp.css",
+      "Identity": "D:\\GitHub\\study-code\\cSharp\\ServerApp2\\ServerApp2\\obj\\Debug\\net8.0\\scopedcss\\projectbundle\\ServerApp2.bundle.scp.css",
       "SourceId": "ServerApp2",
       "SourceType": "Computed",
-      "ContentRoot": "D:\\BlazorApp\\ServerApp2\\ServerApp2\\obj\\Debug\\net8.0\\scopedcss\\projectbundle\\",
+      "ContentRoot": "D:\\GitHub\\study-code\\cSharp\\ServerApp2\\ServerApp2\\obj\\Debug\\net8.0\\scopedcss\\projectbundle\\",
       "BasePath": "_content/ServerApp2",
       "RelativePath": "ServerApp2.bundle.scp.css",
       "AssetKind": "All",
@@ -90,13 +90,13 @@
       "AssetTraitValue": "ProjectBundle",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "D:\\BlazorApp\\ServerApp2\\ServerApp2\\obj\\Debug\\net8.0\\scopedcss\\projectbundle\\ServerApp2.bundle.scp.css"
+      "OriginalItemSpec": "D:\\GitHub\\study-code\\cSharp\\ServerApp2\\ServerApp2\\obj\\Debug\\net8.0\\scopedcss\\projectbundle\\ServerApp2.bundle.scp.css"
     },
     {
-      "Identity": "D:\\BlazorApp\\ServerApp2\\ServerApp2\\wwwroot\\app.css",
+      "Identity": "D:\\GitHub\\study-code\\cSharp\\ServerApp2\\ServerApp2\\wwwroot\\app.css",
       "SourceId": "ServerApp2",
       "SourceType": "Discovered",
-      "ContentRoot": "D:\\BlazorApp\\ServerApp2\\ServerApp2\\wwwroot\\",
+      "ContentRoot": "D:\\GitHub\\study-code\\cSharp\\ServerApp2\\ServerApp2\\wwwroot\\",
       "BasePath": "_content/ServerApp2",
       "RelativePath": "app.css",
       "AssetKind": "All",
@@ -112,10 +112,10 @@
       "OriginalItemSpec": "wwwroot\\app.css"
     },
     {
-      "Identity": "D:\\BlazorApp\\ServerApp2\\ServerApp2\\wwwroot\\bootstrap\\bootstrap.min.css",
+      "Identity": "D:\\GitHub\\study-code\\cSharp\\ServerApp2\\ServerApp2\\wwwroot\\bootstrap\\bootstrap.min.css",
       "SourceId": "ServerApp2",
       "SourceType": "Discovered",
-      "ContentRoot": "D:\\BlazorApp\\ServerApp2\\ServerApp2\\wwwroot\\",
+      "ContentRoot": "D:\\GitHub\\study-code\\cSharp\\ServerApp2\\ServerApp2\\wwwroot\\",
       "BasePath": "_content/ServerApp2",
       "RelativePath": "bootstrap/bootstrap.min.css",
       "AssetKind": "All",
@@ -131,10 +131,10 @@
       "OriginalItemSpec": "wwwroot\\bootstrap\\bootstrap.min.css"
     },
     {
-      "Identity": "D:\\BlazorApp\\ServerApp2\\ServerApp2\\wwwroot\\bootstrap\\bootstrap.min.css.map",
+      "Identity": "D:\\GitHub\\study-code\\cSharp\\ServerApp2\\ServerApp2\\wwwroot\\bootstrap\\bootstrap.min.css.map",
       "SourceId": "ServerApp2",
       "SourceType": "Discovered",
-      "ContentRoot": "D:\\BlazorApp\\ServerApp2\\ServerApp2\\wwwroot\\",
+      "ContentRoot": "D:\\GitHub\\study-code\\cSharp\\ServerApp2\\ServerApp2\\wwwroot\\",
       "BasePath": "_content/ServerApp2",
       "RelativePath": "bootstrap/bootstrap.min.css.map",
       "AssetKind": "All",
@@ -150,10 +150,10 @@
       "OriginalItemSpec": "wwwroot\\bootstrap\\bootstrap.min.css.map"
     },
     {
-      "Identity": "D:\\BlazorApp\\ServerApp2\\ServerApp2\\wwwroot\\config\\Categorys.json",
+      "Identity": "D:\\GitHub\\study-code\\cSharp\\ServerApp2\\ServerApp2\\wwwroot\\config\\Categorys.json",
       "SourceId": "ServerApp2",
       "SourceType": "Discovered",
-      "ContentRoot": "D:\\BlazorApp\\ServerApp2\\ServerApp2\\wwwroot\\",
+      "ContentRoot": "D:\\GitHub\\study-code\\cSharp\\ServerApp2\\ServerApp2\\wwwroot\\",
       "BasePath": "_content/ServerApp2",
       "RelativePath": "config/Categorys.json",
       "AssetKind": "All",
@@ -169,10 +169,10 @@
       "OriginalItemSpec": "wwwroot\\config\\Categorys.json"
     },
     {
-      "Identity": "D:\\BlazorApp\\ServerApp2\\ServerApp2\\wwwroot\\config\\Path.json",
+      "Identity": "D:\\GitHub\\study-code\\cSharp\\ServerApp2\\ServerApp2\\wwwroot\\config\\Path.json",
       "SourceId": "ServerApp2",
       "SourceType": "Discovered",
-      "ContentRoot": "D:\\BlazorApp\\ServerApp2\\ServerApp2\\wwwroot\\",
+      "ContentRoot": "D:\\GitHub\\study-code\\cSharp\\ServerApp2\\ServerApp2\\wwwroot\\",
       "BasePath": "_content/ServerApp2",
       "RelativePath": "config/Path.json",
       "AssetKind": "All",
@@ -188,10 +188,10 @@
       "OriginalItemSpec": "wwwroot\\config\\Path.json"
     },
     {
-      "Identity": "D:\\BlazorApp\\ServerApp2\\ServerApp2\\wwwroot\\favicon.png",
+      "Identity": "D:\\GitHub\\study-code\\cSharp\\ServerApp2\\ServerApp2\\wwwroot\\favicon.png",
       "SourceId": "ServerApp2",
       "SourceType": "Discovered",
-      "ContentRoot": "D:\\BlazorApp\\ServerApp2\\ServerApp2\\wwwroot\\",
+      "ContentRoot": "D:\\GitHub\\study-code\\cSharp\\ServerApp2\\ServerApp2\\wwwroot\\",
       "BasePath": "_content/ServerApp2",
       "RelativePath": "favicon.png",
       "AssetKind": "All",

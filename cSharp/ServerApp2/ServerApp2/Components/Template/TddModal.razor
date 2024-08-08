@@ -1,0 +1,30 @@
+﻿@typeparam TItem
+<EditForm Model="Item" OnValidSubmit="Submit">
+	@foreach (var propertyInfo in typeof(TItem).GetProperties())
+	{
+		if (!propertyInfo.Name.Equals("Id"))
+		{
+			<label>@propertyInfo.Name:</label>
+			<br />
+			<input @bind:get="propertyInfo.GetValue(Item)?.ToString()" @bind:set="((v)=>propertyInfo.SetValue(Item,v))" />
+			<br />
+			<br />
+		}
+	}
+	<button class="btn btn-primary" style="float:left" type="submit">Submit</button>
+	<button class="btn btn-secondary" style="float:right" @onclick="Cancel">Cancel</button>
+</EditForm>
+
+@code {
+	[Parameter] public TItem? Item { get; set; }
+	[CascadingParameter] BlazoredModalInstance Modal { get; set; } = default!;
+	
+	private async Task Submit()
+	{
+		await Modal.CloseAsync(ModalResult.Ok(Item));
+	}
+	private async Task Cancel()
+	{
+		await Modal.CancelAsync();
+	}
+}
