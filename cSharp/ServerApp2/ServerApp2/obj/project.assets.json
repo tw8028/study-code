@@ -695,7 +695,7 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\TengWei\\.nuget\\packages\\": {}
+    "C:\\Users\\user\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
@@ -703,11 +703,11 @@
       "projectUniqueName": "D:\\GitHub\\study-code\\cSharp\\ServerApp2\\ServerApp2\\ServerApp2.csproj",
       "projectName": "ServerApp2",
       "projectPath": "D:\\GitHub\\study-code\\cSharp\\ServerApp2\\ServerApp2\\ServerApp2.csproj",
-      "packagesPath": "C:\\Users\\TengWei\\.nuget\\packages\\",
+      "packagesPath": "C:\\Users\\user\\.nuget\\packages\\",
       "outputPath": "D:\\GitHub\\study-code\\cSharp\\ServerApp2\\ServerApp2\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\TengWei\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\user\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -767,7 +767,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.302/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.303/PortableRuntimeIdentifierGraph.json"
       }
     }
   }
