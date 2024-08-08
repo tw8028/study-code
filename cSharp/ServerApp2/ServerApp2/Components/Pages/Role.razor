@@ -1,0 +1,86 @@
+﻿@page "/role-{Page:int}"
+@inject FileService fileService
+
+@if (data is null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <TddTable Data="@data">
+        <HeaderTemplate>
+            <th></th>
+            <th>Name</th>
+            <th>State</th>
+        </HeaderTemplate>
+        <RowTemplate>
+            <td><input type="checkbox" @bind="@context.IsChecked" /></td>
+            <td>@context.Name</td>
+            <td>
+                @if (context.State == CheckResult.Equal)
+                {
+                    <span class="alert-success">&#10003</span>
+                }
+                else
+                {
+                    <span class="alert-warning">@context.State</span>
+                }
+            </td>
+        </RowTemplate>
+    </TddTable>
+}
+
+@code {
+    [Parameter] public int Page { get; set; }
+    AssetConfig Config = new();
+    List<AssetFile>? data;
+
+    private PathConfig _pathConfig;
+    private List<CategoryConfig> _categoryConfigList;
+    protected override void OnInitialized()
+    {
+        string pathData = fileService.ReadFile("Config/Path.json");
+        string categoryData = fileService.ReadFile("Config/Categorys.json");
+        _pathConfig = JsonConvert.DeserializeObject<PathConfig>(pathData);
+        _categoryConfigList = JsonConvert.DeserializeObject<List<CategoryConfig>>(categoryData);
+       
+    }
+
+    protected override void OnParametersSet()
+    {
+        var categoryConfig = _categoryConfigList.Single(x => x.Id == Page);
+
+        Config.Id = categoryConfig.Id;
+        Config.Name = categoryConfig.Name;
+        Config.Key = categoryConfig.Key;
+        Config.SourceRoot = Path.Combine(_pathConfig.SourcePath, categoryConfig.SourceRoot);
+        Config.DestRoot = Path.Combine(_pathConfig.UnityArtPath, categoryConfig.DestRoot);
+
+        List<FileInfo> fbxfiles = new();
+        GetFileInfo(Config, Config.SourceRoot, ref fbxfiles);
+        data = new();
+        foreach (var fl in fbxfiles)
+        {
+            AssetFile assetFile = new(fl.FullName, Config);
+            data.Add(assetFile);
+        }
+    }
+
+    private void GetFileInfo(AssetConfig config, string SourceRoot, ref List<FileInfo> fbxList)
+    {
+        DirectoryInfo dir = new DirectoryInfo(SourceRoot);
+        bool isFbx = dir.Name.Equals("fbx", StringComparison.OrdinalIgnoreCase);
+        bool isTexture = dir.Name.Equals("Texture", StringComparison.OrdinalIgnoreCase);
+        if (isFbx)
+        {
+            FileInfo[] fls = dir.GetFiles("*.fbx");
+            fbxList.AddRange(fls.Where(f => f.Name.StartsWith(config.Key))); // 匹配关键字
+        }
+
+        DirectoryInfo[] subs = dir.GetDirectories();
+        foreach (DirectoryInfo subDir in subs)
+        {
+            GetFileInfo(config, subDir.FullName, ref fbxList);
+        }
+    }
+}

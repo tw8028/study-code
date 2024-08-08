@@ -1,4 +1,4 @@
-﻿namespace ServerApp2;
+﻿namespace AssetFiles.Domain;
 
 public record CategoryConfig
 {

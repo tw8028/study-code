@@ -261,6 +261,16 @@
         "build": {
           "buildTransitive/net6.0/_._": {}
         }
+      },
+      "AssetFiles.Domain/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v8.0",
+        "compile": {
+          "bin/placeholder/AssetFiles.Domain.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/AssetFiles.Domain.dll": {}
+        }
       }
     }
   },
@@ -686,10 +696,16 @@
         "system.io.pipelines.nuspec",
         "useSharedDesignerContext.txt"
       ]
+    },
+    "AssetFiles.Domain/1.0.0": {
+      "type": "project",
+      "path": "../AssetFiles.Domain/AssetFiles.Domain.csproj",
+      "msbuildProject": "../AssetFiles.Domain/AssetFiles.Domain.csproj"
     }
   },
   "projectFileDependencyGroups": {
     "net8.0": [
+      "AssetFiles.Domain >= 1.0.0",
       "Blazored.Modal >= 7.3.1",
       "Newtonsoft.Json >= 13.0.3"
     ]
@@ -721,7 +737,11 @@
       "frameworks": {
         "net8.0": {
           "targetAlias": "net8.0",
-          "projectReferences": {}
+          "projectReferences": {
+            "D:\\GitHub\\study-code\\cSharp\\ServerApp2\\AssetFiles.Domain\\AssetFiles.Domain.csproj": {
+              "projectPath": "D:\\GitHub\\study-code\\cSharp\\ServerApp2\\AssetFiles.Domain\\AssetFiles.Domain.csproj"
+            }
+          }
         }
       },
       "warningProperties": {

@@ -1,4 +1,5 @@
-﻿@typeparam TItem
+﻿@namespace ServerApp2.Components
+@typeparam TItem
 
 <EditForm Model="Item" OnValidSubmit="Submit">
     @foreach (var propertyInfo in typeof(TItem).GetProperties())
