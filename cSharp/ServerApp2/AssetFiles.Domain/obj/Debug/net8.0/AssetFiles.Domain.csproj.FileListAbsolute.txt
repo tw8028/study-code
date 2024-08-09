@@ -1,0 +1,12 @@
+D:\GitHub\study-code\cSharp\ServerApp2\AssetFiles.Domain\bin\Debug\net8.0\AssetFiles.Domain.deps.json
+D:\GitHub\study-code\cSharp\ServerApp2\AssetFiles.Domain\bin\Debug\net8.0\AssetFiles.Domain.dll
+D:\GitHub\study-code\cSharp\ServerApp2\AssetFiles.Domain\bin\Debug\net8.0\AssetFiles.Domain.pdb
+D:\GitHub\study-code\cSharp\ServerApp2\AssetFiles.Domain\obj\Debug\net8.0\AssetFiles.Domain.GeneratedMSBuildEditorConfig.editorconfig
+D:\GitHub\study-code\cSharp\ServerApp2\AssetFiles.Domain\obj\Debug\net8.0\AssetFiles.Domain.AssemblyInfoInputs.cache
+D:\GitHub\study-code\cSharp\ServerApp2\AssetFiles.Domain\obj\Debug\net8.0\AssetFiles.Domain.AssemblyInfo.cs
+D:\GitHub\study-code\cSharp\ServerApp2\AssetFiles.Domain\obj\Debug\net8.0\AssetFiles.Domain.csproj.CoreCompileInputs.cache
+D:\GitHub\study-code\cSharp\ServerApp2\AssetFiles.Domain\obj\Debug\net8.0\AssetFiles.Domain.sourcelink.json
+D:\GitHub\study-code\cSharp\ServerApp2\AssetFiles.Domain\obj\Debug\net8.0\AssetFiles.Domain.dll
+D:\GitHub\study-code\cSharp\ServerApp2\AssetFiles.Domain\obj\Debug\net8.0\refint\AssetFiles.Domain.dll
+D:\GitHub\study-code\cSharp\ServerApp2\AssetFiles.Domain\obj\Debug\net8.0\AssetFiles.Domain.pdb
+D:\GitHub\study-code\cSharp\ServerApp2\AssetFiles.Domain\obj\Debug\net8.0\ref\AssetFiles.Domain.dll

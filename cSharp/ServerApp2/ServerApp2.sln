@@ -5,7 +5,7 @@ VisualStudioVersion = 17.10.35027.167
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServerApp2", "ServerApp2\ServerApp2.csproj", "{1BCC7E68-E978-48CF-90DD-902224025F0F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AssetFiles.Domain", "AssetFiles.Domain\AssetFiles.Domain.csproj", "{EEF93C52-9CFF-4135-A32A-40F5CE539ABC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AssetFiles.Domain", "AssetFiles.Domain\AssetFiles.Domain.csproj", "{EEF93C52-9CFF-4135-A32A-40F5CE539ABC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

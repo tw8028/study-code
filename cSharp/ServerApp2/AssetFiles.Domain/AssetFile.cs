@@ -49,14 +49,11 @@ public class AssetFile
     }
     public void CopyTo()
     {
-        if (IsChecked)
+        if (!Directory.Exists(DestDirectory))
         {
-            if (!Directory.Exists(DestDirectory))
-            {
-                Directory.CreateDirectory(DestDirectory);
-            }
-            File.Copy(FullName, DestPath, true);
+            Directory.CreateDirectory(DestDirectory);
         }
+        File.Copy(FullName, DestPath, true);
     }
 
     /// <summary>

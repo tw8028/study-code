@@ -1,0 +1,102 @@
+﻿@page "/setting"
+@inject FileService fileService
+@using ServerApp2.Components
+
+<PageTitle>Settings</PageTitle>
+
+<button class="btn btn-primary btn-sm" @onclick="ShowNewModal">New</button>
+
+<TddTable Data="@configData">
+    <HeaderTemplate>
+        <th>Id</th>
+        <th>Name</th>
+        <th>Key</th>
+        <th>Source</th>
+        <th>Destination</th>
+        <th>Action</th>
+    </HeaderTemplate>
+    <RowTemplate>
+        <td>@context.Id</td>
+        <td>@context.Name</td>
+        <td>@context.Key</td>
+        <td>@context.SourceRoot</td>
+        <td>@context.DestRoot</td>
+    </RowTemplate>
+    <Action Context="row">
+        <td>
+            <button class="btn btn-primary btn-sm" @onclick="()=>ShowEditModal(row)">edit</button>
+            <button class="btn btn-secondary btn-sm" @onclick="()=>ShowDeleteModal(row)">delete</button>
+        </td>
+    </Action>
+</TddTable>
+
+
+@code {
+    List<CategoryConfig>? configData;
+    [CascadingParameter] public IModalService Modal { get; set; } // 应该来自于Routes组件
+    private const string relativeFilePath = "Config/Categorys.json";
+
+    protected override void OnInitialized()
+    {
+        string dataFromJson = fileService.ReadFile(relativeFilePath);
+        configData = JsonConvert.DeserializeObject<List<CategoryConfig>>(dataFromJson); // 此处可能赋空值
+        if (configData is null)
+        {
+            configData = new();
+        }
+    }
+
+    async Task ShowDeleteModal(CategoryConfig row)
+    {
+        var deleteForm = Modal.Show<TddConfirmModal>("确定要删除吗？");
+        var result = await deleteForm.Result;
+        if (result.Confirmed)
+        {
+            configData?.Remove(row);
+            string jsonData = JsonConvert.SerializeObject(configData);
+            await fileService.WriteToFileAsync(relativeFilePath, jsonData);
+            StateHasChanged();
+        }
+    }
+
+    async Task ShowEditModal(CategoryConfig row)
+    {
+        // 将row的副本传递给组件
+        var parameters = new ModalParameters().Add(nameof(TddModal<CategoryConfig>.Item), row with { });
+        var configForm = Modal.Show<TddModal<CategoryConfig>>("Edit Category", parameters);
+        var result = await configForm.Result;
+        if (result.Confirmed && result.Data is not null)
+        {
+            var returnData = (CategoryConfig)result.Data;
+            int index = configData.FindIndex(x => x.Id == returnData.Id);
+            configData[index] = returnData;
+            // 将结果写入json
+            string jsonData = JsonConvert.SerializeObject(configData);
+            await fileService.WriteToFileAsync(relativeFilePath, jsonData);
+            StateHasChanged();
+        }
+    }
+
+    async Task ShowNewModal()
+    {
+        var newForm = Modal.Show<TddModal<CategoryConfig>>("Create a Category");
+        var result = await newForm.Result;
+        if (result.Confirmed)
+        {
+            var returnData = (CategoryConfig)result.Data;
+            if (configData.Count == 0)
+            {
+                returnData.Id = 1;
+            }
+            else
+            {
+                returnData.Id = configData.Max(x => x.Id) + 1;
+            }
+            configData.Add(returnData);
+            // 将结果写入json
+            string jsonData = JsonConvert.SerializeObject(configData);
+            await fileService.WriteToFileAsync(relativeFilePath, jsonData);
+            StateHasChanged();
+        }
+    }
+}

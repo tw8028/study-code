@@ -1,20 +1,25 @@
 ﻿@page "/role-{Page:int}"
 @inject FileService fileService
+@layout TddMenu
 
-@if (data is null)
+<div class="btn-group-toggle" data-toggle="buttons">
+    <label class="btn btn-secondary active">
+        <input type="checkbox" @bind="isShowAll"> All
+    </label>
+</div>
+@if (data.Count == 0)
 {
-    <p><em>Loading...</em></p>
+    <p><em>经过检查，@(Config.Name)没有冲突项。</em></p>
 }
 else
 {
     <TddTable Data="@data">
         <HeaderTemplate>
-            <th></th>
             <th>Name</th>
             <th>State</th>
+            <th>Action</th>
         </HeaderTemplate>
         <RowTemplate>
-            <td><input type="checkbox" @bind="@context.IsChecked" /></td>
             <td>@context.Name</td>
             <td>
                 @if (context.State == CheckResult.Equal)
@@ -27,6 +32,11 @@ else
                 }
             </td>
         </RowTemplate>
+        <Action Context="row">
+            <td>
+                <button class="btn btn-primary btn-sm" @onclick="()=>row.CopyTo()">copy to unity</button>
+            </td>
+        </Action>
     </TddTable>
 }
 
@@ -34,6 +44,7 @@ else
     [Parameter] public int Page { get; set; }
     AssetConfig Config = new();
     List<AssetFile>? data;
+    bool isShowAll { get; set; } = false;
 
     private PathConfig _pathConfig;
     private List<CategoryConfig> _categoryConfigList;
@@ -43,7 +54,6 @@ else
         string categoryData = fileService.ReadFile("Config/Categorys.json");
         _pathConfig = JsonConvert.DeserializeObject<PathConfig>(pathData);
         _categoryConfigList = JsonConvert.DeserializeObject<List<CategoryConfig>>(categoryData);
-       
     }
 
     protected override void OnParametersSet()
@@ -62,7 +72,18 @@ else
         foreach (var fl in fbxfiles)
         {
             AssetFile assetFile = new(fl.FullName, Config);
-            data.Add(assetFile);
+            if (isShowAll)
+            {
+                data.Add(assetFile);
+            }
+            else
+            {
+                if (assetFile.State != CheckResult.Equal)
+                {
+                    data.Add(assetFile);
+                }
+            }
+            // 不显示对比一样的文件
         }
     }
 
