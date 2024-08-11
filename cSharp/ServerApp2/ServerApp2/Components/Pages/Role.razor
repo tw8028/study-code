@@ -3,105 +3,125 @@
 @layout TddMenu
 
 <div class="btn-group-toggle" data-toggle="buttons">
-    <label class="btn btn-secondary active">
-        <input type="checkbox" @bind="isShowAll"> All
-    </label>
+	<label class="btn btn-secondary active">
+		<input type="checkbox" @onchange="OnChange"> All
+	</label>
 </div>
 @if (data.Count == 0)
 {
-    <p><em>经过检查，@(Config.Name)没有冲突项。</em></p>
+	<p><em>经过检查，@(Config.Name)文件不存在或没有冲突项。</em></p>
 }
 else
 {
-    <TddTable Data="@data">
-        <HeaderTemplate>
-            <th>Name</th>
-            <th>State</th>
-            <th>Action</th>
-        </HeaderTemplate>
-        <RowTemplate>
-            <td>@context.Name</td>
-            <td>
-                @if (context.State == CheckResult.Equal)
-                {
-                    <span class="alert-success">&#10003</span>
-                }
-                else
-                {
-                    <span class="alert-warning">@context.State</span>
-                }
-            </td>
-        </RowTemplate>
-        <Action Context="row">
-            <td>
-                <button class="btn btn-primary btn-sm" @onclick="()=>row.CopyTo()">copy to unity</button>
-            </td>
-        </Action>
-    </TddTable>
+	<TddTable Data="@showData">
+		<HeaderTemplate>
+			<th>Name</th>
+			<th>State</th>
+			<th>Action</th>
+		</HeaderTemplate>
+		<RowTemplate>
+			<td>@context.Name</td>
+			<td>
+				@if (context.State == CheckResult.Equal)
+				{
+					<span class="alert-success">&#10003</span>
+				}
+				else
+				{
+					<span class="alert-warning">@context.State</span>
+				}
+			</td>
+		</RowTemplate>
+		<Action Context="row">
+			<td>
+				<button class="btn btn-primary btn-sm" @onclick="()=>row.CopyTo()">copy to unity</button>
+			</td>
+		</Action>
+	</TddTable>
 }
 
 @code {
-    [Parameter] public int Page { get; set; }
-    AssetConfig Config = new();
-    List<AssetFile>? data;
-    bool isShowAll { get; set; } = false;
+	[Parameter] public int Page { get; set; }
+	AssetConfig Config = new();
+	List<AssetFile>? data;
+	List<AssetFile>? showData;
+	List<AssetFile>? NotEqualItems = new();
+	bool isShowAll { get; set; } = false;
 
-    private PathConfig _pathConfig;
-    private List<CategoryConfig> _categoryConfigList;
-    protected override void OnInitialized()
-    {
-        string pathData = fileService.ReadFile("Config/Path.json");
-        string categoryData = fileService.ReadFile("Config/Categorys.json");
-        _pathConfig = JsonConvert.DeserializeObject<PathConfig>(pathData);
-        _categoryConfigList = JsonConvert.DeserializeObject<List<CategoryConfig>>(categoryData);
-    }
+	private PathConfig _pathConfig;
+	private List<CategoryConfig> _categoryConfigList;
+	protected override void OnInitialized()
+	{
+		string pathData = fileService.ReadFile("Config/Path.json");
+		string categoryData = fileService.ReadFile("Config/Categorys.json");
+		_pathConfig = JsonConvert.DeserializeObject<PathConfig>(pathData);
+		_categoryConfigList = JsonConvert.DeserializeObject<List<CategoryConfig>>(categoryData);
+	}
 
-    protected override void OnParametersSet()
-    {
-        var categoryConfig = _categoryConfigList.Single(x => x.Id == Page);
+	protected override void OnParametersSet()
+	{
+		var categoryConfig = _categoryConfigList.Single(x => x.Id == Page);
 
-        Config.Id = categoryConfig.Id;
-        Config.Name = categoryConfig.Name;
-        Config.Key = categoryConfig.Key;
-        Config.SourceRoot = Path.Combine(_pathConfig.SourcePath, categoryConfig.SourceRoot);
-        Config.DestRoot = Path.Combine(_pathConfig.UnityArtPath, categoryConfig.DestRoot);
+		Config.Id = categoryConfig.Id;
+		Config.Name = categoryConfig.Name;
+		Config.Key = categoryConfig.Key;
+		Config.SourceRoot = Path.Combine(_pathConfig.SourcePath, categoryConfig.SourceRoot);
+		Config.DestRoot = Path.Combine(_pathConfig.UnityArtPath, categoryConfig.DestRoot);
 
-        List<FileInfo> fbxfiles = new();
-        GetFileInfo(Config, Config.SourceRoot, ref fbxfiles);
-        data = new();
-        foreach (var fl in fbxfiles)
-        {
-            AssetFile assetFile = new(fl.FullName, Config);
-            if (isShowAll)
-            {
-                data.Add(assetFile);
-            }
-            else
-            {
-                if (assetFile.State != CheckResult.Equal)
-                {
-                    data.Add(assetFile);
-                }
-            }
-            // 不显示对比一样的文件
-        }
-    }
+		data = new();
+		NotEqualItems = new();
+		List<FileInfo> fbxfiles = new();
+		GetFileInfo(Config, Config.SourceRoot, ref fbxfiles); // 获取fbx文件
+		foreach (var fl in fbxfiles)
+		{
+			AssetFile assetFile = new(fl.FullName, Config);
+			data.Add(assetFile);
+		}
+		NotEqualItems = data.Where(x => x.State != CheckResult.Equal).ToList();
+		if (isShowAll)
+		{
+			showData = data;
+		}
+		else
+		{
+			showData = NotEqualItems;
+		}
+	}
+	void OnChange()
+	{
+		if (isShowAll)   // show all
+		{
+			isShowAll = !isShowAll; // 点击后排除相等项目
+			NotEqualItems = data.Where(x => x.State != CheckResult.Equal).ToList();
+			showData = NotEqualItems;
+			
+			
+		}
+		else
+		{
+			isShowAll = !isShowAll;
+			showData = data;
+		}
+	}
 
-    private void GetFileInfo(AssetConfig config, string SourceRoot, ref List<FileInfo> fbxList)
-    {
-        DirectoryInfo dir = new DirectoryInfo(SourceRoot);
-        bool isFbx = dir.Name.Equals("fbx", StringComparison.OrdinalIgnoreCase);
-        bool isTexture = dir.Name.Equals("Texture", StringComparison.OrdinalIgnoreCase);
-        if (isFbx)
-        {
-            FileInfo[] fls = dir.GetFiles("*.fbx");
-            fbxList.AddRange(fls.Where(f => f.Name.StartsWith(config.Key))); // 匹配关键字
-        }
 
-        DirectoryInfo[] subs = dir.GetDirectories();
-        foreach (DirectoryInfo subDir in subs)
-        {
-            GetFileInfo(config, subDir.FullName, ref fbxList);
-        }
-    }
+	private void GetFileInfo(AssetConfig config, string SourceRoot, ref List<FileInfo> fbxList)
+	{
+		DirectoryInfo dir = new DirectoryInfo(SourceRoot);
+		if (dir.Exists)
+		{
+			bool isFbx = dir.Name.Equals("fbx", StringComparison.OrdinalIgnoreCase);
+			bool isTexture = dir.Name.Equals("Texture", StringComparison.OrdinalIgnoreCase);
+			if (isFbx)
+			{
+				FileInfo[] fls = dir.GetFiles("*.fbx");
+				fbxList.AddRange(fls.Where(f => f.Name.StartsWith(config.Key))); // 匹配关键字
+			}
+			DirectoryInfo[] subs = dir.GetDirectories();
+			foreach (DirectoryInfo subDir in subs)
+			{
+				GetFileInfo(config, subDir.FullName, ref fbxList);
+			}
+		}
+	}
 }
