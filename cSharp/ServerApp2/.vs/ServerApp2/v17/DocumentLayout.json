@@ -3,6 +3,10 @@
   "WorkspaceRootPath": "D:\\GitHub\\study-code\\cSharp\\ServerApp2\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{EEF93C52-9CFF-4135-A32A-40F5CE539ABC}|AssetFiles.Domain\\AssetFiles.Domain.csproj|d:\\github\\study-code\\csharp\\serverapp2\\assetfiles.domain\\assetfiles.domain.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{EEF93C52-9CFF-4135-A32A-40F5CE539ABC}|AssetFiles.Domain\\AssetFiles.Domain.csproj|solutionrelative:assetfiles.domain\\assetfiles.domain.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{1BCC7E68-E978-48CF-90DD-902224025F0F}|ServerApp2\\ServerApp2.csproj|d:\\github\\study-code\\csharp\\serverapp2\\serverapp2\\components\\pages\\role.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{1BCC7E68-E978-48CF-90DD-902224025F0F}|ServerApp2\\ServerApp2.csproj|solutionrelative:serverapp2\\components\\pages\\role.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
@@ -33,10 +37,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{1BCC7E68-E978-48CF-90DD-902224025F0F}|ServerApp2\\ServerApp2.csproj|d:\\github\\study-code\\csharp\\serverapp2\\serverapp2\\components\\layout\\mainlayout.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{1BCC7E68-E978-48CF-90DD-902224025F0F}|ServerApp2\\ServerApp2.csproj|solutionrelative:serverapp2\\components\\layout\\mainlayout.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{EEF93C52-9CFF-4135-A32A-40F5CE539ABC}|AssetFiles.Domain\\AssetFiles.Domain.csproj|d:\\github\\study-code\\csharp\\serverapp2\\assetfiles.domain\\assetfiles.domain.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
-      "RelativeMoniker": "D:0:0:{EEF93C52-9CFF-4135-A32A-40F5CE539ABC}|AssetFiles.Domain\\AssetFiles.Domain.csproj|solutionrelative:assetfiles.domain\\assetfiles.domain.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
     }
   ],
   "DocumentGroupContainers": [
@@ -46,7 +46,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 8,
+          "SelectedChildIndex": 9,
           "Children": [
             {
               "$type": "Bookmark",
@@ -54,7 +54,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 3,
               "Title": "Setting.razor",
               "DocumentMoniker": "D:\\GitHub\\study-code\\cSharp\\ServerApp2\\ServerApp2\\Components\\Pages\\Setting.razor",
               "RelativeDocumentMoniker": "ServerApp2\\Components\\Pages\\Setting.razor",
@@ -66,7 +66,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
               "Title": "Home.razor",
               "DocumentMoniker": "D:\\GitHub\\study-code\\cSharp\\ServerApp2\\ServerApp2\\Components\\Pages\\Home.razor",
               "RelativeDocumentMoniker": "ServerApp2\\Components\\Pages\\Home.razor",
@@ -78,7 +78,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 6,
               "Title": "AssetFile.cs",
               "DocumentMoniker": "D:\\GitHub\\study-code\\cSharp\\ServerApp2\\AssetFiles.Domain\\AssetFile.cs",
               "RelativeDocumentMoniker": "AssetFiles.Domain\\AssetFile.cs",
@@ -90,7 +90,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 7,
               "Title": "PathHelper.cs",
               "DocumentMoniker": "D:\\GitHub\\study-code\\cSharp\\ServerApp2\\AssetFiles.Domain\\PathHelper.cs",
               "RelativeDocumentMoniker": "AssetFiles.Domain\\PathHelper.cs",
@@ -102,7 +102,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 8,
               "Title": "MainLayout.razor",
               "DocumentMoniker": "D:\\GitHub\\study-code\\cSharp\\ServerApp2\\ServerApp2\\Components\\Layout\\MainLayout.razor",
               "RelativeDocumentMoniker": "ServerApp2\\Components\\Layout\\MainLayout.razor",
@@ -114,7 +114,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 5,
               "Title": "NavMenu.razor",
               "DocumentMoniker": "D:\\GitHub\\study-code\\cSharp\\ServerApp2\\ServerApp2\\Components\\Layout\\NavMenu.razor",
               "RelativeDocumentMoniker": "ServerApp2\\Components\\Layout\\NavMenu.razor",
@@ -126,7 +126,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 4,
               "Title": "TddMenu.razor",
               "DocumentMoniker": "D:\\GitHub\\study-code\\cSharp\\ServerApp2\\ServerApp2\\Components\\Layout\\TddMenu.razor",
               "RelativeDocumentMoniker": "ServerApp2\\Components\\Layout\\TddMenu.razor",
@@ -138,20 +138,20 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
               "Title": "Role.razor",
               "DocumentMoniker": "D:\\GitHub\\study-code\\cSharp\\ServerApp2\\ServerApp2\\Components\\Pages\\Role.razor",
               "RelativeDocumentMoniker": "ServerApp2\\Components\\Pages\\Role.razor",
               "ToolTip": "D:\\GitHub\\study-code\\cSharp\\ServerApp2\\ServerApp2\\Components\\Pages\\Role.razor",
               "RelativeToolTip": "ServerApp2\\Components\\Pages\\Role.razor",
-              "ViewState": "AQIAAC0AAAAAAAAAAAAIwFAAAAA5AAAA",
+              "ViewState": "AQIAADAAAAAAAAAAAAAIwFAAAAAQAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
               "WhenOpened": "2024-08-09T05:30:55.448Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 0,
               "Title": "AssetFiles.Domain.csproj",
               "DocumentMoniker": "D:\\GitHub\\study-code\\cSharp\\ServerApp2\\AssetFiles.Domain\\AssetFiles.Domain.csproj",
               "RelativeDocumentMoniker": "AssetFiles.Domain\\AssetFiles.Domain.csproj",
@@ -159,7 +159,8 @@
               "RelativeToolTip": "AssetFiles.Domain\\AssetFiles.Domain.csproj",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2024-08-08T10:43:09.972Z"
+              "WhenOpened": "2024-08-08T10:43:09.972Z",
+              "EditorCaption": ""
             }
           ]
         }
