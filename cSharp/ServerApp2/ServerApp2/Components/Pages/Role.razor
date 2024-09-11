@@ -115,7 +115,7 @@ else
 			if (isFbx)
 			{
 				FileInfo[] fls = dir.GetFiles("*.fbx");
-				fbxList.AddRange(fls.Where(f => f.Name.StartsWith(config.Key))); // 匹配关键字
+				fbxList.AddRange(fls.Where(f => f.Name.StartsWith(config.Key + "0"))); // 匹配关键字, A与AA混淆, add 0
 			}
 			DirectoryInfo[] subs = dir.GetDirectories();
 			foreach (DirectoryInfo subDir in subs)

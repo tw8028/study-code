@@ -1,0 +1,87 @@
+﻿@page "/excel"
+@inject FileService fileService
+
+<h3>Excel to Json</h3>
+
+<div class="input-group mb-3">
+    <div class="input-group-prepend">
+        <span class="input-group-text">excel path</span>
+    </div>
+    <input type="text" class="form-control" @bind-value="ExcelToJson.ExcelPath">
+</div>
+
+<div class="input-group mb-3">
+    <div class="input-group-prepend">
+        <span class="input-group-text">json path</span>
+    </div>
+    <input type="text" class="form-control" @bind-value="ExcelToJson.JsonPath">
+</div>
+
+
+<button class="btn btn-primary btn-sm" @onclick="ToJson">apply</button> @message
+
+@* <div class="input-group mb-3">
+    <div class="input-group-prepend">
+        <span class="input-group-text">rows</span>
+    </div>
+    <input type="text" class="form-control" @bind-value="ExcelToJson.Row">
+</div>
+
+<div class="input-group mb-3">
+    <div class="input-group-prepend">
+        <span class="input-group-text">columns</span>
+    </div>
+    <input type="text" class="form-control" @bind-value="ExcelToJson.Column">
+</div> *@
+
+@* <TddTable Data ="ExcelToJson.ColSet">
+    <RowTemplate>
+        <td>@context.Key</td>
+        <td>@context.Value</td>
+    </RowTemplate>
+</TddTable> *@
+
+
+
+
+@code {
+    private string? message;
+    private ExcelToJson? ExcelToJson { get; set; }
+    protected override void OnInitialized()
+    {
+        string excelInfo = fileService.ReadFile("Config/excel.json");
+        ExcelToJson = JsonConvert.DeserializeObject<ExcelToJson>(excelInfo);
+        if (ExcelToJson is null)
+        {
+            ExcelToJson = new();
+        }
+        ExcelToJson.ExcelPath = "D:/纳罗达人设总表.xlsx";
+        ExcelToJson.JsonPath = "D:/GitHub/NLDClient/ProjectNLD/Assets/Art/temp/Editor/PlayerBrowser/PersonsData.json";
+        // ExcelToJson.JsonPath = "D:/1.json";
+        ExcelToJson.Row = 121;
+        ExcelToJson.Column = 36;
+
+        ExcelToJson.ColSet = new()
+        {
+            { (int)ColName.A, "id" },
+            { (int)ColName.D, "name" },
+            { (int)ColName.K, "weapon" },
+            { (int)ColName.M, "aniSet" },
+            { (int)ColName.W, "model_0" },
+            { (int)ColName.X, "skin_0" },
+            { (int)ColName.Y, "prefab_0" },
+            { (int)ColName.AB, "model_1" },
+            { (int)ColName.AC, "skin_1" },
+            { (int)ColName.AD, "prefab_1" },
+            { (int)ColName.AE, "ani_0" },
+            { (int)ColName.AF, "ani_1" }
+        };
+    }
+
+    private async Task ToJson()
+    {
+        message = "....";
+        await Task.WhenAll(ExcelToJson.ToJson());
+        message = "Done";
+    }
+}

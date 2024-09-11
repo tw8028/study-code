@@ -83,3 +83,13 @@ D:\GitHub\study-code\cSharp\ServerApp2\ServerApp2\obj\Debug\net8.0\refint\Server
 D:\GitHub\study-code\cSharp\ServerApp2\ServerApp2\obj\Debug\net8.0\ServerApp2.pdb
 D:\GitHub\study-code\cSharp\ServerApp2\ServerApp2\obj\Debug\net8.0\ServerApp2.genruntimeconfig.cache
 D:\GitHub\study-code\cSharp\ServerApp2\ServerApp2\obj\Debug\net8.0\ref\ServerApp2.dll
+D:\GitHub\study-code\cSharp\ServerApp2\ServerApp2\bin\Debug\net8.0\EPPlus.dll
+D:\GitHub\study-code\cSharp\ServerApp2\ServerApp2\bin\Debug\net8.0\EPPlus.Interfaces.dll
+D:\GitHub\study-code\cSharp\ServerApp2\ServerApp2\bin\Debug\net8.0\EPPlus.System.Drawing.dll
+D:\GitHub\study-code\cSharp\ServerApp2\ServerApp2\bin\Debug\net8.0\Microsoft.IO.RecyclableMemoryStream.dll
+D:\GitHub\study-code\cSharp\ServerApp2\ServerApp2\bin\Debug\net8.0\Microsoft.Win32.SystemEvents.dll
+D:\GitHub\study-code\cSharp\ServerApp2\ServerApp2\bin\Debug\net8.0\System.Drawing.Common.dll
+D:\GitHub\study-code\cSharp\ServerApp2\ServerApp2\bin\Debug\net8.0\runtimes\win\lib\net7.0\Microsoft.Win32.SystemEvents.dll
+D:\GitHub\study-code\cSharp\ServerApp2\ServerApp2\bin\Debug\net8.0\runtimes\win\lib\net7.0\System.Drawing.Common.dll
+D:\GitHub\study-code\cSharp\ServerApp2\ServerApp2\bin\Debug\net8.0\Excels.Domain.dll
+D:\GitHub\study-code\cSharp\ServerApp2\ServerApp2\bin\Debug\net8.0\Excels.Domain.pdb

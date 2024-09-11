@@ -6,13 +6,13 @@
     <div class="input-group-prepend">
         <span class="input-group-text" id="inputGroup-sizing-default">source path</span>
     </div>
-    <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" @bind-value="config.SourcePath">
+    <input type="text" class="form-control" @bind-value="config.SourcePath">
 </div>
 <div class="input-group mb-3">
     <div class="input-group-prepend">
         <span class="input-group-text" id="inputGroup-sizing-default">unity art path</span>
     </div>
-    <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" @bind-value="config.UnityArtPath">
+    <input type="text" class="form-control" @bind-value="config.UnityArtPath">
 </div>
 <button type="button" class="btn btn-primary" @onclick="Save">Save</button>
 
@@ -24,7 +24,7 @@
     {
         string dataFromJson = fileService.ReadFile(relativeFilePath);
         config = JsonConvert.DeserializeObject<PathConfig>(dataFromJson); // 此处可能赋空值
-        if(config is null)
+        if (config is null)
         {
             config = new();
         }
