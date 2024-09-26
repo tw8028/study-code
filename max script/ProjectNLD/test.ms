@@ -1,7 +1,8 @@
 
 num = getNumVerts $
-global target
-global skinMod = $.modifiers[#Skin]
+global skinMod
+global targetId
+global selectedId
 
 rollout myRollout "My Window"
 (
@@ -21,7 +22,7 @@ rollout myRollout "My Window"
 
     on btn2 pressed do
     (
-        print ("Button 2 pressed. Text: " + txtField.text)
+        for i in selection do print i.
     )
 )
 
@@ -29,7 +30,7 @@ rollout myRollout "My Window"
 createDialog myRollout 300 150
 
 -- 都是从1索引
--- skinOps.GetVertexWeight skinMod 1 1
+-- skinOps.GetVertexWeight skinMod a b 获取权重值，点的index 为a,印象物序号为b
 
 -- skinOps.GetVertexWeightBoneID skinMod 1 1，获取一个点influenceID
 
@@ -40,37 +41,50 @@ createDialog myRollout 300 150
 -- skinOps.GetNumberVertices skinMod ，模型点数
 
 -- 获取选择的骨骼 影响的点 id list
-fn getVertexs=
+fn getVertexs skinMod =
 	(
 	local influencedVertexList=#()
 	local vNum = skinOps.GetNumberVertices skinMod 
 	local selectedBone = skinOps.GetSelectedBone skinMod 
-	for i=1 to vNum do
+	for i=1 to vNum do -- i ding
 		(
 		influenceNum = skinOps.GetVertexWeightCount skinMod i
 		for j=1 to influenceNum do(
-			influence = skinOps.GetVertexWeightBoneID skinMod i j 
-			if influence == selectedBone then
+			influenceId = skinOps.GetVertexWeightBoneID skinMod i j 
+			if influenceId == selectedBone then
 				(
-				append influencedVertexList i
-				-- has find influenced Vertex 将此点权重转移到目标骨骼
-				
+				append influencedVertexList i				
 				)
 			)
 		)
 	return influencedVertexList
 	)
 	
-
+fn setVertexWeight v targetId selectedId =(
+	n = skinOps.GetVertexWeightCount skinMod i	
+	hasTargetId = false
+	index_t = 0
+	index_s = 0
 	
--- 转移权重	
-fn switchWeight target=
-	(
+	for j=1 to n do
+		(
+			influenceId skinOps.GetVertexWeightBoneID skinMod v j 
+			if influenceId == targetId then
+			(
+				hasTargetId = true
+				index_t = j	
+				)
+			if influenceId == selectedId then
+			(
+				index_s = j
+				)
+		
+	infArry = #()
+	index_s = 
 	
+		
+		
 	)
-	
-	
-	
 	
 	
 	
