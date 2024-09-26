@@ -20,16 +20,21 @@ public static class PathHelper
             string dirName = fileName.Remove(1, 2).Insert(1, "00");
             return Path.Combine(config.DestRoot, dirName);
         }
-        else if (config.Key == "ani_A")
+        if (config.Key == "AA")
+        {
+            string dirName = fileName.Remove(0, 1).Remove(1, 2).Insert(1, "00");
+            return Path.Combine(config.DestRoot, dirName);
+        }
+        else if (config.Key == "ani_A" || config.Key == "ani_AA")
         {
             // 角色技能都放在 Animations/skill
             return config.DestRoot;
         }
-        else if(config.Key == "ani_R"||config.Key=="ani_C")
+        else if (config.Key == "ani_R" || config.Key == "ani_C")
         {
             // 文件名:ani_R00001_xx，文件夹为:R00001
             string dirName = fileName.Split('_')[1];
-            return Path.Combine(config.DestRoot,dirName);
+            return Path.Combine(config.DestRoot, dirName);
         }
         else
         {

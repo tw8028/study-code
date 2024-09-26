@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\AssetFiles.Domain\AssetFiles.Domain.csproj" />
+    <ProjectReference Include="..\Excels.Domain\Excels.Domain.csproj" />
   </ItemGroup>
 
 </Project>

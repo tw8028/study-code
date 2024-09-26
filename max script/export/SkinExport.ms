@@ -21,8 +21,10 @@ fn SkinExport x=(
 	--for item in sel do( 
 	--	if findString item.name "Nub"!=undefined then deselect item
 	--	)
+	maxName = getFilenameFile maxFileName
+	fbxName = substituteString maxName "_skin" "" --remove _skin
+	exportPath = maxFilePath + fbxName + ".fbx"
 	
-	exportPath = maxFilePath + getFilenameFile maxFileName + ".fbx"
 	pluginManager.loadClass FbxExporter
 	FBXExporterSetParam "ResetExport"
 	FBXExporterSetParam "Animation" false
