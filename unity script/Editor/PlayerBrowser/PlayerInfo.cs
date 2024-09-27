@@ -160,56 +160,57 @@ namespace PersonBrowser
                 MainTex = null;
             };
             // project_A assets
+            ModelFile = null;
+            SkinFile = null;
+            AniFile = null;
             if (!System.IO.Directory.Exists($@"\\192.168.2.222\project_A"))
             {
                 Debug.Log(@"无法链接：\\192.168.2.222\\project_A");
-                ModelFile = null;
-                SkinFile = null;
-                AniFile = null;
             }
             else
             {
-                string str = m_Name;
-                str = str.Remove(2, 1);
-                str = str.Insert(2, "0");
+                string str = "";
+                string modelPath1 = "";
+                string modelPath2 = "";
+                string skinPath = "";
+                if (m_Name.StartsWith("AA"))
+                {
+                    str = m_Name.Remove(3, 1).Insert(3, "0");
+                    modelPath1 = $@"\\192.168.2.222\project_A\02_模型\Players\{str.Remove(0, 1)}\{m_Name}\{m_Name}.max";
+                    modelPath2 = $@"\\192.168.2.222\project_A\02_模型\Players\{str.Remove(0, 1)}\{m_Name}.max";
+                    skinPath = $@"\\192.168.2.222\project_A\03_动作\角色蒙皮\异格\{str}\{m_Name}\{m_Name}_skin.max";
+                }
+                else
+                {
+                    str = m_Name.Remove(2, 1).Insert(2, "0");
+                    modelPath1 = $@"\\192.168.2.222\project_A\02_模型\Players\{str}\{m_Name}\{m_Name}.max";
+                    modelPath2 = $@"\\192.168.2.222\project_A\02_模型\Players\{str}\{m_Name}.max";
+                    skinPath = $@"\\192.168.2.222\project_A\03_动作\角色蒙皮\Player\{str}\{m_Name}\{m_Name}_skin.max";
+                }
 
-                string modelPath1 = $@"\\192.168.2.222\project_A\02_模型\Players\{str}\{m_Name}\{m_Name}.max";
-                string modelPath2 = $@"\\192.168.2.222\project_A\02_模型\Players\{str}\{m_Name}.max";
+              
                 if (System.IO.File.Exists(modelPath1) || System.IO.File.Exists(modelPath2))
                 {
                     ModelFile = m_Name + ".max";
                 }
-                else
-                {
-                    ModelFile = null;
-                }
-
-                string skinPath1 = $@"\\192.168.2.222\project_A\03_动作\角色蒙皮\{str}\{m_Name}\{m_Name}_skin.max";
-                string skinPath2 = $@"\\192.168.2.222\project_A\03_动作\角色蒙皮\{str}\{m_Name}_skin.max";
-                if (System.IO.File.Exists(skinPath1) || System.IO.File.Exists(skinPath2))
+              
+                if (System.IO.File.Exists(skinPath))
                 {
                     SkinFile = m_Name + "_skin.max";
                 }
-                else
-                {
-                    SkinFile = null;
-                }
 
-                string path = $@"\\192.168.2.222\project_A\03_动作\角色技能\max\{m_Name}_skill01.max";
-                if (System.IO.File.Exists(path))
+
+                string aniPath = $@"\\192.168.2.222\project_A\03_动作\角色技能\max\{m_Name}_skill01.max";
+                if (System.IO.File.Exists(aniPath))
                 {
                     AniFile = $"{m_Name}_skill01.max";
                 }
-                else
-                {
-                    AniFile = null;
-                }
             }
 
-            // 啥都没有为灰色
-            // 缺少一项为黄色
-            // 资产齐全为绿色
-            // 源文件齐全但未构建角色为红色
+            // 灰色：啥都没有
+            // 黄色：至少缺一项
+            // 绿色：齐全
+            // 红色：文件齐全但未构建角色
             if (AniFile == null && ModelFile == null && SkinFile == null)
             {
                 State = Color.gray;

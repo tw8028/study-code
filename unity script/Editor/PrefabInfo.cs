@@ -17,7 +17,7 @@ namespace PersonBrowser
         List<Person> Persons = JsonData.GetData();
         Box box1;
 
-        [MenuItem("Test/Skelton", false)]
+        [MenuItem("Test/tools/Skelton", false)]
         public static void ShowWindow() { GetWindow<PrefabInfo>("结构信息"); }
 
         public void CreateGUI()

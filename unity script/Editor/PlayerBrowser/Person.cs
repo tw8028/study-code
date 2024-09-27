@@ -13,6 +13,14 @@ namespace PersonBrowser
         public string name;
         public string aniSet;
         public string weapon;
+        public string model_0;
+        public string model_1;
+        public string skin_0;
+        public string skin_1;
+        public string prefab_0;
+        public string prefab_1;
+        public string ani_0;
+        public string ani_1;
     }
     [System.Serializable]
     public class PersonRoot

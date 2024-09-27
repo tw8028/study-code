@@ -3,722 +3,1682 @@
     {
       "id": "A00001",
       "name": "埃琳娜",
+      "weapon": "G00051_bar_g03",
       "aniSet": "G03",
-      "weapon": "G00051_bar_g03"
+      "model_0": "已完成",
+      "skin_0": "已完成",
+      "prefab_0": "已完成",
+      "model_1": "已完成",
+      "skin_1": "已完成",
+      "prefab_1": "已完成",
+      "ani_0": "已完成",
+      "ani_1": "已完成"
     },
     {
       "id": "AA00001",
       "name": "埃琳娜（第8小队）",
+      "weapon": "51",
       "aniSet": "",
-      "weapon": "G00051"
+      "model_0": "未开始",
+      "skin_0": "未制作",
+      "prefab_0": "未制作",
+      "model_1": "未制作",
+      "skin_1": "未制作",
+      "prefab_1": "未制作",
+      "ani_0": "未制作",
+      "ani_1": "制作中"
     },
     {
       "id": "A00002",
       "name": "卡琳",
+      "weapon": "G00003_bow_g04",
       "aniSet": "G04",
-      "weapon": "G00003_bow_g04"
+      "model_0": "已完成",
+      "skin_0": "已完成",
+      "prefab_0": "已完成",
+      "model_1": "已完成",
+      "skin_1": "已完成",
+      "prefab_1": "已完成",
+      "ani_0": "已完成",
+      "ani_1": "已完成"
     },
     {
       "id": "AA00002",
       "name": "卡琳（第8小队）",
+      "weapon": "3",
       "aniSet": "",
-      "weapon": "G00003"
+      "model_0": "未开始",
+      "skin_0": "未制作",
+      "prefab_0": "未制作",
+      "model_1": "未制作",
+      "skin_1": "未制作",
+      "prefab_1": "未制作",
+      "ani_0": "未制作",
+      "ani_1": "制作中"
     },
     {
       "id": "A00003",
       "name": "克劳迪娅",
+      "weapon": "G00004_dmr_g02",
       "aniSet": "G02",
-      "weapon": "G00004_dmr_g02"
+      "model_0": "已完成",
+      "skin_0": "已完成",
+      "prefab_0": "已完成",
+      "model_1": "已完成",
+      "skin_1": "已完成",
+      "prefab_1": "已完成",
+      "ani_0": "已完成",
+      "ani_1": "已完成"
     },
     {
       "id": "AA00003",
       "name": "克劳迪娅（第8小队）",
+      "weapon": "G00004_dmr_g02",
       "aniSet": "G02",
-      "weapon": "G00004_dmr_g02"
+      "model_0": "未开始",
+      "skin_0": "未制作",
+      "prefab_0": "未制作",
+      "model_1": "未制作",
+      "skin_1": "未制作",
+      "prefab_1": "未制作",
+      "ani_0": "未制作",
+      "ani_1": ""
     },
     {
       "id": "A00004",
       "name": "莉莎",
+      "weapon": "G00005_ar_g01",
       "aniSet": "G01",
-      "weapon": "G00005_ar_g01"
+      "model_0": "已完成",
+      "skin_0": "已完成",
+      "prefab_0": "已完成",
+      "model_1": "已完成",
+      "skin_1": "已完成",
+      "prefab_1": "已完成",
+      "ani_0": "已完成",
+      "ani_1": "已完成"
     },
     {
       "id": "AA00004",
       "name": "莉莎（第8小队）",
+      "weapon": "G00005_ar_g01",
       "aniSet": "G01",
-      "weapon": "G00005_ar_g01"
+      "model_0": "未开始",
+      "skin_0": "未制作",
+      "prefab_0": "未制作",
+      "model_1": "未制作",
+      "skin_1": "未制作",
+      "prefab_1": "未制作",
+      "ani_0": "未制作",
+      "ani_1": ""
     },
     {
       "id": "A00005",
       "name": "米娅",
+      "weapon": "G00006_sg_g05",
       "aniSet": "G05",
-      "weapon": "G00006_sg_g05"
+      "model_0": "已完成",
+      "skin_0": "已完成",
+      "prefab_0": "已完成",
+      "model_1": "已完成",
+      "skin_1": "已完成",
+      "prefab_1": "已完成",
+      "ani_0": "已完成",
+      "ani_1": "已完成"
     },
     {
       "id": "AA00005",
       "name": "米娅（第8小队）",
+      "weapon": "6",
       "aniSet": "",
-      "weapon": "G00006"
+      "model_0": "未开始",
+      "skin_0": "未制作",
+      "prefab_0": "未制作",
+      "model_1": "未制作",
+      "skin_1": "未制作",
+      "prefab_1": "未制作",
+      "ani_0": "未制作",
+      "ani_1": ""
     },
     {
       "id": "A00006",
       "name": "朱利亚斯",
+      "weapon": "G00026_bar_g03",
       "aniSet": "G03",
-      "weapon": "G00026_bar_g03"
+      "model_0": "已完成",
+      "skin_0": "已完成",
+      "prefab_0": "已完成",
+      "model_1": "已完成",
+      "skin_1": "已完成",
+      "prefab_1": "已完成",
+      "ani_0": "已完成",
+      "ani_1": "已完成"
     },
     {
       "id": "AA00006",
       "name": "朱利亚斯（JDR制服）",
+      "weapon": "26",
       "aniSet": "",
-      "weapon": "G00026"
+      "model_0": "未开始",
+      "skin_0": "未制作",
+      "prefab_0": "未制作",
+      "model_1": "未制作",
+      "skin_1": "未制作",
+      "prefab_1": "未制作",
+      "ani_0": "未制作",
+      "ani_1": ""
     },
     {
       "id": "A00007",
       "name": "芙利丝",
+      "weapon": "G00032_sg_g05",
       "aniSet": "G05",
-      "weapon": "G00032_sg_g05"
+      "model_0": "已完成",
+      "skin_0": "已完成",
+      "prefab_0": "已完成",
+      "model_1": "已完成",
+      "skin_1": "已完成",
+      "prefab_1": "已完成",
+      "ani_0": "已完成",
+      "ani_1": "已完成"
     },
     {
       "id": "AA00007",
       "name": "芙利丝（JDR制服）",
+      "weapon": "G00014_dmr_g02",
       "aniSet": "G02",
-      "weapon": "G00014_dmr_g02"
+      "model_0": "已完成",
+      "skin_0": "已完成",
+      "prefab_0": "已完成",
+      "model_1": "已完成",
+      "skin_1": "已完成",
+      "prefab_1": "已完成",
+      "ani_0": "已完成",
+      "ani_1": "制作中"
     },
     {
       "id": "A00008",
       "name": "艾丽卡",
+      "weapon": "G00032_sg_g05",
       "aniSet": "G05",
-      "weapon": "G00032_sg_g05"
+      "model_0": "已完成",
+      "skin_0": "已完成",
+      "prefab_0": "已完成",
+      "model_1": "已完成",
+      "skin_1": "已完成",
+      "prefab_1": "已完成",
+      "ani_0": "已完成",
+      "ani_1": "已完成"
     },
     {
       "id": "AA00008",
       "name": "艾丽卡（JDR制服）",
+      "weapon": "G00037_ar_g01",
       "aniSet": "G01",
-      "weapon": "G00037_ar_g01"
+      "model_0": "已完成",
+      "skin_0": "已完成",
+      "prefab_0": "已完成",
+      "model_1": "已完成",
+      "skin_1": "制作中",
+      "prefab_1": "未制作",
+      "ani_0": "已完成",
+      "ani_1": "制作中"
     },
     {
       "id": "A00009",
       "name": "汉娜",
+      "weapon": "G00041_lmg_g08",
       "aniSet": "G08",
-      "weapon": "G00041_lmg_g08"
+      "model_0": "已完成",
+      "skin_0": "已完成",
+      "prefab_0": "已完成",
+      "model_1": "已完成",
+      "skin_1": "已完成",
+      "prefab_1": "已完成",
+      "ani_0": "已完成",
+      "ani_1": "已完成"
     },
     {
       "id": "AA00009",
       "name": "汉娜（JDR制服）",
+      "weapon": "41",
       "aniSet": "",
-      "weapon": "G00041"
+      "model_0": "未开始",
+      "skin_0": "未制作",
+      "prefab_0": "未制作",
+      "model_1": "未制作",
+      "skin_1": "未制作",
+      "prefab_1": "未制作",
+      "ani_0": "未制作",
+      "ani_1": ""
     },
     {
       "id": "A00010",
       "name": "西尔维亚",
+      "weapon": "G00037_ar_g01",
       "aniSet": "G01",
-      "weapon": "G00037_ar_g01"
+      "model_0": "已完成",
+      "skin_0": "已完成",
+      "prefab_0": "已完成",
+      "model_1": "已完成",
+      "skin_1": "已完成",
+      "prefab_1": "已完成",
+      "ani_0": "已完成",
+      "ani_1": "已完成"
     },
     {
       "id": "AA00010",
       "name": "西尔维亚（JDR制服）",
+      "weapon": "37",
       "aniSet": "",
-      "weapon": "G00037"
+      "model_0": "未开始",
+      "skin_0": "未制作",
+      "prefab_0": "未制作",
+      "model_1": "未制作",
+      "skin_1": "未制作",
+      "prefab_1": "未制作",
+      "ani_0": "未制作",
+      "ani_1": ""
     },
     {
       "id": "A00011",
       "name": "卡露拉",
+      "weapon": "G00026_bar_g03",
       "aniSet": "G03",
-      "weapon": "G00026_bar_g03"
+      "model_0": "已完成",
+      "skin_0": "已完成",
+      "prefab_0": "已完成",
+      "model_1": "已完成",
+      "skin_1": "已完成",
+      "prefab_1": "已完成",
+      "ani_0": "已完成",
+      "ani_1": "已完成"
     },
     {
       "id": "A00012",
       "name": "璐比",
+      "weapon": "G00014_dmr_g02",
       "aniSet": "G02",
-      "weapon": "G00014_dmr_g02"
+      "model_0": "已完成",
+      "skin_0": "已完成",
+      "prefab_0": "已完成",
+      "model_1": "已完成",
+      "skin_1": "已完成",
+      "prefab_1": "已完成",
+      "ani_0": "已完成",
+      "ani_1": "已完成"
     },
     {
       "id": "A00013",
       "name": "梅梅",
+      "weapon": "G00030_ar_g01",
       "aniSet": "G01",
-      "weapon": "G00030_ar_g01"
+      "model_0": "已完成",
+      "skin_0": "已完成",
+      "prefab_0": "已完成",
+      "model_1": "已完成",
+      "skin_1": "已完成",
+      "prefab_1": "已完成",
+      "ani_0": "已完成",
+      "ani_1": "已完成"
     },
     {
       "id": "A00014",
       "name": "提可",
+      "weapon": "G00027_lmg_g08",
       "aniSet": "G08",
-      "weapon": "G00027_lmg_g08"
+      "model_0": "已完成",
+      "skin_0": "已完成",
+      "prefab_0": "已完成",
+      "model_1": "已完成",
+      "skin_1": "已完成",
+      "prefab_1": "已完成",
+      "ani_0": "已完成",
+      "ani_1": "已完成"
     },
     {
       "id": "A00015",
       "name": "莫菲",
+      "weapon": "G00012_ar_g01",
       "aniSet": "G01",
-      "weapon": "G00012_ar_g01"
+      "model_0": "已完成",
+      "skin_0": "已完成",
+      "prefab_0": "已完成",
+      "model_1": "已完成",
+      "skin_1": "已完成",
+      "prefab_1": "已完成",
+      "ani_0": "已完成",
+      "ani_1": ""
     },
     {
       "id": "A00016",
       "name": "柯贝尔",
+      "weapon": "G00025_ar_g01",
       "aniSet": "G01",
-      "weapon": "G00025_ar_g01"
+      "model_0": "已完成",
+      "skin_0": "已完成",
+      "prefab_0": "已完成",
+      "model_1": "已完成",
+      "skin_1": "已完成",
+      "prefab_1": "已完成",
+      "ani_0": "已完成",
+      "ani_1": "已完成"
     },
     {
       "id": "A00017",
       "name": "莉蒂",
+      "weapon": "",
       "aniSet": "",
-      "weapon": "G00000"
+      "model_0": "",
+      "skin_0": "",
+      "prefab_0": "",
+      "model_1": "",
+      "skin_1": "",
+      "prefab_1": "",
+      "ani_0": "",
+      "ani_1": ""
     },
     {
       "id": "A00018",
       "name": "罗塞塔",
+      "weapon": "",
       "aniSet": "",
-      "weapon": "G00000"
+      "model_0": "",
+      "skin_0": "",
+      "prefab_0": "",
+      "model_1": "",
+      "skin_1": "",
+      "prefab_1": "",
+      "ani_0": "",
+      "ani_1": ""
     },
     {
       "id": "A00019",
       "name": "X·X",
+      "weapon": "",
       "aniSet": "",
-      "weapon": "G00000"
+      "model_0": "",
+      "skin_0": "",
+      "prefab_0": "",
+      "model_1": "",
+      "skin_1": "",
+      "prefab_1": "",
+      "ani_0": "",
+      "ani_1": ""
     },
     {
       "id": "A00020",
       "name": "诺伦",
+      "weapon": "",
       "aniSet": "",
-      "weapon": "G00000"
+      "model_0": "",
+      "skin_0": "",
+      "prefab_0": "",
+      "model_1": "",
+      "skin_1": "",
+      "prefab_1": "",
+      "ani_0": "",
+      "ani_1": ""
     },
     {
       "id": "A00021",
       "name": "莫丽安",
+      "weapon": "G00000_dmr_g02",
       "aniSet": "G02",
-      "weapon": "G00000_dmr_g02"
+      "model_0": "制作中",
+      "skin_0": "",
+      "prefab_0": "",
+      "model_1": "制作中",
+      "skin_1": "",
+      "prefab_1": "",
+      "ani_0": "",
+      "ani_1": ""
     },
     {
       "id": "A00022",
       "name": "蜜儿",
+      "weapon": "G00054_bar_g03",
       "aniSet": "G03",
-      "weapon": "G00054_bar_g03"
+      "model_0": "已完成",
+      "skin_0": "已完成",
+      "prefab_0": "已完成",
+      "model_1": "已完成",
+      "skin_1": "已完成",
+      "prefab_1": "已完成",
+      "ani_0": "已完成",
+      "ani_1": "已完成"
     },
     {
       "id": "A00023",
       "name": "明鹿",
+      "weapon": "G00000_ar_g01",
       "aniSet": "G01",
-      "weapon": "G00000_ar_g01"
+      "model_0": "",
+      "skin_0": "",
+      "prefab_0": "",
+      "model_1": "",
+      "skin_1": "",
+      "prefab_1": "",
+      "ani_0": "",
+      "ani_1": ""
     },
     {
       "id": "A00024",
       "name": "盖尔菲斯特",
+      "weapon": "G00057_lmg_g08",
       "aniSet": "G08",
-      "weapon": "G00057_lmg_g08"
+      "model_0": "已完成",
+      "skin_0": "已完成",
+      "prefab_0": "已完成",
+      "model_1": "已完成",
+      "skin_1": "已完成",
+      "prefab_1": "已完成",
+      "ani_0": "已完成",
+      "ani_1": "已完成"
     },
     {
       "id": "A00025",
       "name": "安吉拉",
+      "weapon": "G00031_bar_g03",
       "aniSet": "G03",
-      "weapon": "G00031_bar_g03"
+      "model_0": "已完成",
+      "skin_0": "已完成",
+      "prefab_0": "已完成",
+      "model_1": "已完成",
+      "skin_1": "已完成",
+      "prefab_1": "已完成",
+      "ani_0": "已完成",
+      "ani_1": "已完成"
     },
     {
       "id": "A00026",
       "name": "莱奥妮",
+      "weapon": "G00053_dmr_g02",
       "aniSet": "G02",
-      "weapon": "G00053_dmr_g02"
+      "model_0": "已完成",
+      "skin_0": "已完成",
+      "prefab_0": "已完成",
+      "model_1": "已完成",
+      "skin_1": "已完成",
+      "prefab_1": "已完成",
+      "ani_0": "已完成",
+      "ani_1": "已完成"
     },
     {
       "id": "A00027",
       "name": "桃瑞斯",
+      "weapon": "G00064_dmr_g02",
       "aniSet": "G02",
-      "weapon": "G00064_dmr_g02"
+      "model_0": "已完成",
+      "skin_0": "已完成",
+      "prefab_0": "已完成",
+      "model_1": "已完成",
+      "skin_1": "已完成",
+      "prefab_1": "已完成",
+      "ani_0": "已完成",
+      "ani_1": "已完成"
     },
     {
       "id": "A00028",
       "name": "尤奈",
+      "weapon": "G00063_ar_g01",
       "aniSet": "G01",
-      "weapon": "G00063_ar_g01"
+      "model_0": "已完成",
+      "skin_0": "已完成",
+      "prefab_0": "已完成",
+      "model_1": "已完成",
+      "skin_1": "已完成",
+      "prefab_1": "已完成",
+      "ani_0": "已完成",
+      "ani_1": "已完成"
     },
     {
       "id": "A00029",
       "name": "克默",
+      "weapon": "G00048_bar_g03",
       "aniSet": "G03",
-      "weapon": "G00048_bar_g03"
+      "model_0": "已完成",
+      "skin_0": "已完成",
+      "prefab_0": "已完成",
+      "model_1": "已完成",
+      "skin_1": "已完成",
+      "prefab_1": "已完成",
+      "ani_0": "已完成",
+      "ani_1": "已完成"
     },
     {
       "id": "A00030",
       "name": "贝尔撒克逊",
+      "weapon": "G00058_dmr_g02",
       "aniSet": "G02",
-      "weapon": "G00000_dmr_g02"
+      "model_0": "已完成",
+      "skin_0": "已完成",
+      "prefab_0": "已完成",
+      "model_1": "已完成",
+      "skin_1": "已完成",
+      "prefab_1": "已完成",
+      "ani_0": "已完成",
+      "ani_1": "已完成"
     },
     {
       "id": "A00031",
       "name": "瓦娜莱特",
+      "weapon": "G00013_sar_lever_g06",
       "aniSet": "G06",
-      "weapon": "G00013_sar_lever_g06"
+      "model_0": "已完成",
+      "skin_0": "已完成",
+      "prefab_0": "已完成",
+      "model_1": "已完成",
+      "skin_1": "已完成",
+      "prefab_1": "已完成",
+      "ani_0": "已完成",
+      "ani_1": "已完成"
     },
     {
       "id": "A00032",
       "name": "阿兰西",
+      "weapon": "G00024_bar_g03",
       "aniSet": "G03",
-      "weapon": "G00024_bar_g03"
+      "model_0": "已完成",
+      "skin_0": "制作中",
+      "prefab_0": "制作中",
+      "model_1": "已完成",
+      "skin_1": "已完成",
+      "prefab_1": "已完成",
+      "ani_0": "制作中",
+      "ani_1": "已完成"
     },
     {
       "id": "A00033",
       "name": "弦乐",
+      "weapon": "G00023_sg_g05",
       "aniSet": "G05",
-      "weapon": "G00023_sg_g05"
+      "model_0": "已完成",
+      "skin_0": "已完成",
+      "prefab_0": "已完成",
+      "model_1": "已完成",
+      "skin_1": "已完成",
+      "prefab_1": "已完成",
+      "ani_0": "制作中",
+      "ani_1": "已完成"
     },
     {
       "id": "A00034",
       "name": "伊丽莎白",
+      "weapon": "G00019_bar_g03",
       "aniSet": "G03",
-      "weapon": "G00019_bar_g03"
+      "model_0": "已完成",
+      "skin_0": "已完成",
+      "prefab_0": "已完成",
+      "model_1": "已完成",
+      "skin_1": "已完成",
+      "prefab_1": "已完成",
+      "ani_0": "已完成",
+      "ani_1": "已完成"
     },
     {
       "id": "A00035",
       "name": "巴里",
+      "weapon": "G00041_lmg_g08",
       "aniSet": "G08",
-      "weapon": "G00041_lmg_g08"
+      "model_0": "已完成",
+      "skin_0": "已完成",
+      "prefab_0": "已完成",
+      "model_1": "已完成",
+      "skin_1": "已完成",
+      "prefab_1": "已完成",
+      "ani_0": "已完成",
+      "ani_1": "已完成"
     },
     {
       "id": "A00036",
       "name": "罗杰琳",
+      "weapon": "",
       "aniSet": "",
-      "weapon": "G00000"
+      "model_0": "",
+      "skin_0": "",
+      "prefab_0": "",
+      "model_1": "",
+      "skin_1": "",
+      "prefab_1": "",
+      "ani_0": "",
+      "ani_1": ""
     },
     {
       "id": "A00037",
       "name": "库利亚",
+      "weapon": "",
       "aniSet": "",
-      "weapon": "G00000"
+      "model_0": "",
+      "skin_0": "",
+      "prefab_0": "",
+      "model_1": "",
+      "skin_1": "",
+      "prefab_1": "",
+      "ani_0": "",
+      "ani_1": ""
     },
     {
       "id": "A00038",
       "name": "罗莎丽",
+      "weapon": "",
       "aniSet": "",
-      "weapon": "G00000"
+      "model_0": "",
+      "skin_0": "",
+      "prefab_0": "",
+      "model_1": "",
+      "skin_1": "",
+      "prefab_1": "",
+      "ani_0": "",
+      "ani_1": ""
     },
     {
       "id": "A00039",
       "name": "早优爱",
+      "weapon": "",
       "aniSet": "",
-      "weapon": "G00000"
+      "model_0": "",
+      "skin_0": "",
+      "prefab_0": "",
+      "model_1": "",
+      "skin_1": "",
+      "prefab_1": "",
+      "ani_0": "",
+      "ani_1": ""
     },
     {
       "id": "A00040",
       "name": "玄",
+      "weapon": "",
       "aniSet": "",
-      "weapon": "G00000"
+      "model_0": "",
+      "skin_0": "",
+      "prefab_0": "",
+      "model_1": "",
+      "skin_1": "",
+      "prefab_1": "",
+      "ani_0": "",
+      "ani_1": ""
     },
     {
       "id": "A00041",
       "name": "",
+      "weapon": "",
       "aniSet": "",
-      "weapon": "G00000"
+      "model_0": "",
+      "skin_0": "",
+      "prefab_0": "",
+      "model_1": "",
+      "skin_1": "",
+      "prefab_1": "",
+      "ani_0": "",
+      "ani_1": ""
     },
     {
       "id": "A00042",
       "name": "卡塔琳娜",
+      "weapon": "G00068_ar_g01",
       "aniSet": "G01",
-      "weapon": "G00068_ar_g01"
+      "model_0": "已完成",
+      "skin_0": "已完成",
+      "prefab_0": "已完成",
+      "model_1": "已完成",
+      "skin_1": "制作中",
+      "prefab_1": "",
+      "ani_0": "未制作",
+      "ani_1": ""
     },
     {
       "id": "A00043",
       "name": "玛丽亚",
+      "weapon": "G00068_ar_g01",
       "aniSet": "G01",
-      "weapon": "G00068_ar_g01"
+      "model_0": "已完成",
+      "skin_0": "已完成",
+      "prefab_0": "已完成",
+      "model_1": "已完成",
+      "skin_1": "已完成",
+      "prefab_1": "已完成",
+      "ani_0": "未制作",
+      "ani_1": ""
     },
     {
       "id": "A00044",
       "name": "",
+      "weapon": "",
       "aniSet": "",
-      "weapon": "G00000"
+      "model_0": "",
+      "skin_0": "",
+      "prefab_0": "",
+      "model_1": "",
+      "skin_1": "",
+      "prefab_1": "",
+      "ani_0": "",
+      "ani_1": ""
     },
     {
       "id": "A00045",
       "name": "",
+      "weapon": "",
       "aniSet": "",
-      "weapon": "G00000"
+      "model_0": "",
+      "skin_0": "",
+      "prefab_0": "",
+      "model_1": "",
+      "skin_1": "",
+      "prefab_1": "",
+      "ani_0": "",
+      "ani_1": ""
     },
     {
       "id": "A00046",
       "name": "",
+      "weapon": "",
       "aniSet": "",
-      "weapon": "G00000"
+      "model_0": "",
+      "skin_0": "",
+      "prefab_0": "",
+      "model_1": "",
+      "skin_1": "",
+      "prefab_1": "",
+      "ani_0": "",
+      "ani_1": ""
     },
     {
       "id": "A00047",
       "name": "纳努莉",
+      "weapon": "G00008_lmg_g08",
       "aniSet": "G08",
-      "weapon": "G00008_lmg_g08"
+      "model_0": "已完成",
+      "skin_0": "已完成",
+      "prefab_0": "已完成",
+      "model_1": "已完成",
+      "skin_1": "已完成",
+      "prefab_1": "已完成",
+      "ani_0": "制作中",
+      "ani_1": ""
     },
     {
       "id": "A00048",
       "name": "",
+      "weapon": "",
       "aniSet": "",
-      "weapon": "G00000"
+      "model_0": "",
+      "skin_0": "",
+      "prefab_0": "",
+      "model_1": "",
+      "skin_1": "",
+      "prefab_1": "",
+      "ani_0": "",
+      "ani_1": ""
     },
     {
       "id": "A00049",
       "name": "",
+      "weapon": "",
       "aniSet": "",
-      "weapon": "G00000"
+      "model_0": "",
+      "skin_0": "",
+      "prefab_0": "",
+      "model_1": "",
+      "skin_1": "",
+      "prefab_1": "",
+      "ani_0": "",
+      "ani_1": ""
     },
     {
       "id": "A00050",
       "name": "",
+      "weapon": "",
       "aniSet": "",
-      "weapon": "G00000"
+      "model_0": "",
+      "skin_0": "",
+      "prefab_0": "",
+      "model_1": "",
+      "skin_1": "",
+      "prefab_1": "",
+      "ani_0": "",
+      "ani_1": ""
     },
     {
       "id": "A00051",
       "name": "希尔芙",
+      "weapon": "G00067_ar_g01",
       "aniSet": "G01",
-      "weapon": "G00067_ar_g01"
+      "model_0": "已完成",
+      "skin_0": "已完成",
+      "prefab_0": "已完成",
+      "model_1": "已完成",
+      "skin_1": "已完成",
+      "prefab_1": "已完成",
+      "ani_0": "已完成",
+      "ani_1": "已完成"
     },
     {
       "id": "A00052",
       "name": "温莎",
+      "weapon": "G00036_bar_g03",
       "aniSet": "G03",
-      "weapon": "G00036_bar_g03"
+      "model_0": "已完成",
+      "skin_0": "已完成",
+      "prefab_0": "已完成",
+      "model_1": "已完成",
+      "skin_1": "已完成",
+      "prefab_1": "已完成",
+      "ani_0": "已完成",
+      "ani_1": "已完成"
     },
     {
       "id": "A00053",
       "name": "内莉",
+      "weapon": "G00049_sg_g05",
       "aniSet": "G05",
-      "weapon": "G00049_sg_g05"
+      "model_0": "已完成",
+      "skin_0": "已完成",
+      "prefab_0": "已完成",
+      "model_1": "已完成",
+      "skin_1": "已完成",
+      "prefab_1": "已完成",
+      "ani_0": "已完成",
+      "ani_1": "已完成"
     },
     {
       "id": "A00054",
       "name": "拉丽妲",
+      "weapon": "G00065_lmg_g08",
       "aniSet": "G08",
-      "weapon": "G00065_lmg_g08"
+      "model_0": "已完成",
+      "skin_0": "已完成",
+      "prefab_0": "已完成",
+      "model_1": "已完成",
+      "skin_1": "已完成",
+      "prefab_1": "已完成",
+      "ani_0": "已完成",
+      "ani_1": ""
     },
     {
       "id": "A00055",
       "name": "伊妮德",
+      "weapon": "G00047_dmr_g02",
       "aniSet": "G02",
-      "weapon": "G00047_dmr_g02"
+      "model_0": "已完成",
+      "skin_0": "已完成",
+      "prefab_0": "已完成",
+      "model_1": "已完成",
+      "skin_1": "已完成",
+      "prefab_1": "已完成",
+      "ani_0": "已完成",
+      "ani_1": "已完成"
     },
     {
       "id": "A00056",
       "name": "黛弥尔",
+      "weapon": "",
       "aniSet": "",
-      "weapon": "G00000"
+      "model_0": "",
+      "skin_0": "",
+      "prefab_0": "",
+      "model_1": "",
+      "skin_1": "",
+      "prefab_1": "",
+      "ani_0": "",
+      "ani_1": ""
     },
     {
       "id": "A00057",
       "name": "约茨卡",
+      "weapon": "",
       "aniSet": "",
-      "weapon": "G00000"
+      "model_0": "",
+      "skin_0": "",
+      "prefab_0": "",
+      "model_1": "",
+      "skin_1": "",
+      "prefab_1": "",
+      "ani_0": "",
+      "ani_1": ""
     },
     {
       "id": "A00058",
       "name": "",
+      "weapon": "",
       "aniSet": "",
-      "weapon": "G00000"
+      "model_0": "",
+      "skin_0": "",
+      "prefab_0": "",
+      "model_1": "",
+      "skin_1": "",
+      "prefab_1": "",
+      "ani_0": "",
+      "ani_1": ""
     },
     {
       "id": "A00059",
       "name": "",
+      "weapon": "",
       "aniSet": "",
-      "weapon": "G00000"
+      "model_0": "",
+      "skin_0": "",
+      "prefab_0": "",
+      "model_1": "",
+      "skin_1": "",
+      "prefab_1": "",
+      "ani_0": "",
+      "ani_1": ""
     },
     {
       "id": "A00060",
       "name": "",
+      "weapon": "",
       "aniSet": "",
-      "weapon": "G00000"
+      "model_0": "",
+      "skin_0": "",
+      "prefab_0": "",
+      "model_1": "",
+      "skin_1": "",
+      "prefab_1": "",
+      "ani_0": "",
+      "ani_1": ""
     },
     {
       "id": "A00061",
       "name": "露露菲亚",
+      "weapon": "",
       "aniSet": "",
-      "weapon": "G00000"
+      "model_0": "",
+      "skin_0": "",
+      "prefab_0": "",
+      "model_1": "",
+      "skin_1": "",
+      "prefab_1": "",
+      "ani_0": "",
+      "ani_1": ""
     },
     {
       "id": "A00062",
       "name": "弗洛伦丝",
+      "weapon": "",
       "aniSet": "",
-      "weapon": "G00000"
+      "model_0": "",
+      "skin_0": "",
+      "prefab_0": "",
+      "model_1": "",
+      "skin_1": "",
+      "prefab_1": "",
+      "ani_0": "",
+      "ani_1": ""
     },
     {
       "id": "A00063",
       "name": "亚里沙",
+      "weapon": "",
       "aniSet": "",
-      "weapon": "G00000"
+      "model_0": "",
+      "skin_0": "",
+      "prefab_0": "",
+      "model_1": "",
+      "skin_1": "",
+      "prefab_1": "",
+      "ani_0": "",
+      "ani_1": ""
     },
     {
       "id": "A00064",
       "name": "裴洛蒙",
+      "weapon": "",
       "aniSet": "",
-      "weapon": "G00000"
+      "model_0": "",
+      "skin_0": "",
+      "prefab_0": "",
+      "model_1": "",
+      "skin_1": "",
+      "prefab_1": "",
+      "ani_0": "",
+      "ani_1": ""
     },
     {
       "id": "A00065",
       "name": "瓦伦缇娜",
+      "weapon": "",
       "aniSet": "",
-      "weapon": "G00000"
+      "model_0": "",
+      "skin_0": "",
+      "prefab_0": "",
+      "model_1": "",
+      "skin_1": "",
+      "prefab_1": "",
+      "ani_0": "",
+      "ani_1": ""
     },
     {
       "id": "A00066",
       "name": "布丽姬特",
+      "weapon": "",
       "aniSet": "",
-      "weapon": "G00000"
+      "model_0": "",
+      "skin_0": "",
+      "prefab_0": "",
+      "model_1": "",
+      "skin_1": "",
+      "prefab_1": "",
+      "ani_0": "",
+      "ani_1": ""
     },
     {
       "id": "A00067",
       "name": "费米娅",
+      "weapon": "",
       "aniSet": "",
-      "weapon": "G00000"
+      "model_0": "",
+      "skin_0": "",
+      "prefab_0": "",
+      "model_1": "",
+      "skin_1": "",
+      "prefab_1": "",
+      "ani_0": "",
+      "ani_1": ""
     },
     {
       "id": "A00068",
       "name": "元圆",
+      "weapon": "",
       "aniSet": "",
-      "weapon": "G00000"
+      "model_0": "",
+      "skin_0": "",
+      "prefab_0": "",
+      "model_1": "",
+      "skin_1": "",
+      "prefab_1": "",
+      "ani_0": "",
+      "ani_1": ""
     },
     {
       "id": "A00069",
       "name": "辛得",
+      "weapon": "",
       "aniSet": "",
-      "weapon": "G00000"
+      "model_0": "",
+      "skin_0": "",
+      "prefab_0": "",
+      "model_1": "",
+      "skin_1": "",
+      "prefab_1": "",
+      "ani_0": "",
+      "ani_1": ""
     },
     {
       "id": "A00070",
       "name": "露易丝",
+      "weapon": "",
       "aniSet": "",
-      "weapon": "G00000"
+      "model_0": "",
+      "skin_0": "",
+      "prefab_0": "",
+      "model_1": "",
+      "skin_1": "",
+      "prefab_1": "",
+      "ani_0": "",
+      "ani_1": ""
     },
     {
       "id": "A00071",
       "name": "梅尔曼尼",
+      "weapon": "",
       "aniSet": "",
-      "weapon": "G00000"
+      "model_0": "",
+      "skin_0": "",
+      "prefab_0": "",
+      "model_1": "",
+      "skin_1": "",
+      "prefab_1": "",
+      "ani_0": "",
+      "ani_1": ""
     },
     {
       "id": "A00072",
       "name": "卡洛伦娜",
+      "weapon": "",
       "aniSet": "",
-      "weapon": "G00000"
+      "model_0": "",
+      "skin_0": "",
+      "prefab_0": "",
+      "model_1": "",
+      "skin_1": "",
+      "prefab_1": "",
+      "ani_0": "",
+      "ani_1": ""
     },
     {
       "id": "A00073",
       "name": "黛芙妮",
+      "weapon": "",
       "aniSet": "",
-      "weapon": "G00000"
+      "model_0": "",
+      "skin_0": "",
+      "prefab_0": "",
+      "model_1": "",
+      "skin_1": "",
+      "prefab_1": "",
+      "ani_0": "",
+      "ani_1": ""
     },
     {
       "id": "A00074",
       "name": "欧米茄",
+      "weapon": "",
       "aniSet": "",
-      "weapon": "G00000"
+      "model_0": "",
+      "skin_0": "",
+      "prefab_0": "",
+      "model_1": "",
+      "skin_1": "",
+      "prefab_1": "",
+      "ani_0": "",
+      "ani_1": ""
     },
     {
       "id": "A00075",
       "name": "萨菲",
+      "weapon": "",
       "aniSet": "",
-      "weapon": "G00000"
+      "model_0": "",
+      "skin_0": "",
+      "prefab_0": "",
+      "model_1": "",
+      "skin_1": "",
+      "prefab_1": "",
+      "ani_0": "",
+      "ani_1": ""
     },
     {
       "id": "A00076",
       "name": "阿娜多塔",
+      "weapon": "",
       "aniSet": "",
-      "weapon": "G00000"
+      "model_0": "",
+      "skin_0": "",
+      "prefab_0": "",
+      "model_1": "",
+      "skin_1": "",
+      "prefab_1": "",
+      "ani_0": "",
+      "ani_1": ""
     },
     {
       "id": "A00077",
       "name": "十三姬",
+      "weapon": "",
       "aniSet": "",
-      "weapon": "G00000"
+      "model_0": "",
+      "skin_0": "",
+      "prefab_0": "",
+      "model_1": "",
+      "skin_1": "",
+      "prefab_1": "",
+      "ani_0": "",
+      "ani_1": ""
     },
     {
       "id": "A00078",
       "name": "奥德莉",
+      "weapon": "",
       "aniSet": "",
-      "weapon": "G00000"
+      "model_0": "",
+      "skin_0": "",
+      "prefab_0": "",
+      "model_1": "",
+      "skin_1": "",
+      "prefab_1": "",
+      "ani_0": "",
+      "ani_1": ""
     },
     {
       "id": "A00079",
       "name": "华菱",
+      "weapon": "",
       "aniSet": "",
-      "weapon": "G00000"
+      "model_0": "",
+      "skin_0": "",
+      "prefab_0": "",
+      "model_1": "",
+      "skin_1": "",
+      "prefab_1": "",
+      "ani_0": "",
+      "ani_1": ""
     },
     {
       "id": "A00080",
       "name": "艾茵",
+      "weapon": "",
       "aniSet": "",
-      "weapon": "G00000"
+      "model_0": "",
+      "skin_0": "",
+      "prefab_0": "",
+      "model_1": "",
+      "skin_1": "",
+      "prefab_1": "",
+      "ani_0": "",
+      "ani_1": ""
     },
     {
       "id": "A00081",
       "name": "伊尔米拉",
+      "weapon": "G00034_ar_g01",
       "aniSet": "G01",
-      "weapon": "G00034_ar_g01"
+      "model_0": "已完成",
+      "skin_0": "已完成",
+      "prefab_0": "已完成",
+      "model_1": "已完成",
+      "skin_1": "已完成",
+      "prefab_1": "已完成",
+      "ani_0": "已完成",
+      "ani_1": "已完成"
     },
     {
       "id": "A00082",
       "name": "达佳娜",
+      "weapon": "G00029_ar_g01",
       "aniSet": "G01",
-      "weapon": "G00029_ar_g01"
+      "model_0": "已完成",
+      "skin_0": "已完成",
+      "prefab_0": "已完成",
+      "model_1": "已完成",
+      "skin_1": "已完成",
+      "prefab_1": "已完成",
+      "ani_0": "已完成",
+      "ani_1": ""
     },
     {
       "id": "A00083",
       "name": "玛尔塔",
+      "weapon": "G00033_ar_g01",
       "aniSet": "G01",
-      "weapon": "G00033_ar_g01"
+      "model_0": "已完成",
+      "skin_0": "已完成",
+      "prefab_0": "已完成",
+      "model_1": "已完成",
+      "skin_1": "已完成",
+      "prefab_1": "已完成",
+      "ani_0": "已完成",
+      "ani_1": "已完成"
     },
     {
       "id": "A00084",
       "name": "史黛拉",
+      "weapon": "G00043_dmr_g02",
       "aniSet": "G02",
-      "weapon": "G00043_dmr_g02"
+      "model_0": "已完成",
+      "skin_0": "已完成",
+      "prefab_0": "已完成",
+      "model_1": "已完成",
+      "skin_1": "已完成",
+      "prefab_1": "已完成",
+      "ani_0": "已完成",
+      "ani_1": "已完成"
     },
     {
       "id": "A00085",
       "name": "苏扎娜",
+      "weapon": "G00055_dmr_g02",
       "aniSet": "G02",
-      "weapon": "G00055_dmr_g02"
+      "model_0": "已完成",
+      "skin_0": "已完成",
+      "prefab_0": "已完成",
+      "model_1": "已完成",
+      "skin_1": "已完成",
+      "prefab_1": "已完成",
+      "ani_0": "制作中",
+      "ani_1": "已完成"
     },
     {
       "id": "A00086",
       "name": "阿巴比尔",
+      "weapon": "G00050_dmr_g02",
       "aniSet": "G02",
-      "weapon": "G00050_dmr_g02"
+      "model_0": "已完成",
+      "skin_0": "已完成",
+      "prefab_0": "已完成",
+      "model_1": "已完成",
+      "skin_1": "已完成",
+      "prefab_1": "已完成",
+      "ani_0": "已完成",
+      "ani_1": "已完成"
     },
     {
       "id": "A00087",
       "name": "波拉",
+      "weapon": "G00018_sg_g05",
       "aniSet": "G05",
-      "weapon": "G00018_sg_g05"
+      "model_0": "已完成",
+      "skin_0": "已完成",
+      "prefab_0": "已完成",
+      "model_1": "已完成",
+      "skin_1": "已完成",
+      "prefab_1": "已完成",
+      "ani_0": "已完成",
+      "ani_1": "已完成"
     },
     {
       "id": "A00088",
       "name": "尤利娅",
+      "weapon": "G00011_hf_g11",
       "aniSet": "G11",
-      "weapon": "G00011_hf_g11"
+      "model_0": "已完成",
+      "skin_0": "已完成",
+      "prefab_0": "已完成",
+      "model_1": "已完成",
+      "skin_1": "已完成",
+      "prefab_1": "已完成",
+      "ani_0": "已完成",
+      "ani_1": "已完成"
     },
     {
       "id": "A00089",
       "name": "费尔福莱",
+      "weapon": "G00045_bar_g03",
       "aniSet": "G03",
-      "weapon": "G00045_bar_g03"
+      "model_0": "已完成",
+      "skin_0": "已完成",
+      "prefab_0": "已完成",
+      "model_1": "已完成",
+      "skin_1": "已完成",
+      "prefab_1": "已完成",
+      "ani_0": "已完成",
+      "ani_1": "已完成"
     },
     {
       "id": "A00090",
       "name": "特丽莎",
-      "aniSet": "G03",
-      "weapon": "G00059_bar_g03"
+      "weapon": "G00059_dmr_g02",
+      "aniSet": "G02",
+      "model_0": "已完成",
+      "skin_0": "已完成",
+      "prefab_0": "已完成",
+      "model_1": "已完成",
+      "skin_1": "已完成",
+      "prefab_1": "已完成",
+      "ani_0": "已完成",
+      "ani_1": "已完成"
     },
     {
       "id": "A00091",
       "name": "海伦",
+      "weapon": "G00038_ar_g01",
       "aniSet": "G01",
-      "weapon": "G00038_ar_g01"
+      "model_0": "已完成",
+      "skin_0": "已完成",
+      "prefab_0": "已完成",
+      "model_1": "已完成",
+      "skin_1": "已完成",
+      "prefab_1": "已完成",
+      "ani_0": "已完成",
+      "ani_1": "已完成"
     },
     {
       "id": "A00092",
       "name": "杰奎琳",
+      "weapon": "G00038_ar_g01",
       "aniSet": "G01",
-      "weapon": "G00038_ar_g01"
+      "model_0": "已完成",
+      "skin_0": "已完成",
+      "prefab_0": "已完成",
+      "model_1": "已完成",
+      "skin_1": "已完成",
+      "prefab_1": "已完成",
+      "ani_0": "已完成",
+      "ani_1": "已完成"
     },
     {
       "id": "A00093",
       "name": "贝拉",
+      "weapon": "G00066_ar_g01",
       "aniSet": "G01",
-      "weapon": "G00066_ar_g01"
+      "model_0": "已完成",
+      "skin_0": "已完成",
+      "prefab_0": "已完成",
+      "model_1": "已完成",
+      "skin_1": "未制作",
+      "prefab_1": "未制作",
+      "ani_0": "未制作",
+      "ani_1": ""
     },
     {
       "id": "A00094",
       "name": "嘉比莉露",
-      "aniSet": "G03",
-      "weapon": "G00046_bar_g03"
+      "weapon": "G00046_dmr_g02",
+      "aniSet": "G02",
+      "model_0": "已完成",
+      "skin_0": "已完成",
+      "prefab_0": "已完成",
+      "model_1": "已完成",
+      "skin_1": "已完成",
+      "prefab_1": "已完成",
+      "ani_0": "已完成",
+      "ani_1": "已完成"
     },
     {
       "id": "A00095",
       "name": "曼普雷蒂",
+      "weapon": "G00069_ar_g01",
       "aniSet": "G01",
-      "weapon": "G00069_ar_g01"
+      "model_0": "已完成",
+      "skin_0": "已完成",
+      "prefab_0": "已完成",
+      "model_1": "已完成",
+      "skin_1": "制作中",
+      "prefab_1": "",
+      "ani_0": "已完成",
+      "ani_1": "制作中"
     },
     {
       "id": "A00096",
       "name": "娜塔莎",
+      "weapon": "G00035_sg_g05",
       "aniSet": "G05",
-      "weapon": "G00035_sg_g05"
+      "model_0": "已完成",
+      "skin_0": "已完成",
+      "prefab_0": "已完成",
+      "model_1": "已完成",
+      "skin_1": "制作中",
+      "prefab_1": "制作中",
+      "ani_0": "已完成",
+      "ani_1": "制作中"
     },
     {
       "id": "A00097",
       "name": "亚历山德拉",
+      "weapon": "G00070_bar_g03",
       "aniSet": "G03",
-      "weapon": "G00070_bar_g03"
+      "model_0": "已完成",
+      "skin_0": "已完成",
+      "prefab_0": "已完成",
+      "model_1": "已完成",
+      "skin_1": "已完成",
+      "prefab_1": "已完成",
+      "ani_0": "已完成",
+      "ani_1": "已完成"
     },
     {
       "id": "A00098",
       "name": "菲丽芭",
+      "weapon": "G00060_lmg_g08",
       "aniSet": "G08",
-      "weapon": "G00060_lmg_g08"
+      "model_0": "已完成",
+      "skin_0": "已完成",
+      "prefab_0": "已完成",
+      "model_1": "已完成",
+      "skin_1": "已完成",
+      "prefab_1": "已完成",
+      "ani_0": "已完成",
+      "ani_1": "已完成"
     },
     {
       "id": "A00099",
       "name": "埃内斯塔",
-      "aniSet": "",
-      "weapon": "G00000"
+      "weapon": "G00000_bar_g03",
+      "aniSet": "G03",
+      "model_0": "",
+      "skin_0": "",
+      "prefab_0": "",
+      "model_1": "",
+      "skin_1": "",
+      "prefab_1": "",
+      "ani_0": "",
+      "ani_1": ""
     },
     {
       "id": "A00100",
       "name": "柯茜尼娅",
-      "aniSet": "",
-      "weapon": "G00000"
+      "weapon": "G00000_dmr_g02",
+      "aniSet": "G02",
+      "model_0": "",
+      "skin_0": "",
+      "prefab_0": "",
+      "model_1": "",
+      "skin_1": "",
+      "prefab_1": "",
+      "ani_0": "",
+      "ani_1": ""
     },
     {
       "id": "A00101",
       "name": "伊斯塔",
+      "weapon": "G00028_lmg_g08",
       "aniSet": "G08",
-      "weapon": "G00028_lmg_g08"
+      "model_0": "已完成",
+      "skin_0": "已完成",
+      "prefab_0": "已完成",
+      "model_1": "已完成",
+      "skin_1": "已完成",
+      "prefab_1": "已完成",
+      "ani_0": "已完成",
+      "ani_1": "已完成"
     },
     {
       "id": "A00102",
       "name": " 阿纳斯塔西娅",
+      "weapon": "G00068_ar_g01",
       "aniSet": "G01",
-      "weapon": "G00068_ar_g01"
+      "model_0": "已完成",
+      "skin_0": "已完成",
+      "prefab_0": "已完成",
+      "model_1": "已完成",
+      "skin_1": "已完成",
+      "prefab_1": "已完成",
+      "ani_0": "已完成",
+      "ani_1": "已完成"
     },
     {
       "id": "A00103",
       "name": "蕾贝卡",
-      "aniSet": "G02",
-      "weapon": "G00061_dmr_g02"
+      "weapon": "G00061_bar_g03",
+      "aniSet": "G03",
+      "model_0": "已完成",
+      "skin_0": "已完成",
+      "prefab_0": "已完成",
+      "model_1": "已完成",
+      "skin_1": "已完成",
+      "prefab_1": "已完成",
+      "ani_0": "已完成",
+      "ani_1": "已完成"
     },
     {
       "id": "A00104",
       "name": "叶芙根尼娅",
+      "weapon": "G00051_bar_g03",
       "aniSet": "G03",
-      "weapon": "G00051_bar_g03"
+      "model_0": "已完成",
+      "skin_0": "已完成",
+      "prefab_0": "已完成",
+      "model_1": "已完成",
+      "skin_1": "已完成",
+      "prefab_1": "已完成",
+      "ani_0": "已完成",
+      "ani_1": "已完成"
     },
     {
       "id": "A00105",
       "name": "博格娜",
+      "weapon": "G00052_bar_g03",
       "aniSet": "G03",
-      "weapon": "G00052_bar_g03"
+      "model_0": "已完成",
+      "skin_0": "已完成",
+      "prefab_0": "已完成",
+      "model_1": "已完成",
+      "skin_1": "已完成",
+      "prefab_1": "已完成",
+      "ani_0": "已完成",
+      "ani_1": "已完成"
     },
     {
       "id": "A00106",
       "name": "茨木姬",
+      "weapon": "G00044_lmg_g08",
       "aniSet": "G08",
-      "weapon": "G00044_lmg_g08"
+      "model_0": "已完成",
+      "skin_0": "已完成",
+      "prefab_0": "已完成",
+      "model_1": "已完成",
+      "skin_1": "已完成",
+      "prefab_1": "已完成",
+      "ani_0": "已完成",
+      "ani_1": "已完成"
     },
     {
       "id": "A00107",
       "name": "蒂亚娜·罗哈斯",
+      "weapon": "G00062_bar_g03",
       "aniSet": "G03",
-      "weapon": "G00062_bar_g03"
+      "model_0": "已完成",
+      "skin_0": "已完成",
+      "prefab_0": "已完成",
+      "model_1": "已完成",
+      "skin_1": "已完成",
+      "prefab_1": "已完成",
+      "ani_0": "未制作",
+      "ani_1": ""
     },
     {
       "id": "A00108",
       "name": "贝内迪塔",
+      "weapon": "G00044_lmg_g08",
       "aniSet": "G08",
-      "weapon": "G00044_lmg_g08"
+      "model_0": "已完成",
+      "skin_0": "已完成",
+      "prefab_0": "已完成",
+      "model_1": "已完成",
+      "skin_1": "已完成",
+      "prefab_1": "已完成",
+      "ani_0": "未制作",
+      "ani_1": ""
     },
     {
       "id": "A00109",
       "name": "维奥莱塔",
-      "aniSet": "G01",
-      "weapon": "G00036_ar_g01"
+      "weapon": "G00036_bar_g03",
+      "aniSet": "G03",
+      "model_0": "已完成",
+      "skin_0": "制作中",
+      "prefab_0": "",
+      "model_1": "",
+      "skin_1": "",
+      "prefab_1": "",
+      "ani_0": "",
+      "ani_1": ""
     },
     {
       "id": "A00110",
       "name": "阿柯丽",
+      "weapon": "G00000_ar_g01",
       "aniSet": "G01",
-      "weapon": "G00000_ar_g01"
+      "model_0": "",
+      "skin_0": "",
+      "prefab_0": "",
+      "model_1": "",
+      "skin_1": "",
+      "prefab_1": "",
+      "ani_0": "",
+      "ani_1": ""
     }
   ]
 }

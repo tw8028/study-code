@@ -19,7 +19,8 @@ namespace PersonBrowser
         {
             get
             {
-                return root.transform.GetChild(0);
+                GameObject obj = (GameObject)PlayerField.value;
+                return obj.transform.GetChild(0);
             }
         }
         private GameObject Gun { get; set; }
@@ -35,7 +36,7 @@ namespace PersonBrowser
             var win = GetWindow<PlayerCreater>("角色 Prefab 工具");
             StyleSheet uss = AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/Art/Temp/Editor/PlayerBrowser/uss2.uss");
             // add styleSheet to rootVisualElement
-            win.rootVisualElement.styleSheets.Add(uss);
+            // win.rootVisualElement.styleSheets.Add(uss);
         }
         public void CreateGUI()
         {
@@ -55,6 +56,10 @@ namespace PersonBrowser
             TextElement text3 = new() { text = "选择角色prefab，创建展示用prefab" };
             Button button3 = new() { text = "Create" };
 
+            Box box4 = new Box();
+            TextElement text4 = new() { text = "重新设置 Magica Cloth 参数" };
+            Button btn4 = new() { text = "reset magica cloth" };
+
             root.Add(box1);
             box1.Add(text1);
             box1.Add(button1);
@@ -67,11 +72,15 @@ namespace PersonBrowser
             root.Add(box3);
             box3.Add(text3);
             box3.Add(button3);
+            root.Add(box4);
+            box4.Add(text4);
+            box4.Add(btn4);
 
             button1.RegisterCallback<ClickEvent>(CreatePlayer);
             button1.RegisterCallback<ClickEvent>(GetGun);
             button2.RegisterCallback<ClickEvent>(AddItem);
             button3.RegisterCallback<ClickEvent>(CreateDisplay);
+            btn4.RegisterCallback<ClickEvent>(ResetMagicaCloth);
         }
 
         /// <summary>
@@ -95,20 +104,7 @@ namespace PersonBrowser
             assetInstance.transform.localScale = new Vector3(1.1f, 1.1f, 1.1f);
 
             // Add migicaCloth component.
-            MagicaCloth mc = assetInstance.AddComponent<MagicaCloth>();
-            mc.SerializeData.clothType = ClothProcess.ClothType.BoneCloth; // set boneColth
-
-            // root bone list
-            mc.SerializeData.rootBones = BoneHelper.GetRootBones(assetInstance.transform.Find("Root/Bip001/")).ToList();
-
-            // Import preset json.
-            string player1_preset = File.ReadAllText(Application.dataPath + "/Art/Temp/Editor/MagicaClothPreset/MC2_Preset_(player1).json");
-            mc.SerializeData.ImportJson(player1_preset);
-
-            // Add magica wind zone
-            GameObject wind = new("Magica Wind Zone");
-            wind.transform.parent = assetInstance.transform;
-            wind.AddComponent<MagicaWindZone>().directionAngleX = 180; // set direction
+            AddMagicaCloth(root);
         }
 
         /// <summary>
@@ -117,17 +113,26 @@ namespace PersonBrowser
         /// <param name="evt"></param>
         public void GetGun(ClickEvent evt)
         {
-            PlayerField.value = root;           
-            string str = asset.name.Remove(2, 1);
-            str = str.Insert(2, "0");
+            PlayerField.value = root;
+            string playerId = "";
+            if (asset.name.StartsWith("AA"))
+            {
+                playerId = asset.name.Remove(3, 1).Insert(3, "0");
+            }
+            else
+            {
+                playerId = asset.name.Remove(2, 1).Insert(2, "0");
+
+            }
+
             string gunName = "";
             try
             {
-                gunName = persons.First(item => item.id == str).weapon;
+                gunName = persons.First(item => item.id == playerId).weapon;
             }
             catch
             {
-                Debug.LogWarning($"无法找到角色{str}拥有的武器");
+                Debug.LogWarning($"{asset.name}:缺少武器配置");
                 return;
             }
             GunField.label = gunName;
@@ -153,14 +158,28 @@ namespace PersonBrowser
             if (BagField.value != null)
             {
                 Transform point01 = asset.Find("Root/Bip001/Bip001 Spine/Mount_point01/");
-                GameObject bag = (GameObject)PrefabUtility.InstantiatePrefab(BagField.value, point01);
-                bag.transform.localEulerAngles = new Vector3(90, 0, 0);
+                if (point01 != null)
+                {
+                    GameObject bag = (GameObject)PrefabUtility.InstantiatePrefab(BagField.value, point01);
+                    bag.transform.localEulerAngles = new Vector3(90, 0, 0);
+                }
+                else
+                {
+                    Debug.Log("缺少背包挂点，请检查蒙皮文件");
+                }
             }
             if (GunField.value != null)
             {
                 Transform grip = asset.Find("Root/Bip001/Bip001 Spine/Bip001 Spine1/Bip001 R Clavicle/Bip001 R UpperArm/Bip001 R Forearm/Bip001 R Hand/Grip_point01/");
-                GameObject gun = (GameObject)PrefabUtility.InstantiatePrefab(GunField.value, grip);
-                gun.transform.localEulerAngles = new Vector3(90, 0, 0);
+                if (grip != null)
+                {
+                    GameObject gun = (GameObject)PrefabUtility.InstantiatePrefab(GunField.value, grip);
+                    gun.transform.localEulerAngles = new Vector3(90, 0, 0);
+                }
+                else
+                {
+                    Debug.Log("缺少武器挂点，请检查蒙皮文件");
+                }
             }
         }
 
@@ -183,8 +202,14 @@ namespace PersonBrowser
 
                 // 查询动作模组
                 string assetName = "";
-                assetName = assetTransform.name.Remove(2, 1);
-                assetName = assetName.Insert(2, "0");
+                if (assetTransform.name.StartsWith("AA"))
+                {
+                    assetName = assetTransform.name.Remove(3, 1).Insert(3, "0");
+                }
+                else
+                {
+                    assetName = assetTransform.name.Remove(2, 1).Insert(2, "0");
+                }
                 string aniSet = persons.First(item => item.id == assetName).aniSet;
                 string acPath = $"Assets/Art/Animations/animator/display_ovrride_{aniSet}.overrideController";
 
@@ -197,6 +222,107 @@ namespace PersonBrowser
                 string path = $"Assets/Art/Character/Prefabs/Players_S/{prefab.name}.prefab";
                 PrefabUtility.SaveAsPrefabAssetAndConnect(prefab, path, InteractionMode.AutomatedAction);
             }
+        }
+
+        public void ResetMagicaCloth(ClickEvent evt)
+        {
+            GameObject playerPrefab = Selection.gameObjects[0];
+
+            AddMagicaCloth(playerPrefab);
+        }
+
+        public static void AddMagicaCloth(GameObject playerPrefab)
+        {
+            Transform assetInstance = playerPrefab.transform.GetChild(0);
+            // remove old MagicaCloth and add new
+            DestroyImmediate(assetInstance.transform.GetComponent<MagicaCloth>());
+            MagicaCloth magicaCloth = assetInstance.gameObject.AddComponent<MagicaCloth>();
+
+
+
+            magicaCloth.SerializeData.clothType = ClothProcess.ClothType.BoneCloth; // set boneColth
+            // root bone list
+            magicaCloth.SerializeData.rootBones = BoneHelper.GetRootBones(assetInstance.transform.Find("Root/Bip001/")).ToList();
+
+            // Import preset json.
+            string player1_preset = File.ReadAllText(Application.dataPath + "/Art/Temp/Editor/MagicaClothPreset/MC2_Preset_(player).json");
+            magicaCloth.SerializeData.ImportJson(player1_preset);
+
+            // Add magica wind zone
+            if (playerPrefab.transform.Find("Magica Wind Zone"))
+            {
+                DestroyImmediate(playerPrefab.transform.Find("Magica Wind Zone").gameObject);
+            }
+            GameObject wind = new("Magica Wind Zone");
+            wind.transform.parent = playerPrefab.transform;
+            var windComponent = wind.AddComponent<MagicaWindZone>(); // set direction
+            windComponent.directionAngleX = 180;
+            windComponent.main = 3;
+
+            // Add Collider
+            Transform pelvis = assetInstance.transform.Find("Root/Bip001/Bip001 Pelvis");
+            Transform spine = assetInstance.transform.Find("Root/Bip001/Bip001 Spine");
+            Transform head = assetInstance.transform.Find("Root/Bip001/Bip001 Spine/Bip001 Spine1/Bip001 Neck/Bip001 Head/");
+            // remove old collider first
+            if (pelvis.Find($"Magica Sphere Collider ({pelvis.name})"))
+            {
+                DestroyImmediate(pelvis.Find($"Magica Sphere Collider ({pelvis.name})").gameObject);
+            }
+            if (spine.Find($"Magica Sphere Collider ({spine.name})"))
+            {
+                DestroyImmediate(spine.Find($"Magica Sphere Collider ({spine.name})").gameObject);
+            }
+            if (spine.Find($"Magica Capsule Collider ({spine.name})"))
+            {
+                DestroyImmediate(spine.Find($"Magica Capsule Collider ({spine.name})").gameObject);
+            }
+            if (head.Find($"Magica Sphere Collider ({head.name})"))
+            {
+                DestroyImmediate(head.Find($"Magica Sphere Collider ({head.name})").gameObject);
+            }
+
+            GameObject headCollider = new($"Magica Sphere Collider ({head.name})");
+            GameObject spineCollider = new($"Magica Capsule Collider ({spine.name})");
+            spineCollider.transform.parent = spine;
+            spineCollider.transform.ResetLocals();
+            headCollider.transform.parent = head;
+            headCollider.transform.ResetLocals();
+
+            List<ColliderComponent> colList = new();
+            var capsule = spineCollider.AddComponent<MagicaCapsuleCollider>();
+            capsule.radiusSeparation = true;
+            capsule.SetSize(new Vector3(0.14f, 0.12f, 0.46f)); // startRadius endRadius length
+            capsule.center = new Vector3(-0.05f, 0.01f, 0f);
+            colList.Add(capsule);
+            var sphere = headCollider.AddComponent<MagicaSphereCollider>();
+            sphere.SetSize(new Vector3(0.18f, 0.18f, 0.18f));
+            sphere.center = new Vector3(-0.2f, 0f, 0f);
+            colList.Add(sphere);
+            magicaCloth.SerializeData.colliderCollisionConstraint.colliderList = colList;
+            /* GameObject pelvisCollider = new($"Magica Sphere Collider ({pelvis.name})");
+             GameObject spineCollider = new($"Magica Sphere Collider ({spine.name})");
+             GameObject headCollider = new($"Magica Sphere Collider ({head.name})");
+
+             pelvisCollider.transform.parent = pelvis;
+             pelvisCollider.transform.ResetLocals();
+             spineCollider.transform.parent = spine;
+             spineCollider.transform.ResetLocals();
+             headCollider.transform.parent = head;
+             headCollider.transform.ResetLocals();
+
+             List<ColliderComponent> colList = new();
+             var c1 = pelvisCollider.AddComponent<MagicaSphereCollider>();
+             c1.SetSize(new Vector3(0.12f, 0.12f, 0.12f));
+             colList.Add(c1);
+             var c2 = spineCollider.AddComponent<MagicaSphereCollider>();
+             c2.SetSize(new Vector3(0.14f, 0.14f, 0.14f));
+             c2.center = new Vector3(-0.2f, 0, 0);
+             colList.Add(c2);
+             var c3 = headCollider.AddComponent<MagicaSphereCollider>();
+             c3.SetSize(new Vector3(0.18f, 0.18f, 0.18f));
+             c3.center = new Vector3(-0.2f, 0, 0);
+             colList.Add(c3);
+             magicaCloth.SerializeData.colliderCollisionConstraint.colliderList = colList;*/
         }
     }
 }

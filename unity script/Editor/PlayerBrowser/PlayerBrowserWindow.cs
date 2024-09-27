@@ -5,6 +5,8 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 using UnityEditor.UIElements;
+using System;
+using dnlib.DotNet;
 
 
 namespace PersonBrowser
@@ -13,17 +15,29 @@ namespace PersonBrowser
     {
         VisualElement A00Pane;
         VisualElement A01Pane;
+        string[] gfxs;
         [MenuItem("Test/prefab工具/角色浏览器")]
         public static void ShowEditor()
         {
             var win = GetWindow<PlayerBrowserWindow>("Player Browser");
-            StyleSheet uss = AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/Art/Temp/Editor/PlayerBrowser/uss1.uss");
+            // StyleSheet uss = AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/Art/Temp/Editor/PlayerBrowser/uss1.uss");
             // add styleSheet to rootVisualElement
-            win.rootVisualElement.styleSheets.Add(uss);
+            // win.rootVisualElement.styleSheets.Add(uss);
             win.minSize = new Vector2(900, 700);
         }
         public void CreateGUI()
         {
+            // 获取特效文件
+            var gfbPrefabs = AssetDatabase.FindAssets("Skill", new string[] { "Assets/Art/Gfx/Character" });
+            List<string> skillNames = new();
+            foreach (var gfb in gfbPrefabs)
+            {
+                string path = AssetDatabase.GUIDToAssetPath(gfb);
+                var obj = AssetDatabase.LoadAssetAtPath<GameObject>(path);
+                var name = obj.name.Split('_')[1];
+                skillNames.Add(name);
+            }
+
             var view = new TwoPaneSplitView(0, 200, TwoPaneSplitViewOrientation.Horizontal);
 
             rootVisualElement.Add(view);
@@ -42,10 +56,17 @@ namespace PersonBrowser
             listPane.makeItem = () => new Label();
             listPane.bindItem = (item, index) =>
             {
-                (item as Label).text = allPersons[index].id + "  " + allPersons[index].name;
-                string id_a01 = allPersons[index].id;
-                id_a01 = id_a01.Remove(2, 1);
-                id_a01 = id_a01.Insert(2, "1");
+                if (skillNames.Exists(a => a == allPersons[index].id))
+                {
+                    (item as Label).text = allPersons[index].id + "  " + allPersons[index].name;
+                }
+                else
+                {
+                    (item as Label).text = allPersons[index].id + "  " + allPersons[index].name + "   缺特效";
+                }
+                string id_a00 = allPersons[index].id;
+                string id_a01 = id_a00.StartsWith("AA") ? id_a00.Remove(3, 1).Insert(3, "0") : id_a00.Remove(2, 1).Insert(2, "0");
+
                 PlayerInfo info00 = new PlayerInfo(allPersons[index].id);
                 PlayerInfo info01 = new PlayerInfo(id_a01);
                 if (info00.State == Color.red || info01.State == Color.red)
@@ -56,6 +77,8 @@ namespace PersonBrowser
                 {
                     (item as Label).style.color = info00.State == info01.State ? info00.State : Color.yellow;
                 }
+                // 原版已构建的
+                //if (info00.AutoGen == null && info00.State != Color.gray) (item as Label).style.color = Color.blue;
             };
             listPane.itemsSource = allPersons;
 
@@ -83,6 +106,7 @@ namespace PersonBrowser
             // assets in \\192.168.2.222\project_A
             Box box4 = new Box();
             pane.Add(box4);
+            box4.style.marginTop = 10;
             box4.Add(new Label("192.168.2.222/project_A"));
 
             TextField modelField = new TextField("模型");
@@ -99,6 +123,7 @@ namespace PersonBrowser
 
             // assets in editor
             Box box1 = new Box();
+            box1.style.marginTop = 10;
             pane.Add(box1);
             box1.Add(new Label("Prefab"));
 
@@ -128,6 +153,7 @@ namespace PersonBrowser
 
             // player_s
             Box box2 = new Box();
+            box2.style.marginTop = 10;
             pane.Add(box2);
             box2.Add(new Label("Prefab"));
 
@@ -141,6 +167,7 @@ namespace PersonBrowser
 
             // AutoGen 
             Box box3 = new Box();
+            box3.style.marginTop = 10;
             pane.Add(box3);
             box3.Add(new Label("AutoGen"));
 

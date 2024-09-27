@@ -5,12 +5,16 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
+using UnityEngine.Analytics;
+using System.Linq;
+using NPOI.HSSF.Record;
 
 
 namespace PersonBrowser
 {
     public class ItemCreater : EditorWindow
     {
+        public string GunsInfo { get; set; }
         /// <summary>
         /// 显示ui
         /// </summary>
@@ -25,9 +29,11 @@ namespace PersonBrowser
             createBagButton.RegisterCallback<ClickEvent>(CreateBag);
 
             TextElement text1 = new() { text = "在project中选择fbx资源，点击创建，此操作将覆盖原有资源。" };
+            TextElement text2 = new() { text = Check() + "\n--end" };
             rootVisualElement.Add(text1);
             rootVisualElement.Add(createGunButton);
             rootVisualElement.Add(createBagButton);
+            rootVisualElement.Add(text2);
         }
 
         /// <summary>
@@ -111,6 +117,28 @@ namespace PersonBrowser
                 // save prefab
                 PrefabUtility.SaveAsPrefabAssetAndConnect(root, path, InteractionMode.AutomatedAction);
             }
+        }
+        public Object[] FindAssetsByDir(string filter, string[] folders)
+        {
+            string[] guids = AssetDatabase.FindAssets(filter, folders);
+            var paths = guids.Select(e => AssetDatabase.GUIDToAssetPath(e));
+            return paths.Select(e => AssetDatabase.LoadAssetAtPath<Object>(e)).ToArray();
+        }
+        public string Check()
+        {
+            var gunsFbx = FindAssetsByDir("t:GameObject", new string[] { "Assets/Art/Character/Models/Guns/" });
+            var gunsFbx_id = gunsFbx.Select(e => e.name.Split('_')[0]);
+            var gunsPrefab = FindAssetsByDir("t:prefab", new string[] { "Assets/Art/Character/Prefabs/Guns/" });
+            var gunsPrefab_id = gunsPrefab.Select(e => e.name.Split('_')[1]);
+            var gunsNoFind = gunsFbx_id.Where(e => gunsPrefab_id.FirstOrDefault(f=>f==e) == null);
+            string result = "以下武器缺少prefab";
+            foreach (var item in gunsNoFind)
+            {
+                result = result + "\n" + item;
+               // Debug.Log(item.n + "haha");
+            }
+            //Debug.Log(gunsFbx[1].name);
+            return result;
         }
     }
 }

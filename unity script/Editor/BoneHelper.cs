@@ -17,13 +17,13 @@ namespace PersonBrowser
         {
             Transform[] allBones = bip001.transform.GetComponentsInChildren<Transform>();
             var dynamicBones = allBones.Where(x => x.name.Contains("Hair") || x.name.Contains("Fabric"));
-            var roots = dynamicBones.Where(x => x.parent.name.Contains("Bip001"));
+            var roots = dynamicBones.Where(x => x.parent.name.Contains("Bip001") && x.childCount != 0);
             return roots;
         }
         public static Transform GetBoneByName(Transform root, string str)
         {
             Transform[] allBones = root.transform.GetComponentsInChildren<Transform>();
-            return allBones.First(item=>item.name.Contains(str));
+            return allBones.First(item => item.name.Contains(str));
         }
     }
 }
