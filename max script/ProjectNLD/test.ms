@@ -2,7 +2,6 @@
 num = getNumVerts $
 global skinMod 
 global targetId
-global selectedId
 
 rollout myRollout "My Window"
 (
@@ -106,8 +105,8 @@ fn setVertexWeight v targetId selectedId =(
 			)
 		else if influenceId == selectedId then
 		(
-			append infArry selectedId
-			append weightArry 0
+			append infArry targetId
+			append weightArry weight_t
 			)
 		else
 		(
