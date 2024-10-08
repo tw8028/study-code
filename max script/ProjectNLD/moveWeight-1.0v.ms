@@ -99,6 +99,7 @@ rollout myRollout "move weight tool 1.0v"
 		(
 			setVertexWeight ::skinMod v ::targetId selectedId
 		)
+		skinOps.SelectBone ::skinMod ::targetId
 	)
 	
 	on btn3 pressed do
@@ -124,6 +125,7 @@ rollout myRollout "move weight tool 1.0v"
 				vertexList = getVertexList ::skinMod
 			)
 		)
+		skinOps.SelectBone ::skinMod ::targetId
 	)
 )	
 -- œ‘ æ¥∞ÃÂ
