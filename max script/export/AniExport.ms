@@ -19,7 +19,7 @@ fn AniExport x=(
 	--for item in sel do( 
 	--	if findString item.name "Nub"!=undefined then deselect item
 	--	)
-		
+	$Root.boneEnable = true	
 	exportPath = maxFilePath + "ani_" + getFilenameFile maxFileName + ".fbx"
 	pluginManager.loadClass FbxExporter
 	FBXExporterSetParam "ResetExport"

@@ -1,15 +1,11 @@
-using BehaviorDesigner.Runtime.Tasks;
 using Cysharp.Threading.Tasks;
 using MagicaCloth2;
-using NUnit.Framework;
-using PersonBrowser;
 using SRF;
-using System.Collections;
 using System.Collections.Generic;
-using System.Threading.Tasks;
+using System.Linq;
 using UnityEditor;
+using UnityEditor.Experimental;
 using UnityEngine;
-using UnityEngine.Analytics;
 using UnityEngine.UIElements;
 
 public class ModifyPrefab : EditorWindow
@@ -38,9 +34,9 @@ public class ModifyPrefab : EditorWindow
 
         Button btn5 = new() { name = "button5", text = "移除pos关键帧" };
         rootVisualElement.Add(btn5);
-        btn5.RegisterCallback<ClickEvent>(RemovePosCurve);
+        btn5.RegisterCallback<ClickEvent>(AnimOptimize);
 
-        Button btn6 = new() { name = "button5", text = "修改炮台朝向" };
+        Button btn6 = new() { name = "button6", text = "修改炮台朝向" };
         rootVisualElement.Add(btn6);
         btn6.RegisterCallback<ClickEvent>(ModifyBattery);
     }
@@ -131,7 +127,7 @@ public class ModifyPrefab : EditorWindow
         }
     }
 
-    public void RemovePosCurve(ClickEvent evt)
+    public void AnimOptimize(ClickEvent evt)
     {
         var obj = Selection.activeGameObject;
         var path = AssetDatabase.GetAssetPath(obj);
@@ -139,13 +135,19 @@ public class ModifyPrefab : EditorWindow
 
         Debug.Log(clip.name);
 
+        // 删除POS和缩放帧
         EditorCurveBinding[] curveBingdings = AnimationUtility.GetCurveBindings(clip);
         foreach (var curveBingding in curveBingdings)
         {
             string name = curveBingding.propertyName.ToLower();
-            string bone = curveBingding.path;
+            string bonePath = curveBingding.path;
+            // 删除POS需要排除质心，武器挂点
+            string[] fliter = new string[]{
+             "Root/Bip001",
+             "Root/Bip001/Bip001 Spine/Bip001 Spine1/Bip001 R Clavicle/Bip001 R UpperArm/Bip001 R Forearm/Bip001 R Hand/Grip_point01",
+             "Root/Bip001/Bip001 Spine/Bip001 Spine1/Bip001 L Clavicle/Bip001 L UpperArm/Bip001 L Forearm/Bip001 L Hand/Grip_point02"};
             // Debug.Log(bone);
-            if (name.Contains("position") && bone != "Root/Bip001")
+            if (name.Contains("position") && !fliter.Any(a => a == bonePath))
             {
                 AnimationUtility.SetEditorCurve(clip, curveBingding, null); // Set to null to remove the curve.
             }
@@ -154,5 +156,36 @@ public class ModifyPrefab : EditorWindow
                 AnimationUtility.SetEditorCurve(clip, curveBingding, null);
             }
         }
+
+        // 浮点精度压缩
+        AnimationClipCurveData[] curves = null;
+        curves = AnimationUtility.GetAllCurves(clip);
+        Keyframe key;
+        Keyframe[] keyFrames;
+        for (int ii = 0; ii < curves.Length; ++ii)
+        {
+            AnimationClipCurveData curveDate = curves[ii];
+            if (curveDate.curve == null || curveDate.curve.keys == null)
+            {
+                continue;
+            }
+            keyFrames = curveDate.curve.keys;
+            for (int i = 0; i < keyFrames.Length; i++)
+            {
+                key = keyFrames[i];
+                key.value = float.Parse(key.value.ToString("f3"));
+                key.inTangent = float.Parse(key.inTangent.ToString("f3"));
+                key.outTangent = float.Parse(key.outTangent.ToString("f3"));
+                keyFrames[i] = key;
+            }
+            curveDate.curve.keys = keyFrames;
+            clip.SetCurve(curveDate.path, curveDate.type, curveDate.propertyName, curveDate.curve);
+        }
+
+        // 提取anim文件
+        AnimationClip newClip = new AnimationClip();
+        EditorUtility.CopySerialized(clip, newClip);
+        string newAnimPath = "";
+        AssetDatabase.CreateAsset(newClip, newAnimPath);
     }
 }

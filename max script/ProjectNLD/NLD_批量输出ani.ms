@@ -1,6 +1,6 @@
 macroscript NLD_ExpAni
 category:"自定义工具"
-tooltip:"NLD_输出ani"
+tooltip:"NLD_批量输出biped角色动画"
 (
 fn aniExport x=(
 	files = getFiles @"E:\project_A\03_动作\角色技能\max\A00008*.max"
@@ -9,8 +9,9 @@ fn aniExport x=(
 		loadMaxFile i quite:true useFileUnits:true missingExtFilesAction:#logmsg missingDLLsAction:#logmsg skipXRefs:true
 		frameRate = 30
 		
+		$Root.boneEnable = true	
 		select $Bip001*			
-		selectmore #($Root,$Grip_point01,$Grip_point02,$Mount_point01,$Mount_point02,$Mount_point03,$Mount_point04,$Mount_point05)
+		selectmore #($Root,$Grip_point01,$Grip_point02)
 		sel = selection
 		for item in sel do
 			( 

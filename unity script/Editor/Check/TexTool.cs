@@ -17,7 +17,7 @@ public class TexTool : EditorWindow
     Texture2D mainTex;
     string savePath = "D:/GitHub/NLDClient/ProjectNLD/Assets/Art/temp/new_t.png";
 
-    [MenuItem("Test/tools/修改 表情贴图")]
+   
     public static void ShowWindow() { GetWindow<TexTool>("修改 表情贴图"); }
 
     public void CreateGUI()

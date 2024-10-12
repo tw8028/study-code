@@ -4,24 +4,26 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 using System.Linq;
-using BehaviorDesigner.Runtime.Tasks.Unity.UnityString;
 using MagicaCloth2;
-using System.Drawing.Text;
+using System.IO;
 
 public class CheckTool : EditorWindow
 {
-    TextElement text;
+    TextField text;
 
-    [MenuItem("Test/tools/check tool")]
+    [MenuItem("Test/tools/小工具")]
     public static void ShowWindow() { GetWindow<CheckTool>("check tool"); }
     public void CreateGUI()
     {
+        Button btn0 = new() { text = "获取资源路径" };
+        rootVisualElement.Add(btn0);
+        btn0.RegisterCallback<ClickEvent>(GetAssetPath);
 
         Button btn1 = new() { name = "button1", text = "check技能fbx，root节点" };
         rootVisualElement.Add(btn1);
         btn1.RegisterCallback<ClickEvent>(CheckRoot);
 
-        text = new() { name = "text", text = "" };
+        text = new() { name = "text", value = "" };
         rootVisualElement.Add(text);
 
 
@@ -36,8 +38,21 @@ public class CheckTool : EditorWindow
         Button btn4 = new() { name = "button4", text = "检查重复骨骼命名" };
         rootVisualElement.Add(btn4);
         btn4.RegisterCallback<ClickEvent>(CheckBonesName);
+
+        Button btn5 = new() { name = "button5", text = "检查headNub" };
+        rootVisualElement.Add(btn5);
+        btn5.RegisterCallback<ClickEvent>(CheckHeadNub);
+
     }
 
+    public void GetAssetPath(ClickEvent ent)
+    {
+        GameObject gameObject = Selection.activeGameObject;
+        string path = AssetDatabase.GetAssetPath(gameObject);
+        string folder = Path.GetDirectoryName(path);
+        text.value = folder;
+        Debug.Log(folder);
+    }
     // 检查 prefab 缩放
     public void CheckScale(ClickEvent evt)
     {
@@ -85,14 +100,14 @@ public class CheckTool : EditorWindow
         var hasRoots = anis.Where(a => a.transform.Find("Root") is null);
         if (hasRoots.Count() == 0)
         {
-            text.text = "未找到不包含Root的gameObject";
+            text.value = "未找到不包含Root的gameObject";
         }
         else
         {
-            text.text = "";
+            text.value = "";
             foreach (var item in hasRoots)
             {
-                text.text = text.text + "\n" + item.name;
+                text.value = text.value + "\n" + item.name;
             }
         }
     }
@@ -135,7 +150,7 @@ public class CheckTool : EditorWindow
             Debug.Log("需要选择文件夹");
             return;
         }
-        foreach(var obj in objs)
+        foreach (var obj in objs)
         {
             CheckBonesName(obj.transform);
         }
@@ -159,6 +174,30 @@ public class CheckTool : EditorWindow
                     Check(child);
                 }
             }
-        }       
+        }
+    }
+
+    // 检查 Bip001 HeadNub
+    public void CheckHeadNub(ClickEvent evt)
+    {
+        GameObject[] objs = FindAssetsByDir("t:GameObject", GetSelectFolder());
+        if (objs.Count() == 0 || objs is null)
+        {
+            Debug.Log("需要选择文件夹");
+            return;
+        }
+        foreach (var obj in objs)
+        {
+            HasHeadNub(obj.transform);
+        }
+    }
+    public void HasHeadNub(Transform obj)
+    {
+        var asset = obj.GetChild(0);
+        string headNub = "Root/Bip001/Bip001 Spine/Bip001 Spine1/Bip001 Neck/Bip001 Head/Bip001 HeadNub";
+        if (asset.Find(headNub) == null)
+        {
+            Debug.Log($"{obj.name}没有 HeadNub");
+        }
     }
 }
