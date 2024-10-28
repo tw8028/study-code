@@ -10,15 +10,33 @@ fn aniExport x=(
 		frameRate = 30
 		
 		$Root.boneEnable = true	
-		select $Bip001*			
-		selectmore #($Root,$Grip_point01,$Grip_point02)
-		sel = selection
-		for item in sel do
-			( 
-			if findString item.name "Nub"!=undefined then deselect item
-			if findString item.name "Footsteps"!=undefined then deselect item
-			)
 		
+		select #($Root, $Bip001, 
+			$'Bip001 Pelvis', $'Bip001 Spine', $'Bip001 Spine1', 
+			$'Bip001 Neck', $'Bip001 Head', $'Bip001 HeadNub',
+			$'Bip001 L Clavicle', $'Bip001 L UpperArm', $'Bip001 L Forearm', $'Bip001 L Hand', 
+			$'Bip001 L Finger0', $'Bip001 L Finger01', 
+			$'Bip001 L Finger1', $'Bip001 L Finger11', 
+			$'Bip001 L Finger2', $'Bip001 L Finger21', $Grip_point02, 
+			$'Bip001 R Clavicle', $'Bip001 R UpperArm', $'Bip001 R Forearm', 
+			$'Bip001 R Hand', 
+			$'Bip001 R Finger0', $'Bip001 R Finger01', 
+			$'Bip001 R Finger1', $'Bip001 R Finger11', 
+			$'Bip001 R Finger2', $'Bip001 R Finger21', 
+			$Grip_point01, 
+			$'Bip001 L Thigh', $'Bip001 L Calf', $'Bip001 L Foot', $'Bip001 L Toe0', 
+			$'Bip001 R Thigh', $'Bip001 R Calf', $'Bip001 R Foot', $'Bip001 R Toe0')
+		
+		sel = selection
+	
+		--for item in sel do
+			--( 
+			--if findString item.name "Nub"!=undefined then deselect item
+			--if findString item.name "Footsteps"!=undefined then deselect item
+			--)
+		
+	
+			
 		exportPath = "E:/project_A/03_动作/角色技能/export/"+ getFilenameFile maxFileName+ ".fbx"
 		--提前建好文件夹
 		pluginManager.loadClass FbxExporter
@@ -27,7 +45,7 @@ fn aniExport x=(
 		exportFile exportPath #noPrompt selectedOnly:true using:FBXEXP
 		)
 	--max reset file
-	)	
+	)
 aniExport x
 )
 --运行前保存当前场景

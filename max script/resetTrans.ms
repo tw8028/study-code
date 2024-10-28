@@ -7,6 +7,7 @@ fn RestTrans objs=(
 	for obj in sel do(
 		obj.position = [0,0,0]
 		obj.rotation = quat 0 0 0 1
+		obj.pivot = [0,0,0]
 		)
 	)
 	

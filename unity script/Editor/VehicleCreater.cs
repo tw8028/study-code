@@ -43,7 +43,7 @@ namespace PersonBrowser
                 Debug.Log($"{vehicleFbx.name}:²»ÊÇÔØ¾ß");
                 return;
             }
-            GameObject vehiclePrefab = new GameObject($"P_{vehicleFbx.name}_01");
+            GameObject vehiclePrefab = new GameObject($"P_{vehicleFbx.name}");
             PrefabUtility.InstantiatePrefab(vehicleFbx, vehiclePrefab.transform);
             string prefabPath = $"Assets/Art/Character/Prefabs/Vehicle/{vehiclePrefab.name}.prefab";
             PrefabUtility.SaveAsPrefabAssetAndConnect(vehiclePrefab, prefabPath, InteractionMode.AutomatedAction);

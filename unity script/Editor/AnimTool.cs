@@ -11,11 +11,34 @@ public class AnimTool : EditorWindow
     public static void ShowWindow() { GetWindow<AnimTool>("提取anim文件"); }
     public void CreateGUI()
     {
-        Button btn1 = new Button() { name = "button1", text = "提取anim" };
+        Button btn1 = new() { name = "button1", text = "提取anim" };
         rootVisualElement.Add(btn1);
         btn1.RegisterCallback<ClickEvent>(SeparateAnim);
+
+        Button btn2 = new() { name = "button2", text = "提取anim到当前目录" };
+        rootVisualElement.Add(btn2);
+        btn2.RegisterCallback<ClickEvent>(SeparateAnim1);
     }
 
+    public void SeparateAnim1(ClickEvent evt)
+    {
+        GameObject[] objs = Selection.gameObjects;
+        if (objs.Length == 0)
+        {
+            Debug.LogWarning("请先选择至少一个Fbx文件");
+        }
+        foreach (GameObject obj in objs)
+        {
+            string objName = obj.name;
+            string objPath =  AssetDatabase.GetAssetPath(obj);
+            string animPath = Path.GetDirectoryName(objPath) + $"/{objName}.anim";
+            AnimationClip clip = AssetDatabase.LoadAssetAtPath<AnimationClip>(objPath);
+            AnimationClip newClip = new();
+            EditorUtility.CopySerialized(clip, newClip);
+            AssetDatabase.CreateAsset(newClip, animPath);
+            Debug.Log($"生成anim：{animPath}");
+        }
+    }
     public void SeparateAnim(ClickEvent evt)
     {
         GameObject[] objs = Selection.gameObjects;
@@ -37,14 +60,15 @@ public class AnimTool : EditorWindow
             string objPath = AssetDatabase.GetAssetPath(obj);
             AnimationClip clip = AssetDatabase.LoadAssetAtPath<AnimationClip>(objPath);
             // 优化曲线
-            if (clip != null)
-            {
-                AnimOptimize(clip);
-            }
-            else
+            if (clip == null)
             {
                 Debug.LogWarning($"没有动画: {objName}");
                 break;
+
+            }
+            else
+            {
+                AnimOptimize(clip);
             }
             // 提取anim文件, 保存
             AnimationClip newClip = new();
@@ -63,10 +87,9 @@ public class AnimTool : EditorWindow
         {
             AnimationCurve curve = AnimationUtility.GetEditorCurve(clip, curveBingdings[ii]);
 
-            // 删除移动和缩放帧
+            // 删除移动帧(除了Bip001)和缩放帧
             string propName = curveBingdings[ii].propertyName.ToLower();
-            string nodePath = curveBingdings[ii].path;
-            string nodeName = Path.GetFileName(nodePath);
+            string nodeName = Path.GetFileName(curveBingdings[ii].path);
             if (propName.Contains("position") && nodeName.StartsWith("Bip001 "))
             {
                 curve = null;  //有空格，排除了“Bip001”
