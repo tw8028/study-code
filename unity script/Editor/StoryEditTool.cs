@@ -49,10 +49,17 @@ public class StoryEditTool : EditorWindow
         Transform root = GameObject.Find("StoryManager/players").transform;
         GameObject go = Selection.activeGameObject;
         string playerName = go.name;
-        DestroyImmediate(go);
         GameObject playerPrefab = FindPlayerPrefab(playerName);
-        GameObject playerInstance = (GameObject)PrefabUtility.InstantiatePrefab(playerPrefab, root);
-        playerInstance.name = playerName;
+        if (playerPrefab != null)
+        {
+            DestroyImmediate(go);
+            GameObject playerInstance = (GameObject)PrefabUtility.InstantiatePrefab(playerPrefab, root);
+            playerInstance.name = playerName;
+        }
+        else
+        {
+            Debug.LogError($"无法找到对应角色prefab：{playerName}");
+        }
     }
 
     public void ResetPlayers(ClickEvent evt)
@@ -104,7 +111,6 @@ public class StoryEditTool : EditorWindow
         }
         else
         {
-            Debug.LogWarning($"无法找到角色prefab：{name}");
             return null;
         }
     }
