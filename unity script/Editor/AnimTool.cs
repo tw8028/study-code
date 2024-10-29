@@ -11,16 +11,16 @@ public class AnimTool : EditorWindow
     public static void ShowWindow() { GetWindow<AnimTool>("提取anim文件"); }
     public void CreateGUI()
     {
-        Button btn1 = new() { name = "button1", text = "提取anim" };
+        Button btn1 = new() { name = "button1", text = "提取战斗动作" };
         rootVisualElement.Add(btn1);
         btn1.RegisterCallback<ClickEvent>(SeparateAnim);
 
-        Button btn2 = new() { name = "button2", text = "提取anim到当前目录" };
+        Button btn2 = new() { name = "button2", text = "提取选择到当前文件夹" };
         rootVisualElement.Add(btn2);
-        btn2.RegisterCallback<ClickEvent>(SeparateAnim1);
+        btn2.RegisterCallback<ClickEvent>(SeparateSelected);
     }
 
-    public void SeparateAnim1(ClickEvent evt)
+    public void SeparateSelected(ClickEvent evt)
     {
         GameObject[] objs = Selection.gameObjects;
         if (objs.Length == 0)
@@ -31,12 +31,19 @@ public class AnimTool : EditorWindow
         {
             string objName = obj.name;
             string objPath =  AssetDatabase.GetAssetPath(obj);
-            string animPath = Path.GetDirectoryName(objPath) + $"/{objName}.anim";
+            string newClipPath = Path.GetDirectoryName(objPath) + $"/{objName}.anim";
             AnimationClip clip = AssetDatabase.LoadAssetAtPath<AnimationClip>(objPath);
+            string metaPath = objPath + ".meta";
+            File.Delete(metaPath);
+            AssetDatabase.Refresh();
+            var modelImportor = AssetImporter.GetAtPath(objPath) as ModelImporter;
+            modelImportor.avatarSetup = ModelImporterAvatarSetup.CreateFromThisModel;
+            modelImportor.SaveAndReimport();
+
             AnimationClip newClip = new();
             EditorUtility.CopySerialized(clip, newClip);
-            AssetDatabase.CreateAsset(newClip, animPath);
-            Debug.Log($"生成anim：{animPath}");
+            AssetDatabase.CreateAsset(newClip, newClipPath);
+            Debug.Log($"生成anim：{newClipPath}");
         }
     }
     public void SeparateAnim(ClickEvent evt)

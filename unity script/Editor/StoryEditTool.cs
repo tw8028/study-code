@@ -16,6 +16,10 @@ public class StoryEditTool : EditorWindow
         rootVisualElement.Add(btn1);
         btn1.RegisterCallback<ClickEvent>(ResetPlayers);
 
+        Button btn2 = new() { text = "替换选择角色" };
+        rootVisualElement.Add(btn2);
+        btn2.RegisterCallback<ClickEvent>(ResetSelection);
+
         Button btn5 = new() { text = "计算行走时间" };
         rootVisualElement.Add(btn5);
         btn5.RegisterCallback<ClickEvent>(WalkTime);
@@ -38,6 +42,17 @@ public class StoryEditTool : EditorWindow
             float time2 = distance / 63f;
             text.text = $" walk01 需要走 {time1} 秒 \n walk02 需要走 {time2} 秒";
         }
+    }
+
+    public void ResetSelection(ClickEvent evt)
+    {
+        Transform root = GameObject.Find("StoryManager/players").transform;
+        GameObject go = Selection.activeGameObject;
+        string playerName = go.name;
+        DestroyImmediate(go);
+        GameObject playerPrefab = FindPlayerPrefab(playerName);
+        GameObject playerInstance = (GameObject)PrefabUtility.InstantiatePrefab(playerPrefab, root);
+        playerInstance.name = playerName;
     }
 
     public void ResetPlayers(ClickEvent evt)
