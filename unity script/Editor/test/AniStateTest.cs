@@ -6,15 +6,11 @@ using UnityEngine.UIElements;
 
 public class AniStateTest : EditorWindow
 {
-    Animator animator;
     [MenuItem("Test/tools/ani state test")]
     public static void ShowWindow() { GetWindow<AniStateTest>("ani state test"); }
 
     public void CreateGUI()
     {
-        Transform player = Selection.activeTransform;
-        animator = player.GetChild(0).GetComponent<Animator>();
-
         Label lb1 = new Label() { text = "stand" };
         rootVisualElement.Add(lb1);
 
@@ -63,44 +59,53 @@ public class AniStateTest : EditorWindow
         btn9.RegisterCallback<ClickEvent>(PlayCMove);
     }
 
+    public void PlayState(string stateName, int layer = 0)
+    {
+        GameObject[] objs = Selection.gameObjects;
+        foreach (GameObject obj in objs)
+        { 
+            Animator animator = obj.GetComponent<Animator>();
+            animator.Play(stateName);
+        }
+    }
     public void PlayIdle(ClickEvent evt)
     {
-        animator.Play("idle");
+       PlayState("idle");
     }
 
     public void PlayAttack(ClickEvent evt)
     {
-        animator.Play("attack");
+        PlayState("attack", 1);
     }
     public void PlayReload(ClickEvent evt)
     {
-        animator.Play("reload");
+        PlayState("reload");
     }
     public void PlayMove(ClickEvent evt)
     {
-        animator.Play("move", 1);
+        PlayState("move", 1);
     }
     public void Stop(ClickEvent evt)
     {
-        animator.Play("empty", 1);
+        PlayState("empty", 1);
     }
 
     public void PlayCIdle(ClickEvent evt)
     {
-        animator.Play("c_idle");
+        PlayState("c_idle");
     }
 
     public void PlayCAttack(ClickEvent evt)
     {
-        animator.Play("c_attack");
+        PlayState("c_attack");
     }
     public void PlayCReload(ClickEvent evt)
     {
-        animator.Play("c_reload");
+        PlayState("c_reload");
     }
 
     public void PlayCMove(ClickEvent evt)
     {
-        animator.Play("c_move");
+        PlayState("c_move");
     }
 }

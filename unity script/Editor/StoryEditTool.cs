@@ -1,4 +1,6 @@
+using CriWare.Assets;
 using DG.DemiEditor;
+using Gameplay.Story.Cmp;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
@@ -50,6 +52,18 @@ public class StoryEditTool : EditorWindow
         }
     }
 
+
+    public void ClearVoice(ClickEvent evt)
+    {
+        Transform root = GameObject.Find("StoryManager/players").transform;
+        Transform[] oldPlayers = new Transform[root.childCount];
+        for (int i = 0; i < oldPlayers.Length; i++)
+        {
+            Debug.Log(oldPlayers[i].name);
+            DestroyImmediate(oldPlayers[i].GetComponent<CriAtomAssets>());
+        }
+
+    }
     public void ResetSelection(ClickEvent evt)
     {
         Transform root = GameObject.Find("StoryManager/players").transform;
@@ -58,9 +72,12 @@ public class StoryEditTool : EditorWindow
         GameObject playerPrefab = FindPlayerPrefab(playerName);
         if (playerPrefab != null)
         {
+            int playerId =   go.GetComponent<CmpStoryPlayer>().playerId;
             DestroyImmediate(go);
             GameObject playerInstance = (GameObject)PrefabUtility.InstantiatePrefab(playerPrefab, root);
             playerInstance.name = playerName;
+            var cmpStoryPlayer =  playerInstance.AddComponent<CmpStoryPlayer>();
+            cmpStoryPlayer.playerId = playerId;
         }
         else
         {
@@ -121,7 +138,7 @@ public class StoryEditTool : EditorWindow
     }
 
     public void ChangePlayerClips(ClickEvent evt)
-    { 
+    {
 
         PlayableDirector pd = GameObject.Find("StoryManager/timeline").GetComponent<PlayableDirector>();
         if (pd is null)

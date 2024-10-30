@@ -236,25 +236,26 @@ namespace PersonBrowser
             Transform assetInstance = playerPrefab.transform.GetChild(0);
             // remove old MagicaCloth and add new
             DestroyImmediate(assetInstance.transform.GetComponent<MagicaCloth>());
-            MagicaCloth magicaCloth = assetInstance.gameObject.AddComponent<MagicaCloth>();
+            GameObject magicaCloth = new("Magica Cloth");
+            magicaCloth.transform.parent = assetInstance.transform;
+            MagicaCloth magicaClothComp = magicaCloth.AddComponent<MagicaCloth>();
 
 
-
-            magicaCloth.SerializeData.clothType = ClothProcess.ClothType.BoneCloth; // set boneColth
+            magicaClothComp.SerializeData.clothType = ClothProcess.ClothType.BoneCloth; // set boneColth
             // root bone list
-            magicaCloth.SerializeData.rootBones = BoneHelper.GetRootBones(assetInstance.transform.Find("Root/Bip001/")).ToList();
+            magicaClothComp.SerializeData.rootBones = BoneHelper.GetRootBones(assetInstance.transform.Find("Root/Bip001/")).ToList();
 
             // Import preset json.
             string player1_preset = File.ReadAllText(Application.dataPath + "/Art/Temp/Editor/MagicaClothPreset/MC2_Preset_(player).json");
-            magicaCloth.SerializeData.ImportJson(player1_preset);
+            magicaClothComp.SerializeData.ImportJson(player1_preset);
 
             // Add magica wind zone
-            if (playerPrefab.transform.Find("Magica Wind Zone"))
+            if (playerPrefab.transform.Find("Magica Wind Zone") || assetInstance.Find("Magica Wind Zone"))
             {
                 DestroyImmediate(playerPrefab.transform.Find("Magica Wind Zone").gameObject);
             }
             GameObject wind = new("Magica Wind Zone");
-            wind.transform.parent = playerPrefab.transform;
+            wind.transform.parent = assetInstance;
             var windComponent = wind.AddComponent<MagicaWindZone>(); // set direction
             windComponent.directionAngleX = 180;
             windComponent.main = 3;
@@ -298,7 +299,7 @@ namespace PersonBrowser
             sphere.SetSize(new Vector3(0.18f, 0.18f, 0.18f));
             sphere.center = new Vector3(-0.2f, 0f, 0f);
             colList.Add(sphere);
-            magicaCloth.SerializeData.colliderCollisionConstraint.colliderList = colList;
+            magicaClothComp.SerializeData.colliderCollisionConstraint.colliderList = colList;
             /* GameObject pelvisCollider = new($"Magica Sphere Collider ({pelvis.name})");
              GameObject spineCollider = new($"Magica Sphere Collider ({spine.name})");
              GameObject headCollider = new($"Magica Sphere Collider ({head.name})");
