@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Playables;
+using UnityEngine.Timeline;
 using UnityEngine.UIElements;
 
 public class StoryEditTool : EditorWindow
@@ -16,9 +18,13 @@ public class StoryEditTool : EditorWindow
         rootVisualElement.Add(btn1);
         btn1.RegisterCallback<ClickEvent>(ResetPlayers);
 
-        Button btn2 = new() { text = "替换选择角色" };
+        Button btn2 = new() { text = "替换选择角色prefab" };
         rootVisualElement.Add(btn2);
         btn2.RegisterCallback<ClickEvent>(ResetSelection);
+
+        Button btn3 = new() { text = "替换角色clip" };
+        rootVisualElement.Add(btn3);
+        btn3.RegisterCallback<ClickEvent>(ChangePlayerClips);
 
         Button btn5 = new() { text = "计算行走时间" };
         rootVisualElement.Add(btn5);
@@ -87,7 +93,6 @@ public class StoryEditTool : EditorWindow
         if (name.StartsWith("1"))
         {
             string prefabName = name.Remove(0, 1).Insert(0, "P_S_A");
-            Debug.Log(prefabName);
             string prefabPath = $"Assets/Art/Character/Prefabs/Players_S/{prefabName}.prefab";
             return AssetDatabase.LoadAssetAtPath<GameObject>(prefabPath);
         }
@@ -113,5 +118,49 @@ public class StoryEditTool : EditorWindow
         {
             return null;
         }
+    }
+
+    public void ChangePlayerClips(ClickEvent evt)
+    { 
+
+        PlayableDirector pd = GameObject.Find("StoryManager/timeline").GetComponent<PlayableDirector>();
+        if (pd is null)
+        {
+            Debug.LogError("缺少timeline资源");
+            return;
+        }
+        TimelineAsset timeline = pd.playableAsset as TimelineAsset;
+        if (timeline is null)
+        {
+            Debug.LogError("缺少timeline资源");
+            return;
+        }
+
+        foreach (TrackAsset track in timeline.GetOutputTracks())
+        {
+            // 检查轨道是否为AnimationTrack类型
+            if (track is AnimationTrack animationTrack)
+            {
+                var clips = track.GetClips();
+                Debug.Log(track.parent.name);
+                foreach (var clip in clips)
+                {
+                    string clipName = clip.animationClip.name;
+                    // 给 animation playable asset 赋值
+                    string path = $"Assets/Art/Animations/Show/{clipName}.anim";
+                    var clipAsset = AssetDatabase.LoadAssetAtPath<Object>(path);
+                    if (clipAsset != null)
+                    {
+                        clip.asset = clipAsset;
+                    }
+                    else
+                    {
+                        Debug.LogError($"{track.parent.name}缺少资源：{clipName}");
+                        break;
+                    }
+                }
+            }
+        }
+
     }
 }
