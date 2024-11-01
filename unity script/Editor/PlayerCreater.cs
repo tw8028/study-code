@@ -236,6 +236,11 @@ namespace PersonBrowser
             Transform assetInstance = playerPrefab.transform.GetChild(0);
             // remove old MagicaCloth and add new
             DestroyImmediate(assetInstance.transform.GetComponent<MagicaCloth>());
+            if (assetInstance.Find("Magica Cloth"))
+            {
+                DestroyImmediate(assetInstance.transform.Find("Magica Cloth").gameObject);
+            }
+
             GameObject magicaCloth = new("Magica Cloth");
             magicaCloth.transform.parent = assetInstance.transform;
             MagicaCloth magicaClothComp = magicaCloth.AddComponent<MagicaCloth>();
@@ -246,18 +251,23 @@ namespace PersonBrowser
             magicaClothComp.SerializeData.rootBones = BoneHelper.GetRootBones(assetInstance.transform.Find("Root/Bip001/")).ToList();
 
             // Import preset json.
-            string player1_preset = File.ReadAllText(Application.dataPath + "/Art/Temp/Editor/MagicaClothPreset/MC2_Preset_(player).json");
+            string player1_preset = File.ReadAllText(Application.dataPath + "/Art/Temp/Editor/MagicaClothPreset/MC2_Preset_(hair).json");
             magicaClothComp.SerializeData.ImportJson(player1_preset);
 
             // Add magica wind zone
-            if (playerPrefab.transform.Find("Magica Wind Zone") || assetInstance.Find("Magica Wind Zone"))
+            if (playerPrefab.transform.Find("Magica Wind Zone"))
             {
                 DestroyImmediate(playerPrefab.transform.Find("Magica Wind Zone").gameObject);
             }
+            if (assetInstance.Find("Magica Wind Zone"))
+            {
+                DestroyImmediate(assetInstance.transform.Find("Magica Wind Zone").gameObject);
+            }
+
             GameObject wind = new("Magica Wind Zone");
             wind.transform.parent = assetInstance;
             var windComponent = wind.AddComponent<MagicaWindZone>(); // set direction
-            windComponent.directionAngleX = 180;
+            windComponent.directionAngleY = -180f;
             windComponent.main = 3;
 
             // Add Collider

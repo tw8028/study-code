@@ -1,5 +1,3 @@
-using CriWare.Assets;
-using DG.DemiEditor;
 using Gameplay.Story.Cmp;
 using System.Collections;
 using System.Collections.Generic;
@@ -16,11 +14,11 @@ public class StoryEditTool : EditorWindow
     public static void ShowWindow() { GetWindow<StoryEditTool>("剧情工具"); }
     public void CreateGUI()
     {
-        Button btn1 = new() { text = "替换所有角色" };
+        Button btn1 = new() { text = "替换为prefab（所有角色）" };
         rootVisualElement.Add(btn1);
         btn1.RegisterCallback<ClickEvent>(ResetPlayers);
 
-        Button btn2 = new() { text = "替换选择角色prefab" };
+        Button btn2 = new() { text = "替换为prefab（选择角色）" };
         rootVisualElement.Add(btn2);
         btn2.RegisterCallback<ClickEvent>(ResetSelection);
 
@@ -53,17 +51,7 @@ public class StoryEditTool : EditorWindow
     }
 
 
-    public void ClearVoice(ClickEvent evt)
-    {
-        Transform root = GameObject.Find("StoryManager/players").transform;
-        Transform[] oldPlayers = new Transform[root.childCount];
-        for (int i = 0; i < oldPlayers.Length; i++)
-        {
-            Debug.Log(oldPlayers[i].name);
-            DestroyImmediate(oldPlayers[i].GetComponent<CriAtomAssets>());
-        }
-
-    }
+   
     public void ResetSelection(ClickEvent evt)
     {
         Transform root = GameObject.Find("StoryManager/players").transform;

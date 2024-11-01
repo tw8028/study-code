@@ -33,6 +33,10 @@ namespace PersonBrowser
             Button btn4 = new Button() { text = "create selected battery" };
             rootVisualElement.Add(btn4);
             btn4.RegisterCallback<ClickEvent>(CreateSelectedBattery);
+
+            Button btn5 = new Button() { text = "重命名anim" };
+            rootVisualElement.Add(btn5);
+            btn5.RegisterCallback<ClickEvent>(RenameAnim);
         }
 
         public void CreateSelectedVehicle(ClickEvent evt)
@@ -43,7 +47,7 @@ namespace PersonBrowser
                 Debug.Log($"{vehicleFbx.name}:不是载具");
                 return;
             }
-            GameObject vehiclePrefab = new GameObject($"P_{vehicleFbx.name}");
+            GameObject vehiclePrefab = new GameObject($"P_{vehicleFbx.name}_01");
             PrefabUtility.InstantiatePrefab(vehicleFbx, vehiclePrefab.transform);
             string prefabPath = $"Assets/Art/Character/Prefabs/Vehicle/{vehiclePrefab.name}.prefab";
             PrefabUtility.SaveAsPrefabAssetAndConnect(vehiclePrefab, prefabPath, InteractionMode.AutomatedAction);
@@ -111,7 +115,7 @@ namespace PersonBrowser
             }
         }
 
-        
+
         public void CreateAllBattery(ClickEvent evt)
         {
             string[] guids = AssetDatabase.FindAssets("t:gameObject", new string[] { "Assets/Art/Character/Models/Battery" });
@@ -121,6 +125,19 @@ namespace PersonBrowser
                 GameObject gameObject = AssetDatabase.LoadAssetAtPath<GameObject>(path);
                 CreateBattery(gameObject);
             }
+        }
+
+        public void RenameAnim(ClickEvent evt)
+        {
+            GameObject go = Selection.activeGameObject;
+            string goPath = AssetDatabase.GetAssetPath(go);
+            ModelImporter importer = AssetImporter.GetAtPath(goPath) as ModelImporter;
+
+            ModelImporterClipAnimation clip = new();
+            clip = importer.defaultClipAnimations[0];
+            clip.name = go.name;
+            importer.clipAnimations = new ModelImporterClipAnimation[] { clip };
+            importer.SaveAndReimport();
         }
     }
 }

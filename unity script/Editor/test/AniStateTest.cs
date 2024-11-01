@@ -64,8 +64,8 @@ public class AniStateTest : EditorWindow
         GameObject[] objs = Selection.gameObjects;
         foreach (GameObject obj in objs)
         { 
-            Animator animator = obj.GetComponent<Animator>();
-            animator.Play(stateName);
+            Animator animator = obj.transform.GetChild(0).GetComponent<Animator>();
+            animator.Play(stateName, layer);
         }
     }
     public void PlayIdle(ClickEvent evt)
