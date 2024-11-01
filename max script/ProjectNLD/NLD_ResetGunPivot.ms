@@ -19,6 +19,8 @@ tooltip:"NLD_调整GunPivot"
 		button btn2 "pivot 位置旋转归零" width:100 height:30
 		button btn3 "创建 Fire 挂点" width:100 height:30
 		
+		label label_1 "" width:100 height:10
+		button btn4 "重建武器挂点" width:100 height:30
 		
 		
 		on btn0 pressed do
@@ -56,6 +58,33 @@ tooltip:"NLD_调整GunPivot"
 				fire.parent = gun
 				fire.name = "Fire"
 			)
+		)
+		
+		on btn4 pressed do
+		(
+			w_bone =  $Weapon*Bone001[1] --使用通配符返回数组获取武器骨骼
+			w_point = $Grip_point01
+			if w_bone == undefined or w_point == undefined then print "没有武器骨骼或挂点" else
+			(
+				w_point.name = "old_point"
+				new_point = Point name:"Grip_point01" parent:$'Bip001 R Hand'
+				
+				-- 创建offset，用于约束新的武器挂点
+				offset = Point name:"offset" cross:off Box:on
+				offset.transform = w_bone.transform
+				pos_offset = offset.position
+				currentRotation = offset.rotation
+				rotationY = angleaxis 90 [0, 1, 0]
+				newRotation = currentRotation * rotationY
+				offset.rotation = newRotation
+				offset.position = pos_offset
+				link offset w_bone
+				
+				-- new point 约束到 offset
+				pos_con = Position_Constraint()
+				addnode pos_con new_point
+				addtarget pos_con offset 1.0
+			) 
 		)
 	)
 	createDialog ResetGunPivotWindow 300 250	
