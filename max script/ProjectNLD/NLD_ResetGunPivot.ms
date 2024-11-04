@@ -78,12 +78,21 @@ tooltip:"NLD_调整GunPivot"
 				newRotation = currentRotation * rotationY
 				offset.rotation = newRotation
 				offset.position = pos_offset
-				link offset w_bone
 				
-				-- new point 约束到 offset
-				pos_con = Position_Constraint()
-				addnode pos_con new_point
-				addtarget pos_con offset 1.0
+				-- link offset 到武器骨骼
+				lc = Link_Constraint()
+				offset.transform.controller = lc
+				lc.addTarget w_bone 0
+				
+				-- 位置约束新挂点到 offset
+				pos_constraint = Position_Constraint()
+				new_point.pos.controller = pos_constraint
+				pos_constraint.constraints.appendTarget offset 50.0
+				
+				-- 方向约束新挂点到 offset
+				ro_constraint = Orientation_Constraint()
+				new_point.rotation.controller = ro_constraint
+				ro_constraint.constraints.appendTarget offset 50.0
 			) 
 		)
 	)
