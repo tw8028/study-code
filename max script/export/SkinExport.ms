@@ -22,7 +22,8 @@ fn SkinExport x=(
 	--	if findString item.name "Nub"!=undefined then deselect item
 	--	)
 	maxName = getFilenameFile maxFileName
-	fbxName = substituteString maxName "_skin" "" --remove _skin
+	-- fbxName = substituteString maxName "_skin" "" --remove _skin
+	fbxName = (FilterString maxName "_")[1]
 	exportPath = maxFilePath + fbxName + ".fbx"
 	
 	pluginManager.loadClass FbxExporter

@@ -2,6 +2,8 @@ macroscript NLD_ResetGunPivot
 category:"自定义工具"
 tooltip:"NLD_调整GunPivot"
 (
+	global pointTransform
+	
 	fn isSelectOne = (
 		if selection.count ==1 then return true else 
 			( 
@@ -22,6 +24,10 @@ tooltip:"NLD_调整GunPivot"
 		label label_1 "" width:100 height:10
 		button btn4 "重建武器挂点" width:100 height:30
 		
+		label label_3 "" width:100 height:20
+		label label_2 "复制粘贴transform" width:100 height:20
+		button btn5 "复制" width:100 height:30
+		button btn6 "粘贴" width:100 height:30
 		
 		on btn0 pressed do
 		(
@@ -62,11 +68,11 @@ tooltip:"NLD_调整GunPivot"
 		
 		on btn4 pressed do
 		(
-			w_bone =  $Weapon*Bone001[1] --使用通配符返回数组获取武器骨骼
-			w_point = $Grip_point01
-			if w_bone == undefined or w_point == undefined then print "没有武器骨骼或挂点" else
+			w_bone =  $'Weapon*Bone001'[1] --使用通配符返回数组获取武器骨骼
+			old_point = $Grip_point01
+			if w_bone == undefined or old_point == undefined then print "没有武器骨骼或挂点" else
 			(
-				w_point.name = "old_point"
+				old_point.name = "old_point"
 				new_point = Point name:"Grip_point01" parent:$'Bip001 R Hand'
 				
 				-- 创建offset，用于约束新的武器挂点
@@ -93,8 +99,24 @@ tooltip:"NLD_调整GunPivot"
 				ro_constraint = Orientation_Constraint()
 				new_point.rotation.controller = ro_constraint
 				ro_constraint.constraints.appendTarget offset 50.0
+				
 			) 
 		)
+		
+		on btn5 pressed do
+		(
+			if isSelectOne() then
+			(
+				::pointTransform =  $.transform
+			)
+		)
+		on btn6 pressed do
+		(
+			if isSelectOne() then
+			(
+				$.transform = ::pointTransform
+			)
+		)	
 	)
-	createDialog ResetGunPivotWindow 300 250	
+	createDialog ResetGunPivotWindow 270 400	
 )
