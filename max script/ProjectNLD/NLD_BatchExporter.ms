@@ -25,13 +25,13 @@ tooltip:"NLD_批量输出Fbx"
 	
 	fn animationExport =
 	(
-		local files = getFiles @"E:\project_A\03_动作\角色技能\max\A00008*.max"
-		local exportFolder = @"E:/project_A/03_动作/角色技能/export/"
+		local files = getFiles @"E:/动作改版/Battery/ani_m11*.max" recurse:true
+		local exportFolder = @"E:/动作改版/Battery/fbx/"
 		
 		for maxfile in files do
 		(
 			loadMaxFile maxfile quite:true
-			frameRate = 30
+			-- frameRate = 30
 			$Root.boneEnable = true	
 			select #($Root, $Bip001, 
 			$'Bip001 Pelvis', $'Bip001 Spine', $'Bip001 Spine1', 
@@ -50,9 +50,9 @@ tooltip:"NLD_批量输出Fbx"
 			$'Bip001 R Thigh', $'Bip001 R Calf', $'Bip001 R Foot', $'Bip001 R Toe0')
 			
 			exportPath = exportFolder + getFilenameFile maxFileName+ ".fbx"
-			--提前建好文件夹
-			pluginManager.loadClass FbxExporter
-			FBXExporterSetParam "ResetExport"
+			-- 提前建好文件夹
+			-- pluginManager.loadClass FbxExporter
+			-- FBXExporterSetParam "ResetExport"
 			FBXExporterSetParam "BakeAnimation" true
 			exportFile exportPath #noPrompt selectedOnly:true using:FBXEXP
 		)
@@ -72,6 +72,7 @@ tooltip:"NLD_批量输出Fbx"
 		on btn2 pressed do 
 		(
 			animationExport()
+			print "xx"
 		)
 	)
 	createDialog exportWindow 200 250	
