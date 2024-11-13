@@ -23,6 +23,8 @@ tooltip:"NLD_调整GunPivot"
 		
 		label label_1 "" width:100 height:10
 		button btn4 "重建武器挂点" width:100 height:30
+		button btn4_1 "解除挂点约束" width:100 height:30
+		 
 		
 		label label_3 "" width:100 height:20
 		label label_2 "复制粘贴transform" width:100 height:20
@@ -102,6 +104,15 @@ tooltip:"NLD_调整GunPivot"
 				
 			) 
 		)
+		on btn4_1 pressed do
+		(
+			obj = $Grip_point01
+			trans = obj.transform
+			obj.pos.controller = Position_XYZ()
+			obj.rotation.controller = Euler_XYZ()
+			obj.transform = trans
+		)
+		
 		
 		on btn5 pressed do
 		(
