@@ -71,49 +71,19 @@ namespace PersonBrowser
         public void CreateGun(ClickEvent evt)
         {
             // path = "Assets/Art/Character/Prefabs/Guns/"
-            GameObject[] objectArray = Selection.gameObjects;
+            Object[] objectArray = FindAssetsByDir("t:GameObject", new string[] { "Assets/Art/Character/Models/Guns/" });
 
             foreach (GameObject obj in objectArray)
             {
-                string set = obj.name.Split("_")[1];
-                string setName = "";
-                switch (set)
-                {
-                    case "ar":
-                        setName = "g01";
-                        break;
-                    case "dmr":
-                        setName = "g02";
-                        break;
-                    case "bar":
-                        setName = "g03";
-                        break;
-
-                    case "bow":
-                        setName = "g04";
-                        break;
-
-                    case "sg":
-                        setName = "g05";
-                        break;
-
-                    case "sar":
-                        setName = "lever_g06";
-                        break;
-
-                    case "lmg":
-                        setName = "g08";
-                        break;
-                    case "hf":
-                        setName = "g11";
-                        break;
-                }
-                string name = $"P_{obj.name}_{setName}";
-                string path = $"Assets/Art/Character/Prefabs/Guns/{name}.prefab";
+                string name = obj.name.Split("_")[0];
+                
+                string prefabName = $"P_{name}";
+                string path = $"Assets/Art/Character/Prefabs/Guns/{prefabName}.prefab";
                 // create empty
-                GameObject root = new(name);
+                GameObject root = new(prefabName);
                 // instantiate asset object, then add to empty object
                 GameObject assetInstance = (GameObject)PrefabUtility.InstantiatePrefab(obj, root.transform);
+                assetInstance.transform.ResetLocals();
                 // save prefab
                 PrefabUtility.SaveAsPrefabAssetAndConnect(root, path, InteractionMode.AutomatedAction);
             }

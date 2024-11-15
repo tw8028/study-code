@@ -87,10 +87,10 @@ tooltip:"NLD_调整GunPivot"
 				offset.rotation = newRotation
 				offset.position = pos_offset
 				
-				-- link offset 到武器骨骼
+				-- link offset 到武器骨骼 
 				lc = Link_Constraint()
 				offset.transform.controller = lc
-				lc.addTarget w_bone 0
+				lc.addTarget w_bone 0  --在0帧
 				
 				-- 位置约束新挂点到 offset
 				pos_constraint = Position_Constraint()

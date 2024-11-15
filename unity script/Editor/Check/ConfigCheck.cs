@@ -17,10 +17,10 @@ public class ConfigCheck : EditorWindow
     List<VehicleItem> vehicleItems;
 
 
-    [MenuItem("Test/prefab¹¤¾ß/½ÇÉ«¼°ÔØ¾ßÅäÖÃ")]
+    [MenuItem("Test/prefabå·¥å…·/è§’è‰²åŠè½½å…·é…ç½®")]
     public static void ShowEditor()
     {
-        var win = GetWindow<ConfigCheck>("ÅäÖÃ¼ì²é");
+        var win = GetWindow<ConfigCheck>("é…ç½®æ£€æŸ¥");
         win.minSize = new Vector2(500, 700);
     }
     public void CreateGUI()
@@ -69,8 +69,8 @@ public class ConfigCheck : EditorWindow
         view.Add(playerPane);
         view.Add(vehiclePane);
 
-        // ½ÇÉ«ÁĞ±í
-        Label playerLabe = new Label() { text = "CharacterDefaultÅäÖÃ" };
+        // è§’è‰²åˆ—è¡¨
+        Label playerLabe = new Label() { text = "CharacterDefaulté…ç½®" };
         playerLabe.style.unityTextAlign = TextAnchor.MiddleCenter;
         playerLabe.style.fontSize = 20;
         playerLabe.style.color = Color.green;
@@ -90,8 +90,8 @@ public class ConfigCheck : EditorWindow
         };
         playerListView.itemsSource = playerItems;
 
-        // ÔØ¾ßÁĞ±í
-        Label vLabe = new Label() { text = "VehicleConfigÅäÖÃ" };
+        // è½½å…·åˆ—è¡¨
+        Label vLabe = new Label() { text = "VehicleConfigé…ç½®" };
         vLabe.style.unityTextAlign = TextAnchor.MiddleCenter;
         vLabe.style.fontSize = 20;
         vLabe.style.color = Color.green;
@@ -164,39 +164,39 @@ public class PlayerItem
         ani01_isDone = AssetDatabase.LoadAssetAtPath<GameObject>(path1);
 
         //skinIsDone = asset.Find("Root/Bip001");
-        // ²éÕÒÅäÖÃ
+        // æŸ¥æ‰¾é…ç½®
         mainConfigIsDone = buildDataList.Any(a => a.mainConfig.NameID == id);
 
         skinsConfigIsDone = buildDataList.Any(a => a.skins[1].NameID == skin01Name);
 
-        // ÊÇ·ñ´æÔÚAutoGenÎÄ¼ş¼Ğ, ÅĞ¶ÏÊÇ·ñÒÑ¹¹½¨£¨2¸öÆ¤·ô£©
-        string autoDir = $"Assets/Art/AutoGen/Characters/character_{id}/";
-        string autoDir1 = $"Assets/Art/AutoGen/Characters/character_{skin01Name}/";
+        // æ˜¯å¦å­˜åœ¨AutoGenæ–‡ä»¶å¤¹, åˆ¤æ–­æ˜¯å¦å·²æ„å»ºï¼ˆ2ä¸ªçš®è‚¤ï¼‰
+        string autoDir = $"Assets/Art_Out/AutoGen/Characters/character_{id}/";
+        string autoDir1 = $"Assets/Art_Out/AutoGen/Characters/character_{skin01Name}/";
 
-        isBuild = AssetDatabase.IsValidFolder(autoDir1); // Ö»¼ì²éÆ¤·ô2
+        isBuild = AssetDatabase.IsValidFolder(autoDir1); // åªæ£€æŸ¥çš®è‚¤2
 
-        if (ani00_isDone) // ¼¼ÄÜ¶¯»­Íê³É
+        if (ani00_isDone) // æŠ€èƒ½åŠ¨ç”»å®Œæˆ
         {
             if (!mainConfigIsDone)
             {
-                this.message = "  È±ÉÙmainConfig";
+                this.message = "  ç¼ºå°‘mainConfig";
             }
             else
             {
                 if (isBuild is false)
                 {
-                    this.message = ani01_isDone ? "ĞèÒª¹¹½¨Æ¤·ô2" : "È±ÉÙ¼¼ÄÜ¶¯»­2";
+                    this.message = ani01_isDone ? "éœ€è¦æ„å»ºçš®è‚¤2" : "ç¼ºå°‘æŠ€èƒ½åŠ¨ç”»2";
                 }
             }
             if (!skinsConfigIsDone && ani01_isDone)
             {
-                this.message = this.message + $"  È±ÉÙ{skin01Name}skinConfg";
+                this.message = this.message + $"  ç¼ºå°‘{skin01Name}skinConfg";
             }
            
         }
         else
         {
-            this.message = "È±ÉÙ¼¼ÄÜ¶¯»­1";
+            this.message = "ç¼ºå°‘æŠ€èƒ½åŠ¨ç”»1";
         }
     }
 }
@@ -212,8 +212,8 @@ public class VehicleItem
     {
         this.id = vPrefab.name.Split('_')[1];
         configIsDone = dataList.Any(a => a.vehicleConfig.ID.ToString() == id);
-        message = configIsDone ? "ĞèÒª¹¹½¨ÔØ¾ß" : "È±ÉÙÅäÖÃorÎ´½âËø";
-        string path = $"Assets/Art/AutoGen/Vehicle/{id}";
+        message = configIsDone ? "éœ€è¦æ„å»ºè½½å…·" : "ç¼ºå°‘é…ç½®oræœªè§£é”";
+        string path = $"Assets/Art_Out/AutoGen/Vehicle/{id}";
         isBuild = AssetDatabase.IsValidFolder(path);
     }
 

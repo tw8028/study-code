@@ -86,7 +86,7 @@ namespace PersonBrowser
         public PlayerInfo(string id)
         {
             m_Name = id;
-            // Player ³õÊ¼ÖµÔÚAssetsÖĞ»ñÈ¡£¬¿ÉĞ´¡£
+            // Player åˆå§‹å€¼åœ¨Assetsä¸­è·å–ï¼Œå¯å†™ã€‚
             try
             {
                 string path = $"Assets/Art/Character/Prefabs/Players/P_{m_Name}.prefab";
@@ -97,7 +97,7 @@ namespace PersonBrowser
                 Player = null;
             }
 
-            // Skill Ö»ÔÚAssetsÖĞ»ñÈ¡£¬²»¿ÉĞ´¡£
+            // Skill åªåœ¨Assetsä¸­è·å–ï¼Œä¸å¯å†™ã€‚
             try
             {
                 string path = $"Assets/Art/Animations/Battle/Skill/ani_{m_Name}_skill01.fbx";
@@ -108,7 +108,7 @@ namespace PersonBrowser
                 Skill = null;
             }
 
-            // Player_S Ö»ÔÚAssetsÖĞ»ñÈ¡£¬²»¿ÉĞ´¡£
+            // Player_S åªåœ¨Assetsä¸­è·å–ï¼Œä¸å¯å†™ã€‚
             try
             {
                 string path = $"Assets/Art/Character/Prefabs/Players_S/P_S_{m_Name}.prefab";
@@ -119,7 +119,7 @@ namespace PersonBrowser
                 Display = null;
             }
 
-            // Player_S Animator Controller Ö»ÔÚAssetsÖĞ»ñÈ¡£¬²»¿ÉĞ´¡£
+            // Player_S Animator Controller åªåœ¨Assetsä¸­è·å–ï¼Œä¸å¯å†™ã€‚
             try
             {
                 Display_ac = Display.transform.GetChild(0).GetComponent<Animator>().runtimeAnimatorController;
@@ -129,8 +129,8 @@ namespace PersonBrowser
                 Display_ac = null;
             }
 
-            // AutoGen Ö»ÔÚAssetsÖĞ»ñÈ¡£¬²»¿ÉĞ´¡£
-            string directory = $"Assets/Art/AutoGen/Characters/character_{m_Name}/";
+            // AutoGen åªåœ¨Assetsä¸­è·å–ï¼Œä¸å¯å†™ã€‚
+            string directory = $"Assets/Art_Out/AutoGen/Characters/character_{m_Name}/";
             if (AssetDatabase.IsValidFolder(directory))
             {
                 try
@@ -145,7 +145,7 @@ namespace PersonBrowser
                 }
                 try
                 {
-                    string path = $"Assets/Art/AutoGen/Characters/character_{m_Name}/_MainTex.png";
+                    string path = $"Assets/Art_Out/AutoGen/Characters/character_{m_Name}/_MainTex.png";
                     MainTex = AssetDatabase.LoadAssetAtPath<Texture2D>(path);
                 }
                 catch
@@ -155,7 +155,7 @@ namespace PersonBrowser
             }
             else
             {
-                // Debug.Log($"character_{m_Name} Â·¾¶²»´æÔÚ, ĞèÒªÏÈ¹¹½¨½ÇÉ«");
+                // Debug.Log($"character_{m_Name} è·¯å¾„ä¸å­˜åœ¨, éœ€è¦å…ˆæ„å»ºè§’è‰²");
                 AutoGen = null;
                 MainTex = null;
             };
@@ -165,7 +165,7 @@ namespace PersonBrowser
             AniFile = null;
             if (!System.IO.Directory.Exists($@"\\192.168.2.222\project_A"))
             {
-                Debug.Log(@"ÎŞ·¨Á´½Ó£º\\192.168.2.222\\project_A");
+                Debug.Log(@"æ— æ³•é“¾æ¥ï¼š\\192.168.2.222\\project_A");
             }
             else
             {
@@ -176,16 +176,16 @@ namespace PersonBrowser
                 if (m_Name.StartsWith("AA"))
                 {
                     str = m_Name.Remove(3, 1).Insert(3, "0");
-                    modelPath1 = $@"\\192.168.2.222\project_A\02_Ä£ĞÍ\Players\{str.Remove(0, 1)}\{m_Name}\{m_Name}.max";
-                    modelPath2 = $@"\\192.168.2.222\project_A\02_Ä£ĞÍ\Players\{str.Remove(0, 1)}\{m_Name}.max";
-                    skinPath = $@"\\192.168.2.222\project_A\03_¶¯×÷\½ÇÉ«ÃÉÆ¤\Òì¸ñ\{str}\{m_Name}\{m_Name}_skin.max";
+                    modelPath1 = $@"\\192.168.2.222\project_A\02_æ¨¡å‹\Players\{str.Remove(0, 1)}\{m_Name}\{m_Name}.max";
+                    modelPath2 = $@"\\192.168.2.222\project_A\02_æ¨¡å‹\Players\{str.Remove(0, 1)}\{m_Name}.max";
+                    skinPath = $@"\\192.168.2.222\project_A\03_åŠ¨ä½œ\è§’è‰²è’™çš®\å¼‚æ ¼\{str}\{m_Name}\{m_Name}_skin.max";
                 }
                 else
                 {
                     str = m_Name.Remove(2, 1).Insert(2, "0");
-                    modelPath1 = $@"\\192.168.2.222\project_A\02_Ä£ĞÍ\Players\{str}\{m_Name}\{m_Name}.max";
-                    modelPath2 = $@"\\192.168.2.222\project_A\02_Ä£ĞÍ\Players\{str}\{m_Name}.max";
-                    skinPath = $@"\\192.168.2.222\project_A\03_¶¯×÷\½ÇÉ«ÃÉÆ¤\Player\{str}\{m_Name}\{m_Name}_skin.max";
+                    modelPath1 = $@"\\192.168.2.222\project_A\02_æ¨¡å‹\Players\{str}\{m_Name}\{m_Name}.max";
+                    modelPath2 = $@"\\192.168.2.222\project_A\02_æ¨¡å‹\Players\{str}\{m_Name}.max";
+                    skinPath = $@"\\192.168.2.222\project_A\03_åŠ¨ä½œ\è§’è‰²è’™çš®\Player\{str}\{m_Name}\{m_Name}_skin.max";
                 }
 
               
@@ -200,17 +200,17 @@ namespace PersonBrowser
                 }
 
 
-                string aniPath = $@"\\192.168.2.222\project_A\03_¶¯×÷\½ÇÉ«¼¼ÄÜ\max\{m_Name}_skill01.max";
+                string aniPath = $@"\\192.168.2.222\project_A\03_åŠ¨ä½œ\è§’è‰²æŠ€èƒ½\max\{m_Name}_skill01.max";
                 if (System.IO.File.Exists(aniPath))
                 {
                     AniFile = $"{m_Name}_skill01.max";
                 }
             }
 
-            // »ÒÉ«£ºÉ¶¶¼Ã»ÓĞ
-            // »ÆÉ«£ºÖÁÉÙÈ±Ò»Ïî
-            // ÂÌÉ«£ºÆëÈ«
-            // ºìÉ«£ºÎÄ¼şÆëÈ«µ«Î´¹¹½¨½ÇÉ«
+            // ç°è‰²ï¼šå•¥éƒ½æ²¡æœ‰
+            // é»„è‰²ï¼šè‡³å°‘ç¼ºä¸€é¡¹
+            // ç»¿è‰²ï¼šé½å…¨
+            // çº¢è‰²ï¼šæ–‡ä»¶é½å…¨ä½†æœªæ„å»ºè§’è‰²
             if (AniFile == null && ModelFile == null && SkinFile == null)
             {
                 State = Color.gray;

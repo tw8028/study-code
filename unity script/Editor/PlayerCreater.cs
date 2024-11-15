@@ -7,6 +7,8 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 using UnityEditor.UIElements;
+using UnityEngine.Analytics;
+using CriWare.CriMana;
 
 
 namespace PersonBrowser
@@ -31,13 +33,7 @@ namespace PersonBrowser
         ObjectField BagField { get; set; }
 
         [MenuItem("Test/prefab工具/创建角色 prefab")]
-        public static void ShowWindow()
-        {
-            var win = GetWindow<PlayerCreater>("角色 Prefab 工具");
-            StyleSheet uss = AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/Art/Temp/Editor/PlayerBrowser/uss2.uss");
-            // add styleSheet to rootVisualElement
-            // win.rootVisualElement.styleSheets.Add(uss);
-        }
+        public static void ShowWindow() { GetWindow<PlayerCreater>("角色 Prefab 工具"); }
         public void CreateGUI()
         {
             VisualElement root = rootVisualElement;
@@ -45,10 +41,10 @@ namespace PersonBrowser
             TextElement text1 = new() { text = "选择角色fbx资源创建prefab" };
             Button button1 = new() { text = "Create", name = "button1" };
             PlayerField = new ObjectField();
+            GunField = new("Gun");
 
             Box box2 = new Box();
             TextElement text2 = new() { text = "为角色添加武器背包" };
-            GunField = new("Gun");
             BagField = new("Bag");
             Button button2 = new() { text = "Add" };
 
@@ -64,9 +60,9 @@ namespace PersonBrowser
             box1.Add(text1);
             box1.Add(button1);
             box1.Add(PlayerField);
+            box1.Add(GunField);
             root.Add(box2);
             box2.Add(text2);
-            box2.Add(GunField);
             box2.Add(BagField);
             box2.Add(button2);
             root.Add(box3);
@@ -78,9 +74,13 @@ namespace PersonBrowser
 
             button1.RegisterCallback<ClickEvent>(CreatePlayer);
             button1.RegisterCallback<ClickEvent>(GetGun);
-            button2.RegisterCallback<ClickEvent>(AddItem);
+            button2.RegisterCallback<ClickEvent>(AddBag);
             button3.RegisterCallback<ClickEvent>(CreateDisplay);
             btn4.RegisterCallback<ClickEvent>(ResetMagicaCloth);
+            
+            Button btn5 = new() { text = "重新配置武器" };
+            root.Add(btn5);
+            btn5.RegisterCallback<ClickEvent>(ResetGun);
         }
 
         /// <summary>
@@ -105,6 +105,15 @@ namespace PersonBrowser
 
             // Add migicaCloth component.
             AddMagicaCloth(root);
+
+            // add gun
+            Transform grip = assetInstance.transform.Find("Root/Bip001/Bip001 Spine/Bip001 Spine1/Bip001 R Clavicle/Bip001 R UpperArm/Bip001 R Forearm/Bip001 R Hand/Grip_point01/");
+
+            string playerId = assetInstance.name.Remove(2, 1).Insert(2, "0");
+            string gunName = "P_" + persons.First(item => item.id == playerId).weapon;
+            string gunPath = $"Assets/Art/Character/Prefabs/Guns/{gunName}.prefab";
+            var newgun = AssetDatabase.LoadAssetAtPath<GameObject>(gunPath);
+            PrefabUtility.InstantiatePrefab(newgun, grip);
         }
 
         /// <summary>
@@ -153,7 +162,7 @@ namespace PersonBrowser
         /// 添加武器背包到角色prefab
         /// </summary>
         /// <param name="evt"></param>
-        public void AddItem(ClickEvent evt)
+        public void AddBag(ClickEvent evt)
         {
             if (BagField.value != null)
             {
@@ -166,19 +175,6 @@ namespace PersonBrowser
                 else
                 {
                     Debug.Log("缺少背包挂点，请检查蒙皮文件");
-                }
-            }
-            if (GunField.value != null)
-            {
-                Transform grip = asset.Find("Root/Bip001/Bip001 Spine/Bip001 Spine1/Bip001 R Clavicle/Bip001 R UpperArm/Bip001 R Forearm/Bip001 R Hand/Grip_point01/");
-                if (grip != null)
-                {
-                    GameObject gun = (GameObject)PrefabUtility.InstantiatePrefab(GunField.value, grip);
-                    gun.transform.localEulerAngles = new Vector3(90, 0, 0);
-                }
-                else
-                {
-                    Debug.Log("缺少武器挂点，请检查蒙皮文件");
                 }
             }
         }
@@ -310,30 +306,26 @@ namespace PersonBrowser
             sphere.center = new Vector3(-0.2f, 0f, 0f);
             colList.Add(sphere);
             magicaClothComp.SerializeData.colliderCollisionConstraint.colliderList = colList;
-            /* GameObject pelvisCollider = new($"Magica Sphere Collider ({pelvis.name})");
-             GameObject spineCollider = new($"Magica Sphere Collider ({spine.name})");
-             GameObject headCollider = new($"Magica Sphere Collider ({head.name})");
+        }
 
-             pelvisCollider.transform.parent = pelvis;
-             pelvisCollider.transform.ResetLocals();
-             spineCollider.transform.parent = spine;
-             spineCollider.transform.ResetLocals();
-             headCollider.transform.parent = head;
-             headCollider.transform.ResetLocals();
-
-             List<ColliderComponent> colList = new();
-             var c1 = pelvisCollider.AddComponent<MagicaSphereCollider>();
-             c1.SetSize(new Vector3(0.12f, 0.12f, 0.12f));
-             colList.Add(c1);
-             var c2 = spineCollider.AddComponent<MagicaSphereCollider>();
-             c2.SetSize(new Vector3(0.14f, 0.14f, 0.14f));
-             c2.center = new Vector3(-0.2f, 0, 0);
-             colList.Add(c2);
-             var c3 = headCollider.AddComponent<MagicaSphereCollider>();
-             c3.SetSize(new Vector3(0.18f, 0.18f, 0.18f));
-             c3.center = new Vector3(-0.2f, 0, 0);
-             colList.Add(c3);
-             magicaCloth.SerializeData.colliderCollisionConstraint.colliderList = colList;*/
+        public void ResetGun(ClickEvent evt)
+        {
+            GameObject[] objectArray = Selection.gameObjects;
+            foreach (GameObject obj in objectArray)
+            {
+                GameObject prefab = (GameObject)PrefabUtility.InstantiatePrefab(obj);
+                Transform instance = prefab.transform.GetChild(0);
+                Transform grip = instance.Find("Root/Bip001/Bip001 Spine/Bip001 Spine1/Bip001 R Clavicle/Bip001 R UpperArm/Bip001 R Forearm/Bip001 R Hand/Grip_point01/");
+                Transform gun = grip.GetChild(0);
+                string gunName = "P_" + gun.name.Split('_')[1];
+                string gunPath = $"Assets/Art/Character/Prefabs/Guns/{gunName}.prefab";
+                var newgun = AssetDatabase.LoadAssetAtPath<GameObject>(gunPath);
+                PrefabUtility.InstantiatePrefab(newgun, grip);
+                DestroyImmediate(gun);
+                string objPath = AssetDatabase.GetAssetPath(obj);
+                PrefabUtility.SaveAsPrefabAssetAndConnect(prefab, objPath, InteractionMode.AutomatedAction);
+            }
+            AssetDatabase.Refresh();
         }
     }
 }

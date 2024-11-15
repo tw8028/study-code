@@ -23,7 +23,7 @@ public class ShowAniTest : EditorWindow
 
     public void CreateGUI()
     {
-        startIdField = new TextField() { label = "ÆğÊ¼prefab id:00001»ò01001" };
+        startIdField = new TextField() { label = "èµ·å§‹prefab id:00001æˆ–01001" };
         rootVisualElement.Add(startIdField);
 
         Button btn1 = new() { name = "button1", text = "add prefab to point" };
@@ -50,7 +50,7 @@ public class ShowAniTest : EditorWindow
         prefabList = new();
         if (startIdField.value.Length != 5)
         {
-            Debug.Log("ÇëÊäÈëÕıÈ·id");
+            Debug.Log("è¯·è¾“å…¥æ­£ç¡®id");
             return;
         }
         int id = Convert.ToInt32(startIdField.value);
@@ -60,7 +60,7 @@ public class ShowAniTest : EditorWindow
             Transform point = points.transform.Find($"Point{n}");
             n++;
             string idName = i.ToString().PadLeft(5, '0');
-            string[] guids = AssetDatabase.FindAssets($"t:GameObject", new string[] { $"Assets/Art/AutoGen/Characters/character_A{idName}/" });
+            string[] guids = AssetDatabase.FindAssets($"t:GameObject", new string[] { $"Assets/Art_Out/AutoGen/Characters/character_A{idName}/" });
             if (guids.Length != 0)
             {
                 string path = AssetDatabase.GUIDToAssetPath(guids[0]);
@@ -80,14 +80,14 @@ public class ShowAniTest : EditorWindow
     public void ChangAni(ClickEvent evt)
     {
         stateCount = (stateCount + 1) % stateNames.Length;
-        Debug.Log($"ÇĞ»»¶¯×÷£º{stateCount}");
+        Debug.Log($"åˆ‡æ¢åŠ¨ä½œï¼š{stateCount}");
         string nextStateName = stateNames[stateCount];
         foreach (GameObject item in prefabList)
         {
             Transform assetTransform = item.transform.GetChild(0);
             Animator animator = assetTransform.GetComponent<Animator>();
 
-            // ²éÑ¯¶¯×÷Ä£×é
+            // æŸ¥è¯¢åŠ¨ä½œæ¨¡ç»„
             string assetName = "";
             assetName = assetTransform.name.Remove(2, 1);
             assetName = assetName.Insert(2, "0");
@@ -108,12 +108,12 @@ public class ShowAniTest : EditorWindow
             Transform assetTransform = item.transform.GetChild(0);
             Animator animator = assetTransform.GetComponent<Animator>();
 
-            // ²éÑ¯¶¯×÷Ä£×é
+            // æŸ¥è¯¢åŠ¨ä½œæ¨¡ç»„
             string assetName = "";
             assetName = assetTransform.name.Remove(2, 1);
             assetName = assetName.Insert(2, "0");
             string aniSet = persons.First(item => item.id == assetName).aniSet;
-            string acPath = $"Assets/Art/AutoGen/Characters/character_{assetName}/ov_{assetName}_{aniSet}.overrideController";
+            string acPath = $"Assets/Art_Out/AutoGen/Characters/character_{assetName}/ov_{assetName}_{aniSet}.overrideController";
 
             // config animator controller
             var rac = AssetDatabase.LoadAssetAtPath<RuntimeAnimatorController>(acPath);

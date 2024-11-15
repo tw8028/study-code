@@ -4,6 +4,9 @@ using UnityEngine;
 using UnityEditor;
 using UnityEngine.UIElements;
 using UnityEditor.UIElements;
+using UnityEditor.Animations;
+using UnityEngine.WSA;
+using System.IO;
 
 namespace PersonBrowser
 {
@@ -34,9 +37,6 @@ namespace PersonBrowser
             rootVisualElement.Add(btn4);
             btn4.RegisterCallback<ClickEvent>(CreateSelectedBattery);
 
-            Button btn5 = new Button() { text = "重命名anim" };
-            rootVisualElement.Add(btn5);
-            btn5.RegisterCallback<ClickEvent>(RenameAnim);
         }
 
         public void CreateSelectedVehicle(ClickEvent evt)
@@ -82,20 +82,43 @@ namespace PersonBrowser
             {
                 instance.gameObject.AddComponent<Animator>();
             }
-            var animator = instance.GetComponent<Animator>();
 
-            var controller = AssetDatabase.LoadAssetAtPath<AnimatorOverrideController>($"Assets/Art/Animations/animator/Battery/ov_battery_{instance.name}.controller");
-            if (controller == null)
+            // 生成 animator override controller 
+            AnimatorController controller = AssetDatabase.LoadAssetAtPath<AnimatorController>("Assets/Art/Animations/animator/Battery/animator_battery.controller");
+            AnimatorOverrideController overrideController = new(controller);
+            AnimationClip attack = AssetDatabase.LoadAssetAtPath<AnimationClip>($"Assets/Art/Animations/Battery/{batteryFbx.name}/ani_{batteryFbx.name}_attack01.fbx");
+            if (attack == null)
             {
-                // 创建controller 
-                Debug.Log($"{instance.name}:没有controller,停止创建");
+                Debug.LogError($"缺少动作文件：ani_{batteryFbx.name}_attack01.fbx");
+                return;
             }
-            else
+            overrideController["ani_R00001_attack01"] = attack;
+            AnimationClip idle = AssetDatabase.LoadAssetAtPath<AnimationClip>($"Assets/Art/Animations/Battery/{batteryFbx.name}/ani_{batteryFbx.name}_idle.fbx");
+            if (idle == null)
             {
-                animator.runtimeAnimatorController = controller;
-                string path = $"Assets/Art/Character/Prefabs/BatteryNew/{batteryPrefab.name}.prefab";
-                GameObject P_b = PrefabUtility.SaveAsPrefabAssetAndConnect(batteryPrefab, path, InteractionMode.AutomatedAction);
+                Debug.LogError($"缺少动作文件：ani_{batteryFbx.name}_idle.fbx");
+                return;
             }
+            overrideController["ani_R00001_idle"] = idle;
+
+
+            string folder = $"Assets/Art_Out/AutoGen/Battery/{batteryPrefab.name}";
+            if (!Directory.Exists(folder))
+            {
+                Directory.CreateDirectory(folder);
+            }
+
+            AssetDatabase.CreateAsset(overrideController, $"Assets/Art_Out/AutoGen/Battery/{batteryPrefab.name}/ov_battery_{batteryFbx.name}.controller");
+            AssetDatabase.SaveAssets();
+
+            // 设置 animator
+            var animator = instance.GetComponent<Animator>();
+            animator.runtimeAnimatorController = overrideController;
+
+            string path = $"Assets/Art_Out/AutoGen/Battery/{batteryPrefab.name}/{batteryPrefab.name}.prefab";
+
+            GameObject P_b = PrefabUtility.SaveAsPrefabAssetAndConnect(batteryPrefab, path, InteractionMode.AutomatedAction);
+            Debug.Log($"创建炮台：{P_b.name}");
         }
 
 
@@ -127,17 +150,6 @@ namespace PersonBrowser
             }
         }
 
-        public void RenameAnim(ClickEvent evt)
-        {
-            GameObject go = Selection.activeGameObject;
-            string goPath = AssetDatabase.GetAssetPath(go);
-            ModelImporter importer = AssetImporter.GetAtPath(goPath) as ModelImporter;
-
-            ModelImporterClipAnimation clip = new();
-            clip = importer.defaultClipAnimations[0];
-            clip.name = go.name;
-            importer.clipAnimations = new ModelImporterClipAnimation[] { clip };
-            importer.SaveAndReimport();
-        }
+        
     }
 }
