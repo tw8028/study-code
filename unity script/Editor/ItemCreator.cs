@@ -48,6 +48,8 @@ namespace PersonBrowser
                 // Create empty GameObject and parent instantiate asset to it.
                 GameObject root = new("P_" + obj.name);
                 GameObject assetInstance = (GameObject)PrefabUtility.InstantiatePrefab(obj, root.transform);
+                var b_root = assetInstance.transform.Find("B_Root");
+                b_root.localEulerAngles = Vector3.zero;
 
                 // Add migicaCloth component.
                 MagicaCloth mc = assetInstance.AddComponent<MagicaCloth>();

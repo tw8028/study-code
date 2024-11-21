@@ -51,24 +51,25 @@ tooltip:"NLD_批量输出Fbx"
 		$'Bip001 L Thigh', $'Bip001 L Calf', $'Bip001 L Foot', $'Bip001 L Toe0', 
 		$'Bip001 R Thigh', $'Bip001 R Calf', $'Bip001 R Foot', $'Bip001 R Toe0')
 		
-		exportPath = exportFolder + "ani_" + getFilenameFile maxFileName + ".fbx"
+		exportPath = exportFolder + getFilenameFile maxFileName + ".fbx"
 		--exportPath = exportFolder + getFilenameFile maxFileName + ".fbx"
 		-- 提前建好文件夹
 		-- pluginManager.loadClass FbxExporter
 		FBXExporterSetParam "ResetExport"
 		FBXExporterSetParam "BakeAnimation" true
 		exportFile exportPath #noPrompt selectedOnly:true using:FBXEXP
+		resetMaxFile #noPrompt
 	)
 	
 	
 	fn skillExporter =
 	(
-		local files = getFiles @"E:/动作改版/Skill_player/*.max" recurse:true
-		local exportFolder = @"E:/动作改版/Skill_player/fbx/"
+		local files = getFiles @"E:/动作改版/Story_battle/*.max" recurse:true
+		local exportFolder = @"E:/动作改版/Story_battle/fbx/"
 		
 		for maxfile in files do
 		(
-			loadMaxFile maxfile quite:true
+			loadMaxFile maxfile quite:true #noPrompt
 			exportAni exportFolder
 		)
 	)
@@ -97,6 +98,7 @@ tooltip:"NLD_批量输出Fbx"
 			exportAni exportFolder
 		)
 	)
+	
 	fn storyExporter =
 	(
 		local files = getFiles @"E:/动作改版/剧情动画/*.max" recurse:true
@@ -109,7 +111,7 @@ tooltip:"NLD_批量输出Fbx"
 			$Root.boneEnable = true	
 			select #($Root, $Bip001, 
 			$'Bip001 Pelvis', $'Bip001 Spine', $'Bip001 Spine1', 
-			$'Bip001 Neck', $'Bip001 Head',
+			$'Bip001 Neck', $'Bip001 Head', $'Bip001 HeadNub',
 			$'Bip001 L Clavicle', $'Bip001 L UpperArm', $'Bip001 L Forearm', $'Bip001 L Hand', 
 			$'Bip001 L Finger0', $'Bip001 L Finger01', 
 			$'Bip001 L Finger1', $'Bip001 L Finger11', 
@@ -122,8 +124,8 @@ tooltip:"NLD_批量输出Fbx"
 			$'Bip001 R Thigh', $'Bip001 R Calf', $'Bip001 R Foot', $'Bip001 R Toe0')
 			
 			fileName = getFilenameFile maxFileName
-			newName = substituteString fileName "_a001" ""
-			exportPath = exportFolder + newName + ".fbx"
+			-- newName = substituteString fileName "_a001" ""
+			exportPath = exportFolder + fileName + ".fbx"
 			FBXExporterSetParam "ResetExport"
 			FBXExporterSetParam "BakeAnimation" true
 			exportFile exportPath #noPrompt selectedOnly:true using:FBXEXP
@@ -161,7 +163,7 @@ tooltip:"NLD_批量输出Fbx"
 		(
 			victoryExporter()
 		)
-		on btn5 pressed do
+		on btn6 pressed do
 		(
 			storyExporter()
 		)

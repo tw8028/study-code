@@ -7,8 +7,6 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 using UnityEditor.UIElements;
-using UnityEngine.Analytics;
-using CriWare.CriMana;
 
 
 namespace PersonBrowser
@@ -42,11 +40,8 @@ namespace PersonBrowser
             Button button1 = new() { text = "Create", name = "button1" };
             PlayerField = new ObjectField();
             GunField = new("Gun");
-
-            Box box2 = new Box();
-            TextElement text2 = new() { text = "为角色添加武器背包" };
             BagField = new("Bag");
-            Button button2 = new() { text = "Add" };
+
 
             Box box3 = new Box();
             TextElement text3 = new() { text = "选择角色prefab，创建展示用prefab" };
@@ -61,10 +56,8 @@ namespace PersonBrowser
             box1.Add(button1);
             box1.Add(PlayerField);
             box1.Add(GunField);
-            root.Add(box2);
-            box2.Add(text2);
-            box2.Add(BagField);
-            box2.Add(button2);
+            box1.Add(BagField);
+         
             root.Add(box3);
             box3.Add(text3);
             box3.Add(button3);
@@ -74,7 +67,7 @@ namespace PersonBrowser
 
             button1.RegisterCallback<ClickEvent>(CreatePlayer);
             button1.RegisterCallback<ClickEvent>(GetGun);
-            button2.RegisterCallback<ClickEvent>(AddBag);
+          
             button3.RegisterCallback<ClickEvent>(CreateDisplay);
             btn4.RegisterCallback<ClickEvent>(ResetMagicaCloth);
             
@@ -114,6 +107,21 @@ namespace PersonBrowser
             string gunPath = $"Assets/Art/Character/Prefabs/Guns/{gunName}.prefab";
             var newgun = AssetDatabase.LoadAssetAtPath<GameObject>(gunPath);
             PrefabUtility.InstantiatePrefab(newgun, grip);
+
+            // add bag
+            Transform point01 = assetInstance.transform.Find("Root/Bip001/Bip001 Spine/Mount_point01/");
+            string bagName = "";
+            if (assetInstance.name.StartsWith("A00"))
+            {
+                bagName = "P_" + persons.First(item => item.id == playerId).bag_0;
+            }
+            else
+            {
+                bagName = "P_" + persons.First(item => item.id == playerId).bag_1;
+            }
+            string bagPath = $"Assets/Art/Character/Prefabs/Bag/{bagName}.prefab";
+            var bag = AssetDatabase.LoadAssetAtPath<GameObject>(bagPath);
+            PrefabUtility.InstantiatePrefab(bag, point01);
         }
 
         /// <summary>

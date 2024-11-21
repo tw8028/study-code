@@ -3,16 +3,16 @@
   "WorkspaceRootPath": "D:\\GitHub\\study-code\\cSharp\\ServerApp2\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{1BCC7E68-E978-48CF-90DD-902224025F0F}|ServerApp2\\ServerApp2.csproj|d:\\github\\study-code\\csharp\\serverapp2\\serverapp2\\components\\pages\\excel.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{1BCC7E68-E978-48CF-90DD-902224025F0F}|ServerApp2\\ServerApp2.csproj|solutionrelative:serverapp2\\components\\pages\\excel.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{B696B733-8162-46EE-9AAE-AEE6EC05BECB}|Excels.Domain\\Excels.Domain.csproj|d:\\github\\study-code\\csharp\\serverapp2\\excels.domain\\exceltojson.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{B696B733-8162-46EE-9AAE-AEE6EC05BECB}|Excels.Domain\\Excels.Domain.csproj|solutionrelative:excels.domain\\exceltojson.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{EEF93C52-9CFF-4135-A32A-40F5CE539ABC}|AssetFiles.Domain\\AssetFiles.Domain.csproj|d:\\github\\study-code\\csharp\\serverapp2\\assetfiles.domain\\pathhelper.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{EEF93C52-9CFF-4135-A32A-40F5CE539ABC}|AssetFiles.Domain\\AssetFiles.Domain.csproj|solutionrelative:assetfiles.domain\\pathhelper.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{1BCC7E68-E978-48CF-90DD-902224025F0F}|ServerApp2\\ServerApp2.csproj|d:\\github\\study-code\\csharp\\serverapp2\\serverapp2\\components\\pages\\excel.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{1BCC7E68-E978-48CF-90DD-902224025F0F}|ServerApp2\\ServerApp2.csproj|solutionrelative:serverapp2\\components\\pages\\excel.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     }
   ],
   "DocumentGroupContainers": [
@@ -22,7 +22,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 1,
+          "SelectedChildIndex": 2,
           "Children": [
             {
               "$type": "Bookmark",
@@ -30,40 +30,42 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
               "Title": "ExcelToJson.cs",
               "DocumentMoniker": "D:\\GitHub\\study-code\\cSharp\\ServerApp2\\Excels.Domain\\ExcelToJson.cs",
               "RelativeDocumentMoniker": "Excels.Domain\\ExcelToJson.cs",
               "ToolTip": "D:\\GitHub\\study-code\\cSharp\\ServerApp2\\Excels.Domain\\ExcelToJson.cs",
               "RelativeToolTip": "Excels.Domain\\ExcelToJson.cs",
-              "ViewState": "AQIAABUAAAAAAAAAAAAYwC0AAAAAAAAA",
+              "ViewState": "AQIAAAkAAAAAAAAAAAAAABAAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-11-15T03:26:58.614Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 0,
               "Title": "Excel.razor",
               "DocumentMoniker": "D:\\GitHub\\study-code\\cSharp\\ServerApp2\\ServerApp2\\Components\\Pages\\Excel.razor",
               "RelativeDocumentMoniker": "ServerApp2\\Components\\Pages\\Excel.razor",
               "ToolTip": "D:\\GitHub\\study-code\\cSharp\\ServerApp2\\ServerApp2\\Components\\Pages\\Excel.razor",
               "RelativeToolTip": "ServerApp2\\Components\\Pages\\Excel.razor",
-              "ViewState": "AQIAAC0AAAAAAAAAAAAAAD0AAAAfAAAA",
+              "ViewState": "AQIAAC0AAAAAAAAAAAAAAFEAAAAFAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-11-01T08:15:44.829Z"
+              "WhenOpened": "2024-11-01T08:15:44.829Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
               "Title": "PathHelper.cs",
               "DocumentMoniker": "D:\\GitHub\\study-code\\cSharp\\ServerApp2\\AssetFiles.Domain\\PathHelper.cs",
               "RelativeDocumentMoniker": "AssetFiles.Domain\\PathHelper.cs",
               "ToolTip": "D:\\GitHub\\study-code\\cSharp\\ServerApp2\\AssetFiles.Domain\\PathHelper.cs",
               "RelativeToolTip": "AssetFiles.Domain\\PathHelper.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAABkAAAA6AAAA",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAACMAAAA0AAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-10T05:29:09.456Z"
+              "WhenOpened": "2024-09-10T05:29:09.456Z",
+              "EditorCaption": ""
             }
           ]
         }

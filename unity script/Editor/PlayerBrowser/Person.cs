@@ -21,6 +21,8 @@ namespace PersonBrowser
         public string prefab_1;
         public string ani_0;
         public string ani_1;
+        public string bag_0;
+        public string bag_1;
     }
     [System.Serializable]
     public class PersonRoot

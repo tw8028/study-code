@@ -26,6 +26,10 @@ public class StoryEditTool : EditorWindow
         rootVisualElement.Add(btn3);
         btn3.RegisterCallback<ClickEvent>(ChangePlayerClips);
 
+        Button btn4 = new() { text = "clip info" };
+        rootVisualElement.Add(btn4);
+        btn4.RegisterCallback<ClickEvent>(GetClipsInfo);
+
         Button btn5 = new() { text = "计算行走时间" };
         rootVisualElement.Add(btn5);
         btn5.RegisterCallback<ClickEvent>(WalkTime);
@@ -51,7 +55,7 @@ public class StoryEditTool : EditorWindow
     }
 
 
-   
+
     public void ResetSelection(ClickEvent evt)
     {
         Transform root = GameObject.Find("StoryManager/players").transform;
@@ -60,11 +64,11 @@ public class StoryEditTool : EditorWindow
         GameObject playerPrefab = FindPlayerPrefab(playerName);
         if (playerPrefab != null)
         {
-            int playerId =   go.GetComponent<CmpStoryPlayer>().playerId;
+            int playerId = go.GetComponent<CmpStoryPlayer>().playerId;
             DestroyImmediate(go);
             GameObject playerInstance = (GameObject)PrefabUtility.InstantiatePrefab(playerPrefab, root);
             playerInstance.name = playerName;
-            var cmpStoryPlayer =  playerInstance.AddComponent<CmpStoryPlayer>();
+            var cmpStoryPlayer = playerInstance.AddComponent<CmpStoryPlayer>();
             cmpStoryPlayer.playerId = playerId;
         }
         else
@@ -129,43 +133,84 @@ public class StoryEditTool : EditorWindow
     {
 
         PlayableDirector pd = GameObject.Find("StoryManager/timeline").GetComponent<PlayableDirector>();
-        if (pd is null)
+        if (pd.playableAsset is TimelineAsset timeline)
         {
-            Debug.LogError("缺少timeline资源");
-            return;
-        }
-        TimelineAsset timeline = pd.playableAsset as TimelineAsset;
-        if (timeline is null)
-        {
-            Debug.LogError("缺少timeline资源");
-            return;
-        }
-
-        foreach (TrackAsset track in timeline.GetOutputTracks())
-        {
-            // 检查轨道是否为AnimationTrack类型
-            if (track is AnimationTrack animationTrack)
+            foreach (TrackAsset track in timeline.GetOutputTracks())
             {
-                var clips = track.GetClips();
-                Debug.Log(track.parent.name);
-                foreach (var clip in clips)
+                // 检查轨道是否为AnimationTrack类型
+                if (track is AnimationTrack animationTrack)
                 {
-                    string clipName = clip.animationClip.name;
-                    // 给 animation playable asset 赋值
-                    string path = $"Assets/Art/Animations/Show/{clipName}.anim";
-                    var clipAsset = AssetDatabase.LoadAssetAtPath<Object>(path);
-                    if (clipAsset != null)
+                    var clips = track.GetClips();
+                    Debug.Log(track.parent.name);
+                    foreach (var clip in clips)
                     {
-                        clip.asset = clipAsset;
-                    }
-                    else
-                    {
-                        Debug.LogError($"{track.parent.name}缺少资源：{clipName}");
-                        break;
+                        if (clip.animationClip == null)
+                        {
+                            Debug.LogError($"clip丢失:{clip.displayName}");
+                        }
+
+                        string clipName = clip.displayName;
+                        string path = $"Assets/Art/Animations/Show/Battle/{clipName}.fbx";
+
+                        if (clipName.Contains("_crawl_") || clipName.Contains("_stand_") || clipName.Contains("_common"))
+                        {
+                            Debug.LogWarning($"使用了战斗动画:{clipName}");
+                            var clipAsset = AssetDatabase.LoadAssetAtPath<AnimationClip>(path);
+                           if (clip.asset is AnimationPlayableAsset asset)
+                            {
+                                asset.clip = clipAsset; 
+                            }
+                        }
+
                     }
                 }
             }
         }
+        else
+        {
+            Debug.LogError("缺少timeline资源");
+        }
+    }
 
+
+    public void GetClipsInfo(ClickEvent evt)
+    {
+        PlayableDirector pd = GameObject.Find("StoryManager/timeline").GetComponent<PlayableDirector>();
+        if (pd.playableAsset is TimelineAsset timeline)
+        {
+            foreach (TrackAsset track in timeline.GetOutputTracks())
+            {
+                // 检查轨道是否为AnimationTrack类型
+                if (track is AnimationTrack animationTrack)
+                {
+                    var clips = track.GetClips();
+                    Debug.Log(track.parent.name);
+                    foreach (var clip in clips)
+                    {
+                        if (clip.animationClip == null)
+                        {
+                            Debug.LogError($"clip丢失:{clip.displayName}");
+                        }
+                        else
+                        {
+                            string clipName = clip.animationClip.name;
+
+                            if (clipName.Contains("_crawl_") || clipName.Contains("_stand_"))
+                            {
+                                Debug.LogWarning($"使用了战斗动画:{clipName}");
+                            }
+                            if (clipName.Contains("_common"))
+                            {
+                                Debug.LogWarning($"使用了common动画:{clipName}");
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        else
+        {
+            Debug.LogError("缺少timeline资源");
+        }
     }
 }

@@ -7,6 +7,7 @@ using UnityEditor.UIElements;
 using UnityEditor.Animations;
 using UnityEngine.WSA;
 using System.IO;
+using SkillEditor;
 
 namespace PersonBrowser
 {
@@ -86,20 +87,22 @@ namespace PersonBrowser
             // 生成 animator override controller 
             AnimatorController controller = AssetDatabase.LoadAssetAtPath<AnimatorController>("Assets/Art/Animations/animator/Battery/animator_battery.controller");
             AnimatorOverrideController overrideController = new(controller);
-            AnimationClip attack = AssetDatabase.LoadAssetAtPath<AnimationClip>($"Assets/Art/Animations/Battery/{batteryFbx.name}/ani_{batteryFbx.name}_attack01.fbx");
-            if (attack == null)
+            AnimationClip attackClip = AssetDatabase.LoadAssetAtPath<AnimationClip>($"Assets/Art/Animations/Battery/{batteryFbx.name}/ani_{batteryFbx.name}_attack01.fbx");
+            AnimationClip compressedAttackClip =  LTCompressor.AutoCompress(attackClip);
+            if (attackClip == null)
             {
                 Debug.LogError($"缺少动作文件：ani_{batteryFbx.name}_attack01.fbx");
                 return;
             }
-            overrideController["ani_R00001_attack01"] = attack;
-            AnimationClip idle = AssetDatabase.LoadAssetAtPath<AnimationClip>($"Assets/Art/Animations/Battery/{batteryFbx.name}/ani_{batteryFbx.name}_idle.fbx");
-            if (idle == null)
+            overrideController["ani_R00001_attack01"] = compressedAttackClip;
+            AnimationClip idleClip = AssetDatabase.LoadAssetAtPath<AnimationClip>($"Assets/Art/Animations/Battery/{batteryFbx.name}/ani_{batteryFbx.name}_idle.fbx");
+            AnimationClip compressedIdleClip = LTCompressor.AutoCompress(idleClip);
+            if (idleClip == null)
             {
                 Debug.LogError($"缺少动作文件：ani_{batteryFbx.name}_idle.fbx");
                 return;
             }
-            overrideController["ani_R00001_idle"] = idle;
+            overrideController["ani_R00001_idle"] = compressedIdleClip;
 
 
             string folder = $"Assets/Art_Out/AutoGen/Battery/{batteryPrefab.name}";
