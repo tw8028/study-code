@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEditor;
+using UnityEditor.TestTools.TestRunner.Api;
 using UnityEngine;
 using UnityEngine.UIElements;
 public class AnimTool : EditorWindow
@@ -31,20 +32,18 @@ public class AnimTool : EditorWindow
         Label lbl = new Label("");
         rootVisualElement.Add(lbl);
 
-
-        Button btn4 = new() { name = "button4", text = "提取 animDisplay" };
-        rootVisualElement.Add(btn4);
-        btn4.RegisterCallback<ClickEvent>(CopyToDisplay);
-
         Button btn6 = new() { name = "button6", text = "提取 animVictory" };
         rootVisualElement.Add(btn6);
         btn6.RegisterCallback<ClickEvent>(CopyToVictory);
 
-        Button btn7 = new() { name = "button7", text = "提取 compressed" };
+        Button btn7 = new() { name = "button7", text = "提取选择到 compressed Show" };
         rootVisualElement.Add(btn7);
-        btn7.RegisterCallback<ClickEvent>(CopyToCompressed);
-    }
+        btn7.RegisterCallback<ClickEvent>(CopySelectedToCompressedShow);
 
+        Button btn8 = new() { name = "button7", text = "提取 Show 目录动画" };
+        rootVisualElement.Add(btn8);
+        btn8.RegisterCallback<ClickEvent>(CopyToCompressedInShow);
+    }
 
     public void MoveFiles(ClickEvent evt)
     {
@@ -62,6 +61,16 @@ public class AnimTool : EditorWindow
         AssetDatabase.Refresh();
     }
 
+    public void RenameFile(ClickEvent evt)
+    {
+        GameObject[] objs = Selection.gameObjects;
+        foreach (GameObject obj in objs)
+        {
+            string newName = obj.name.Split("_a001")[0];
+            string path = AssetDatabase.GetAssetPath(obj);
+            AssetDatabase.RenameAsset(path, newName);
+        }
+    }
     public void RenameAnim(ClickEvent evt)
     {
 
@@ -183,23 +192,6 @@ public class AnimTool : EditorWindow
         }
     }
 
-    // 提取 display animation
-    public void CopyToDisplay(ClickEvent evt)
-    {
-        GameObject[] objs = Selection.gameObjects;
-
-        string folder = "Assets/Art/Animations/animDisplay";
-        if (objs.Length == 0)
-        {
-            Debug.LogWarning("请先选择至少一个Fbx文件");
-        }
-        foreach (GameObject obj in objs)
-        {
-            CopyAnim(obj, folder);
-        }
-        AssetDatabase.Refresh();
-    }
-
     public void CopyToVictory(ClickEvent evt)
     {
         GameObject[] objs = Selection.gameObjects;
@@ -216,15 +208,34 @@ public class AnimTool : EditorWindow
         AssetDatabase.Refresh();
     }
 
-    public void CopyToCompressed(ClickEvent evt)
+    public void CopyToCompressedInShow(ClickEvent evt)
+    {
+        string[] guids = AssetDatabase.FindAssets("t:GameObject", new string[] {
+            "Assets/Art/Animations/Show/Battle",
+            "Assets/Art/Animations/Show/Ready",
+            "Assets/Art/Animations/Show/Story",
+
+            });
+        var paths = guids.Select(e => AssetDatabase.GUIDToAssetPath(e));
+        var objs =  paths.Select(e => AssetDatabase.LoadAssetAtPath<GameObject>(e)).ToArray();
+
+
+        string folder = "Assets/Art/Animations/compressedShow";
+       
+        foreach (GameObject obj in objs)
+        {
+            CopyAnim(obj, folder, true);
+        }
+        AssetDatabase.Refresh();
+    }
+
+
+    public void CopySelectedToCompressedShow(ClickEvent evt)
     {
         GameObject[] objs = Selection.gameObjects;
 
-        string folder = "Assets/Art/Animations/compressed";
-        if (objs.Length == 0)
-        {
-            Debug.LogWarning("请先选择至少一个Fbx文件");
-        }
+        string folder = "Assets/Art/Animations/compressedShow";
+
         foreach (GameObject obj in objs)
         {
             CopyAnim(obj, folder, true);
@@ -232,5 +243,4 @@ public class AnimTool : EditorWindow
         AssetDatabase.Refresh();
     }
 }
-
 

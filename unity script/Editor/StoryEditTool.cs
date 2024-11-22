@@ -1,4 +1,5 @@
 using Gameplay.Story.Cmp;
+using Microsoft.Win32;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
@@ -140,35 +141,56 @@ public class StoryEditTool : EditorWindow
                 // 检查轨道是否为AnimationTrack类型
                 if (track is AnimationTrack animationTrack)
                 {
-                    var clips = track.GetClips();
-                    Debug.Log(track.parent.name);
-                    foreach (var clip in clips)
+                    var clips = animationTrack.GetClips();
+                    // 处理历史clip名
+                    foreach (TimelineClip clip in clips)
                     {
-                        if (clip.animationClip == null)
+                        string displayName = clip.displayName;
+
+                        if (displayName.EndsWith("crawl_idle001"))
                         {
-                            Debug.LogError($"clip丢失:{clip.displayName}");
+                            displayName = "ani_common_s_crawl_idle001";
                         }
-
-                        string clipName = clip.displayName;
-                        string path = $"Assets/Art/Animations/Show/Battle/{clipName}.fbx";
-
-                        if (clipName.Contains("_crawl_") || clipName.Contains("_stand_") || clipName.Contains("_common"))
+                        else if (displayName.EndsWith("crawl_moveforward001"))
                         {
-                            Debug.LogWarning($"使用了战斗动画:{clipName}");
-                            var clipAsset = AssetDatabase.LoadAssetAtPath<AnimationClip>(path);
-                           if (clip.asset is AnimationPlayableAsset asset)
+                            displayName = "ani_common_s_crawl_moveforward001";
+                        }
+                        else if (displayName.Contains("attack002"))
+                        {
+                            displayName = displayName.Replace("attack002", "attack001");
+                        }
+                        else if (displayName.StartsWith("ani_s_sit"))
+                        {
+                            if (displayName.Contains("_end"))
                             {
-                                asset.clip = clipAsset; 
+                                displayName = displayName.Replace("_end", "_loop");
+                            }
+                            if (displayName.Contains("_start"))
+                            {
+                                displayName = displayName.Replace("_start", "_loop");
                             }
                         }
-
+                        clip.displayName = displayName;
                     }
+
+                    foreach (var clip in clips)
+                    {
+                        string displayName = clip.displayName;
+                        string path = $"Assets/Art/Animations/compressedShow/compressed_{displayName}.anim";
+
+                        var clipAsset = AssetDatabase.LoadAssetAtPath<AnimationClip>(path);
+                        if (clip.asset is AnimationPlayableAsset playableAsset)
+                        {
+                            playableAsset.clip = clipAsset;
+                        }
+                    }
+                    Debug.Log($"替换clip：{track.parent.name}");
                 }
             }
         }
         else
         {
-            Debug.LogError("缺少timeline资源");
+            Debug.LogError("没找到timeline资源");
         }
     }
 
@@ -195,13 +217,16 @@ public class StoryEditTool : EditorWindow
                         {
                             string clipName = clip.animationClip.name;
 
-                            if (clipName.Contains("_crawl_") || clipName.Contains("_stand_"))
+                            if (clipName.Contains("_crawl_") || clipName.Contains("_stand_") || clipName.Contains("_common"))
                             {
-                                Debug.LogWarning($"使用了战斗动画:{clipName}");
+                                string path = AssetDatabase.GetAssetPath(clip.animationClip);
+                                Debug.LogWarning($"使用了战斗动画:{path}");
                             }
-                            if (clipName.Contains("_common"))
+
+                            else if (clipName.Contains("ready"))
                             {
-                                Debug.LogWarning($"使用了common动画:{clipName}");
+                                string path = AssetDatabase.GetAssetPath(clip.animationClip);
+                                Debug.LogWarning($"使用了ready动画:{path}");
                             }
                         }
                     }
