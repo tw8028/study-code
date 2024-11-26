@@ -16,31 +16,30 @@ public class AnimTool : EditorWindow
         rootVisualElement.Add(btn1);
         btn1.RegisterCallback<ClickEvent>(MoveFiles);
 
+        Button btn3 = new() { name = "button1", text = "rename文件" };
+        rootVisualElement.Add(btn3);
+        btn3.RegisterCallback<ClickEvent>(RenameFiles);
+
         Button btn2 = new() { name = "button2", text = "重新生成meat文件，设置avatar" };
         rootVisualElement.Add(btn2);
         btn2.RegisterCallback<ClickEvent>(DeleteMeta);
 
-
-        Button btn5 = new Button() { name = "button5", text = "重命名anim" };
+        Button btn5 = new Button() { name = "button5", text = "重命名animationClip" };
         rootVisualElement.Add(btn5);
         btn5.RegisterCallback<ClickEvent>(RenameAnim);
-
-        Button btn3 = new() { name = "button3", text = "提取到 current" };
-        rootVisualElement.Add(btn3);
-        btn3.RegisterCallback<ClickEvent>(CopyToCurrent);
-
-        Label lbl = new Label("");
-        rootVisualElement.Add(lbl);
 
         Button btn6 = new() { name = "button6", text = "提取 animVictory" };
         rootVisualElement.Add(btn6);
         btn6.RegisterCallback<ClickEvent>(CopyToVictory);
 
-        Button btn7 = new() { name = "button7", text = "提取选择到 compressed Show" };
+        Label lbl = new("提取到 compressedShow");
+        rootVisualElement.Add(lbl);
+
+        Button btn7 = new() { name = "button7", text = "选择的 fbx" };
         rootVisualElement.Add(btn7);
         btn7.RegisterCallback<ClickEvent>(CopySelectedToCompressedShow);
 
-        Button btn8 = new() { name = "button7", text = "提取 Show 目录动画" };
+        Button btn8 = new() { name = "button7", text = "Show/Battle Ready Story 所有文件" };
         rootVisualElement.Add(btn8);
         btn8.RegisterCallback<ClickEvent>(CopyToCompressedInShow);
     }
@@ -61,12 +60,12 @@ public class AnimTool : EditorWindow
         AssetDatabase.Refresh();
     }
 
-    public void RenameFile(ClickEvent evt)
+    public void RenameFiles(ClickEvent evt)
     {
         GameObject[] objs = Selection.gameObjects;
         foreach (GameObject obj in objs)
         {
-            string newName = obj.name.Split("_a001")[0];
+            string newName ="P_S_" + obj.name.Split('_')[1];
             string path = AssetDatabase.GetAssetPath(obj);
             AssetDatabase.RenameAsset(path, newName);
         }
@@ -86,23 +85,6 @@ public class AnimTool : EditorWindow
             clip.name = go.name;
             importer.clipAnimations = new ModelImporterClipAnimation[] { clip };
             importer.SaveAndReimport();
-        }
-        AssetDatabase.Refresh();
-    }
-
-    // 不能提取已经存在的, 需要先删除
-    public void CopyToCurrent(ClickEvent evt)
-    {
-        GameObject[] objs = Selection.gameObjects;
-        if (objs.Length == 0)
-        {
-            Debug.LogWarning("请先选择至少一个Fbx文件");
-        }
-        foreach (GameObject obj in objs)
-        {
-            string objPath = AssetDatabase.GetAssetPath(obj);
-            string newPath = Path.GetDirectoryName(objPath) + $"/{obj.name}.anim";
-            CopyAnim(obj, newPath);
         }
         AssetDatabase.Refresh();
     }
@@ -217,11 +199,11 @@ public class AnimTool : EditorWindow
 
             });
         var paths = guids.Select(e => AssetDatabase.GUIDToAssetPath(e));
-        var objs =  paths.Select(e => AssetDatabase.LoadAssetAtPath<GameObject>(e)).ToArray();
+        var objs = paths.Select(e => AssetDatabase.LoadAssetAtPath<GameObject>(e)).ToArray();
 
 
         string folder = "Assets/Art/Animations/compressedShow";
-       
+
         foreach (GameObject obj in objs)
         {
             CopyAnim(obj, folder, true);

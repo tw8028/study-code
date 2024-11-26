@@ -23,8 +23,6 @@ namespace PersonBrowser
                 return obj.transform.GetChild(0);
             }
         }
-        private GameObject Gun { get; set; }
-        private GameObject Bag { get; set; }
 
         ObjectField PlayerField { get; set; }
         ObjectField GunField { get; set; }
@@ -36,7 +34,7 @@ namespace PersonBrowser
         {
             VisualElement root = rootVisualElement;
             Box box1 = new Box();
-            TextElement text1 = new() { text = "选择角色fbx资源创建prefab" };
+            TextElement text1 = new() { text = "选择角色fbx资源创建Player_S" };
             Button button1 = new() { text = "Create", name = "button1" };
             PlayerField = new ObjectField();
             GunField = new("Gun");
@@ -44,7 +42,7 @@ namespace PersonBrowser
 
 
             Box box3 = new Box();
-            TextElement text3 = new() { text = "选择角色prefab，创建展示用prefab" };
+            TextElement text3 = new() { text = "选择Player_S, 创建Player" };
             Button button3 = new() { text = "Create" };
 
             Box box4 = new Box();
@@ -57,7 +55,7 @@ namespace PersonBrowser
             box1.Add(PlayerField);
             box1.Add(GunField);
             box1.Add(BagField);
-         
+
             root.Add(box3);
             box3.Add(text3);
             box3.Add(button3);
@@ -65,133 +63,95 @@ namespace PersonBrowser
             box4.Add(text4);
             box4.Add(btn4);
 
-            button1.RegisterCallback<ClickEvent>(CreatePlayer);
-            button1.RegisterCallback<ClickEvent>(GetGun);
-          
-            button3.RegisterCallback<ClickEvent>(CreateDisplay);
+            button1.RegisterCallback<ClickEvent>(CreatePlayerS);
+
+            button3.RegisterCallback<ClickEvent>(CreatePlayer);
             btn4.RegisterCallback<ClickEvent>(ResetMagicaCloth);
-            
+
             Button btn5 = new() { text = "重新配置武器" };
             root.Add(btn5);
             btn5.RegisterCallback<ClickEvent>(ResetGun);
         }
 
         /// <summary>
-        /// 创建 player perfab, 添加 magica cloth 并初步设置, 添加 emoji, 放大1.1倍
+        /// 创建 Player_S, 添加 magica cloth 并初步设置, 添加 emoji
         /// </summary>
         /// <param name="evt"></param>
-        public void CreatePlayer(ClickEvent evt)
+        public void CreatePlayerS(ClickEvent evt)
         {
             // Create empty GameObject and parent instantiate asset to it.
             GameObject obj = Selection.activeGameObject;
-            root = new("P_" + obj.name);
+            root = new("P_S_" + obj.name);
             GameObject assetInstance = (GameObject)PrefabUtility.InstantiatePrefab(obj, root.transform);
 
             // Add emoji 
-            Transform head = assetInstance.transform.Find("Root/Bip001/Bip001 Spine/Bip001 Spine1/Bip001 Neck/Bip001 Head/");
+            Transform head = assetInstance.transform.Find(BoneHelper.HEAD);
             GameObject emoji = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Art/Character/Models/Emoji/G_emoji.FBX");
             GameObject emojiInstance = (GameObject)PrefabUtility.InstantiatePrefab(emoji);
             emojiInstance.transform.parent = head;
-
-            // Scale 1.1
-            assetInstance.transform.localScale = new Vector3(1.1f, 1.1f, 1.1f);
 
             // Add migicaCloth component.
             AddMagicaCloth(root);
 
             // add gun
-            Transform grip = assetInstance.transform.Find("Root/Bip001/Bip001 Spine/Bip001 Spine1/Bip001 R Clavicle/Bip001 R UpperArm/Bip001 R Forearm/Bip001 R Hand/Grip_point01/");
+            Transform grip = assetInstance.transform.Find(BoneHelper.GRIP_01);
 
-            string playerId = assetInstance.name.Remove(2, 1).Insert(2, "0");
+            string playerId = assetInstance.name.StartsWith("AA") ? assetInstance.name.Remove(3, 1).Insert(3, "0") : assetInstance.name.Remove(2, 1).Insert(2, "0");
             string gunName = "P_" + persons.First(item => item.id == playerId).weapon;
             string gunPath = $"Assets/Art/Character/Prefabs/Guns/{gunName}.prefab";
             var newgun = AssetDatabase.LoadAssetAtPath<GameObject>(gunPath);
             PrefabUtility.InstantiatePrefab(newgun, grip);
 
+            GunField.value = newgun;
+
             // add bag
-            Transform point01 = assetInstance.transform.Find("Root/Bip001/Bip001 Spine/Mount_point01/");
+            Transform mount01 = assetInstance.transform.Find(BoneHelper.MOUNT_01);
             string bagName = "";
             if (assetInstance.name.StartsWith("A00"))
             {
-                bagName = "P_" + persons.First(item => item.id == playerId).bag_0;
+                bagName = persons.First(item => item.id == playerId).bag_0;
             }
             else
             {
-                bagName = "P_" + persons.First(item => item.id == playerId).bag_1;
+                bagName = persons.First(item => item.id == playerId).bag_1;
             }
-            string bagPath = $"Assets/Art/Character/Prefabs/Bag/{bagName}.prefab";
-            var bag = AssetDatabase.LoadAssetAtPath<GameObject>(bagPath);
-            PrefabUtility.InstantiatePrefab(bag, point01);
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="evt"></param>
-        public void GetGun(ClickEvent evt)
-        {
-            PlayerField.value = root;
-            string playerId = "";
-            if (asset.name.StartsWith("AA"))
+            if (bagName != "")
             {
-                playerId = asset.name.Remove(3, 1).Insert(3, "0");
+                string bagPath = $"Assets/Art/Character/Prefabs/Bag/P_{bagName}.prefab";
+                var bag = AssetDatabase.LoadAssetAtPath<GameObject>(bagPath);
+                var bagInstance = (GameObject)PrefabUtility.InstantiatePrefab(bag, mount01);
+                bagInstance.transform.GetChild(0).Find("B_Root").localEulerAngles = Vector3.zero;
+
+                BagField.value = bag;
             }
             else
             {
-                playerId = asset.name.Remove(2, 1).Insert(2, "0");
-
+                BagField.value = null;
             }
 
-            string gunName = "";
-            try
+            // 查询动作模组
+            string assetName = "";
+            if (assetInstance.name.StartsWith("AA"))
             {
-                gunName = persons.First(item => item.id == playerId).weapon;
+                assetName = assetInstance.name.Remove(3, 1).Insert(3, "0");
             }
-            catch
+            else
             {
-                Debug.LogWarning($"{asset.name}:缺少武器配置");
-                return;
+                assetName = assetInstance.name.Remove(2, 1).Insert(2, "0");
             }
-            GunField.label = gunName;
-            string gunDir = $"Assets/Art/Character/Prefabs/Guns/";
-            try
-            {
-                string[] guids = AssetDatabase.FindAssets(gunName, new string[] { gunDir });
-                string path = AssetDatabase.GUIDToAssetPath(guids[0]);
-                GunField.value = AssetDatabase.LoadAssetAtPath<Object>(path);
-            }
-            catch
-            {
-                GunField.value = null;
-            }
-        }
+            string aniSet = persons.First(item => item.id == assetName).aniSet;
+            string acPath = $"Assets/Art/Animations/animator/display_ovrride_{aniSet}.overrideController";
 
-        /// <summary>
-        /// 添加武器背包到角色prefab
-        /// </summary>
-        /// <param name="evt"></param>
-        public void AddBag(ClickEvent evt)
-        {
-            if (BagField.value != null)
-            {
-                Transform point01 = asset.Find("Root/Bip001/Bip001 Spine/Mount_point01/");
-                if (point01 != null)
-                {
-                    GameObject bag = (GameObject)PrefabUtility.InstantiatePrefab(BagField.value, point01);
-                    bag.transform.localEulerAngles = new Vector3(90, 0, 0);
-                }
-                else
-                {
-                    Debug.Log("缺少背包挂点，请检查蒙皮文件");
-                }
-            }
+            // config animator controller
+            Animator animator = assetInstance.GetComponent<Animator>();
+            animator.runtimeAnimatorController = AssetDatabase.LoadAssetAtPath<RuntimeAnimatorController>(acPath);
         }
 
         /// <summary>
         /// 生成 display player, 覆盖原有资源.
         /// </summary>
         /// <param name="evt"></param>
-        public void CreateDisplay(ClickEvent evt)
+        public void CreatePlayer(ClickEvent evt)
         {
             GameObject[] objectArray = Selection.gameObjects;
             foreach (GameObject obj in objectArray)
@@ -199,31 +159,14 @@ namespace PersonBrowser
                 // rename 
                 GameObject prefab = (GameObject)PrefabUtility.InstantiatePrefab(obj);
                 Transform assetTransform = prefab.transform.GetChild(0);
-                prefab.name = "P_S_" + assetTransform.name;
+                prefab.name = "P_" + assetTransform.name;
 
-                // reset scale
-                assetTransform.localScale = new Vector3(1, 1, 1);
-
-                // 查询动作模组
-                string assetName = "";
-                if (assetTransform.name.StartsWith("AA"))
-                {
-                    assetName = assetTransform.name.Remove(3, 1).Insert(3, "0");
-                }
-                else
-                {
-                    assetName = assetTransform.name.Remove(2, 1).Insert(2, "0");
-                }
-                string aniSet = persons.First(item => item.id == assetName).aniSet;
-                string acPath = $"Assets/Art/Animations/animator/display_ovrride_{aniSet}.overrideController";
-
-                // config animator controller
-                Animator animator = assetTransform.GetComponent<Animator>();
-                animator.runtimeAnimatorController = AssetDatabase.LoadAssetAtPath<RuntimeAnimatorController>(acPath);
+                // scale
+                assetTransform.localScale = new Vector3(1.1f, 1.1f, 1.1f);
 
                 // if you want to create a new unique Prefab instead, you need to unpack the Prefab instance first.
                 PrefabUtility.UnpackPrefabInstance(prefab, PrefabUnpackMode.OutermostRoot, InteractionMode.AutomatedAction);
-                string path = $"Assets/Art/Character/Prefabs/Players_S/{prefab.name}.prefab";
+                string path = $"Assets/Art/Character/Prefabs/Players/{prefab.name}.prefab";
                 PrefabUtility.SaveAsPrefabAssetAndConnect(prefab, path, InteractionMode.AutomatedAction);
             }
         }
@@ -323,7 +266,7 @@ namespace PersonBrowser
             {
                 GameObject prefab = (GameObject)PrefabUtility.InstantiatePrefab(obj);
                 Transform instance = prefab.transform.GetChild(0);
-                Transform grip = instance.Find("Root/Bip001/Bip001 Spine/Bip001 Spine1/Bip001 R Clavicle/Bip001 R UpperArm/Bip001 R Forearm/Bip001 R Hand/Grip_point01/");
+                Transform grip = instance.Find(BoneHelper.GRIP_01);
                 Transform gun = grip.GetChild(0);
                 string gunName = "P_" + gun.name.Split('_')[1];
                 string gunPath = $"Assets/Art/Character/Prefabs/Guns/{gunName}.prefab";
@@ -333,6 +276,7 @@ namespace PersonBrowser
                 string objPath = AssetDatabase.GetAssetPath(obj);
                 PrefabUtility.SaveAsPrefabAssetAndConnect(prefab, objPath, InteractionMode.AutomatedAction);
             }
+            AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
         }
     }

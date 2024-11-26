@@ -10,8 +10,15 @@ tooltip:"NLD_ÅúÁ¿Êä³öFbx"
 		for maxfile in files do
 		(
 			loadMaxFile maxfile quiet:true
+			
+			root = Point name:"G_Root"
+			$Fire.parent = root
+			root.boneEnable = true	
 			select $G_G00*
-			selectmore $Fire
+			modPanel.addModToSelection (Skin ()) ui:on
+			skinOps.addBone $.modifiers[#Skin] root -1
+			
+			selectmore #($Fire, root)
 			
 			pluginManager.loadClass FbxExporter
 			FBXExporterSetParam "ResetExport"

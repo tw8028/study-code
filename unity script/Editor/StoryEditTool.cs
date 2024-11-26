@@ -21,7 +21,7 @@ public class StoryEditTool : EditorWindow
 
         Button btn2 = new() { text = "替换为prefab（选择角色）" };
         rootVisualElement.Add(btn2);
-        btn2.RegisterCallback<ClickEvent>(ResetSelection);
+        btn2.RegisterCallback<ClickEvent>(ResetPlayer);
 
         Button btn3 = new() { text = "替换角色clip" };
         rootVisualElement.Add(btn3);
@@ -57,7 +57,7 @@ public class StoryEditTool : EditorWindow
 
 
 
-    public void ResetSelection(ClickEvent evt)
+    public void ResetPlayer(ClickEvent evt)
     {
         Transform root = GameObject.Find("StoryManager/players").transform;
         GameObject go = Selection.activeGameObject;
@@ -83,20 +83,33 @@ public class StoryEditTool : EditorWindow
         Transform root = GameObject.Find("StoryManager/players").transform;
         Transform[] oldPlayers = new Transform[root.childCount];
         string[] playerNames = new string[root.childCount];
-        for (int i = 1; i < oldPlayers.Length; i++)
+        int[] playerIds = new int[root.childCount];
+        for (int i = 0; i < oldPlayers.Length; i++)
         {
             oldPlayers[i] = root.GetChild(i);
             playerNames[i] = oldPlayers[i].name;
+            playerIds[i] = oldPlayers[i].GetComponent<CmpStoryPlayer>().playerId;
         }
-        for (int i = 1; i < playerNames.Length; i++)
+        for (int i = 0; i < playerNames.Length; i++)
         {
+            if (playerNames[i].Split('_')[2] == "100")
+            {
+                continue;
+            }
 
             GameObject.DestroyImmediate(oldPlayers[i].gameObject);
             GameObject playerPrefab = FindPlayerPrefab(playerNames[i]);
+            if (playerPrefab == null)
+            {
+                Debug.LogWarning($"无法找到 {oldPlayers[i]} 对应prefab");
+            }
             GameObject prefabInstance = (GameObject)PrefabUtility.InstantiatePrefab(playerPrefab, root);
             prefabInstance.name = playerNames[i];
+            var cmpStoryPlayer = prefabInstance.AddComponent<CmpStoryPlayer>();
+            cmpStoryPlayer.playerId = playerIds[i];
         }
     }
+
     public GameObject FindPlayerPrefab(string playerName)
     {
         string name = playerName.Split('_')[2];
@@ -120,8 +133,8 @@ public class StoryEditTool : EditorWindow
         }
         else if (name.StartsWith("3"))
         {
-            string prefabName = name.Remove(0, 1).Insert(0, "P_C");
-            string prefabPath = $"Assets/Art/Character/Prefabs/Vehicle/{prefabName}.prefab";
+            string prefabName = "P_S_" + name;
+            string prefabPath = $"Assets/Art/Character/Prefabs/Vehicle_S/{prefabName}.prefab";
             return AssetDatabase.LoadAssetAtPath<GameObject>(prefabPath);
         }
         else
@@ -216,17 +229,21 @@ public class StoryEditTool : EditorWindow
                         else
                         {
                             string clipName = clip.animationClip.name;
+                            /* if (clipName.Contains("_crawl_") || clipName.Contains("_stand_") || clipName.Contains("_common"))
+                             {
+                                 string path = AssetDatabase.GetAssetPath(clip.animationClip);
+                                 Debug.LogWarning($"使用了战斗动画:{path}");
+                             }
 
-                            if (clipName.Contains("_crawl_") || clipName.Contains("_stand_") || clipName.Contains("_common"))
+                             else if (clipName.Contains("ready"))
+                             {
+                                 string path = AssetDatabase.GetAssetPath(clip.animationClip);
+                                 Debug.LogWarning($"使用了ready动画:{path}");
+                             }*/
+                            if (!clipName.StartsWith("compressed"))
                             {
                                 string path = AssetDatabase.GetAssetPath(clip.animationClip);
-                                Debug.LogWarning($"使用了战斗动画:{path}");
-                            }
-
-                            else if (clipName.Contains("ready"))
-                            {
-                                string path = AssetDatabase.GetAssetPath(clip.animationClip);
-                                Debug.LogWarning($"使用了ready动画:{path}");
+                                Debug.Log($"未压缩动画: {path}");
                             }
                         }
                     }

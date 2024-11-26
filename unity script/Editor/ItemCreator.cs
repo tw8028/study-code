@@ -85,7 +85,12 @@ namespace PersonBrowser
                 GameObject root = new(prefabName);
                 // instantiate asset object, then add to empty object
                 GameObject assetInstance = (GameObject)PrefabUtility.InstantiatePrefab(obj, root.transform);
-                assetInstance.transform.ResetLocals();
+                if(assetInstance.transform.Find("G_Root") == null)
+                {
+                    Debug.LogWarning($"没有G_Root,跳过创建：{assetInstance.name}");
+                    continue;
+                }
+                assetInstance.transform.Find("G_Root").localEulerAngles = Vector3.zero;
                 // save prefab
                 PrefabUtility.SaveAsPrefabAssetAndConnect(root, path, InteractionMode.AutomatedAction);
             }
