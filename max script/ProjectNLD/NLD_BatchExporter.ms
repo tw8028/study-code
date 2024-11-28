@@ -139,6 +139,45 @@ tooltip:"NLD_批量输出Fbx"
 		)
 	)
 	
+	fn skinExporter =
+	(
+		delete $'粒子视图*'
+		$Root.boneEnable = true	
+		-- select bones and model
+		select #($'Bip001 L Finger0Nub', $'Bip001 L Finger1Nub', $'Bip001 L Finger2Nub',  $'Bip001 L Toe0Nub',
+		$'Bip001 R Finger0Nub', $'Bip001 R Finger1Nub', $'Bip001 R Finger2Nub', $'Bip001 R Toe0Nub', $'Bip001 Footsteps')
+		freeze $
+		select (for obj in objects where not obj.isHidden and not obj.isFrozen collect obj)
+	
+		-- check bones name
+		sel = selection		
+		local Alist=#()
+		local Blist=#()
+		bones = ""
+		for item in sel do(
+			if findItem Alist item.name==0 then append Alist item.name else append Blist item.name
+			)
+		for item in Blist do(
+			bones = bones + " " + item
+			)
+		if Blist.count !=0 then throw bones
+			
+		-- check file name
+		if findString (getFilenameFile maxFileName) " "!=undefined then throw "文件名有空格"
+		
+		-- export setting
+		maxName = getFilenameFile maxFileName
+		fbxName = (FilterString maxName "_")[1]
+		exportPath = @"E:/动作改版/skin_Charactor/_fbx/" + fbxName + ".fbx"
+		
+		pluginManager.loadClass FbxExporter
+		FBXExporterSetParam "ResetExport"
+		FBXExporterSetParam "Animation" false
+		FBXExporterSetParam "Triangulate" true
+		exportFile exportPath #noPrompt selectedOnly:true using:FBXEXP	
+	)	
+		
+	
 	
 	rollout exportWindow "批量输出"
 	(
@@ -148,7 +187,7 @@ tooltip:"NLD_批量输出Fbx"
 		button btn4 "display anim" width:100 height:30
 		button btn5 "victory anim" width:100 height:30
 		button btn6 "story anim" width:100 height:30
-
+		button btn7 "skin" width:100 height:30
 		
 		on btn1 pressed do 
 		(
@@ -173,6 +212,11 @@ tooltip:"NLD_批量输出Fbx"
 		on btn6 pressed do
 		(
 			storyExporter()
+		)
+		
+		on btn7 pressed do
+		(
+			skinExporter()
 		)
 	)
 	createDialog exportWindow 200 250	

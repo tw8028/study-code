@@ -6,7 +6,7 @@ using Newtonsoft.Json.Linq;
 namespace Excels.Domain;
 
 public enum ColName { A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z, AA, AB, AC, AD, AE, AF, AG, AH, AI, AJ, AK, AL, AM }
-    
+
 public class ExcelToJson
 {
     public string? ExcelPath { get; set; }
@@ -47,11 +47,11 @@ public class ExcelToJson
                     {
                         string set = item["aniSet"].ToString().Substring(0, 3);
                         item["aniSet"] = set;
-                        
-                        if (item["weapon"] != null)
-                        {
-                            item["weapon"] = "G" + item["weapon"].ToString().PadLeft(5, '0');
-                        }
+                    }
+                    if (item["weapon"].ToString() != "")
+                    {
+                        string str = "G" + item["weapon"].ToString().PadLeft(5, '0');
+                        item["weapon"] = str;
                     }
                 }
                 root.Add("personList", arr);
