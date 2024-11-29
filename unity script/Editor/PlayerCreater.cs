@@ -152,6 +152,10 @@ namespace PersonBrowser
                     animator.runtimeAnimatorController = AssetDatabase.LoadAssetAtPath<RuntimeAnimatorController>(acPath);
                 }
             }
+            else
+            {
+                Debug.LogWarning("无武器，背包配置信息");
+            }
         }
 
         // 生成 players
@@ -177,9 +181,6 @@ namespace PersonBrowser
                     Debug.LogError("不是 player 或 enemy 角色");
                     return;
                 }
-
-                // scale
-                assetTransform.localScale = new Vector3(1.1f, 1.1f, 1.1f);
 
                 // if you want to create a new unique Prefab instead, you need to unpack the Prefab instance first.
                 PrefabUtility.UnpackPrefabInstance(prefab, PrefabUnpackMode.OutermostRoot, InteractionMode.AutomatedAction);
