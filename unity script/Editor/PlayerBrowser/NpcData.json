@@ -1,0 +1,61 @@
+{
+    "npcList": [
+        {
+            "id": "BN00001",
+            "originPrefab": "P_S_A00011"
+        },
+        {
+            "id": "BN00002",
+            "originPrefab": "P_S_A00012"
+        },
+        {
+            "id": "BN00003",
+            "originPrefab": "P_S_A00013"
+        },
+        {
+            "id": "BN00004",
+            "originPrefab": "P_S_A00014"
+        },
+        {
+            "id": "BN00005",
+            "originPrefab": "P_S_A00015"
+        },
+        {
+            "id": "BN00006",
+            "originPrefab": "P_S_A00001"
+        },
+        {
+            "id": "BN00007",
+            "originPrefab": "P_S_A00002"
+        },
+        {
+            "id": "BN00008",
+            "originPrefab": "P_S_A00003"
+        },
+        {
+            "id": "BN00009",
+            "originPrefab": "P_S_A00004"
+        },
+        {
+            "id": "BN00010",
+            "originPrefab": "P_S_A00005"
+        },
+        {
+            "id": "BN00011",
+            "originPrefab": "P_S_N00016"
+        },
+        {
+            "id": "BN00012",
+            "originPrefab": "P_S_N00004"
+        },
+        {
+            "id": "BN00012_1",
+            "originPrefab": "P_S_N00005"
+        },
+
+        {
+            "id": "",
+            "originPrefab": ""
+        }
+    ]
+}

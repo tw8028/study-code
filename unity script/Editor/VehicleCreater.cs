@@ -5,235 +5,216 @@ using UnityEditor;
 using UnityEngine.UIElements;
 using UnityEditor.UIElements;
 using UnityEditor.Animations;
-using UnityEngine.WSA;
 using System.IO;
-using SkillEditor;
-using Sirenix.OdinInspector.Editor.Validation;
+using System.Linq;
+
 
 namespace PersonBrowser
 {
-    public class VehicleCreater : EditorWindow
-    {
-        const string VEHICLE_POINT = "Root/G_{0}_bone001/Battery_point01";
-        const string PATH_BATTERY = "Assets/Art/Character/Prefabs/Battery/{0}.prefab";
-        const string PATH_VEHICLE = "Assets/Art/Character/Prefabs/Vehicle/{0}.prefab";
-        const string PATH_VEHICLE_S = "Assets/Art/Character/Prefabs/Vehicle_S/{0}.prefab";
+	/// <summary>
+	/// 1 生成底盘和炮台 prefab，变色手动创建变体，P_C00001_01, P_R00001_02
+	/// 2 生成剧情用载具 P_S_300001
+	/// 3 生成 Auto 炮台 P_R00001_01
+	/// 4 使用构建器，生成 Auto 底盘
+	/// </summary>
+	public class VehicleCreator : EditorWindow
+	{
+		const string BATTERY_POINT = "Root/G_{0}_bone001/Battery_point01";
 
-        ObjectField vehicleField;
-        ObjectField batteryField;
+		private List<Vehicle> VehicleData => JsonData.GetVehicles();
 
-        [MenuItem("Test/prefab工具/创建载具 prefab")]
-        public static void ShowWindow() { GetWindow<VehicleCreater>("载具 Prefab 工具"); }
+		[MenuItem("Test/prefab工具/载具")]
+		public static void ShowWindow() { GetWindow<VehicleCreator>("载具 Prefab 工具"); }
 
-        public void CreateGUI()
-        {
-            Button btn2 = new Button() { text = "Create All Battery prefab" };
-            rootVisualElement.Add(btn2);
-            btn2.RegisterCallback<ClickEvent>(CreateAllBatteryPrefab);
+		public void CreateGUI()
+		{
+			Button btn1 = new() { text = "生成所有 origin prefab" };
+			rootVisualElement.Add(btn1);
+			btn1.RegisterCallback<ClickEvent>(AllPrefabClick);
 
-            Label label1 = new Label();
-            rootVisualElement.Add(label1);
+			Button btn2 = new() { text = "选择 origin vehicle prefab 创建 s vehicle prefab" };
+			rootVisualElement.Add(btn2);
+			btn2.RegisterCallback<ClickEvent>(ShowVehicleClick);
 
-            vehicleField = new() { label = "vehicleFbx" };
-            rootVisualElement.Add(vehicleField);
+			Button btn3 = new() { text = "生成所有 auto 炮台" };
+			rootVisualElement.Add(btn3);
+			btn3.RegisterCallback<ClickEvent>(AutoBatteryClick);
 
-            batteryField = new() { label = "batteryPrefab" };
-            rootVisualElement.Add(batteryField);
+		}
 
-            Button btn1 = new Button() { text = "Create Vehicle_S" };
-            rootVisualElement.Add(btn1);
-            btn1.RegisterCallback<ClickEvent>(CreateSelectedVehicleShow);
+		// 生成底盘和炮台 origin prefab
+		public void PrefabCreator(GameObject fbx)
+		{
+			string id = fbx.name;
+			string name = "P_" + id + "_01";
+			string prefabPath;
+			GameObject prefab = new(name);
+			GameObject instance = (GameObject)PrefabUtility.InstantiatePrefab(fbx, prefab.transform);
+			if (id.StartsWith("R"))
+			{
+				if (instance.transform.Find("R_Root") != null)
+				{
+					// 炮台 root 归零
+					instance.transform.Find("R_Root").localEulerAngles = Vector3.zero;
+					prefabPath = string.Format(PrefabPath.BATTERY, name);
+				}
+				else
+				{
+					Debug.LogError($"未蒙皮停止创建: {id}");
+					return;
+				}
 
-            Label label2 = new Label();
-            rootVisualElement.Add(label2);
+			}
+			else if (id.StartsWith("C"))
+			{
+				if (instance.transform.Find("C_Root") != null)
+				{
+					prefabPath = string.Format(PrefabPath.VEHICLE, name);
+				}
+				else
+				{
+					Debug.LogError($"未蒙皮停止创建: {id}");
+					return;
+				}
+			}
+			else
+			{
+				Debug.LogError($"错误模型名停止创建: {id}");
+				return;
+			}
+			PrefabUtility.SaveAsPrefabAssetAndConnect(prefab, prefabPath, InteractionMode.AutomatedAction);
+			Debug.Log(prefabPath);
+		}
+		public void AllPrefabClick(ClickEvent evt)
+		{
+			GameObject[] objs = AnimUtility.FindAssetsByFolder("t:gameObject", new string[] {
+				"Assets/Art/Character/Models/Battery" ,
+				"Assets/Art/Character/Models/Vehicle"
+			});
+			foreach (GameObject go in objs)
+			{
+				PrefabCreator(go);
+			}
+		}
 
-            Button btn3 = new Button() { text = "select fbx to Create Prefabs/Vehicle" };
-            rootVisualElement.Add(btn3);
-            btn3.RegisterCallback<ClickEvent>(CreateSelectedVehicle);
+		// 使用 origin prefab, 生成剧情用车辆, unPack 后删除 origin prefab 不影响
+		public void ShowVehicleCreator(GameObject go)
+		{
+			string originName = go.name;
+			string id = originName.Split('_')[1];
+			Vehicle vehicle = VehicleData.FirstOrDefault(x => x.name == originName);
+			if (vehicle == null)
+			{
+				Debug.Log($"未配置 vehicle json: {originName}");
+				return;
+			}
 
+			GameObject newPrefab = (GameObject)PrefabUtility.InstantiatePrefab(go);
+			newPrefab.name = "P_S_" + originName;
 
-            Button btn4 = new Button() { text = "select fbx to Create AutoGen/Battery" };
-            rootVisualElement.Add(btn4);
-            btn4.RegisterCallback<ClickEvent>(CreateSelectedBattery);
+			// 添加炮台						
+			GameObject batteryPrefab = AnimUtility.FindPrefab(vehicle.batteryName);
+			if (batteryPrefab != null)
+			{
+				Transform point_battery = newPrefab.transform.GetChild(0).Find(string.Format(BATTERY_POINT, id));
+				PrefabUtility.InstantiatePrefab(batteryPrefab, point_battery);
+			}
+			else
+			{
+				Debug.LogWarning($"没有炮台: {originName}");
+			}
 
-            Button btn5 = new Button() { text = "旋转炮台" };
-            rootVisualElement.Add(btn5);
-            btn5.RegisterCallback<ClickEvent>(RotateBattery);
-        }
+			PrefabUtility.UnpackPrefabInstance(newPrefab, PrefabUnpackMode.Completely, InteractionMode.AutomatedAction);
+			string prefabPath = string.Format(PrefabPath.VEHICLE_S, newPrefab.name);
+			PrefabUtility.SaveAsPrefabAssetAndConnect(newPrefab, prefabPath, InteractionMode.AutomatedAction);
+			Debug.Log(prefabPath);
+		}
+		public void ShowVehicleClick(ClickEvent evt)
+		{
+			GameObject[] objs = Selection.gameObjects;
+			if (objs.Length == 0)
+			{
+				Debug.LogError("选择 origin vehicle prefab");
+			}
+			foreach (GameObject go in objs)
+			{
+				if (!go.name.StartsWith("P_C"))
+				{
+					Debug.Log($"{go.name}:不是载具 prefab");
+					return;
+				}
+				ShowVehicleCreator(go);
+			}
+		}
 
-        public void CreateVehicleShow(GameObject fbx)
-        {
-            string name = fbx.name.Remove(0, 1).Insert(0, "3");
-            string prefabName = "P_S_" + name;
-            GameObject prefab = new(prefabName);
-            GameObject instance = (GameObject)PrefabUtility.InstantiatePrefab(fbx, prefab.transform);
-            if (batteryField.value != null)
-            {
-                Debug.Log(batteryField.value);
-                string pointPath = string.Format(VEHICLE_POINT, fbx.name);
-                Transform point = instance.transform.Find(pointPath);
-                PrefabUtility.InstantiatePrefab(batteryField.value, point);
-            }
-            string prefabPath = string.Format(PATH_VEHICLE_S, prefabName);
-            PrefabUtility.SaveAsPrefabAssetAndConnect(prefab, prefabPath, InteractionMode.AutomatedAction);
-            Debug.Log(prefabPath);
-        }
-        public void CreateSelectedVehicleShow(ClickEvent evt)
-        {
-            GameObject vehicleFbx = (GameObject)vehicleField.value;
-            if (!vehicleFbx.name.StartsWith("C"))
-            {
-                Debug.Log($"{vehicleFbx.name}:不是载具");
-                return;
-            }
-            CreateVehicleShow(vehicleFbx);
-        }
+		// 使用 origin prefab, 生成 auto 炮台, 最后 unPack
+		public void AutoBatteryCreator(GameObject go)
+		{
+			string id = go.name.Split('_')[1];
 
+			GameObject newPrefab = (GameObject)PrefabUtility.InstantiatePrefab(go);
+			PrefabUtility.InstantiatePrefab(go, newPrefab.transform);
+			Transform instance = newPrefab.transform.GetChild(0);
 
-        public void CreateSelectedVehicle(ClickEvent evt)
-        {
-            GameObject vehicleFbx = Selection.activeGameObject;
-            if (!vehicleFbx.name.StartsWith("C"))
-            {
-                Debug.Log($"{vehicleFbx.name}:不是载具");
-                return;
-            }
-            GameObject vehiclePrefab = new GameObject($"P_{vehicleFbx.name}_01");
-            PrefabUtility.InstantiatePrefab(vehicleFbx, vehiclePrefab.transform);
-            string prefabPath = $"Assets/Art/Character/Prefabs/Vehicle/{vehiclePrefab.name}.prefab";
-            PrefabUtility.SaveAsPrefabAssetAndConnect(vehiclePrefab, prefabPath, InteractionMode.AutomatedAction);
-            Debug.Log(prefabPath);
-        }
+			if (instance.GetComponent<Animator>() == null)
+			{
+				instance.gameObject.AddComponent<Animator>();
+			}
 
+			// 生成 animator override controller 
+			AnimatorController controller = AssetDatabase.LoadAssetAtPath<AnimatorController>("Assets/Art/Animations/animator/Battery/animator_battery.controller");
+			AnimatorOverrideController overrideController = new(controller);
 
-        public void CreateSelectedBattery(ClickEvent evt)
-        {
-            GameObject batteryFbx = Selection.activeGameObject;
-            CreateBattery(batteryFbx);
-        }
+			AnimationClip attackClip = AssetDatabase.LoadAssetAtPath<AnimationClip>($"Assets/Art/Animations/Battery/{id}/ani_{id}_attack01.fbx");
+			if (attackClip == null)
+			{
+				Debug.LogError($"缺少动作文件：ani_{id}_attack01.fbx");
+				return;
+			}
+			AnimationClip compressedAttackClip = LTCompressor.AutoCompress(attackClip);
+			overrideController["ani_R00001_attack01"] = compressedAttackClip;
 
-        public void CreateBattery(GameObject batteryFbx)
-        {
-            if (!batteryFbx.name.StartsWith("R"))
-            {
-                Debug.Log($"{batteryFbx.name}:不是载具武器");
-                return;
-            }
-            GameObject batteryPrefab = new GameObject($"P_{batteryFbx.name}_01");
-            PrefabUtility.InstantiatePrefab(batteryFbx, batteryPrefab.transform);
-            Transform instance = batteryPrefab.transform.GetChild(0);
-            try
-            {
-                instance.Find("R_Root").ResetLocals();
-            }
-            catch
-            {
-                instance.Find("R_root").ResetLocals();
-            }
-            if (instance.GetComponent<Animator>() == null)
-            {
-                instance.gameObject.AddComponent<Animator>();
-            }
+			AnimationClip idleClip = AssetDatabase.LoadAssetAtPath<AnimationClip>($"Assets/Art/Animations/Battery/{id}/ani_{id}_idle.fbx");
+			if (idleClip == null)
+			{
+				Debug.LogError($"缺少动作文件：ani_{id}_idle.fbx");
+				return;
+			}
+			AnimationClip compressedIdleClip = LTCompressor.AutoCompress(idleClip);
+			overrideController["ani_R00001_idle"] = compressedIdleClip;
 
-            // 生成 animator override controller 
-            AnimatorController controller = AssetDatabase.LoadAssetAtPath<AnimatorController>("Assets/Art/Animations/animator/Battery/animator_battery.controller");
-            AnimatorOverrideController overrideController = new(controller);
-            AnimationClip attackClip = AssetDatabase.LoadAssetAtPath<AnimationClip>($"Assets/Art/Animations/Battery/{batteryFbx.name}/ani_{batteryFbx.name}_attack01.fbx");
-            AnimationClip compressedAttackClip = LTCompressor.AutoCompress(attackClip);
-            if (attackClip == null)
-            {
-                Debug.LogError($"缺少动作文件：ani_{batteryFbx.name}_attack01.fbx");
-                return;
-            }
-            overrideController["ani_R00001_attack01"] = compressedAttackClip;
-            AnimationClip idleClip = AssetDatabase.LoadAssetAtPath<AnimationClip>($"Assets/Art/Animations/Battery/{batteryFbx.name}/ani_{batteryFbx.name}_idle.fbx");
-            AnimationClip compressedIdleClip = LTCompressor.AutoCompress(idleClip);
-            if (idleClip == null)
-            {
-                Debug.LogError($"缺少动作文件：ani_{batteryFbx.name}_idle.fbx");
-                return;
-            }
-            overrideController["ani_R00001_idle"] = compressedIdleClip;
+			// 创建 auto 文件夹
+			string folder = $"Assets/Art_Out/AutoGen/Battery/{newPrefab.name}";
+			if (!Directory.Exists(folder))
+			{
+				Directory.CreateDirectory(folder);
+			}
 
+			AssetDatabase.CreateAsset(overrideController, $"Assets/Art_Out/AutoGen/Battery/{newPrefab.name}/ov_battery_{id}.controller");
+			AssetDatabase.SaveAssets();
 
-            string folder = $"Assets/Art_Out/AutoGen/Battery/{batteryPrefab.name}";
-            if (!Directory.Exists(folder))
-            {
-                Directory.CreateDirectory(folder);
-            }
+			// 设置 animator
+			var animator = instance.GetComponent<Animator>();
+			animator.runtimeAnimatorController = overrideController;
 
-            AssetDatabase.CreateAsset(overrideController, $"Assets/Art_Out/AutoGen/Battery/{batteryPrefab.name}/ov_battery_{batteryFbx.name}.controller");
-            AssetDatabase.SaveAssets();
+			// 保存 prefab
+			PrefabUtility.UnpackPrefabInstance(newPrefab, PrefabUnpackMode.Completely, InteractionMode.AutomatedAction);
+			string path = $"Assets/Art_Out/AutoGen/Battery/{newPrefab.name}/{newPrefab.name}.prefab";
+			PrefabUtility.SaveAsPrefabAssetAndConnect(newPrefab, path, InteractionMode.AutomatedAction);
+			Debug.Log($"创建炮台：{newPrefab}");
+		}
+		public void AutoBatteryClick(ClickEvent evt)
+		{
+			string[] guids = AssetDatabase.FindAssets("t:gameObject", new string[] {
+				"Assets/Art/Character/Prefabs/Battery"
+			});
+			foreach (string guid in guids)
+			{
+				string path = AssetDatabase.GUIDToAssetPath(guid);
+				GameObject go = AssetDatabase.LoadAssetAtPath<GameObject>(path);
+				AutoBatteryCreator(go);
+			}
+		}
 
-            // 设置 animator
-            var animator = instance.GetComponent<Animator>();
-            animator.runtimeAnimatorController = overrideController;
-
-            string path = $"Assets/Art_Out/AutoGen/Battery/{batteryPrefab.name}/{batteryPrefab.name}.prefab";
-
-            GameObject P_b = PrefabUtility.SaveAsPrefabAssetAndConnect(batteryPrefab, path, InteractionMode.AutomatedAction);
-            Debug.Log($"创建炮台：{P_b.name}");
-        }
-
-
-        public void CreateAllVehicle(ClickEvent evt)
-        {
-
-            string[] guids = AssetDatabase.FindAssets("t:gameObject", new string[] { "Assets/Art/Character/Models/Vehicle" });
-            foreach (string guid in guids)
-            {
-                string path = AssetDatabase.GUIDToAssetPath(guid);
-                GameObject vehicleFbx = AssetDatabase.LoadAssetAtPath<GameObject>(path);
-                GameObject vehiclePrefab = new GameObject($"P_{vehicleFbx.name}_01");
-                PrefabUtility.InstantiatePrefab(vehicleFbx, vehiclePrefab.transform);
-                string prefabPath = $"Assets/Art/Character/Prefabs/Vehicle/{vehiclePrefab.name}.prefab";
-                PrefabUtility.SaveAsPrefabAssetAndConnect(vehiclePrefab, prefabPath, InteractionMode.AutomatedAction);
-                Debug.Log(prefabPath);
-            }
-        }
-
-
-        public void CreateAllBatteryPrefab(ClickEvent evt)
-        {
-            string[] guids = AssetDatabase.FindAssets("t:gameObject", new string[] { "Assets/Art/Character/Models/Battery" });
-            foreach (string guid in guids)
-            {
-                string path = AssetDatabase.GUIDToAssetPath(guid);
-                GameObject go = AssetDatabase.LoadAssetAtPath<GameObject>(path);
-
-                if (go.transform.Find("R_Root") != null)
-                {
-                    CreateBatteryPrefab(go);
-                }
-                else
-                {
-                    Debug.LogWarning($"没有 R_Root: {go}");
-                }
-            }
-        }
-        public void CreateBatteryPrefab(GameObject go)
-        {
-            string name = "P_" + go.name + "_01";
-            GameObject prefab = new(name);
-            GameObject battery = (GameObject)PrefabUtility.InstantiatePrefab(go, prefab.transform);
-            battery.transform.Find("R_Root").localEulerAngles = Vector3.zero;
-            string prefabPath = string.Format(PATH_BATTERY, name);
-            PrefabUtility.SaveAsPrefabAssetAndConnect(prefab, prefabPath, InteractionMode.AutomatedAction);
-            Debug.Log(prefabPath);
-        }
-
-        public void RotateBattery(ClickEvent evt)
-        {
-            GameObject[] objs = Selection.gameObjects;
-            foreach (GameObject obj in objs)
-            {
-                var instance = obj.transform.GetChild(0);
-                string pointPath = string.Format(VEHICLE_POINT, instance.name);
-                Transform point = instance.transform.Find(pointPath);
-                point.GetChild(0).localEulerAngles = Vector3.zero;
-            }
-            AssetDatabase.SaveAssets();
-            AssetDatabase.Refresh();
-        }
-    }
+	}
 }
