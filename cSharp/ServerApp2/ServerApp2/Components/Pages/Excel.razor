@@ -3,88 +3,64 @@
 
 <h3>Excel to Json</h3>
 
-<div class="input-group mb-3">
-    <div class="input-group-prepend">
-        <span class="input-group-text">excel path</span>
-    </div>
-    <input type="text" class="form-control" @bind-value="ExcelToJson.ExcelPath">
-</div>
-
-<div class="input-group mb-3">
-    <div class="input-group-prepend">
-        <span class="input-group-text">json path</span>
-    </div>
-    <input type="text" class="form-control" @bind-value="ExcelToJson.JsonPath">
-</div>
-
-
-<button class="btn btn-primary btn-sm" @onclick="ToJson">apply</button> @message
-
-@* <div class="input-group mb-3">
-    <div class="input-group-prepend">
-        <span class="input-group-text">rows</span>
-    </div>
-    <input type="text" class="form-control" @bind-value="ExcelToJson.Row">
-</div>
-
-<div class="input-group mb-3">
-    <div class="input-group-prepend">
-        <span class="input-group-text">columns</span>
-    </div>
-    <input type="text" class="form-control" @bind-value="ExcelToJson.Column">
-</div> *@
-
-@* <TddTable Data ="ExcelToJson.ColSet">
-    <RowTemplate>
-        <td>@context.Key</td>
-        <td>@context.Value</td>
-    </RowTemplate>
-</TddTable> *@
-
-
+<h6>@message</h6>
+<button class="btn btn-primary btn-sm" @onclick="PersonToJson">人设总表</button>
+<button class="btn btn-primary btn-sm" @onclick="StoryToJson">story</button>
 
 
 @code {
-    private string? message;
-    private ExcelToJson? ExcelToJson { get; set; }
-    protected override void OnInitialized()
-    {
-        string excelInfo = fileService.ReadFile("Config/excel.json");
-        ExcelToJson = JsonConvert.DeserializeObject<ExcelToJson>(excelInfo);
-        if (ExcelToJson is null)
-        {
-            ExcelToJson = new();
-        }
-        ExcelToJson.ExcelPath = "D:/纳罗达人设总表.xlsx";
-        ExcelToJson.JsonPath = "D:/GitHub/NLDClient/ProjectNLD/Assets/Art/temp/Editor/PlayerBrowser/PersonsData.json";
-        // ExcelToJson.JsonPath = "D:/1.json";
-        ExcelToJson.Row = 140;
-        ExcelToJson.Column = 45;
+	private string? message;
+	protected override void OnInitialized()
+	{
+		message = "……";
+	}
 
-        ExcelToJson.ColSet = new()
-        {
-            { (int)ColName.A, "id" },
-            { (int)ColName.D, "name" },
-            { (int)ColName.K, "weapon" },
-            { (int)ColName.N, "aniSet" },
-            { (int)ColName.AB, "model_0" },
-            { (int)ColName.AC, "skin_0" },
-            { (int)ColName.AD, "prefab_0" },
-            { (int)ColName.AG, "model_1" },
-            { (int)ColName.AH, "skin_1" },
-            { (int)ColName.AI, "prefab_1" },
-            { (int)ColName.AJ, "ani_0" },
-            { (int)ColName.AK, "ani_1" },
-            { (int)ColName.AL, "bag_0" },
-            { (int)ColName.AM, "bag_1" }
+	private async Task PersonToJson()
+	{
+		ExcelToJson personTable = new();
+		personTable.ExcelPath = "D:/纳罗达人设总表.xlsx";
+		personTable.JsonPath = "D:/PersonsData.json";
+		personTable.Row = 140;
+		personTable.Column = 45;
+		personTable.ListName = "personList";
+		personTable.Category = Category.person;
 
-        };
-    }
+		personTable.ColSet = new()
+		{
+			{ (int)ColName.A, "id" },
+			{ (int)ColName.D, "name" },
+			{ (int)ColName.K, "weapon" },
+			{ (int)ColName.N, "aniSet" },
+			{ (int)ColName.AB, "model_0" },
+			{ (int)ColName.AC, "skin_0" },
+			{ (int)ColName.AD, "prefab_0" },
+			{ (int)ColName.AG, "model_1" },
+			{ (int)ColName.AH, "skin_1" },
+			{ (int)ColName.AI, "prefab_1" },
+			{ (int)ColName.AJ, "ani_0" },
+			{ (int)ColName.AK, "ani_1" },
+			{ (int)ColName.AL, "bag_0" },
+			{ (int)ColName.AM, "bag_1" }
 
-    private async Task ToJson()
-    {
-        message = "....";
-        await Task.WhenAll(ExcelToJson.ToJson());
-        message = "Done";
-    }
+		};
+		await Task.WhenAll(personTable.ToJson());
+		message = "Done";
+	}
+
+	private async Task StoryToJson()
+	{
+		ExcelToJson storyTable = new();
+		storyTable.ExcelPath = "D:/word.xlsx";
+		storyTable.JsonPath = "D:/word.json";
+		storyTable.Row = 200;
+		storyTable.Column = 2;
+		storyTable.ColSet = new(){
+			 { (int)ColName.A, "id" },
+			 { (int)ColName.B, "message" }
+		};
+		storyTable.ListName = "megList";
+
+		await Task.WhenAll(storyTable.ToJson());
+		message = "Done";
+	}
 }
