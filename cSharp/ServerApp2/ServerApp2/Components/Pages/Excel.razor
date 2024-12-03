@@ -49,18 +49,24 @@
 
 	private async Task StoryToJson()
 	{
-		ExcelToJson storyTable = new();
-		storyTable.ExcelPath = "D:/word.xlsx";
-		storyTable.JsonPath = "D:/word.json";
-		storyTable.Row = 200;
-		storyTable.Column = 2;
-		storyTable.ColSet = new(){
-			 { (int)ColName.A, "id" },
-			 { (int)ColName.B, "message" }
-		};
-		storyTable.ListName = "megList";
+		string[] files = Directory.GetFiles("D:/Code/story", "*.xlsx");
+		foreach (string path in files)
+		{
+			string fileName = Path.GetFileNameWithoutExtension(path);
 
-		await Task.WhenAll(storyTable.ToJson());
+			ExcelToJson storyTable = new();
+			storyTable.ExcelPath = path;
+			storyTable.JsonPath = $"D:/Code/story/json/{fileName}.json";
+			storyTable.Row = 200;
+			storyTable.Column = 2;
+			storyTable.ColSet = new(){
+				{ (int)ColName.A, "id" },
+				{ (int)ColName.B, "message" }
+			};
+			storyTable.ListName = "megList";
+
+			await Task.WhenAll(storyTable.ToJson());
+		}
 		message = "Done";
 	}
 }
