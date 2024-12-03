@@ -5,68 +5,79 @@
 
 <h6>@message</h6>
 <button class="btn btn-primary btn-sm" @onclick="PersonToJson">人设总表</button>
-<button class="btn btn-primary btn-sm" @onclick="StoryToJson">story</button>
-
+<button class="btn btn-primary btn-sm" @onclick="VehicleToJson">vehicle</button>
+<button class="btn btn-primary btn-sm" @onclick="NpcToJson">battleNpc</button>
 
 @code {
-	private string? message;
-	protected override void OnInitialized()
-	{
-		message = "……";
-	}
+    private string? message;
+    protected override void OnInitialized()
+    {
+        message = "……";
+    }
 
-	private async Task PersonToJson()
-	{
-		ExcelToJson personTable = new();
-		personTable.ExcelPath = "D:/纳罗达人设总表.xlsx";
-		personTable.JsonPath = "D:/PersonsData.json";
-		personTable.Row = 140;
-		personTable.Column = 45;
-		personTable.ListName = "personList";
-		personTable.Category = Category.person;
+    private async Task PersonToJson()
+    {
+        ExcelToJson personTable = new();
+        personTable.ExcelPath = "D:/纳罗达人设总表.xlsx";
+        personTable.JsonPath = @"D:\GitHub\NLDClient\ProjectNLD\Assets\Art\temp\Editor\PlayerBrowser\PersonData.json";
+        personTable.Row = 140;
+        personTable.Column = 45;
+        personTable.ListName = "personList";
+        personTable.Category = Category.person;
+        personTable.ColSet = new()
+        {
+            { (int)ColName.A, "id" },
+            { (int)ColName.D, "name" },
+            { (int)ColName.K, "weapon" },
+            { (int)ColName.N, "aniSet" },
+            { (int)ColName.AB, "model_0" },
+            { (int)ColName.AC, "skin_0" },
+            { (int)ColName.AD, "prefab_0" },
+            { (int)ColName.AG, "model_1" },
+            { (int)ColName.AH, "skin_1" },
+            { (int)ColName.AI, "prefab_1" },
+            { (int)ColName.AJ, "ani_0" },
+            { (int)ColName.AK, "ani_1" },
+            { (int)ColName.AL, "bag_0" },
+            { (int)ColName.AM, "bag_1" }
+        };
 
-		personTable.ColSet = new()
-		{
-			{ (int)ColName.A, "id" },
-			{ (int)ColName.D, "name" },
-			{ (int)ColName.K, "weapon" },
-			{ (int)ColName.N, "aniSet" },
-			{ (int)ColName.AB, "model_0" },
-			{ (int)ColName.AC, "skin_0" },
-			{ (int)ColName.AD, "prefab_0" },
-			{ (int)ColName.AG, "model_1" },
-			{ (int)ColName.AH, "skin_1" },
-			{ (int)ColName.AI, "prefab_1" },
-			{ (int)ColName.AJ, "ani_0" },
-			{ (int)ColName.AK, "ani_1" },
-			{ (int)ColName.AL, "bag_0" },
-			{ (int)ColName.AM, "bag_1" }
+        await Task.WhenAll(personTable.ToJson());
+        message = "Done";
+    }
 
-		};
-		await Task.WhenAll(personTable.ToJson());
-		message = "Done";
-	}
+    private async Task VehicleToJson()
+    {
+        ExcelToJson storyTable = new();
+        storyTable.ExcelPath = $"D:/P_S_载具prefab.xlsx";
+        storyTable.JsonPath = @"D:\GitHub\NLDClient\ProjectNLD\Assets\Art\temp\Editor\PlayerBrowser\vehicleData.json";
+        storyTable.Row = 100;
+        storyTable.Column = 6;
+        storyTable.ColSet = new(){
+                { (int)ColName.C, "name" },
+                { (int)ColName.D, "batteryName" }
+            };
+        storyTable.ListName = "vehicleList";
 
-	private async Task StoryToJson()
-	{
-		string[] files = Directory.GetFiles("D:/Code/story", "*.xlsx");
-		foreach (string path in files)
-		{
-			string fileName = Path.GetFileNameWithoutExtension(path);
+        await Task.WhenAll(storyTable.ToJson());
+        message = "Done";
+    }
 
-			ExcelToJson storyTable = new();
-			storyTable.ExcelPath = path;
-			storyTable.JsonPath = $"D:/Code/story/json/{fileName}.json";
-			storyTable.Row = 200;
-			storyTable.Column = 2;
-			storyTable.ColSet = new(){
-				{ (int)ColName.A, "id" },
-				{ (int)ColName.B, "message" }
-			};
-			storyTable.ListName = "megList";
+    private async Task NpcToJson()
+    {
+        ExcelToJson npcTable = new();
+        npcTable.ExcelPath = @"D:\GitHub\NLDClient\Tool\Luban\Datas\FightNPCConfig.xlsx";
+        npcTable.JsonPath = @"D:\GitHub\NLDClient\ProjectNLD\Assets\Art\temp\Editor\PlayerBrowser\npcData.json";
+        npcTable.Row = 100;
+        npcTable.Column = 6;
+        npcTable.ColSet = new(){
+                { (int)ColName.D, "id" },
+                { (int)ColName.C, "originPrefab" }
+            };
+        npcTable.ListName = "npcList";
+        npcTable.Category = Category.npc;
 
-			await Task.WhenAll(storyTable.ToJson());
-		}
-		message = "Done";
-	}
+        await Task.WhenAll(npcTable.ToJson());
+        message = "Done";
+    }
 }

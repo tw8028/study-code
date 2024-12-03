@@ -5,7 +5,6 @@ using UnityEngine.UIElements;
 using System.Linq;
 using System.Collections.Generic;
 using System;
-using NPOI.SS.Formula.Functions;
 
 namespace PersonBrowser
 {
@@ -24,7 +23,7 @@ namespace PersonBrowser
         IEnumerable<string> soundNames;
         IEnumerable<string> voiceNames;
 
-        [MenuItem("Test/prefabπ§æﬂ/…˘“Ù")]
+        [MenuItem("Test/tools/…˘“Ù")]
         public static void ShowEditor()
         {
             var win = GetWindow<AudioBrowserWindow>("Audio Browser");

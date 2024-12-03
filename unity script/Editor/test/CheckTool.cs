@@ -43,6 +43,11 @@ public class CheckTool : EditorWindow
         rootVisualElement.Add(btn5);
         btn5.RegisterCallback<ClickEvent>(CheckHeadNub);
 
+
+        Button btn6 = new() { name = "button6", text = "Rename Assets" };
+        rootVisualElement.Add(btn6);
+        btn6.RegisterCallback<ClickEvent>(RenameAssets);
+
     }
 
     public void GetAssetPath(ClickEvent ent)
@@ -199,5 +204,19 @@ public class CheckTool : EditorWindow
         {
             Debug.Log($"{obj.name}ц╩сп HeadNub");
         }
+    }
+
+    // rename asset
+    public void RenameAssets(ClickEvent evt)
+    {
+        GameObject[] objects = Selection.gameObjects;
+        foreach (GameObject obj in objects) 
+        { 
+            string id = obj.transform.GetChild(0).name;
+            string newName = $"P_S_{id}_01";
+            string path = AssetDatabase.GetAssetPath(obj);
+            AssetDatabase.RenameAsset(path, newName);
+        }
+
     }
 }

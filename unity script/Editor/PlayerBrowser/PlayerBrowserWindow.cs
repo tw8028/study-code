@@ -5,8 +5,6 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 using UnityEditor.UIElements;
-using System;
-using dnlib.DotNet;
 
 
 namespace PersonBrowser
@@ -52,7 +50,7 @@ namespace PersonBrowser
             playerPane.Add(A01Pane);
 
 
-            var allPersons = JsonData.GetData();
+            var allPersons = JsonData.GetPersons();
             listPane.makeItem = () => new Label();
             listPane.bindItem = (item, index) =>
             {

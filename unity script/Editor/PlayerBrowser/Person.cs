@@ -63,11 +63,25 @@ namespace PersonBrowser
 		public List<Npc> npcList;
 	}
 
+    [System.Serializable]
+    public class Msg
+    {
+        public string id;
+        public string velue;
+    }
+    [System.Serializable]
+    public class MsgRoot
+    {
+        public List<Msg> msgList;
+    }
+    
+
+
 	public static class JsonData
     {
         public static List<Person> GetPersons()
         {
-            string url = Application.dataPath + "/Art/Temp/Editor/PlayerBrowser/PersonsData.json";
+            string url = Application.dataPath + "/Art/Temp/Editor/PlayerBrowser/PersonData.json";
             string jsonData = File.ReadAllText(url); // read
             return JsonUtility.FromJson<PersonRoot>(jsonData).personList;
         }

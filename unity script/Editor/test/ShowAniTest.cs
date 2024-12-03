@@ -11,7 +11,7 @@ using PersonBrowser;
 public class ShowAniTest : EditorWindow
 {
     TextField startIdField;
-    private readonly List<Person> persons = JsonData.GetData();
+    private readonly List<Person> persons = JsonData.GetPersons();
     private GameObject points;
     private List<GameObject> prefabList;
     private int stateCount = 0;

@@ -1,16 +1,26 @@
 using Gameplay.Story.Cmp;
-using Microsoft.Win32;
+using Gameplay.Story.Cmp.Timeline.MsgAction;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Playables;
 using UnityEngine.Timeline;
 using UnityEngine.UIElements;
+using PersonBrowser;
+using System.IO;
+using UnityEngine.SceneManagement;
 
 public class StoryEditTool : EditorWindow
 {
+    string SceneName => SceneManager.GetActiveScene().name;
+    PlayableDirector PlayableDirector => GameObject.Find("StoryManager/timeline").GetComponent<PlayableDirector>();
+
+    Transform PlayersRoot => GameObject.Find("StoryManager/players").transform;
+
     TextElement text;
+
     [MenuItem("Test/prefab工具/Story Tool")]
     public static void ShowWindow() { GetWindow<StoryEditTool>("剧情工具"); }
     public void CreateGUI()
@@ -31,7 +41,16 @@ public class StoryEditTool : EditorWindow
         rootVisualElement.Add(btn4);
         btn4.RegisterCallback<ClickEvent>(GetClipsInfo);
 
-        Button btn5 = new() { text = "计算行走时间" };
+        Button btn6 = new() { text = "导出剧情文本" };
+        rootVisualElement.Add(btn6);
+        btn6.RegisterCallback<ClickEvent>(ExportMsg);
+
+
+		Button btn7 = new() { text = "import 剧情文本" };
+		rootVisualElement.Add(btn7);
+		btn7.RegisterCallback<ClickEvent>(ImportMsg);
+
+		Button btn5 = new() { text = "计算行走时间" };
         rootVisualElement.Add(btn5);
         btn5.RegisterCallback<ClickEvent>(WalkTime);
 
@@ -59,7 +78,6 @@ public class StoryEditTool : EditorWindow
 
     public void ResetPlayer(ClickEvent evt)
     {
-        Transform root = GameObject.Find("StoryManager/players").transform;
         GameObject go = Selection.activeGameObject;
         string playerName = go.name;
         GameObject playerPrefab = FindPlayerPrefab(playerName);
@@ -67,7 +85,7 @@ public class StoryEditTool : EditorWindow
         {
             int playerId = go.GetComponent<CmpStoryPlayer>().playerId;
             DestroyImmediate(go);
-            GameObject playerInstance = (GameObject)PrefabUtility.InstantiatePrefab(playerPrefab, root);
+            GameObject playerInstance = (GameObject)PrefabUtility.InstantiatePrefab(playerPrefab, PlayersRoot);
             playerInstance.name = playerName;
             var cmpStoryPlayer = playerInstance.AddComponent<CmpStoryPlayer>();
             cmpStoryPlayer.playerId = playerId;
@@ -80,13 +98,12 @@ public class StoryEditTool : EditorWindow
 
     public void ResetPlayers(ClickEvent evt)
     {
-        Transform root = GameObject.Find("StoryManager/players").transform;
-        Transform[] oldPlayers = new Transform[root.childCount];
-        string[] playerNames = new string[root.childCount];
-        int[] playerIds = new int[root.childCount];
+        Transform[] oldPlayers = new Transform[PlayersRoot.childCount];
+        string[] playerNames = new string[PlayersRoot.childCount];
+        int[] playerIds = new int[PlayersRoot.childCount];
         for (int i = 0; i < oldPlayers.Length; i++)
         {
-            oldPlayers[i] = root.GetChild(i);
+            oldPlayers[i] = PlayersRoot.GetChild(i);
             playerNames[i] = oldPlayers[i].name;
             playerIds[i] = oldPlayers[i].GetComponent<CmpStoryPlayer>().playerId;
         }
@@ -103,7 +120,7 @@ public class StoryEditTool : EditorWindow
             {
                 Debug.LogWarning($"无法找到 {oldPlayers[i]} 对应prefab");
             }
-            GameObject prefabInstance = (GameObject)PrefabUtility.InstantiatePrefab(playerPrefab, root);
+            GameObject prefabInstance = (GameObject)PrefabUtility.InstantiatePrefab(playerPrefab, PlayersRoot);
             prefabInstance.name = playerNames[i];
             var cmpStoryPlayer = prefabInstance.AddComponent<CmpStoryPlayer>();
             cmpStoryPlayer.playerId = playerIds[i];
@@ -146,8 +163,7 @@ public class StoryEditTool : EditorWindow
     public void ChangePlayerClips(ClickEvent evt)
     {
 
-        PlayableDirector pd = GameObject.Find("StoryManager/timeline").GetComponent<PlayableDirector>();
-        if (pd.playableAsset is TimelineAsset timeline)
+        if (PlayableDirector.playableAsset is TimelineAsset timeline)
         {
             foreach (TrackAsset track in timeline.GetOutputTracks())
             {
@@ -203,22 +219,21 @@ public class StoryEditTool : EditorWindow
         }
         else
         {
-            Debug.LogError("没找到timeline资源");
+            Debug.LogError("没找到timeline资");
         }
     }
 
 
     public void GetClipsInfo(ClickEvent evt)
     {
-        PlayableDirector pd = GameObject.Find("StoryManager/timeline").GetComponent<PlayableDirector>();
-        if (pd.playableAsset is TimelineAsset timeline)
+        if (PlayableDirector.playableAsset is TimelineAsset timeline)
         {
             foreach (TrackAsset track in timeline.GetOutputTracks())
             {
                 // 检查轨道是否为AnimationTrack类型
                 if (track is AnimationTrack animationTrack)
                 {
-                    var clips = track.GetClips();
+                    var clips = animationTrack.GetClips();
                     Debug.Log(track.parent.name);
                     foreach (var clip in clips)
                     {
@@ -255,4 +270,69 @@ public class StoryEditTool : EditorWindow
             Debug.LogError("缺少timeline资源");
         }
     }
+
+    public void ExportMsg(ClickEvent evt)
+    {
+        var savePath = $"D:/work/story_msg/{SceneName}.json";
+        if (PlayableDirector.playableAsset is TimelineAsset timeline)
+        {
+            foreach (TrackAsset track in timeline.GetOutputTracks())
+            {
+                // 检查轨道是否为AnimationTrack类型
+                if (track is MsgActionTrack msgActionTrack)
+                {
+                    Debug.Log(track.parent.name);
+                    var clips = msgActionTrack.GetClips().ToArray();
+                    MsgRoot msgRoot = new();
+                    msgRoot.msgList = new List<Msg>();
+                    Debug.Log($"length: {clips.Length}");
+                    foreach (var clip in clips)
+                    {
+                        if (clip == null)
+                        {
+                            continue;
+                        }
+                        var msgClip = clip.asset as MsgActionClip;
+                        Msg msg = new Msg();
+                        msg.id = msgClip.blockId.ToString();
+                        msg.velue = msgClip.msg;
+                        Debug.Log ($"{msgClip.blockId.ToString()} : {msgClip.msg}");
+                        msgRoot.msgList.Add(msg);
+                    }
+                   
+                    string jsonData = JsonUtility.ToJson(msgRoot);
+                    File.WriteAllText(savePath, jsonData);
+                }
+            }
+        }
+    }
+
+    public void ImportMsg(ClickEvent evt)
+    {
+		var importPath = $"D:/work/story_msg/{SceneName}.json";
+		string jsonData = File.ReadAllText(importPath); // read
+		List<Msg> msgList =  JsonUtility.FromJson<MsgRoot>(jsonData).msgList;
+
+
+		if (PlayableDirector.playableAsset is TimelineAsset timeline)
+		{
+			foreach (TrackAsset track in timeline.GetOutputTracks())
+			{
+				if (track is MsgActionTrack msgActionTrack)
+				{
+					Debug.Log(track.parent.name);
+					var clips = msgActionTrack.GetClips().ToArray();
+					
+					Debug.Log($"length: {clips.Length}");
+					foreach (var clip in clips)
+					{
+						var msgClip = clip.asset as MsgActionClip;
+						var msg = msgList.First(x=>x.id == msgClip.blockId.ToString());
+						msgClip.msg = msg.velue;
+					}
+				}
+			}
+		}
+        Debug.Log("done");
+	}
 }

@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using System.Linq;
-using Codice.Client.BaseCommands.WkStatus.Printers;
-using System.Security;
 
 namespace PersonBrowser
 {

@@ -4,13 +4,13 @@ using UnityEngine;
 using UnityEditor;
 using UnityEngine.UIElements;
 using System.Linq;
-using NPOI.SS.Formula.Functions;
-using static CriWare.CriAtomExBeatSync;
+
+
 namespace PersonBrowser
 {
     public class CheckTable : EditorWindow
     {
-        List<Person> allPersons { get { return JsonData.GetData(); } }
+        List<Person> allPersons { get { return JsonData.GetPersons(); } }
         ListView list;
         [MenuItem("Test/prefab工具/核对角色总表")]
         public static void ShowWindow()

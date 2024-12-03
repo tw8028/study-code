@@ -45,6 +45,7 @@ public class ExcelToJson
 					}
 					arr.Add(obj);
 				}
+
 				if (Category == Category.person)
 				{
 					foreach (var item in arr)
@@ -60,6 +61,14 @@ public class ExcelToJson
 							item["weapon"] = str;
 						}
 					}
+				}
+
+				if (Category == Category.npc) 
+				{
+					foreach(var item in arr)
+					{
+						item["originPrefab"] = "P_S_" + item["originPrefab"].ToString().Split('_')[0];
+                    }
 				}
 
 				if (ListName is not null)
