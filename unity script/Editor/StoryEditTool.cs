@@ -11,6 +11,10 @@ using UnityEngine.UIElements;
 using PersonBrowser;
 using System.IO;
 using UnityEngine.SceneManagement;
+using SRF;
+using static NPOI.HSSF.Record.UnicodeString;
+using Sirenix.Utilities;
+using System.Text.RegularExpressions;
 
 public class StoryEditTool : EditorWindow
 {
@@ -45,12 +49,15 @@ public class StoryEditTool : EditorWindow
         rootVisualElement.Add(btn6);
         btn6.RegisterCallback<ClickEvent>(ExportMsg);
 
+        Button btn7 = new() { text = "import 剧情文本" };
+        rootVisualElement.Add(btn7);
+        btn7.RegisterCallback<ClickEvent>(ImportMsg);
 
-		Button btn7 = new() { text = "import 剧情文本" };
-		rootVisualElement.Add(btn7);
-		btn7.RegisterCallback<ClickEvent>(ImportMsg);
+        Button btn8 = new() { text = "文本格式检查" };
+        rootVisualElement.Add(btn8);
+        btn8.RegisterCallback<ClickEvent>(MsgCheck);
 
-		Button btn5 = new() { text = "计算行走时间" };
+        Button btn5 = new() { text = "计算行走时间" };
         rootVisualElement.Add(btn5);
         btn5.RegisterCallback<ClickEvent>(WalkTime);
 
@@ -296,10 +303,10 @@ public class StoryEditTool : EditorWindow
                         Msg msg = new Msg();
                         msg.id = msgClip.blockId.ToString();
                         msg.velue = msgClip.msg;
-                        Debug.Log ($"{msgClip.blockId.ToString()} : {msgClip.msg}");
+                        Debug.Log($"{msgClip.blockId.ToString()} : {msgClip.msg}");
                         msgRoot.msgList.Add(msg);
                     }
-                   
+
                     string jsonData = JsonUtility.ToJson(msgRoot);
                     File.WriteAllText(savePath, jsonData);
                 }
@@ -309,30 +316,97 @@ public class StoryEditTool : EditorWindow
 
     public void ImportMsg(ClickEvent evt)
     {
-		var importPath = $"D:/work/story_msg/{SceneName}.json";
-		string jsonData = File.ReadAllText(importPath); // read
-		List<Msg> msgList =  JsonUtility.FromJson<MsgRoot>(jsonData).msgList;
+        var importPath = $"D:/work/story_msg/{SceneName}.json";
+        string jsonData = File.ReadAllText(importPath); // read
+        List<Msg> msgList = JsonUtility.FromJson<MsgRoot>(jsonData).msgList;
 
 
-		if (PlayableDirector.playableAsset is TimelineAsset timeline)
-		{
-			foreach (TrackAsset track in timeline.GetOutputTracks())
-			{
-				if (track is MsgActionTrack msgActionTrack)
-				{
-					Debug.Log(track.parent.name);
-					var clips = msgActionTrack.GetClips().ToArray();
-					
-					Debug.Log($"length: {clips.Length}");
-					foreach (var clip in clips)
-					{
-						var msgClip = clip.asset as MsgActionClip;
-						var msg = msgList.First(x=>x.id == msgClip.blockId.ToString());
-						msgClip.msg = msg.velue;
-					}
-				}
-			}
-		}
+        if (PlayableDirector.playableAsset is TimelineAsset timeline)
+        {
+            foreach (TrackAsset track in timeline.GetOutputTracks())
+            {
+                if (track is MsgActionTrack msgActionTrack)
+                {
+                    Debug.Log(track.parent.name);
+                    var clips = msgActionTrack.GetClips().ToArray();
+
+                    Debug.Log($"length: {clips.Length}");
+                    foreach (var clip in clips)
+                    {
+                        var msgClip = clip.asset as MsgActionClip;
+                        var msg = msgList.First(x => x.id == msgClip.blockId.ToString());
+                        msgClip.msg = msg.velue;
+                    }
+                }
+            }
+        }
         Debug.Log("done");
-	}
+    }
+
+    // 长度不能超过50, 使用中文标点符号
+    public void MsgCheck(ClickEvent evt)
+    {
+        if (PlayableDirector.playableAsset is TimelineAsset timeline)
+        {
+            foreach (TrackAsset track in timeline.GetOutputTracks())
+            {
+                if (track is MsgActionTrack msgActionTrack)
+                {
+                    Debug.Log(SceneName);
+                    var clips = msgActionTrack.GetClips().ToArray();
+
+                    foreach (var clip in clips)
+                    {
+                        var msgClip = clip.asset as MsgActionClip;
+                        // 长度检查
+                        int num = msgClip.msg.Length;
+                        if (num > 50)
+                        {
+                            if (msgClip.extMsgs.Count() != 0)
+                            {
+                                foreach (var extMsg in msgClip.extMsgs)
+                                {
+                                    if (extMsg.Length > 50)
+                                    {
+                                        Debug.LogWarning($"{msgClip.blockId}: length = {extMsg.Length}");
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                Debug.LogWarning($"{msgClip.blockId}: length = {num}");
+                            }
+                        }
+                        //  检查标点
+                        if (msgClip.extMsgs.Count() == 0)
+                        {
+
+                            if (ContainsNonChinesePunctuation(msgClip.msg))
+                                {
+                                    Debug.LogWarning($"{msgClip.blockId}: 非中文");
+                                }
+                            
+                        }
+                        else
+                        {
+                            foreach (var extMsg in msgClip.extMsgs)
+                            {
+                                if (ContainsNonChinesePunctuation(extMsg))
+                                {
+                                    Debug.LogWarning($"{msgClip.blockId}: 非中文");
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    static bool ContainsNonChinesePunctuation(string input)
+    {
+        // 正则表达式匹配非中文标点符号
+        string pattern = @"[^\u4e00-\u9fa5\w\s，。？！、；：“”‘’（）《》【】]……";
+        return Regex.IsMatch(input, pattern);
+    }
 }
