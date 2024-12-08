@@ -14,6 +14,8 @@ namespace PersonBrowser
 		public const string GRIP_01 = "Root/Bip001/Bip001 Spine/Bip001 Spine1/Bip001 R Clavicle/Bip001 R UpperArm/Bip001 R Forearm/Bip001 R Hand/Grip_point01/";
 		public const string MOUNT_01 = "Root/Bip001/Bip001 Spine/Mount_point01/";
 
+		public const string EMOJI = "Root/Bip001/Bip001 Spine/Bip001 Spine1/Bip001 Neck/Bip001 Head/G_emoji/";
+
 		public static Transform GetBoneByName(Transform root, string str)
 		{
 			Transform[] allBones = root.transform.GetComponentsInChildren<Transform>();
@@ -61,12 +63,13 @@ namespace PersonBrowser
 
 		public const string NPC = "Assets/Art/Character/Prefabs/Npc/{0}.prefab";
 		public const string NPC_S = "Assets/Art/Character/Prefabs/Npc_S/{0}.prefab";
+
 	}
 
 	public class AnimPath
 	{
-		public const string COMPRESSED = "Assets/Art/Animations/compressed/{0}.anim";
-		public const string COMPRESSEDSHOW = "Assets/Art/Animations/compressedShow/{0}.anim";
+		public const string COMPRESSED = "Assets/Art/Animations/compressed/compressed_{0}.anim";
+		public const string COMPRESSEDSHOW = "Assets/Art/Animations/compressedShow/compressed_{0}.anim";
 	}
 
 	public static class AnimUtility
@@ -104,10 +107,7 @@ namespace PersonBrowser
 				string folder = "A00" + id.Substring(id.Length - 3);
 				path = string.Format(FbxPath.PLAYER, folder, id);
 			}
-			else
-			{
-				Debug.LogWarning($"无法找到 fbx: {id}");
-			}
+			
 			return AssetDatabase.LoadAssetAtPath<GameObject>(path);
 		}
 
@@ -143,10 +143,7 @@ namespace PersonBrowser
 			{
 				path = string.Format(PrefabPath.PLAYER, name);
 			}
-			else
-			{
-				Debug.LogWarning($"无法找到 prefab: {name}");
-			}
+			
 			return AssetDatabase.LoadAssetAtPath<GameObject>(path);
 		}
 		public static GameObject FindDisplayPrefab(string name)
@@ -165,14 +162,12 @@ namespace PersonBrowser
 			{
 				path = string.Format(PrefabPath.PLAYER_S, name);
 			}
-			else
-			{
-				Debug.LogWarning($"无法找到 display prefab: {name}");
-			}
+			
 			return AssetDatabase.LoadAssetAtPath<GameObject>(path);
 		}
+	
 
-		public static AnimationClip FindAnimationClip(string name)
+		public static AnimationClip FindCompressedAnimation(string name)
 		{
 			string path = "";
 			if (name.StartsWith("ani_s_"))
@@ -185,6 +180,8 @@ namespace PersonBrowser
 			}
 			return AssetDatabase.LoadAssetAtPath<AnimationClip>(path);
 		}
+
+		
 
 		public static GameObject[] FindAssetsByFolder(string filter, string[] folders)
 		{

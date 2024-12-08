@@ -7,12 +7,12 @@ using System.Linq;
 using MagicaCloth2;
 using System.IO;
 
-public class CheckTool : EditorWindow
+public class CheckTools : EditorWindow
 {
     TextField text;
 
     [MenuItem("Test/tools/小工具")]
-    public static void ShowWindow() { GetWindow<CheckTool>("check tool"); }
+    public static void ShowWindow() { GetWindow<CheckTools>("check tool"); }
     public void CreateGUI()
     {
         Button btn0 = new() { text = "获取资源路径" };

@@ -10,10 +10,10 @@ using System.Linq;
 
 namespace PersonBrowser
 {
-	public class ItemCreater : EditorWindow
+	public class ItemCreator : EditorWindow
 	{
 		[MenuItem("Test/prefab工具/P_武器背包")]
-		public static void ShowWindow() { GetWindow<ItemCreater>("武器背包 Prefab 工具"); }
+		public static void ShowWindow() { GetWindow<ItemCreator>("武器背包 Prefab 工具"); }
 		public void CreateGUI()
 		{
 			Button createGunButton = new() { name = "button1", text = "gun" };

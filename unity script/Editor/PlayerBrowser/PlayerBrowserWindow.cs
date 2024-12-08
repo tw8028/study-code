@@ -9,203 +9,122 @@ using UnityEditor.UIElements;
 
 namespace PersonBrowser
 {
-    public class PlayerBrowserWindow : EditorWindow
-    {
-        VisualElement A00Pane;
-        VisualElement A01Pane;
-        string[] gfxs;
-        [MenuItem("Test/prefab工具/角色浏览器")]
-        public static void ShowEditor()
-        {
-            var win = GetWindow<PlayerBrowserWindow>("Player Browser");
-            // StyleSheet uss = AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/Art/Temp/Editor/PlayerBrowser/uss1.uss");
-            // add styleSheet to rootVisualElement
-            // win.rootVisualElement.styleSheets.Add(uss);
-            win.minSize = new Vector2(900, 700);
-        }
-        public void CreateGUI()
-        {
-            // 获取特效文件
-            var gfbPrefabs = AssetDatabase.FindAssets("Skill", new string[] { "Assets/Art/Gfx/Character" });
-            List<string> skillNames = new();
-            foreach (var gfb in gfbPrefabs)
-            {
-                string path = AssetDatabase.GUIDToAssetPath(gfb);
-                var obj = AssetDatabase.LoadAssetAtPath<GameObject>(path);
-                var name = obj.name.Split('_')[1];
-                skillNames.Add(name);
-            }
+	public class PlayerBrowserWindow : EditorWindow
+	{
+		VisualElement A00Pane;
+		VisualElement A01Pane;
+		string[] gfxs;
+		[MenuItem("Test/prefab工具/角色浏览器")]
+		public static void ShowEditor()
+		{
+			var win = GetWindow<PlayerBrowserWindow>("Player Browser");
+			win.minSize = new Vector2(900, 400);
+		}
+		public void CreateGUI()
+		{
+			// 获取特效文件
+			var gfbPrefabs = AssetDatabase.FindAssets("Skill", new string[] { "Assets/Art/Gfx/Character" });
+			List<string> skillNames = new();
+			foreach (var gfb in gfbPrefabs)
+			{
+				string path = AssetDatabase.GUIDToAssetPath(gfb);
+				var obj = AssetDatabase.LoadAssetAtPath<GameObject>(path);
+				var name = obj.name.Split('_')[1];
+				skillNames.Add(name);
+			}
 
-            var view = new TwoPaneSplitView(0, 200, TwoPaneSplitViewOrientation.Horizontal);
+			var view = new TwoPaneSplitView(0, 200, TwoPaneSplitViewOrientation.Horizontal);
 
-            rootVisualElement.Add(view);
-            var listPane = new ListView();
-            var playerPane = new TwoPaneSplitView(0, 350, TwoPaneSplitViewOrientation.Horizontal);
+			rootVisualElement.Add(view);
+			var listPane = new ListView();
+			var playerPane = new TwoPaneSplitView(0, 350, TwoPaneSplitViewOrientation.Horizontal);
 
-            A00Pane = new VisualElement();
-            A01Pane = new VisualElement();
-            view.Add(listPane);
-            view.Add(playerPane);
-            playerPane.Add(A00Pane);
-            playerPane.Add(A01Pane);
+			A00Pane = new VisualElement();
+			A01Pane = new VisualElement();
+			view.Add(listPane);
+			view.Add(playerPane);
+			playerPane.Add(A00Pane);
+			playerPane.Add(A01Pane);
 
 
-            var allPersons = JsonData.GetPersons();
-            listPane.makeItem = () => new Label();
-            listPane.bindItem = (item, index) =>
-            {
-                if (skillNames.Exists(a => a == allPersons[index].id))
-                {
-                    (item as Label).text = allPersons[index].id + "  " + allPersons[index].name;
-                }
-                else
-                {
-                    (item as Label).text = allPersons[index].id + "  " + allPersons[index].name + "   缺特效";
-                }
-                string id_a00 = allPersons[index].id;
-                string id_a01 = id_a00.StartsWith("AA") ? id_a00.Remove(3, 1).Insert(3, "0") : id_a00.Remove(2, 1).Insert(2, "0");
+			var allPersons = JsonData.GetPersons().Where(a=>a.id.StartsWith("A")).ToArray();
+			listPane.makeItem = () => new Label();
+			listPane.bindItem = (item, index) =>
+			{
+				if (skillNames.Exists(a => a == allPersons[index].id))
+				{
+					(item as Label).text = allPersons[index].id + "  " + allPersons[index].name;
+				}
+				else
+				{
+					(item as Label).text = allPersons[index].id + "  " + allPersons[index].name + "   缺特效";
+				}
+				string id_a00 = allPersons[index].id;
+				string id_a01 = id_a00.Remove(id_a00.Length - 4, 1).Insert(id_a00.Length - 4, "1");
 
-                PlayerInfo info00 = new PlayerInfo(allPersons[index].id);
-                PlayerInfo info01 = new PlayerInfo(id_a01);
-                if (info00.State == Color.red || info01.State == Color.red)
-                {
-                    (item as Label).style.color = Color.red;
-                }
-                else
-                {
-                    (item as Label).style.color = info00.State == info01.State ? info00.State : Color.yellow;
-                }
-                // 原版已构建的
-                //if (info00.AutoGen == null && info00.State != Color.gray) (item as Label).style.color = Color.blue;
-            };
-            listPane.itemsSource = allPersons;
+				PlayerAsset asset_00 = new PlayerAsset(id_a00);
+				PlayerAsset asset_01 = new PlayerAsset(id_a01);
+				if (asset_00.State == Color.red || asset_01.State == Color.red)
+				{
+					(item as Label).style.color = Color.red;
+				}
+				else
+				{
+					(item as Label).style.color = asset_00.State == asset_01.State ? asset_00.State : Color.yellow;
+				}
+			};
+			listPane.itemsSource = allPersons;
 
-            listPane.selectionChanged += OnIDSelectionChange;
-        }
-        private void OnIDSelectionChange(IEnumerable<object> selectedItems)
-        {
-            A00Pane.Clear();
-            A01Pane.Clear();
-            var selectedPerson = selectedItems.First() as Person;
-            if (selectedPerson == null)
-            {
-                return;
-            }
-            CreateVE(A00Pane, selectedPerson.id, selectedPerson);
-            string str = selectedPerson.id;
-            str = str.Remove(2, 1);
-            str = str.Insert(2, "1");
-            CreateVE(A01Pane, str, selectedPerson);
-        }
-        private void CreateVE(VisualElement pane, string id, Person selectedPerson)
-        {
-            PlayerInfo info = new(id);
+			listPane.selectionChanged += OnIDSelectionChange;
+		}
+		private void OnIDSelectionChange(IEnumerable<object> selectedItems)
+		{
+			A00Pane.Clear();
+			A01Pane.Clear();
+			var selectedPerson = selectedItems.First() as Person;
+			if (selectedPerson == null)
+			{
+				return;
+			}
+			CreateVE(A00Pane, selectedPerson.id, selectedPerson);
+			string str = selectedPerson.id;
+			str = str.Remove(str.Length - 4, 1).Insert(str.Length - 4, "1");
+			CreateVE(A01Pane, str, selectedPerson);
+		}
+		private void CreateVE(VisualElement pane, string id, Person selectedPerson)
+		{
+			PlayerAsset asset = new(id);
 
-            // assets in \\192.168.2.222\project_A
-            Box box4 = new Box();
-            pane.Add(box4);
-            box4.style.marginTop = 10;
-            box4.Add(new Label("192.168.2.222/project_A"));
+			// assets in \\192.168.2.222\project_A
+			Box box4 = new Box();
+			pane.Add(box4);
+			box4.style.marginTop = 10;
+			box4.Add(new Label("192.168.2.222/project_A"));
 
-            TextField modelField = new TextField("模型");
-            TextField skinfbxField = new TextField("蒙皮");
-            TextField anifbxField = new TextField("技能动作");
-            box4.Add(modelField);
-            box4.Add(modelField);
-            box4.Add(skinfbxField);
-            box4.Add(anifbxField);
+			TextField modelField = new TextField("模型");
+			TextField skinfbxField = new TextField("蒙皮");
+			TextField anifbxField = new TextField("技能动作");
+			box4.Add(modelField);
+			box4.Add(skinfbxField);
+			box4.Add(anifbxField);
 
-            modelField.value = info.ModelFile;
-            anifbxField.value = info.AniFile;
-            skinfbxField.value = info.SkinFile;
+			modelField.value = asset.HasModelMax.ToString();
+			anifbxField.value = asset.HasAniMax.ToString();
+			skinfbxField.value = asset.HasSkinMax.ToString();
 
-            // assets in editor
-            Box box1 = new Box();
-            box1.style.marginTop = 10;
-            pane.Add(box1);
-            box1.Add(new Label("Prefab"));
+			// assets in editor
+			Box box1 = new Box();
+			box1.style.marginTop = 10;
+			pane.Add(box1);
+			box1.Add(new Label("Prefab asset"));
 
-            ObjectField playerField = new("Player");
-            playerField.value = info.Player;
-            box1.Add(playerField);
+			ObjectField displayField = new("display prefab");
+			displayField.value = asset.DisplayPrefab;
+			box1.Add(displayField);
 
-            ObjectField skillField = new("----skill");
-            skillField.value = info.Skill;
-            box1.Add(skillField);
-
-            TextField emojiField = new("----emoji");
-            if (info.Emoji != null) emojiField.value = info.Emoji.name;
-            box1.Add(emojiField);
-
-            TextField gunField = new(selectedPerson.weapon);
-            if (info.Gun != null) gunField.value = info.Gun.name;
-            box1.Add(gunField);
-
-            TextField bagField = new("----bag");
-            if (info.Bag != null) bagField.value = info.Bag.name;
-            box1.Add(bagField);
-
-            ObjectField player_ac_field = new("----controller");
-            player_ac_field.value = info.Player_ac;
-            box1.Add(player_ac_field);
-
-            // player_s
-            Box box2 = new Box();
-            box2.style.marginTop = 10;
-            pane.Add(box2);
-            box2.Add(new Label("Prefab"));
-
-            ObjectField displayField = new("Player_S");
-            displayField.value = info.Display;
-            box2.Add(displayField);
-
-            ObjectField display_ac_field = new("----controller");
-            display_ac_field.value = info.Display_ac;
-            box2.Add(display_ac_field);
-
-            // AutoGen 
-            Box box3 = new Box();
-            box3.style.marginTop = 10;
-            pane.Add(box3);
-            box3.Add(new Label("AutoGen"));
-
-            ObjectField autoGenField = new ObjectField("Character");
-            autoGenField.value = info.AutoGen;
-            box3.Add(autoGenField);
-            box3.style.height = 350;
-
-            Image mainTex = new Image();
-            mainTex.scaleMode = ScaleMode.ScaleToFit;
-            mainTex.image = info.MainTex;
-            box3.Add(mainTex);
-
-
-            // set color
-            if (info.SkinFile != null)
-            {
-                autoGenField.style.backgroundColor = info.AutoGen == null ? new Color(1, 1, 0, 0.4f) : Color.clear;
-            }
-            if (info.AniFile != null)
-            {
-                autoGenField.style.backgroundColor = info.AutoGen == null ? new Color(1, 0, 0, 0.4f) : Color.clear;
-                if (info.Player != null)
-                {
-                    skillField.style.backgroundColor = skillField.value == null ? new Color(1, 1, 0, 0.4f) : Color.clear;
-                    gunField.style.backgroundColor = gunField.value == null ? new Color(1, 1, 0, 0.4f) : Color.clear;
-                }
-                else
-                {
-                    playerField.style.backgroundColor = new Color(1, 0, 0, 0.4f);
-                }
-            }
-            if (info.Gun != null)
-            {
-                gunField.style.backgroundColor = gunField.value == "P_" + selectedPerson.weapon ? Color.clear : new Color(1, 0, 0, 0.4f);
-            }
-            else
-            {
-                gunField.style.backgroundColor = Color.clear;
-            }
-        }
-    }
+			ObjectField skillField = new("compressed skill");
+			skillField.value = asset.CompressedSkill;
+			box1.Add(skillField);
+		}
+	}
 }

@@ -2015,54 +2015,8 @@
       "ani_1": "",
       "bag_0": "",
       "bag_1": ""
-    },
-    {
-      "id": "稀有度统计",
-      "name": "",
-      "weapon": "",
-      "aniSet": "",
-      "model_0": "",
-      "skin_0": "",
-      "prefab_0": "",
-      "model_1": "",
-      "skin_1": "",
-      "prefab_1": "",
-      "ani_0": "",
-      "ani_1": "",
-      "bag_0": "",
-      "bag_1": ""
-    },
-    {
-      "id": "",
-      "name": "",
-      "weapon": "",
-      "aniSet": "",
-      "model_0": "",
-      "skin_0": "",
-      "prefab_0": "",
-      "model_1": "",
-      "skin_1": "",
-      "prefab_1": "",
-      "ani_0": "",
-      "ani_1": "",
-      "bag_0": "",
-      "bag_1": ""
-    },
-    {
-      "id": "",
-      "name": "",
-      "weapon": "",
-      "aniSet": "",
-      "model_0": "",
-      "skin_0": "",
-      "prefab_0": "",
-      "model_1": "",
-      "skin_1": "",
-      "prefab_1": "",
-      "ani_0": "",
-      "ani_1": "",
-      "bag_0": "",
-      "bag_1": ""
     }
+    
+   
   ]
 }
