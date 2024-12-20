@@ -4,8 +4,8 @@ tooltip:"NLD_批量输出Fbx"
 (
 	fn gunExportor =
 	(	
-		local files = getfiles @"E:/动作改版/Guns（标准）/*.max" recurse:true -- 搜索子文件夹
-		local exportFolder = @"E:/动作改版/Guns（标准）/_fbx/"
+		local files = getfiles @"E:\project_A\03_动作\skin_gun\*.max" recurse:true -- 搜索子文件夹
+		local exportFolder = @"E:\project_A\03_动作\skin_gun\_fbx"
 		
 		for maxfile in files do
 		(
@@ -71,8 +71,8 @@ tooltip:"NLD_批量输出Fbx"
 	
 	fn skillExporter =
 	(
-		local files = getFiles @"E:/动作改版/Story_battle/*.max" recurse:true
-		local exportFolder = @"E:/动作改版/Story_battle/fbx/"
+		local files = getFiles @"E:\project_A\03_动作\ani_Skill_player\*.max" recurse:true
+		local exportFolder = @"E:\project_A\03_动作\ani_Skill_player"
 		
 		for maxfile in files do
 		(
@@ -143,6 +143,10 @@ tooltip:"NLD_批量输出Fbx"
 	(
 		delete $'粒子视图*'
 		$Root.boneEnable = true	
+		
+		$Mount_point01.pos = [0, 8.8, 54]
+		
+		
 		-- select bones and model
 		select #($'Bip001 L Finger0Nub', $'Bip001 L Finger1Nub', $'Bip001 L Finger2Nub',  $'Bip001 L Toe0Nub',
 		$'Bip001 R Finger0Nub', $'Bip001 R Finger1Nub', $'Bip001 R Finger2Nub', $'Bip001 R Toe0Nub', $'Bip001 Footsteps')
@@ -168,13 +172,14 @@ tooltip:"NLD_批量输出Fbx"
 		-- export setting
 		maxName = getFilenameFile maxFileName
 		fbxName = (FilterString maxName "_")[1]
-		exportPath = @"E:/动作改版/skin_Charactor/_fbx/" + fbxName + ".fbx"
+		exportPath = @"E:\project_A\03_动作\skin_Character\_fbx\" + fbxName + ".fbx"
 		
 		pluginManager.loadClass FbxExporter
 		FBXExporterSetParam "ResetExport"
 		FBXExporterSetParam "Animation" false
 		FBXExporterSetParam "Triangulate" true
 		exportFile exportPath #noPrompt selectedOnly:true using:FBXEXP	
+		print "done"
 	)	
 		
 	

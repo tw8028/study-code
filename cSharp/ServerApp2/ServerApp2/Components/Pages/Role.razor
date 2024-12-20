@@ -110,7 +110,7 @@ else
 		DirectoryInfo dir = new DirectoryInfo(SourceRoot);
 		if (dir.Exists)
 		{
-			bool isFbx = dir.Name.Equals("fbx", StringComparison.OrdinalIgnoreCase);
+			bool isFbx = dir.Name.Equals("_fbx", StringComparison.OrdinalIgnoreCase);
 			bool isTexture = dir.Name.Equals("Texture", StringComparison.OrdinalIgnoreCase);
 			if (isFbx)
 			{

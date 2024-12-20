@@ -36,7 +36,7 @@ namespace PersonBrowser
             rootVisualElement.Add(btn2);
             btn2.RegisterCallback<ClickEvent>(ShowVehicleClick);
 
-            Button btn3 = new() { text = "生成所有 auto 炮台" };
+            Button btn3 = new() { text = "选择 prefab 生成 auto 炮台" };
             rootVisualElement.Add(btn3);
             btn3.RegisterCallback<ClickEvent>(AutoBatteryClick);
 
@@ -112,8 +112,9 @@ namespace PersonBrowser
             GameObject newPrefab = (GameObject)PrefabUtility.InstantiatePrefab(go);
             newPrefab.name = originName.Insert(1, "_S");
 
-            // 添加炮台						
-            GameObject batteryPrefab = AnimUtility.FindPrefab(vehicle.batteryName);
+            // 添加炮台		
+            string batteryPrefabPath = string.Format(PrefabPath.BATTERY, vehicle.batteryName);
+            GameObject batteryPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(batteryPrefabPath);
             if (batteryPrefab != null)
             {
                 Transform point_battery = newPrefab.transform.GetChild(0).Find(string.Format(BATTERY_POINT, id));
@@ -205,7 +206,7 @@ namespace PersonBrowser
         }
         public void AutoBatteryClick(ClickEvent evt)
         {
-            string[] guids = AssetDatabase.FindAssets("t:gameObject", new string[] {
+            /*string[] guids = AssetDatabase.FindAssets("t:gameObject", new string[] {
                 "Assets/Art/Character/Prefabs/Battery"
             });
             foreach (string guid in guids)
@@ -213,6 +214,16 @@ namespace PersonBrowser
                 string path = AssetDatabase.GUIDToAssetPath(guid);
                 GameObject go = AssetDatabase.LoadAssetAtPath<GameObject>(path);
                 AutoBatteryCreator(go);
+            }*/
+
+            GameObject[] objs = Selection.gameObjects;
+            foreach (GameObject obj in objs)
+            {
+                if (!obj.name.StartsWith("P_R"))
+                {
+                    Debug.LogWarning("选择炮台 prefab");
+                }
+                AutoBatteryCreator(obj);
             }
         }
 

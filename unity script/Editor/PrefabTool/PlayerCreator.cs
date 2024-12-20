@@ -7,6 +7,8 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 using UnityEditor.UIElements;
+using UnityEditor.SceneManagement;
+using Framework;
 
 
 namespace PersonBrowser
@@ -17,7 +19,6 @@ namespace PersonBrowser
         // 一般角色用于构建器生成，player（战斗关卡），enemy（战斗关卡），npc（战斗剧情）
 
         private List<Person> PersonData => JsonData.GetPersons();
-        private List<Npc> NpcData => JsonData.GetNpcs();
 
         ObjectField PlayerField { get; set; }
         ObjectField GunField { get; set; }
@@ -42,8 +43,8 @@ namespace PersonBrowser
 
             Box box3 = new Box();
             TextElement text3 = new() { text = "创建关卡 character" };
-            Button button3 = new() { text = "player enemy" };
-            Button button2 = new() { text = "npc" };
+            Button button3 = new() { text = "选择 display prefab 创建 player enemy" };
+            Button button2 = new() { text = "通过配置表创建所有战斗 npc" };
             rootVisualElement.Add(box3);
             box3.Add(text3);
             box3.Add(button3);
@@ -136,10 +137,14 @@ namespace PersonBrowser
                 // add animator controller
                 if (person.aniSet != "")
                 {
-                    string acPath = $"Assets/Art/Animations/animator/display_override_{person.aniSet}.overrideController";
+                    string acPath = $"Assets/Art/Animations/animator/display_ovrride_{person.aniSet}.overrideController";
                     // config animator controller
                     Animator animator = objInstance.GetComponent<Animator>();
                     animator.runtimeAnimatorController = AssetDatabase.LoadAssetAtPath<RuntimeAnimatorController>(acPath);
+                }
+                else
+                {
+                    Debug.LogWarning($"no controller: {person.aniSet}");
                 }
             }
             else
@@ -148,19 +153,20 @@ namespace PersonBrowser
             }
         }
 
-        // 创建构建用玩家和敌人角色
+        // 选择 display prefab 创建构建用玩家和敌人角色
         public void CreateCharacter(ClickEvent evt)
         {
-            GameObject[] objectArray = AnimUtility.FindAssetsByFolder("t:gameObject", new string[] {
+            /*GameObject[] objectArray = AnimUtility.FindAssetsByFolder("t:gameObject", new string[] {
                 "Assets/Art/Character/Prefabs/Players_S/",
                 "Assets/Art/Character/Prefabs/Enemy_S/"
-            });
+            });*/
+
+            GameObject[] objectArray = Selection.gameObjects;
 
             foreach (GameObject obj in objectArray)
             {
                 GameObject prefab = (GameObject)PrefabUtility.InstantiatePrefab(obj);
-                Transform assetTransform = prefab.transform.GetChild(0);
-                string id = assetTransform.name;
+                string id = prefab.name.Split("_")[2];
                 string path;
                 if (id.StartsWith("A"))
                 {
@@ -185,10 +191,11 @@ namespace PersonBrowser
         // 通过 NpcsData json 数据 创建
         public void CreateNpc(ClickEvent evt)
         {
-            foreach (Npc npc in NpcData)
+            var npcData = EditorTableManager.instance.tables.FightNPCConfig.DataList;
+            foreach (var npc in npcData)
             {
-                string id = npc.id;
-                string originPrefabName = npc.originPrefab;
+                string id = npc.NameId;
+                string originPrefabName ="P_S_" + npc.NameRead.Split("_")[0];
                 if (id.StartsWith("BN"))
                 {
                     // 找到 display prefab 角色
@@ -207,9 +214,32 @@ namespace PersonBrowser
 
         public void ResetMagicaCloth(ClickEvent evt)
         {
-            GameObject playerPrefab = Selection.gameObjects[0];
+            GameObject playerPrefab = Selection.activeGameObject;
+            Transform instance = playerPrefab.transform.GetChild(0);
+            MagicaCloth magicaCloth = instance.Find("Magica Cloth").GetComponent<MagicaCloth>();
 
-            AddMagicaCloth(playerPrefab);
+            // root bone list
+            Transform[] allBones = instance.GetComponentsInChildren<Transform>();
+            var dynamicBones = allBones.Where(x => x.name.Contains("Hair") || x.name.Contains("Fabric"));
+            if (dynamicBones.Count() == 0) 
+            {
+                Debug.Log("无动态骨骼，移除 magica cloth");
+                DestroyImmediate(instance.transform.Find("Magica Cloth").gameObject);
+                DestroyImmediate(instance.transform.Find("Magica Wind Zone").gameObject);
+                return;
+            }
+            var rootBones = dynamicBones.Where(x => x.parent.name.Contains("Bip001") && x.childCount != 0);
+            
+
+            magicaCloth.SerializeData.rootBones = rootBones.ToList();
+
+            // Import preset json.
+            string player1_preset = File.ReadAllText(Application.dataPath + "/Art/Temp/Editor/MagicaClothPreset/MC2_Preset_(hair).json");
+            magicaCloth.SerializeData.ImportJson(player1_preset);
+
+            // 触发 override
+            PrefabUtility.RecordPrefabInstancePropertyModifications(magicaCloth);
+            Debug.Log("reset magica cloth");
         }
 
         public static void AddMagicaCloth(GameObject playerPrefab)
@@ -221,7 +251,7 @@ namespace PersonBrowser
             Transform[] allBones = assetInstance.GetComponentsInChildren<Transform>();
             var dynamicBones = allBones.Where(x => x.name.Contains("Hair") || x.name.Contains("Fabric"));
             var rootBones = dynamicBones.Where(x => x.parent.name.Contains("Bip001") && x.childCount != 0);
-
+            
 
             if (rootBones.Count() == 0)
             {

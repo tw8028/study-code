@@ -20,7 +20,8 @@ tooltip:"NLD_调整GunPivot"
 		button btn1 "rotate x -90" width:100 height:30
 		button btn2 "pivot 位置旋转归零" width:100 height:30
 		button btn3 "创建 Fire 挂点" width:100 height:30
-		button btn7 "创建 root"  width:100 height:30
+		button btn7 "创建 gun root"  width:100 height:30
+		button btn8 "创建 bag root"  width:100 height:30
 		
 		label label_1 "" width:100 height:10
 		button btn4 "重建武器挂点" width:100 height:30
@@ -134,10 +135,18 @@ tooltip:"NLD_调整GunPivot"
 		(
 			root = Point name:"G_Root"
 			$Fire.parent = root
-			$Root.boneEnable = true	
+			$G_Root.boneEnable = true	
 			select $G_G00*
 			modPanel.addModToSelection (Skin ()) ui:on
-			skinOps.addBone $.modifiers[#Skin] $Root -1
+			skinOps.addBone $.modifiers[#Skin] $G_Root -1
+		)	
+		on btn8 pressed do
+		(
+			root = Point name:"B_Root"
+			$B_Root.boneEnable = true	
+			select $G_B00*
+			modPanel.addModToSelection (Skin ()) ui:on
+			skinOps.addBone $.modifiers[#Skin] $B_Root -1
 		)	
 	)
 	createDialog ResetGunPivotWindow 270 450

@@ -6,13 +6,17 @@ using UnityEngine.UIElements;
 using System.Linq;
 using MagicaCloth2;
 using System.IO;
+using PersonBrowser;
+using CharacterBuilder;
+using Framework;
+using cfg.WeaponCfg;
 
-public class CheckTool : EditorWindow
+public class CheckTools : EditorWindow
 {
     TextField text;
 
     [MenuItem("Test/tools/小工具")]
-    public static void ShowWindow() { GetWindow<CheckTool>("check tool"); }
+    public static void ShowWindow() { GetWindow<CheckTools>("check tool"); }
     public void CreateGUI()
     {
         Button btn0 = new() { text = "获取资源路径" };
@@ -48,6 +52,10 @@ public class CheckTool : EditorWindow
         rootVisualElement.Add(btn6);
         btn6.RegisterCallback<ClickEvent>(RenameAssets);
 
+
+        Button btn7 = new() { name = "button6", text = "检查哪些强没有使用" };
+        rootVisualElement.Add(btn7);
+        btn7.RegisterCallback<ClickEvent>(CheckWeapon);
     }
 
     public void GetAssetPath(ClickEvent ent)
@@ -115,8 +123,9 @@ public class CheckTool : EditorWindow
                 text.value = text.value + "\n" + item.name;
             }
         }
-    }
 
+
+    }
     public GameObject[] FindAssetsByDir(string filter, string[] folders)
     {
         string[] guids = AssetDatabase.FindAssets(filter, folders);
@@ -210,13 +219,45 @@ public class CheckTool : EditorWindow
     public void RenameAssets(ClickEvent evt)
     {
         GameObject[] objects = Selection.gameObjects;
-        foreach (GameObject obj in objects) 
-        { 
+        foreach (GameObject obj in objects)
+        {
             string id = obj.transform.GetChild(0).name;
             string newName = $"P_S_{id}_01";
             string path = AssetDatabase.GetAssetPath(obj);
             AssetDatabase.RenameAsset(path, newName);
         }
 
+    }
+
+    private void CheckWeapon(ClickEvent evt)
+    {
+        List<Person> persons = JsonData.GetPersons();
+        List<string> guns = new List<string>();
+        for (int i = 0; i < 73; i++)
+        {
+            var p = persons.FirstOrDefault(w => w.weapon == "G" + i.ToString().PadLeft(5, '0'));
+            if (p == null)
+            {
+                Debug.LogWarning(i);
+                guns.Add(i.ToString());
+            }
+        }
+       
+
+        var monsterClassDataList = EditorTableManager.instance.tables.MonsterClass.DataList;
+        for (int i = 0; i < monsterClassDataList.Count; i++)
+        {
+            var monsterGun = monsterClassDataList[i].WeaponId.ToString();
+            // Debug.Log(monsterGun);
+            var g = guns.FirstOrDefault(g => g == monsterGun);
+            if (g != null)
+            {
+                guns.Remove(g);
+            }
+        }
+        foreach (var g in guns)
+        {
+            Debug.Log(g);
+        }
     }
 }

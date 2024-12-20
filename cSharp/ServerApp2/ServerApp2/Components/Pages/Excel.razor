@@ -6,7 +6,7 @@
 <h6>@message</h6>
 <button class="btn btn-primary btn-sm" @onclick="PersonToJson">人设总表</button>
 <button class="btn btn-primary btn-sm" @onclick="VehicleToJson">vehicle</button>
-<button class="btn btn-primary btn-sm" @onclick="NpcToJson">battleNpc</button>
+
 
 @code {
 	private string? message;
@@ -19,7 +19,7 @@
 	{
 		ExcelToJson personTable = new("personList");
 		personTable.ExcelPath = "D:/纳罗达人设总表.xlsx";
-		personTable.JsonPath = @"D:\GitHub\NLDClient\ProjectNLD\Assets\Art\temp\Editor\PlayerBrowser\PersonData.json";
+		personTable.JsonPath = @"D:\GitHub\NLDClient\ProjectNLD\Assets\Art\temp\Editor\CharacterConfig\PersonData.json";
 		personTable.Category = Category.person;
 		personTable.ColSet = new()
 		{
@@ -47,7 +47,7 @@
 	{
 		ExcelToJson storyTable = new("vehicleList");
 		storyTable.ExcelPath = $"D:/P_S_载具prefab.xlsx";
-		storyTable.JsonPath = @"D:\GitHub\NLDClient\ProjectNLD\Assets\Art\temp\Editor\PlayerBrowser\vehicleData.json";
+		storyTable.JsonPath = @"D:\GitHub\NLDClient\ProjectNLD\Assets\Art\temp\Editor\CharacterConfig\vehicleData.json";
 		storyTable.ColSet = new()
 		{
 			{ (int)ColName.C, "name" },
@@ -55,22 +55,6 @@
 		};
 
 		await Task.WhenAll(storyTable.ToJson());
-		message = "Done";
-	}
-
-	private async Task NpcToJson()
-	{
-		ExcelToJson npcTable = new("npcList");
-		npcTable.ExcelPath = @"D:\GitHub\NLDClient\Tool\Luban\Datas\FightNPCConfig.xlsx";
-		npcTable.JsonPath = @"D:\GitHub\NLDClient\ProjectNLD\Assets\Art\temp\Editor\PlayerBrowser\npcData.json";
-		npcTable.ColSet = new()
-		{
-			{ (int)ColName.C, "originPrefab" },
-			{ (int)ColName.D, "id" }
-		};
-		npcTable.Category = Category.npc;
-
-		await Task.WhenAll(npcTable.ToJson());
 		message = "Done";
 	}
 }
