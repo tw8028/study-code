@@ -125,9 +125,12 @@ namespace PersonBrowser
 			ObjectField skillField = new("compressed skill");
 			skillField.value = asset.CompressedSkill;
 			box1.Add(skillField);
+<<<<<<< HEAD
 
 			ObjectField autoField = new("auto prefab") { value = asset.AutoPrefab };
 			box1.Add(autoField);
+=======
+>>>>>>> 7a7581e38ef7cb87c876b9f01074481e53f52bd0
 		}
 	}
 }

@@ -2015,6 +2015,7 @@
       "ani_1": "",
       "bag_0": "",
       "bag_1": ""
+<<<<<<< HEAD:unity script/Editor/CharacterConfig/PersonData.json
     },
     {
       "id": "稀有度统计",
@@ -2031,6 +2032,10 @@
       "ani_1": "",
       "bag_0": "",
       "bag_1": ""
+=======
+>>>>>>> 7a7581e38ef7cb87c876b9f01074481e53f52bd0:unity script/Editor/PlayerBrowser/PersonData.json
     }
+    
+   
   ]
 }

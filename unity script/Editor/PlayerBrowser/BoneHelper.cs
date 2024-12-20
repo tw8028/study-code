@@ -82,6 +82,7 @@ namespace PersonBrowser
 
 		public const string NPC = "Assets/Art/Character/Prefabs/Npc/{0}.prefab";
 		public const string NPC_S = "Assets/Art/Character/Prefabs/Npc_S/{0}.prefab";
+
 	}
 
 	public class AnimPath
@@ -92,7 +93,82 @@ namespace PersonBrowser
 
 	public static class AnimUtility
 	{
+<<<<<<< HEAD
 
+=======
+		public static GameObject FindModel(string id)
+		{
+			string path = "";
+			if (id.StartsWith("B")) // bag B00001
+			{
+				path = string.Format(FbxPath.BAG, id);
+			}
+			else if (id.StartsWith("G")) // gun G00001
+			{
+				path = string.Format(FbxPath.GUN, id);
+			}
+			else if (id.StartsWith("R")) // 炮 R00001
+			{
+				path = string.Format(FbxPath.BATTERY, id);
+			}
+			else if (id.StartsWith("C")) // 车 C00001
+			{
+				path = string.Format(FbxPath.VEHICLE, id);
+			}
+			else if (id.StartsWith("E")) // 敌人 E00001
+			{
+				path = string.Format(FbxPath.ENEMY, id);
+			}
+			else if (id.StartsWith("N")) // npc 有精二模型 N01001
+			{
+				string folder = "N00" + id.Substring(id.Length - 3);
+				path = string.Format(FbxPath.NPC, folder, id);
+			}
+			else if (id.StartsWith("A")) // player 有精二模型 A01001 AA01001
+			{
+				string folder = "A00" + id.Substring(id.Length - 3);
+				path = string.Format(FbxPath.PLAYER, folder, id);
+			}
+			
+			return AssetDatabase.LoadAssetAtPath<GameObject>(path);
+		}
+
+		public static GameObject FindPrefab(string name)
+		{
+			string path = "";
+			if (name.StartsWith("P_B")) // bag B00001
+			{
+				path = string.Format(PrefabPath.BAG, name);
+			}
+			else if (name.StartsWith("P_G")) // gun G00001
+			{
+				path = string.Format(PrefabPath.GUN, name);
+			}
+			else if (name.StartsWith("P_R")) // 炮 R00001
+			{
+				path = string.Format(PrefabPath.BATTERY, name);
+			}
+			else if (name.StartsWith("P_C")) // 车 C00001
+			{
+				path = string.Format(PrefabPath.VEHICLE, name);
+			}
+			else if (name.StartsWith("P_E")) // 敌人 E00001
+			{
+				path = string.Format(PrefabPath.ENEMY, name);
+			}
+
+			else if (name.StartsWith("P_A0")) // player 有精二模型 A01001
+			{
+				path = string.Format(PrefabPath.PLAYER, name);
+			}
+			else if (name.StartsWith("P_AA")) // 有精二模型 AA01001
+			{
+				path = string.Format(PrefabPath.PLAYER, name);
+			}
+			
+			return AssetDatabase.LoadAssetAtPath<GameObject>(path);
+		}
+>>>>>>> 7a7581e38ef7cb87c876b9f01074481e53f52bd0
 		public static GameObject FindDisplayPrefab(string name)
 		{
 			string path = "";
@@ -109,11 +185,14 @@ namespace PersonBrowser
 			{
 				path = string.Format(PrefabPath.PLAYER_S, name);
 			}
+<<<<<<< HEAD
 			else if (name.StartsWith("P_S_C"))
 			{
 				path = string.Format(PrefabPath.VEHICLE_S, name);	
 			}
 
+=======
+>>>>>>> 7a7581e38ef7cb87c876b9f01074481e53f52bd0
 			
 			return AssetDatabase.LoadAssetAtPath<GameObject>(path);
 		}

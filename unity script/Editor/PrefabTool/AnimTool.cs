@@ -7,7 +7,11 @@ using UnityEngine;
 using UnityEngine.UIElements;
 public class AnimTool : EditorWindow
 {
+<<<<<<< HEAD:unity script/Editor/PrefabTool/AnimTool.cs
     [MenuItem("Test/prefab工具/Animation")]
+=======
+    [MenuItem("Test/prefab工具/Tool Animation")]
+>>>>>>> 7a7581e38ef7cb87c876b9f01074481e53f52bd0:unity script/Editor/AnimTool.cs
     public static void ShowWindow() { GetWindow<AnimTool>("提取anim文件"); }
     public void CreateGUI()
     {
