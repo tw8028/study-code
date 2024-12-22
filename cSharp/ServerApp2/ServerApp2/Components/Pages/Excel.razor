@@ -17,9 +17,9 @@
 
 	private async Task PersonToJson()
 	{
-		ExcelToJson personTable = new("personList");
+		ExcelToJson personTable = new("personArray");
 		personTable.ExcelPath = "D:/纳罗达人设总表.xlsx";
-		personTable.JsonPath = @"D:\GitHub\NLDClient\ProjectNLD\Assets\Art\temp\Editor\CharacterConfig\PersonData.json";
+		personTable.JsonPath = @"D:\GitHub\NLDClient\ProjectNLD\Assets\Art\temp\Editor\JsonData\PersonData.json";
 		personTable.Category = Category.person;
 		personTable.ColSet = new()
 		{
@@ -45,9 +45,9 @@
 
 	private async Task VehicleToJson()
 	{
-		ExcelToJson storyTable = new("vehicleList");
+		ExcelToJson storyTable = new("vehicleArray");
 		storyTable.ExcelPath = $"D:/P_S_载具prefab.xlsx";
-		storyTable.JsonPath = @"D:\GitHub\NLDClient\ProjectNLD\Assets\Art\temp\Editor\CharacterConfig\vehicleData.json";
+		storyTable.JsonPath = @"D:\GitHub\NLDClient\ProjectNLD\Assets\Art\temp\Editor\JsonData\vehicleData.json";
 		storyTable.ColSet = new()
 		{
 			{ (int)ColName.C, "name" },

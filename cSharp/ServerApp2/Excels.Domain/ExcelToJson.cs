@@ -57,24 +57,12 @@ public class ExcelToJson(string listName)
 					{
 						if (item["aniSet"].ToString().Length >= 3)
 						{
-							string set = item["aniSet"].ToString().Substring(0, 3);
+							string set = item["aniSet"].ToString()[0..2];
 							item["aniSet"] = set;
-						}
-						if (item["weapon"].ToString() != "")
-						{
-							string str = "G" + item["weapon"].ToString().PadLeft(5, '0');
-							item["weapon"] = str;
 						}
 					}
 				}
 
-				if (Category == Category.npc)
-				{
-					foreach (var item in arr)
-					{
-						item["originPrefab"] = "P_S_" + item["originPrefab"].ToString().Split('_')[0];
-					}
-				}
 
 				root.Add(ListName, arr);
 				string jsonData = root.ToString();

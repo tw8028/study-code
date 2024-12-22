@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "dDmXtEDefFEPjxyUePK9+kEgYX6xB/m0+y36cfyABJ8=",
+  "Hash": "966V5Criklsb6bvGjAErx0DXa9SspWH8B0hAd9Ubty4=",
   "Source": "ServerApp2",
   "BasePath": "_content/ServerApp2",
   "Mode": "Default",
@@ -17,10 +17,10 @@
   ],
   "Assets": [
     {
-      "Identity": "C:\\Users\\user\\.nuget\\packages\\blazored.modal\\7.3.1\\staticwebassets\\Blazored.Modal.bundle.scp.css",
+      "Identity": "C:\\Users\\TengWei\\.nuget\\packages\\blazored.modal\\7.3.1\\staticwebassets\\Blazored.Modal.bundle.scp.css",
       "SourceId": "Blazored.Modal",
       "SourceType": "Package",
-      "ContentRoot": "C:\\Users\\user\\.nuget\\packages\\blazored.modal\\7.3.1\\staticwebassets\\",
+      "ContentRoot": "C:\\Users\\TengWei\\.nuget\\packages\\blazored.modal\\7.3.1\\staticwebassets\\",
       "BasePath": "_content/Blazored.Modal",
       "RelativePath": "Blazored.Modal.bundle.scp.css",
       "AssetKind": "All",
@@ -33,13 +33,13 @@
       "AssetTraitValue": "ProjectBundle",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "C:\\Users\\user\\.nuget\\packages\\blazored.modal\\7.3.1\\staticwebassets\\Blazored.Modal.bundle.scp.css"
+      "OriginalItemSpec": "C:\\Users\\TengWei\\.nuget\\packages\\blazored.modal\\7.3.1\\staticwebassets\\Blazored.Modal.bundle.scp.css"
     },
     {
-      "Identity": "C:\\Users\\user\\.nuget\\packages\\blazored.modal\\7.3.1\\staticwebassets\\BlazoredModal.razor.js",
+      "Identity": "C:\\Users\\TengWei\\.nuget\\packages\\blazored.modal\\7.3.1\\staticwebassets\\BlazoredModal.razor.js",
       "SourceId": "Blazored.Modal",
       "SourceType": "Package",
-      "ContentRoot": "C:\\Users\\user\\.nuget\\packages\\blazored.modal\\7.3.1\\staticwebassets\\",
+      "ContentRoot": "C:\\Users\\TengWei\\.nuget\\packages\\blazored.modal\\7.3.1\\staticwebassets\\",
       "BasePath": "_content/Blazored.Modal",
       "RelativePath": "BlazoredModal.razor.js",
       "AssetKind": "All",
@@ -52,7 +52,7 @@
       "AssetTraitValue": "",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "C:\\Users\\user\\.nuget\\packages\\blazored.modal\\7.3.1\\staticwebassets\\BlazoredModal.razor.js"
+      "OriginalItemSpec": "C:\\Users\\TengWei\\.nuget\\packages\\blazored.modal\\7.3.1\\staticwebassets\\BlazoredModal.razor.js"
     },
     {
       "Identity": "D:\\GitHub\\study-code\\cSharp\\ServerApp2\\ServerApp2\\obj\\Debug\\net8.0\\scopedcss\\bundle\\ServerApp2.styles.css",

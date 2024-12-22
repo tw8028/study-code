@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("AssetFiles.Domain")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+44b010648954d9374f5dcd66a4b4f012b9e6c154")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1ae7a837b81014e2c9cfc629ddf93cdcadc37956")]
 [assembly: System.Reflection.AssemblyProductAttribute("AssetFiles.Domain")]
 [assembly: System.Reflection.AssemblyTitleAttribute("AssetFiles.Domain")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
