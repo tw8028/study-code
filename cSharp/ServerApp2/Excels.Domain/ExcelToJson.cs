@@ -23,7 +23,7 @@ public class ExcelToJson(string listName)
 			ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 			using (ExcelPackage package = new(fs))
 			{
-				ExcelWorksheet sheet = package.Workbook.Worksheets[0];
+				ExcelWorksheet sheet = package.Workbook.Worksheets[1];
 				int endRow = sheet.Dimension.End.Row;
 				int endColumn = sheet.Dimension.End.Column;
 

@@ -64,7 +64,6 @@ else
 
 		Config.Id = categoryConfig.Id;
 		Config.Name = categoryConfig.Name;
-		Config.Key = categoryConfig.Key;
 		Config.SourceRoot = Path.Combine(_pathConfig.SourcePath, categoryConfig.SourceRoot);
 		Config.DestRoot = Path.Combine(_pathConfig.UnityArtPath, categoryConfig.DestRoot);
 
@@ -94,8 +93,8 @@ else
 			isShowAll = !isShowAll; // 点击后排除相等项目
 			NotEqualItems = data.Where(x => x.State != CheckResult.Equal).ToList();
 			showData = NotEqualItems;
-			
-			
+
+
 		}
 		else
 		{
@@ -115,7 +114,7 @@ else
 			if (isFbx)
 			{
 				FileInfo[] fls = dir.GetFiles("*.fbx");
-				fbxList.AddRange(fls.Where(f => f.Name.StartsWith(config.Key + "0"))); // 匹配关键字, A与AA混淆, add 0
+				fbxList = fls.ToList();
 			}
 			DirectoryInfo[] subs = dir.GetDirectories();
 			foreach (DirectoryInfo subDir in subs)
