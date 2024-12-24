@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AssetFiles.Domain;
 
-public record PathConfig
+public record ProjectPathConfig
 {
     public string UnityArtPath { get; set; }
     public string SourcePath { get; set; }

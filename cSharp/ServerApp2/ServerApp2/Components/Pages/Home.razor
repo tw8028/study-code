@@ -17,13 +17,13 @@
 <button type="button" class="btn btn-primary" @onclick="Save">Save</button>
 
 @code {
-    private PathConfig? config;
+    private ProjectPathConfig? config;
     private const string relativeFilePath = "Config/Path.json";
 
     protected override void OnInitialized()
     {
         string dataFromJson = fileService.ReadFile(relativeFilePath);
-        config = JsonConvert.DeserializeObject<PathConfig>(dataFromJson); // 此处可能赋空值
+        config = JsonConvert.DeserializeObject<ProjectPathConfig>(dataFromJson); // 此处可能赋空值
         if (config is null)
         {
             config = new();

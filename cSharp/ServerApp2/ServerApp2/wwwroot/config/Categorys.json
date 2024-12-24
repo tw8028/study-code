@@ -1,1 +1,14 @@
-[{"Id":1,"Name":"角色蒙皮","SourceRoot":"skin_Character","DestRoot":"Character/Models"},{"Id":2,"Name":"motion","SourceRoot":"ani_Motion","DestRoot":"Animations/Battle/Motion"},{"Id":3,"Name":"skill","SourceRoot":"ani_Skill_player","DestRoot":"Animations/Battle/Skill"}]
+[
+  {
+    "Id": 1,
+    "Name": "skin_character",
+    "SourceRoot": "skin_Character",
+    "DestRoot": "Character/Models"
+  },
+  {
+    "Id": 2,
+    "Name": "skin_item",
+    "SourceRoot": "skin_item",
+    "DestRoot": "Character/Models"
+  }
+]
