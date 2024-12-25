@@ -2,7 +2,7 @@
   "Files": [
     {
       "Id": "D:\\GitHub\\study-code\\cSharp\\ServerApp2\\ServerApp2\\obj\\Debug\\net8.0\\scopedcss\\projectbundle\\ServerApp2.bundle.scp.css",
-      "PackagePath": "staticwebassets\\ServerApp2.bundle.scp.css"
+      "PackagePath": "staticwebassets\\ServerApp2.cxz2dlzl8s.bundle.scp.css"
     },
     {
       "Id": "D:\\GitHub\\study-code\\cSharp\\ServerApp2\\ServerApp2\\wwwroot\\app.css",
@@ -27,6 +27,10 @@
     {
       "Id": "D:\\GitHub\\study-code\\cSharp\\ServerApp2\\ServerApp2\\wwwroot\\favicon.png",
       "PackagePath": "staticwebassets\\favicon.png"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.ServerApp2.Microsoft.AspNetCore.StaticWebAssetEndpoints.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssetEndpoints.props"
     },
     {
       "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.ServerApp2.Microsoft.AspNetCore.StaticWebAssets.props",

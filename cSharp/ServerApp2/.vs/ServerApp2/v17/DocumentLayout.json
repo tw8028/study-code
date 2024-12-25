@@ -5,6 +5,14 @@
     {
       "AbsoluteMoniker": "D:0:0:{EEF93C52-9CFF-4135-A32A-40F5CE539ABC}|AssetFiles.Domain\\AssetFiles.Domain.csproj|d:\\github\\study-code\\csharp\\serverapp2\\assetfiles.domain\\assetfile.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{EEF93C52-9CFF-4135-A32A-40F5CE539ABC}|AssetFiles.Domain\\AssetFiles.Domain.csproj|solutionrelative:assetfiles.domain\\assetfile.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B696B733-8162-46EE-9AAE-AEE6EC05BECB}|Excels.Domain\\Excels.Domain.csproj|d:\\github\\study-code\\csharp\\serverapp2\\excels.domain\\exceltojson.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B696B733-8162-46EE-9AAE-AEE6EC05BECB}|Excels.Domain\\Excels.Domain.csproj|solutionrelative:excels.domain\\exceltojson.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1BCC7E68-E978-48CF-90DD-902224025F0F}|ServerApp2\\ServerApp2.csproj|d:\\github\\study-code\\csharp\\serverapp2\\serverapp2\\components\\pages\\excel.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{1BCC7E68-E978-48CF-90DD-902224025F0F}|ServerApp2\\ServerApp2.csproj|solutionrelative:serverapp2\\components\\pages\\excel.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     }
   ],
   "DocumentGroupContainers": [
@@ -14,11 +22,36 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 1,
+          "SelectedChildIndex": 3,
           "Children": [
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{3ae79031-e1bc-11d0-8f78-00a0c9110057}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Excel.razor",
+              "DocumentMoniker": "D:\\GitHub\\study-code\\cSharp\\ServerApp2\\ServerApp2\\Components\\Pages\\Excel.razor",
+              "RelativeDocumentMoniker": "ServerApp2\\Components\\Pages\\Excel.razor",
+              "ToolTip": "D:\\GitHub\\study-code\\cSharp\\ServerApp2\\ServerApp2\\Components\\Pages\\Excel.razor",
+              "RelativeToolTip": "ServerApp2\\Components\\Pages\\Excel.razor",
+              "ViewState": "AgIAABUAAAAAAAAAAAAAAA8AAAACAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2024-12-25T06:50:03.502Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "ExcelToJson.cs",
+              "DocumentMoniker": "D:\\GitHub\\study-code\\cSharp\\ServerApp2\\Excels.Domain\\ExcelToJson.cs",
+              "RelativeDocumentMoniker": "Excels.Domain\\ExcelToJson.cs",
+              "ToolTip": "D:\\GitHub\\study-code\\cSharp\\ServerApp2\\Excels.Domain\\ExcelToJson.cs",
+              "RelativeToolTip": "Excels.Domain\\ExcelToJson.cs",
+              "ViewState": "AgIAAA4AAAAAAAAAAAAiwBQAAAAQAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-12-25T06:47:06.31Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -28,7 +61,7 @@
               "RelativeDocumentMoniker": "AssetFiles.Domain\\AssetFile.cs",
               "ToolTip": "D:\\GitHub\\study-code\\cSharp\\ServerApp2\\AssetFiles.Domain\\AssetFile.cs",
               "RelativeToolTip": "AssetFiles.Domain\\AssetFile.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAgAAAAvAAAA",
+              "ViewState": "AgIAAA0AAAAAAAAAAAAuwFIAAAAbAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-12-23T10:20:32.347Z",
               "EditorCaption": ""

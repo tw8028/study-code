@@ -39,21 +39,21 @@
 		};
 
 		await Task.WhenAll(personTable.ToJson());
-		message = "Done";
+		message = personTable.JsonPath;
 	}
 
 	private async Task VehicleToJson()
 	{
-		ExcelToJson storyTable = new("vehicleArray");
-		storyTable.ExcelPath = $"D:/P_S_载具prefab.xlsx";
-		storyTable.JsonPath = @"D:\GitHub\NLDClient\ProjectNLD\Assets\Art\temp\Editor\JsonData\vehicleData.json";
-		storyTable.ColSet = new()
+		ExcelToJson carTable = new("vehicleArray");
+		carTable.ExcelPath = $"D:/P_S_载具prefab.xlsx";
+		carTable.JsonPath = @"D:\GitHub\NLDClient\ProjectNLD\Assets\Art\temp\Editor\JsonData\vehicleData.json";
+		carTable.ColSet = new()
 		{
 			{ (int)ColName.C, "name" },
 			{ (int)ColName.D, "batteryName" }
 		};
 
-		await Task.WhenAll(storyTable.ToJson());
-		message = "Done";
+		await Task.WhenAll(carTable.ToJson());
+		message = carTable.JsonPath;
 	}
 }

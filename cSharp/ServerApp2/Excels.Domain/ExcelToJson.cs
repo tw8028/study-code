@@ -18,12 +18,13 @@ public class ExcelToJson(string listName)
 
 	public async Task ToJson()
 	{
+		var sheetIndex = Category == Category.person ? 1 : 0;
 		using (FileStream fs = new(ExcelPath, FileMode.Open))
 		{
 			ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 			using (ExcelPackage package = new(fs))
 			{
-				ExcelWorksheet sheet = package.Workbook.Worksheets[1];
+				ExcelWorksheet sheet = package.Workbook.Worksheets[sheetIndex];
 				int endRow = sheet.Dimension.End.Row;
 				int endColumn = sheet.Dimension.End.Column;
 
@@ -57,7 +58,7 @@ public class ExcelToJson(string listName)
 					{
 						if (item["aniSet"].ToString().Length >= 3)
 						{
-							string set = item["aniSet"].ToString()[0..2];
+							string set = item["aniSet"].ToString()[0..3];
 							item["aniSet"] = set;
 						}
 					}
