@@ -11,8 +11,24 @@
       "RelativeMoniker": "D:0:0:{B696B733-8162-46EE-9AAE-AEE6EC05BECB}|Excels.Domain\\Excels.Domain.csproj|solutionrelative:excels.domain\\exceltojson.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
+      "AbsoluteMoniker": "D:0:0:{1BCC7E68-E978-48CF-90DD-902224025F0F}|ServerApp2\\ServerApp2.csproj|d:\\github\\study-code\\csharp\\serverapp2\\serverapp2\\components\\pages\\home.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{1BCC7E68-E978-48CF-90DD-902224025F0F}|ServerApp2\\ServerApp2.csproj|solutionrelative:serverapp2\\components\\pages\\home.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{1BCC7E68-E978-48CF-90DD-902224025F0F}|ServerApp2\\ServerApp2.csproj|d:\\github\\study-code\\csharp\\serverapp2\\serverapp2\\components\\pages\\excel.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{1BCC7E68-E978-48CF-90DD-902224025F0F}|ServerApp2\\ServerApp2.csproj|solutionrelative:serverapp2\\components\\pages\\excel.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1BCC7E68-E978-48CF-90DD-902224025F0F}|ServerApp2\\ServerApp2.csproj|d:\\github\\study-code\\csharp\\serverapp2\\serverapp2\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1BCC7E68-E978-48CF-90DD-902224025F0F}|ServerApp2\\ServerApp2.csproj|solutionrelative:serverapp2\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1BCC7E68-E978-48CF-90DD-902224025F0F}|ServerApp2\\ServerApp2.csproj|d:\\github\\study-code\\csharp\\serverapp2\\serverapp2\\components\\pages\\setting.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{1BCC7E68-E978-48CF-90DD-902224025F0F}|ServerApp2\\ServerApp2.csproj|solutionrelative:serverapp2\\components\\pages\\setting.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1BCC7E68-E978-48CF-90DD-902224025F0F}|ServerApp2\\ServerApp2.csproj|d:\\github\\study-code\\csharp\\serverapp2\\serverapp2\\wwwroot\\config\\path.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{1BCC7E68-E978-48CF-90DD-902224025F0F}|ServerApp2\\ServerApp2.csproj|solutionrelative:serverapp2\\wwwroot\\config\\path.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
     }
   ],
   "DocumentGroupContainers": [
@@ -22,21 +38,73 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 3,
+          "SelectedChildIndex": 8,
           "Children": [
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{3ae79031-e1bc-11d0-8f78-00a0c9110057}"
             },
             {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{aa2115a1-9712-457b-9047-dbb71ca2cdd2}"
+            },
+            {
               "$type": "Document",
               "DocumentIndex": 2,
+              "Title": "Home.razor",
+              "DocumentMoniker": "D:\\GitHub\\study-code\\cSharp\\ServerApp2\\ServerApp2\\Components\\Pages\\Home.razor",
+              "RelativeDocumentMoniker": "ServerApp2\\Components\\Pages\\Home.razor",
+              "ToolTip": "D:\\GitHub\\study-code\\cSharp\\ServerApp2\\ServerApp2\\Components\\Pages\\Home.razor",
+              "RelativeToolTip": "ServerApp2\\Components\\Pages\\Home.razor",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAlAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2024-12-26T05:43:42.645Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "Path.json",
+              "DocumentMoniker": "D:\\GitHub\\study-code\\cSharp\\ServerApp2\\ServerApp2\\wwwroot\\config\\Path.json",
+              "RelativeDocumentMoniker": "ServerApp2\\wwwroot\\config\\Path.json",
+              "ToolTip": "D:\\GitHub\\study-code\\cSharp\\ServerApp2\\ServerApp2\\wwwroot\\config\\Path.json",
+              "RelativeToolTip": "ServerApp2\\wwwroot\\config\\Path.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAABnAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2024-12-26T05:41:44.922Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "Setting.razor",
+              "DocumentMoniker": "D:\\GitHub\\study-code\\cSharp\\ServerApp2\\ServerApp2\\Components\\Pages\\Setting.razor",
+              "RelativeDocumentMoniker": "ServerApp2\\Components\\Pages\\Setting.razor",
+              "ToolTip": "D:\\GitHub\\study-code\\cSharp\\ServerApp2\\ServerApp2\\Components\\Pages\\Setting.razor",
+              "RelativeToolTip": "ServerApp2\\Components\\Pages\\Setting.razor",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAEAAAAlAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2024-12-26T04:15:53.175Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "Program.cs",
+              "DocumentMoniker": "D:\\GitHub\\study-code\\cSharp\\ServerApp2\\ServerApp2\\Program.cs",
+              "RelativeDocumentMoniker": "ServerApp2\\Program.cs",
+              "ToolTip": "D:\\GitHub\\study-code\\cSharp\\ServerApp2\\ServerApp2\\Program.cs",
+              "RelativeToolTip": "ServerApp2\\Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAtAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-12-26T03:42:11.536Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
               "Title": "Excel.razor",
               "DocumentMoniker": "D:\\GitHub\\study-code\\cSharp\\ServerApp2\\ServerApp2\\Components\\Pages\\Excel.razor",
               "RelativeDocumentMoniker": "ServerApp2\\Components\\Pages\\Excel.razor",
               "ToolTip": "D:\\GitHub\\study-code\\cSharp\\ServerApp2\\ServerApp2\\Components\\Pages\\Excel.razor",
               "RelativeToolTip": "ServerApp2\\Components\\Pages\\Excel.razor",
-              "ViewState": "AgIAABUAAAAAAAAAAAAAAA8AAAACAAAAAAAAAA==",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAAABoAAAAeAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
               "WhenOpened": "2024-12-25T06:50:03.502Z"
             },
@@ -48,10 +116,9 @@
               "RelativeDocumentMoniker": "Excels.Domain\\ExcelToJson.cs",
               "ToolTip": "D:\\GitHub\\study-code\\cSharp\\ServerApp2\\Excels.Domain\\ExcelToJson.cs",
               "RelativeToolTip": "Excels.Domain\\ExcelToJson.cs",
-              "ViewState": "AgIAAA4AAAAAAAAAAAAiwBQAAAAQAAAAAAAAAA==",
+              "ViewState": "AgIAAAwAAAAAAAAAAAAuwBQAAAAQAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-12-25T06:47:06.31Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-12-25T06:47:06.31Z"
             },
             {
               "$type": "Document",
@@ -61,7 +128,7 @@
               "RelativeDocumentMoniker": "AssetFiles.Domain\\AssetFile.cs",
               "ToolTip": "D:\\GitHub\\study-code\\cSharp\\ServerApp2\\AssetFiles.Domain\\AssetFile.cs",
               "RelativeToolTip": "AssetFiles.Domain\\AssetFile.cs",
-              "ViewState": "AgIAAA0AAAAAAAAAAAAuwFIAAAAbAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAEQAAAA3AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-12-23T10:20:32.347Z",
               "EditorCaption": ""

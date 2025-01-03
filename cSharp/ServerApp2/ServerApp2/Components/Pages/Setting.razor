@@ -1,6 +1,7 @@
 ﻿@page "/setting"
-@inject FileService fileService
+@* @inject FileService fileService *@
 @using ServerApp2.Components
+@inject IWebHostEnvironment hostEnv
 
 <PageTitle>Settings</PageTitle>
 
@@ -33,9 +34,11 @@
     List<CategoryConfig>? configData;
     [CascadingParameter] public IModalService Modal { get; set; } // 应该来自于Routes组件
     private const string relativeFilePath = "Config/Categorys.json";
+    FileService fileService;
 
     protected override void OnInitialized()
     {
+        fileService = new FileService(hostEnv);
         string dataFromJson = fileService.ReadFile(relativeFilePath);
         configData = JsonConvert.DeserializeObject<List<CategoryConfig>>(dataFromJson); // 此处可能赋空值
         if (configData is null)
