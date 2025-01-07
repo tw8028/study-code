@@ -1,0 +1,160 @@
+{
+  "vehicleArray": [
+    {
+      "name": "P_C00001_01",
+      "batteryName": "P_R00001_01"
+    },
+    {
+      "name": "P_C00002_01",
+      "batteryName": "无炮台"
+    },
+    {
+      "name": "P_C00002_02",
+      "batteryName": "无炮台"
+    },
+    {
+      "name": "P_C00003_01",
+      "batteryName": "P_R00018_02"
+    },
+    {
+      "name": "P_C00004_01",
+      "batteryName": "P_R00002_01"
+    },
+    {
+      "name": "P_C00005_01",
+      "batteryName": "P_R00003_01"
+    },
+    {
+      "name": "P_C00006_01",
+      "batteryName": "P_R00004_01"
+    },
+    {
+      "name": "P_C00007_01",
+      "batteryName": "P_R00005_01"
+    },
+    {
+      "name": "P_C00008_01",
+      "batteryName": "P_R00006_01"
+    },
+    {
+      "name": "P_C00009_01",
+      "batteryName": "P_R00007_01"
+    },
+    {
+      "name": "P_C00010_01",
+      "batteryName": "P_R00008_01"
+    },
+    {
+      "name": "P_C00011_01",
+      "batteryName": "P_R00009_01"
+    },
+    {
+      "name": "P_C00012_01",
+      "batteryName": "P_R000010_01"
+    },
+    {
+      "name": "P_C00013_01",
+      "batteryName": "P_R00011_01"
+    },
+    {
+      "name": "P_C00014_01",
+      "batteryName": "P_R00012_01"
+    },
+    {
+      "name": "P_C00015_01",
+      "batteryName": "P_R00013_01"
+    },
+    {
+      "name": "P_C00016_01",
+      "batteryName": "自带炮台"
+    },
+    {
+      "name": "P_C00017_01",
+      "batteryName": "R00025_01"
+    },
+    {
+      "name": "P_C00018_01",
+      "batteryName": "P_R00014_01"
+    },
+    {
+      "name": "P_C00019_01",
+      "batteryName": "P_R00015_01"
+    },
+    {
+      "name": "P_C00020_01",
+      "batteryName": "P_R00016_01"
+    },
+    {
+      "name": "P_C00021_01",
+      "batteryName": "P_R00017_01"
+    },
+    {
+      "name": "P_C00022_01",
+      "batteryName": "P_R00018_01"
+    },
+    {
+      "name": "P_C00023_01",
+      "batteryName": "P_R00019_01"
+    },
+    {
+      "name": "P_C00024_01",
+      "batteryName": "P_R00020_01"
+    },
+    {
+      "name": "P_C00025_01",
+      "batteryName": "P_R00021_01"
+    },
+    {
+      "name": "P_C00026_01",
+      "batteryName": "P_R00022_01"
+    },
+    {
+      "name": "P_C00027_01",
+      "batteryName": "P_R00023_01"
+    },
+    {
+      "name": "P_C00028_01",
+      "batteryName": "P_R00024_01"
+    },
+    {
+      "name": "P_C00029_01",
+      "batteryName": "P_R00005_02"
+    },
+    {
+      "name": "P_C00030_01",
+      "batteryName": "P_R00026_01"
+    },
+    {
+      "name": "P_C00031_01",
+      "batteryName": "P_R00027_01"
+    },
+    {
+      "name": "P_C00032_01",
+      "batteryName": "P_R00028_01"
+    },
+    {
+      "name": "P_C00033_01",
+      "batteryName": "P_R00029_01"
+    },
+    {
+      "name": "P_C00034_01",
+      "batteryName": "P_R00030_01"
+    },
+    {
+      "name": "P_C00035_01",
+      "batteryName": "P_R00031_01"
+    },
+    {
+      "name": "P_C00036_01",
+      "batteryName": "P_R00032_01"
+    },
+    {
+      "name": "P_C00037_01",
+      "batteryName": "P_R00033_01"
+    },
+    {
+      "name": "P_C00038_01",
+      "batteryName": "P_R00034_01"
+    }
+  ]
+}
