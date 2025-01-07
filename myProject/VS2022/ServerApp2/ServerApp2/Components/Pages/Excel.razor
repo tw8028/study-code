@@ -1,0 +1,59 @@
+﻿@page "/excel"
+@inject FileService fileService
+
+<h3>Excel to Json</h3>
+
+<h6>@message</h6>
+<button class="btn btn-primary btn-sm" @onclick="PersonToJson">人设总表</button>
+<button class="btn btn-primary btn-sm" @onclick="VehicleToJson">vehicle</button>
+
+
+@code {
+	private string? message;
+	protected override void OnInitialized()
+	{
+		message = "……";
+	}
+
+	private async Task PersonToJson()
+	{
+		ExcelToJson personTable = new("personArray");
+		personTable.ExcelPath = "D:/纳罗达人设总表.xlsx";
+		personTable.JsonPath = @"D:\GitHub\NLDClient\ProjectNLD\Assets\Art\temp\Editor\JsonData\PersonData.json";
+		personTable.Category = Category.person;
+		personTable.ColSet = new()
+		{
+			{ (int)ColName.A, "id" },
+			{ (int)ColName.D, "name" },
+			{ (int)ColName.K, "weapon" },
+			{ (int)ColName.N, "aniSet" },
+			{ (int)ColName.AB, "model_0" },
+			{ (int)ColName.AC, "skin_0" },
+			{ (int)ColName.AD, "prefab_0" },
+			{ (int)ColName.AG, "model_1" },
+			{ (int)ColName.AH, "skin_1" },
+			{ (int)ColName.AI, "prefab_1" },
+			{ (int)ColName.AJ, "skill" },
+			{ (int)ColName.AK, "bag_0" },
+			{ (int)ColName.AL, "bag_1" },
+		};
+
+		await Task.WhenAll(personTable.ToJson());
+		message = personTable.JsonPath;
+	}
+
+	private async Task VehicleToJson()
+	{
+		ExcelToJson carTable = new("vehicleArray");
+		carTable.ExcelPath = $"D:/P_S_载具prefab.xlsx";
+		carTable.JsonPath = @"D:\GitHub\NLDClient\ProjectNLD\Assets\Art\temp\Editor\JsonData\vehicleData.json";
+		carTable.ColSet = new()
+		{
+			{ (int)ColName.C, "name" },
+			{ (int)ColName.D, "batteryName" }
+		};
+
+		await Task.WhenAll(carTable.ToJson());
+		message = carTable.JsonPath;
+	}
+}

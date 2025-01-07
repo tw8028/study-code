@@ -1,0 +1,117 @@
+﻿@page "/role-{Page:int}"
+@inject FileService fileService
+@layout TddMenu
+
+<div class="btn-group-toggle" data-toggle="buttons">
+    <label class="btn btn-secondary active">
+        <input type="checkbox" @onchange="OnChange"> All
+    </label>
+</div>
+@if (data.Count != 0)
+{
+    <TddTable Data="@showData">
+        <HeaderTemplate>
+            <th>Name</th>
+            <th>State</th>
+            <th>Action</th>
+        </HeaderTemplate>
+        <RowTemplate>
+            <td>@context.Name</td>
+            <td>
+                @if (context.State == CheckResult.Equal)
+                {
+                    <span class="alert-success">&#10003</span>
+                }
+                else
+                {
+                    <span class="alert-warning">@context.State</span>
+                }
+            </td>
+        </RowTemplate>
+        <Action Context="row">
+            <td>
+                <button class="btn btn-primary btn-sm" @onclick="()=>row.CopyTo()">copy to unity</button>
+            </td>
+        </Action>
+    </TddTable>
+}
+
+@code {
+    [Parameter] public int Page { get; set; }
+    List<AssetFile>? data;
+    List<AssetFile>? showData;
+    List<AssetFile>? NotEqualItems = new();
+    bool isShowAll { get; set; } = false;
+
+    private ProjectPathConfig _pathConfig;
+    private List<CategoryConfig> _categoryConfigList;
+    protected override void OnInitialized()
+    {
+        string pathData = fileService.ReadFile("Config/Path.json");
+        string categoryData = fileService.ReadFile("Config/Categorys.json");
+        _pathConfig = JsonConvert.DeserializeObject<ProjectPathConfig>(pathData);
+        _categoryConfigList = JsonConvert.DeserializeObject<List<CategoryConfig>>(categoryData);
+    }
+
+    protected override void OnParametersSet()
+    {
+        var categoryConfig = _categoryConfigList.Single(x => x.Id == Page);
+        var sourceFolder = Path.Combine(_pathConfig.SourcePath, categoryConfig.SourceRoot);
+
+        data = new();
+        NotEqualItems = new();
+        List<FileInfo> fbxfiles = new();
+        GetFileInfo(sourceFolder, ref fbxfiles); // 获取fbx文件
+        foreach (var fl in fbxfiles)
+        {
+            AssetFile assetFile = new(fl.FullName, _pathConfig, categoryConfig);
+            data.Add(assetFile);
+        }
+        NotEqualItems = data.Where(x => x.State != CheckResult.Equal).ToList();
+        if (isShowAll)
+        {
+            showData = data;
+        }
+        else
+        {
+            showData = NotEqualItems;
+        }
+    }
+    void OnChange()
+    {
+        if (isShowAll)   // show all
+        {
+            isShowAll = !isShowAll; // 点击后排除相等项目
+            NotEqualItems = data.Where(x => x.State != CheckResult.Equal).ToList();
+            showData = NotEqualItems;
+
+
+        }
+        else
+        {
+            isShowAll = !isShowAll;
+            showData = data;
+        }
+    }
+
+
+    private void GetFileInfo(string SourceRoot, ref List<FileInfo> fbxList)
+    {
+        DirectoryInfo dir = new DirectoryInfo(SourceRoot);
+        if (dir.Exists)
+        {
+            bool isFbx = dir.Name.Equals("_fbx", StringComparison.OrdinalIgnoreCase);
+            bool isTexture = dir.Name.Equals("Texture", StringComparison.OrdinalIgnoreCase);
+            if (isFbx)
+            {
+                FileInfo[] fls = dir.GetFiles("*.fbx");
+                fbxList = fls.ToList();
+            }
+            DirectoryInfo[] subs = dir.GetDirectories();
+            foreach (DirectoryInfo subDir in subs)
+            {
+                GetFileInfo(subDir.FullName, ref fbxList);
+            }
+        }
+    }
+}
