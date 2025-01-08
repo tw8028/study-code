@@ -6,6 +6,7 @@ public static class VoxelData
 {
 	public static readonly int height = 5;
 	public static readonly int width = 5;
+	public static readonly int textureSize = 4;
 
 	public static readonly Vector3[] pos = new Vector3[8]
 	{
