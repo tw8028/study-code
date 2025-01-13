@@ -4,9 +4,16 @@ using UnityEngine;
 
 public static class VoxelData
 {
-	public static readonly int height = 5;
-	public static readonly int width = 5;
+	public static readonly int chunkHeight = 10;
+	public static readonly int chunkWidth = 5;
+	public static readonly int worldChunkSize = 128; //chunk number
+	public static readonly int viewChunks = 5;
+	public static int WorldVoxelSize => chunkWidth * worldChunkSize; // world 中 voxel 长宽
+
+
 	public static readonly int textureSize = 4;
+	public static  float NormalizedTextureSize => 1.0f / textureSize;
+
 
 	public static readonly Vector3[] pos = new Vector3[8]
 	{
@@ -30,7 +37,7 @@ public static class VoxelData
 		new(1.0f, 0.0f, 0.0f)   // right
 	};
 
-	public static readonly int[,] point = new int[6, 4] 
+	public static readonly int[,] point = new int[6, 4]
 	{
 		{ 0, 3, 1, 2 },  // back 0 3 1 2 
 		{ 5, 6, 4, 7 },  // front
