@@ -8,6 +8,7 @@ tooltip:"NLD_调整GunPivot"
 		if selection.count ==1 then return true else 
 			( 
 				print "选择一个物体，不要多选"
+				messageBox "请选择一个物体，不要多选！" title:"提示"
 				return false
 			)
 		)
@@ -26,6 +27,7 @@ tooltip:"NLD_调整GunPivot"
 		label label_1 "" width:100 height:10
 		button btn4 "重建武器挂点" width:100 height:30
 		button btn4_1 "解除挂点约束" width:100 height:30
+		button btn9 "unity pivot" width:100 height:30
 		 
 		
 		label label_3 "" width:100 height:20
@@ -148,6 +150,20 @@ tooltip:"NLD_调整GunPivot"
 			modPanel.addModToSelection (Skin ()) ui:on
 			skinOps.addBone $.modifiers[#Skin] $B_Root -1
 		)	
+		on btn9 pressed do
+		(
+			if isSelectOne() then
+			(
+				-- 提取平移变换，结果与 $.pos 一样
+				local pos = $.transform.translation
+				-- 创建一个新的变换矩阵，使 x 轴与世界坐标的 x 轴一致，y 轴与世界坐标的 z 轴一致
+				local newTransform = matrix3 [1, 0, 0] [0, 0, 1] [0, -1, 0] [0, 0, 0]
+				-- 矩阵变换后，位置归零
+				$.transform = newTransform
+				-- 恢复位置
+				$.pos = pos
+			)
+		)
 	)
-	createDialog ResetGunPivotWindow 270 450
+	createDialog ResetGunPivotWindow 270 500
 )
