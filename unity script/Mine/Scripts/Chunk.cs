@@ -15,13 +15,18 @@ public struct ChunkCoord
 		this.x = x;
 		this.z = z;
 	}
+	public bool Equals(ChunkCoord other)
+	{
+		if (other.x == this.x && other.z == this.z) return true;
+		else return false;
+	}
 }
 
 public class Chunk
 {
 	private readonly World world;
 	private readonly ChunkCoord chunkCoord;
-	private readonly GameObject chunkPrefab;
+	public readonly GameObject chunkPrefab;
 	private readonly MeshFilter meshFilter;
 	Vector3 Position => chunkPrefab.transform.position;
 
@@ -33,7 +38,11 @@ public class Chunk
 	// 用 byte 值表示 BlockType Id
 	private readonly byte[,,] blockTypeIdMap = new byte[VoxelData.chunkWidth, VoxelData.chunkHeight, VoxelData.chunkWidth];
 
-
+	public bool IsActive
+	{
+		get { return chunkPrefab.activeSelf; }
+		set { chunkPrefab.SetActive(value); }
+	}
 
 	public Chunk(World world, ChunkCoord chunkCoord)
 	{
