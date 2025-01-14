@@ -13,7 +13,7 @@ public class World : MonoBehaviour
 
 	private readonly Chunk[,] chunks = new Chunk[VoxelData.worldChunkSize, VoxelData.worldChunkSize];
 
-	private List<ChunkCoord> activeChunks = new();
+	private readonly List<ChunkCoord> activeChunks = new();
 
 	public ChunkCoord playerChunkCoord;
 	public ChunkCoord playerLastChunkCoord;
@@ -64,7 +64,7 @@ public class World : MonoBehaviour
 	public void CheckViewDistance()
 	{
 		var coord = GetChunkCoordFromPos(player.position);
-		List<ChunkCoord> previousActiveChunks = new(activeChunks);
+		List<ChunkCoord> previousActiveChunks = new(activeChunks); // 更新时 重新赋值
 
 		for (int x = coord.x - VoxelData.viewChunks; x < coord.x + VoxelData.viewChunks; x++)
 		{
@@ -81,14 +81,14 @@ public class World : MonoBehaviour
 					}
 				}
 
-				for (int i = 0; i < previousActiveChunks.Count; i++)
+				for (int i = 0; i < previousActiveChunks.Count; i++) // 添加新激活前的列表
 				{
-					if (previousActiveChunks[i].Equals(new ChunkCoord(x, z)))
-						previousActiveChunks.RemoveAt(i);
+					if (previousActiveChunks[i].Equals(new ChunkCoord(x, z)))  
+						previousActiveChunks.RemoveAt(i); // 从先前列表移除与现在重合的部分，剩下的就是需要被隐藏的
 				}
 			}
 		}
-		foreach(ChunkCoord c in previousActiveChunks)
+		foreach(ChunkCoord c in previousActiveChunks) // 已经移除了重合部分的列表
 			chunks[c.x, c.z].IsActive = false;
 	}
 
