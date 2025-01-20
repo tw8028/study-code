@@ -3,9 +3,9 @@ using HtmlBuilder;
 using VersOne.Epub;
 
 
-const string filePath = "D:/Temp/book/07 Harry Potter and the Deathly Hallows - J.K. Rowling.epub";
-string htmlPath = $"D:/Temp/html/{Path.GetFileNameWithoutExtension(filePath)}.html";
-const int skip = 7;
+const string filePath = "D:/Temp/book/04 Harry Potter and the Goblet of Fire - J.K. Rowling.epub";
+string htmlPath = $"D:/Temp/phone/{Path.GetFileNameWithoutExtension(filePath)}.html";
+const int skip = 6;
 const int num = 38;
 EpubBookRef epubBookRef = EpubReader.OpenBook(filePath);
 Console.WriteLine($"Title: {epubBookRef.Title}");
