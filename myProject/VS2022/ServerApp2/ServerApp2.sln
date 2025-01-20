@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServerApp2", "ServerApp2\Se
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AssetFiles.Domain", "AssetFiles.Domain\AssetFiles.Domain.csproj", "{EEF93C52-9CFF-4135-A32A-40F5CE539ABC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Excels.Domain", "Excels.Domain\Excels.Domain.csproj", "{B696B733-8162-46EE-9AAE-AEE6EC05BECB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Excels.Domain", "Excels.Domain\Excels.Domain.csproj", "{B696B733-8162-46EE-9AAE-AEE6EC05BECB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
