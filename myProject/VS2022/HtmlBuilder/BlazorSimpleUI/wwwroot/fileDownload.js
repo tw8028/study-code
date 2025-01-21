@@ -1,9 +1,18 @@
-window.downloadFile = function (fileName, byteBase64) {
-    // 创建一个隐藏的 <a> 标签
+// wwwroot/fileDownload.js
+window.downloadFile = function (fileName, content) {
+    // Create a Blob from the content
+    const blob = new Blob([content], { type: 'text/html' });
+
+    // Create a hidden <a> tag
     const link = document.createElement('a');
-    link.href = 'data:application/octet-stream;base64,' + byteBase64;
+    link.href = URL.createObjectURL(blob);
     link.download = fileName;
     document.body.appendChild(link);
-    link.click(); // 触发下载
-    document.body.removeChild(link); // 移除 <a> 标签
+
+    // Trigger the download
+    link.click();
+
+    // Clean up
+    document.body.removeChild(link);
+    URL.revokeObjectURL(link.href);
 };
