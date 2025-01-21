@@ -20,7 +20,8 @@ foreach (EpubLocalTextContentFileRef file in selectedHtml)
 }
 
 // 构建并保存 HTML
-string contents = HtmlTextBuilder.Build(selectedHtml, epubBookRef.Title);
+string[] chapters = selectedHtml.Select(h => h.ReadContent()).ToArray();
+string contents = HtmlTextBuilder.Build(chapters, epubBookRef.Title);
 string htmlPath = $"D:/Temp/phone/{Path.GetFileNameWithoutExtension(filePath)}.html";
 File.WriteAllText(htmlPath, contents);
 Console.WriteLine("HTML 文件已保存到: " + htmlPath);

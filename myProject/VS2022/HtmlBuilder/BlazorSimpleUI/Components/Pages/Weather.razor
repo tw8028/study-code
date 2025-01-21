@@ -1,0 +1,104 @@
+﻿@page "/weather"
+@inject IJSRuntime JsRuntime
+@inject IWebHostEnvironment HostEnv
+@rendermode InteractiveServer
+@using BlazorSimpleUI.Components.Template
+
+
+<PageTitle>Weather</PageTitle>
+
+<h1>Weather</h1>
+<p>This component demonstrates showing data.</p>
+
+<div>
+    <InputFile OnChange="HandleFileSelected"/>
+</div>
+<button type="button" class="btn btn-primary" @onclick="Load">Load</button>
+
+<TddTable Data="@chapters">
+    <HeaderTemplate>
+        <th>Chapters</th>
+    </HeaderTemplate>
+    <RowTemplate>
+        <td>@context.Key</td>
+    </RowTemplate>
+    <Action Context="row">
+        <td>
+            <button class="btn btn-secondary btn-sm" @onclick="()=>DeleteChapter(row)">delete</button>
+        </td>
+    </Action>
+</TddTable>
+
+@*
+<div>
+    <button @onclick="DownloadDynamicFile">下载文件</button>
+</div>
+*@
+
+
+@code {
+    IBrowserFile? file;
+    private List<EpubLocalTextContentFile> chapters = [];
+
+    protected override void OnInitialized()
+    {
+        Console.WriteLine("start.............");
+    }
+
+    private void HandleFileSelected(InputFileChangeEventArgs e)
+    {
+        file = e.File; // 获取用户选择的多个文件
+        Console.WriteLine($"input file: {file.Name}");
+    }
+
+    private async Task Load()
+    {
+        Console.WriteLine("load file");
+        if (file is null) return;
+        string filePath = Path.Combine(HostEnv.WebRootPath, file.Name);
+        /*await using var stream = new FileStream(filePath, FileMode.Create, FileAccess.Write);
+        await file.OpenReadStream(maxAllowedSize: 1024 * 1024 * 10).CopyToAsync(stream);*/
+
+        string text = await File.ReadAllTextAsync(filePath);
+        EpubBook book = await EpubReader.ReadBookAsync(text);
+        this.chapters = book.Content.Html.Local.ToList();
+        foreach (var c in chapters)
+        {
+            Console.WriteLine($"Loaded chapters: {c.Key}");
+        }
+
+        StateHasChanged();
+    }
+
+    private void DeleteChapter(EpubLocalTextContentFile row)
+    {
+        chapters.Remove(row);
+    }
+
+    /*private async Task DownloadDynamicFile()
+    {
+        // 动态生成文件内容（例如 CSV 文件）
+        var fileContent = GenerateHtmlContent();
+        var fileName = "example.csv";
+
+        // 将文件内容转换为字节数组
+        var fileBytes = System.Text.Encoding.UTF8.GetBytes(fileContent);
+
+        // 将字节数组转换为 Base64 字符串
+        var base64String = Convert.ToBase64String(fileBytes);
+
+        // 调用 JavaScript 函数触发下载
+        await JsRuntime.InvokeVoidAsync("downloadFile", fileName, base64String);
+    }
+
+    private string GenerateHtmlContent()
+    {
+        // 动态生成 CSV 文件内容
+        var sb = new System.Text.StringBuilder();
+        sb.AppendLine("Name,Age,Email");
+        sb.AppendLine("John Doe,30,john.doe@example.com");
+        sb.AppendLine("Jane Smith,25,jane.smith@example.com");
+        return sb.ToString();
+    }*/
+
+}
