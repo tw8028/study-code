@@ -4,25 +4,23 @@ using VersOne.Epub;
 
 
 const string filePath = "D:/Temp/book/04 Harry Potter and the Goblet of Fire - J.K. Rowling.epub";
-string htmlPath = $"D:/Temp/phone/{Path.GetFileNameWithoutExtension(filePath)}.html";
 const int skip = 6;
 const int num = 38;
+
 EpubBookRef epubBookRef = EpubReader.OpenBook(filePath);
 Console.WriteLine($"Title: {epubBookRef.Title}");
 Console.WriteLine($"Author: {epubBookRef.Author}");
 
+// 只保留需要的 chapter
 ReadOnlyCollection<EpubLocalTextContentFileRef> html = epubBookRef.Content.Html.Local;
 EpubLocalTextContentFileRef[] selectedHtml = html.Skip(skip).Take(num).ToArray();
-
-// 打印章节
 foreach (EpubLocalTextContentFileRef file in selectedHtml)
 {
     Console.WriteLine(file.Key);
 }
 
-// string builder
+// 构建并保存 HTML
 string contents = HtmlTextBuilder.Build(selectedHtml, epubBookRef.Title);
-
-// 保存 html 文件
+string htmlPath = $"D:/Temp/phone/{Path.GetFileNameWithoutExtension(filePath)}.html";
 File.WriteAllText(htmlPath, contents);
 Console.WriteLine("HTML 文件已保存到: " + htmlPath);
