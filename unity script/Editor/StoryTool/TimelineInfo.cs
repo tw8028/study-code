@@ -1,74 +1,41 @@
-﻿using Gameplay.Story.Cmp;
-using Gameplay.Story.Cmp.Timeline.CommonAction;
-using Gameplay.Story.Cmp.Timeline.MsgAction;
-using Gameplay.Story.Cmp.Timeline.PlayerTalkAction;
-using Gameplay.Story.Cmp.Timeline.SetNameAction;
-using NPOI.XSSF.UserModel;
-using Sirenix.Utilities;
-using System;
-using System.CodeDom;
-using System.Collections;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Art.temp.Editor.CharacterData;
+using Gameplay.Story.Cmp;
+using Gameplay.Story.Cmp.Timeline.CommonAction;
+using Gameplay.Story.Cmp.Timeline.MsgAction;
+using Gameplay.Story.Cmp.Timeline.PlayerTalkAction;
+using Gameplay.Story.Cmp.Timeline.SendEventAction;
+using Gameplay.Story.Cmp.Timeline.SetNameAction;
+using NPOI.XSSF.UserModel;
+using Sirenix.Utilities;
 using UnityEditor;
 using UnityEditor.Timeline;
 using UnityEngine;
 using UnityEngine.Timeline;
 using UnityEngine.UIElements;
-using CharacterData;
+using Object = UnityEngine.Object;
 #if UNITY_ANDROID
-using Unity.Android.Types;
 #endif
-using Gameplay.Story.Cmp.Timeline.SendEventAction;
-using DG.DemiEditor;
 
 
-namespace StoryTool
+namespace Art.temp.Editor.StoryTool
 {
     public static class TimelineInfo
     {
-        private static bool IsTrackOfType<T>(TrackAsset track)
-        {
-            if (typeof(T) == typeof(MsgActionClip)) { return track is MsgActionTrack; }
-            else if (typeof(T) == typeof(MsgActionClip)) { return track is MsgActionTrack; }
-            else if (typeof(T) == typeof(TimelineClip)) { return track is AnimationTrack; }
-
-            else return false;
-
-        }
-        private static T[] GetClips<T, Ttrack>(TimelineAsset timeline) where T : TimelineClip
-        {
-            var tracks = timeline.GetOutputTracks();
-
-            // 获取指定 tracks
-            var tTracks = tracks.Where(track => track is Ttrack);
-
-            //  获取 clips
-            var clips = tTracks.SelectMany(a => a.GetClips());
-            return clips.Cast<T>().ToArray();
-        }
-
-
         // 获取指定 track 的 clips
-        public static TimelineClip[] GetClips<T>(TimelineAsset timeline) where T : TrackAsset
+        private static TimelineClip[] GetClips<T>(TimelineAsset timeline) where T : TrackAsset
         {
-            var tracks = timeline.GetOutputTracks();
-
-            // 获取指定 tracks
-            var tTracks = tracks.Where(track => track is T);
-
-            //  获取 clips
-            var clips = tTracks.SelectMany(a => a.GetClips());
-            return clips.ToArray();
+            return timeline.GetOutputTracks().OfType<T>().SelectMany(a=>a.GetClips()).ToArray();
         }
 
         // 获取指定 track
-        public static TrackAsset[] GetTracks<T>(TimelineAsset timeline) where T : TrackAsset
+        private static TrackAsset[] GetTracks<T>(TimelineAsset timeline) where T : TrackAsset
         {
-            var tracks = timeline.GetOutputTracks().Where(track => track is T);
-            return tracks.ToArray();
+            return timeline.GetOutputTracks().OfType<T>().ToArray<TrackAsset>();
         }
 
         /// <summary>
@@ -76,16 +43,19 @@ namespace StoryTool
         /// </summary>
         /// <param name="timeline"></param>
         /// <returns></returns>
-        public static MsgClip[] GetMsgClipData(TimelineAsset timeline)
+        private static MsgClip[] GetMsgClipData(TimelineAsset timeline)
         {
-            TimelineClip[] clips = GetClips<MsgActionTrack>(timeline);
-            TimelineClip[] talkClips = GetClips<PlayerTalkActionTrack>(timeline);
+            var clips = GetClips<MsgActionTrack>(timeline);
+            var talkClips = GetClips<PlayerTalkActionTrack>(timeline);
 
             var msgArray = new MsgClip[clips.Length];
             for (int i = 0; i < clips.Length; i++)
             {
                 var msgClip = clips[i].asset as MsgActionClip;
-                var speakerInBlock = talkClips.Where(talk => talk.start > clips[i].start - 0.15d && talk.end < clips[i].end + 0.65d);
+                var i1 = i;
+                var speakerInBlock = talkClips.Where(talk =>
+                    talk.start > clips[i1].start - 0.15d && talk.end < clips[i1].end + 0.65d);
+                if (!msgClip) continue;
                 MsgClip msgClipData = new()
                 {
                     blockId = msgClip.blockId,
@@ -95,6 +65,7 @@ namespace StoryTool
                 };
                 msgArray[i] = msgClipData;
             }
+
             return msgArray;
         }
 
@@ -110,7 +81,7 @@ namespace StoryTool
                 var clips = track.GetClips();
                 foreach (var clip in clips)
                 {
-                    if (clip.animationClip == null)
+                    if (!clip.animationClip)
                     {
                         Debug.LogError($"动画丢失: {track.parent.name}: {clip.start}");
                     }
@@ -118,16 +89,16 @@ namespace StoryTool
                     {
                         string clipName = clip.animationClip.name;
                         /* if (clipName.Contains("_crawl_") || clipName.Contains("_stand_") || clipName.Contains("_common"))
-						 {
-							 string path = AssetDatabase.GetAssetPath(clip.animationClip);
-							 Debug.LogWarning($"使用了战斗动画:{path}");
-						 }
+                         {
+                             string path = AssetDatabase.GetAssetPath(clip.animationClip);
+                             Debug.LogWarning($"使用了战斗动画:{path}");
+                         }
 
-						 else if (clipName.Contains("ready"))
-						 {
-							 string path = AssetDatabase.GetAssetPath(clip.animationClip);
-							 Debug.LogWarning($"使用了ready动画:{path}");
-						 }*/
+                         else if (clipName.Contains("ready"))
+                         {
+                             string path = AssetDatabase.GetAssetPath(clip.animationClip);
+                             Debug.LogWarning($"使用了ready动画:{path}");
+                         }*/
                         if (!clipName.StartsWith("compressed"))
                         {
                             Debug.LogWarning($"未压缩动画: {track.parent.name}: {clip.start}");
@@ -136,6 +107,7 @@ namespace StoryTool
                 }
             }
         }
+
         public static void ReplaceAllAnimations(TimelineAsset timeline)
         {
             var clips = TimelineInfo.GetClips<AnimationTrack>(timeline);
@@ -148,8 +120,10 @@ namespace StoryTool
                 {
                     displayName = "ani_common_s_crawl_idle001";
                 }
+                // ReSharper disable once StringLiteralTypo
                 else if (displayName.EndsWith("crawl_moveforward001"))
                 {
+                    // ReSharper disable once StringLiteralTypo
                     displayName = "ani_common_s_crawl_moveforward001";
                 }
                 else if (displayName.Contains("attack002"))
@@ -162,11 +136,13 @@ namespace StoryTool
                     {
                         displayName = displayName.Replace("_end", "_loop");
                     }
+
                     if (displayName.Contains("_start"))
                     {
                         displayName = displayName.Replace("_start", "_loop");
                     }
                 }
+
                 clip.displayName = displayName;
             }
 
@@ -182,10 +158,11 @@ namespace StoryTool
                 }
             }
         }
+
         public static void ReplaceAllCharacters(Transform root)
         {
             int n = root.childCount;
-            Transform[] oldPlayers = new Transform[n];
+            var oldPlayers = new Transform[n];
             string[] playerNames = new string[n];
             string[] nameId = new string[n];
             int[] playerIds = new int[n];
@@ -196,6 +173,7 @@ namespace StoryTool
                 playerIds[i] = oldPlayers[i].GetComponent<CmpStoryPlayer>().playerId;
                 nameId[i] = oldPlayers[i].GetChild(0).name;
             }
+
             for (int i = 0; i < playerNames.Length; i++)
             {
                 if (playerNames[i].Split('_')[2] == "100")
@@ -209,7 +187,8 @@ namespace StoryTool
                     Debug.LogWarning($"无法找到 {playerNames[i]} 对应 prefab");
                     continue;
                 }
-                GameObject.DestroyImmediate(oldPlayers[i].gameObject);
+
+                Object.DestroyImmediate(oldPlayers[i].gameObject);
                 GameObject prefabInstance = (GameObject)PrefabUtility.InstantiatePrefab(playerPrefab, root);
                 prefabInstance.name = playerNames[i];
                 var cmpStoryPlayer = prefabInstance.AddComponent<CmpStoryPlayer>();
@@ -217,6 +196,7 @@ namespace StoryTool
                 Debug.Log($"替换 prefab: {playerNames[i]}");
             }
         }
+
         public static void ReplaceSelectedCharacter(Transform root)
         {
             GameObject go = Selection.activeGameObject;
@@ -227,7 +207,7 @@ namespace StoryTool
             if (playerPrefab != null)
             {
                 int playerId = go.GetComponent<CmpStoryPlayer>().playerId;
-                GameObject.DestroyImmediate(go);
+                Object.DestroyImmediate(go);
                 GameObject playerInstance = (GameObject)PrefabUtility.InstantiatePrefab(playerPrefab, root);
                 playerInstance.name = playerName;
                 var cmpStoryPlayer = playerInstance.AddComponent<CmpStoryPlayer>();
@@ -265,11 +245,12 @@ namespace StoryTool
                 "story_1_1_9",
                 "story_1_1_10",
                 "story_1_1_11"
-
             };
 
-            return idName.Select(t => AssetDatabase.LoadAssetAtPath<TimelineAsset>(string.Format(assetPath, t))).ToArray();
+            return idName.Select(t => AssetDatabase.LoadAssetAtPath<TimelineAsset>(string.Format(assetPath, t)))
+                .ToArray();
         }
+
         public static void MsgToExcel(TimelineAsset timeline)
         {
             string excelPath = $"Assets/Art/temp/Story_Text/{timeline.name}.xlsx";
@@ -277,9 +258,10 @@ namespace StoryTool
             {
                 File.Delete(excelPath);
             }
+
             var newExcel = new XSSFWorkbook();
             var sheet = newExcel.CreateSheet();
-            var headers = new string[]
+            var headers = new[]
             {
                 "blockId",
                 "speaker",
@@ -335,6 +317,7 @@ namespace StoryTool
             {
                 newExcel.Write(fs);
             }
+
             Debug.Log($"导出: {excelPath}");
             AssetDatabase.Refresh();
         }
@@ -347,6 +330,7 @@ namespace StoryTool
                 Debug.LogWarning($"not find file: {excelPath}");
                 return;
             }
+
             using var fs = new FileStream(excelPath, FileMode.Open, FileAccess.Read);
             var newExcel = new XSSFWorkbook(fs);
             var sheet = newExcel.GetSheetAt(0);
@@ -371,8 +355,8 @@ namespace StoryTool
                 msgClip.msg = row.GetCell(2) != null ? row.GetCell(2).StringCellValue : string.Empty;
 
                 var numbers = new[] { 3, 4, 5, 6 };
-                var extMsgcells = numbers.Select(x => row.GetCell(x)).Where(c => c is not null);
-                msgClip.extMsgs = extMsgcells.Select(c => c.StringCellValue).ToArray();
+                var extMsgCells = numbers.Select(x => row.GetCell(x)).Where(c => c is not null);
+                msgClip.extMsgs = extMsgCells.Select(c => c.StringCellValue).ToArray();
 
                 clipData.Add(msgClip);
             }
@@ -390,64 +374,41 @@ namespace StoryTool
             foreach (var clp in msgClips)
             {
                 var msgClip = clp.asset as MsgActionClip;
-                var clipInfo = clipData.First(data => data.blockId == msgClip.blockId);
+                var clipInfo = clipData.First(data =>
+                {
+                    if (!msgClip) return false;
+                    return data.blockId == msgClip.blockId;
+                });
                 if (clipInfo.msg != string.Empty)
                 {
-                    if (msgClip.msg != clipInfo.msg)
+                    if (msgClip)
                     {
-                        Debug.Log(msgClip.blockId);
-                        Debug.Log(msgClip.msg);
-                        Debug.LogWarning(clipInfo.msg);
-                        msgClip.msg = clipInfo.msg;
-                    }
-                }
-                if (clipInfo.extMsgs is not null)
-                {
-                    if (!clipInfo.extMsgs.SequenceEqual(msgClip.extMsgs))
-                    {
-                        Debug.Log(msgClip.blockId);
-                        Debug.Log(string.Join("|", msgClip.extMsgs));
-                        Debug.LogWarning(string.Join("|", clipInfo.extMsgs));
-                        msgClip.extMsgs = clipInfo.extMsgs;
+                        if (msgClip.msg != clipInfo.msg)
+                        {
+                            Debug.Log(msgClip.blockId);
+                            Debug.Log(msgClip.msg);
+                            Debug.LogWarning(clipInfo.msg);
+                            msgClip.msg = clipInfo.msg;
+                        }
                     }
                 }
 
+                if (clipInfo.extMsgs is null) continue;
+                if (msgClip)
+                {
+                    if (clipInfo.extMsgs.SequenceEqual(msgClip.extMsgs)) continue;
+                    Debug.Log(msgClip.blockId);
+                    Debug.Log(string.Join("|", msgClip.extMsgs));
+                    Debug.LogWarning(string.Join("|", clipInfo.extMsgs));
+                    msgClip.extMsgs = clipInfo.extMsgs;
+                }
             }
+
             TimelineEditor.Refresh(RefreshReason.ContentsModified);
             EditorUtility.SetDirty(timeline);
             AssetDatabase.SaveAssets();
         }
 
-        /*public static void MsgToJson(TimelineAsset timeline)
-		{
-			string jsonPath = $"D:/work/story_msg/{timeline.name}.json";
-			MsgData msgData = new() { msgArray = TimelineInfo.GetMsgClipData(timeline) };
-			string jsonData = JsonUtility.ToJson(msgData);
-			File.WriteAllText(jsonPath, jsonData);
-			Debug.Log($"导出到: {jsonPath}");
-		}
-		public static void ImportFromJson(TimelineAsset timeline)
-		{
-			string JsonPath = $"D:/work/story_msg/{timeline.name}.json";
-			string msgData = File.ReadAllText(JsonPath); // read
-			MsgClip[] msgClipDataArray = JsonUtility.FromJson<MsgData>(msgData).msgArray;
-
-			var MsgClips = GetClips<MsgActionTrack>(timeline);
-			Debug.Log($"length: {MsgClips.Length}");
-
-			foreach (var clip in MsgClips)
-			{
-				var msgClip = clip.asset as MsgActionClip;
-				var msgClipData = msgClipDataArray.First(x => x.blockId == msgClip.blockId);
-				msgClip.msg = msgClipData.msg;
-				if (msgClipData.extMsg != null)
-				{
-					msgClip.extMsgs = msgClipData.extMsg;
-				}
-			}
-
-			Debug.Log($"导入: {JsonPath}");
-		}*/
 
         /// <summary>
         /// 搜索 检查 修改剧情文本
@@ -456,21 +417,23 @@ namespace StoryTool
         /// <param name="searchField"></param>
         public static void SearchMsg(TimelineAsset timeline, TextField searchField)
         {
-            var MsgClips = GetClips<MsgActionTrack>(timeline);
-            foreach (var clip in MsgClips)
+            var msgClips = GetClips<MsgActionTrack>(timeline);
+            foreach (var clip in msgClips)
             {
-                MsgActionClip msgClip = clip.asset as MsgActionClip;
-                string[] messages = msgClip.extMsgs.Length == 0 ? new string[] { msgClip.msg } : msgClip.extMsgs;
-                foreach (var msg in messages)
+                if (clip.asset is not MsgActionClip msgClip) return;
+                string[] messages = msgClip.extMsgs.Length == 0 ? new[] { msgClip.msg } : msgClip.extMsgs;
+                foreach (string msg in messages)
                 {
-                    if(msg == null)
+                    if (msg == null)
                     {
                         return;
                     }
+
                     if (searchField.value == "")
                     {
                         Debug.Log("输入搜索内容");
-                    }                 
+                    }
+
                     if (msg.Contains(searchField.value))
                     {
                         Debug.LogWarning($"{msgClip.blockId}:搜索({searchField.value})    {msg}");
@@ -478,16 +441,17 @@ namespace StoryTool
                 }
             }
         }
+
         public static void CheckMsg(TimelineAsset timeline)
         {
             Debug.Log(timeline.name);
-            var MsgClips = GetClips<MsgActionTrack>(timeline);
-            foreach (var clip in MsgClips)
+            var msgClips = GetClips<MsgActionTrack>(timeline);
+            foreach (var clip in msgClips)
             {
-                MsgActionClip msgClip = clip.asset as MsgActionClip;
                 // 检查文本长度
-                string[] messages = msgClip.extMsgs.Length == 0 ? new string[] { msgClip.msg } : msgClip.extMsgs;
-                foreach (var msg in messages)
+                if (clip.asset is not MsgActionClip msgClip) return;
+                string[] messages = msgClip.extMsgs.Length == 0 ? new[] { msgClip.msg } : msgClip.extMsgs;
+                foreach (string msg in messages)
                 {
                     if (msg != null)
                     {
@@ -509,24 +473,23 @@ namespace StoryTool
                     Debug.LogWarning($"{msgClip.blockId}:文本不规范   {originMsg}");
                 }
 
-                for (int i = 0; i < msgClip.extMsgs.Length; i++)
+                foreach (string t in msgClip.extMsgs)
                 {
-                    if (ContainsNonChinesePunctuation(msgClip.extMsgs[i]))
+                    if (ContainsNonChinesePunctuation(t))
                     {
-                        Debug.LogWarning($"{msgClip.blockId}:文本不规范   {msgClip.extMsgs[i]}");
+                        Debug.LogWarning($"{msgClip.blockId}:文本不规范   {t}");
                     }
                 }
-
             }
         }
+
         public static void ModifyMsg(TimelineAsset timeline)
         {
             Debug.Log(timeline.name);
-            var MsgClips = GetClips<MsgActionTrack>(timeline);
-            foreach (var clip in MsgClips)
+            var msgClips = GetClips<MsgActionTrack>(timeline);
+            foreach (var clip in msgClips)
             {
-                MsgActionClip msgClip = clip.asset as MsgActionClip;
-
+                if (clip.asset is not MsgActionClip msgClip) return;
                 // 修改 msg
                 string originMsg = msgClip.msg;
                 if (ContainsNonChinesePunctuation(originMsg))
@@ -540,39 +503,41 @@ namespace StoryTool
                 // 修改 exMsg
                 for (int i = 0; i < msgClip.extMsgs.Length; i++)
                 {
-                    if (ContainsNonChinesePunctuation(msgClip.extMsgs[i]))
-                    {
-                        string re = ReplaceText(msgClip.extMsgs[i]);
-                        msgClip.extMsgs[i] = re;
-                        Debug.LogWarning($"{msgClip.blockId}:坏文本   {msgClip.extMsgs[i]}");
-                        Debug.Log($"{msgClip.blockId}:修改为   {re}");
-                    }
+                    if (!ContainsNonChinesePunctuation(msgClip.extMsgs[i])) continue;
+                    string re = ReplaceText(msgClip.extMsgs[i]);
+                    msgClip.extMsgs[i] = re;
+                    Debug.LogWarning($"{msgClip.blockId}:坏文本   {msgClip.extMsgs[i]}");
+                    Debug.Log($"{msgClip.blockId}:修改为   {re}");
                 }
             }
+
             TimelineEditor.Refresh(RefreshReason.ContentsModified);
             EditorUtility.SetDirty(timeline);
             AssetDatabase.SaveAssets();
         }
+
         public static void CheckJumpNext(TimelineAsset timeline)
         {
-            var MsgClips = GetClips<MsgActionTrack>(timeline);
-            var clips = MsgClips.Where(c => (c.asset as MsgActionClip).autoJumpNext == true && !string.IsNullOrEmpty((c.asset as MsgActionClip).msg));
-            var ids = clips.Select(c => (c.asset as MsgActionClip).blockId);
+            TimelineClip[] msgClips = GetClips<MsgActionTrack>(timeline);
+            IEnumerable<MsgActionClip> clips = msgClips.Select(timelineClip => timelineClip.asset)
+                .OfType<MsgActionClip>().Where(clip => clip.autoJumpNext && !string.IsNullOrEmpty(clip.msg));
+            IEnumerable<int> ids = clips.Select(clip => clip.blockId);
             Debug.LogWarning("自动跳转下一个 block: " + string.Join(", ", ids));
         }
+
         private static bool ContainsNonChinesePunctuation(string input)
         {
-            string pattern1 =
-                @"[^A-Z\u4e00-\u9fa5\w\s，。？！、；·：“”‘’%（）《》……【】——\u002d]" +  // 非法字符
-                @"|([(—)]{3,}|[…]{3,})|——\u2026|(\u2026——)" +  // ……—— 连用
-                @"|(?<!\u2026)\u2026(?!\u2026)" + // 单独存在的…
-                @"|，$" +  // 逗号结尾
-                @"|[\u8bf6]" + // 诶
-                @"|！……|？……";
+            const string pattern = @"[^A-Z\u4e00-\u9fa5\w\s，。？！、；·：“”‘’%（）《》……【】——\u002d]" + // 非法字符
+                                   @"|([(—)]{3,}|[…]{3,})|——\u2026|(\u2026——)" + // ……—— 连用
+                                   @"|(?<!\u2026)\u2026(?!\u2026)" + // 单独存在的…
+                                   @"|，$" + // 逗号结尾
+                                   @"|[\u8bf6]" + // 诶
+                                   @"|！……|？……";
 
-            bool match = Regex.IsMatch(input, pattern1);
+            bool match = Regex.IsMatch(input, pattern);
             return match;
         }
+
         private static string ReplaceText(string text)
         {
             // 确定的修改
@@ -602,18 +567,20 @@ namespace StoryTool
             foreach (var track in setNameTracks)
             {
                 // 删除空白
-                var noneNameClips = track.GetClips().Where(c => (c.asset as SetNameActionClip).setName == "");
+
+                var noneNameClips = track.GetClips().Where(c => ((SetNameActionClip)c.asset).setName == "");
                 noneNameClips.ForEach(c => timeline.DeleteClip(c));
 
                 // 
-                var singleClips = track.GetClips().DistinctBy(c => (c.asset as SetNameActionClip).setName);
+                var singleClips = track.GetClips().DistinctBy(c => ((SetNameActionClip)c.asset).setName);
                 var exceptClips = track.GetClips().Except(singleClips);
                 exceptClips.ForEach(a => timeline.DeleteClip(a));
 
                 // 
-                var names = track.GetClips().Select(c => (c.asset as SetNameActionClip).setName);
+                var names = track.GetClips().Select(c => ((SetNameActionClip)c.asset).setName);
                 Debug.Log(string.Join(",", names));
             }
+
             TimelineEditor.Refresh(RefreshReason.ContentsModified);
         }
 
@@ -626,33 +593,35 @@ namespace StoryTool
             TimelineClip[] blockClips = TimelineInfo.GetClips<MsgActionTrack>(timeline);
             TimelineClip[] talkClips = TimelineInfo.GetClips<PlayerTalkActionTrack>(timeline);
             Debug.Log(timeline.name);
-            for (int i = 0; i < blockClips.Length; i++)
+            foreach (TimelineClip clip in blockClips)
             {
-                var speakers = talkClips.Where(c => c.start > blockClips[i].start - 0.15d && c.end < blockClips[i].end + 0.65d);
-                speakers.ForEach(c => c.start = blockClips[i].start + 0.1d);
+                TimelineClip[] speakers = talkClips.Where(c =>
+                    c.start > clip.start - 0.15d && c.end < clip.end + 0.65d).ToArray();
+                speakers.ForEach(c => c.start = clip.start + 0.1d);
 
-                var blockAsset = blockClips[i].asset as MsgActionClip;
+                if (clip.asset is not MsgActionClip blockAsset) return;
                 var names = speakers.Select(t => t.GetParentTrack().parent.name).ToArray();
                 if (speakers.Count() > 1)
                 {
                     Debug.LogWarning($"block:{blockAsset.blockId} 多个说话者 [{string.Join(", ", names)}]");
                 }
+
                 if (!string.IsNullOrEmpty(blockAsset.msg))
                 {
-                    if (speakers.Count() == 0)
+                    if (!speakers.Any())
                     {
                         Debug.LogWarning($"block:{blockAsset.blockId} 没有说话者");
                     }
                 }
                 else
                 {
-                    if (speakers.Count() > 0)
+                    if (speakers.Any())
                     {
                         Debug.LogWarning($"block:{blockAsset.blockId} 无效的说话标签[{string.Join(", ", names)}]");
                     }
                 }
-
             }
+
             TimelineEditor.Refresh(RefreshReason.ContentsModified);
             EditorUtility.SetDirty(timeline);
             AssetDatabase.SaveAssets();
@@ -665,14 +634,14 @@ namespace StoryTool
         public static void CheckCommon(TimelineAsset timeline)
         {
             Debug.Log("check common");
-            var commonClips = TimelineInfo.GetClips<CommonActionTrack>(timeline);
-            foreach (var cl in commonClips)
+            TimelineClip[] commonClips = GetClips<CommonActionTrack>(timeline);
+            foreach (TimelineClip cl in commonClips)
             {
-                var commonClip = cl.asset as CommonActionClip;
+                if (cl.asset is not CommonActionClip commonClip) return;
                 if (commonClip.objFullPath != null)
                 {
-                    var obj = GameObject.Find(commonClip.objFullPath);
-                    if (obj == null)
+                    GameObject obj = GameObject.Find(commonClip.objFullPath);
+                    if (!obj)
                     {
                         Debug.Log($"{timeline.name}, 位置: {cl.start}, obj: {commonClip.objFullPath}");
                     }
@@ -683,25 +652,37 @@ namespace StoryTool
                 }
             }
 
-            var msgClips = TimelineInfo.GetClips<MsgActionTrack>(timeline);
-            var eventClips = TimelineInfo.GetClips<SendEventActionTrack>(timeline);
-            var disableClicks = eventClips.Where(e => (e.asset as SendEventActionClip).eventKey == "DISABLE_CLICK");
-            foreach (var msg in msgClips)
+            var msgClips = GetClips<MsgActionTrack>(timeline);
+            var eventClips = GetClips<SendEventActionTrack>(timeline);
+            var disableClicks = eventClips.Where(e => ((SendEventActionClip)e.asset).eventKey == "DISABLE_CLICK")
+                .ToArray();
+            foreach (TimelineClip msg in msgClips)
             {
-                var disableClick = disableClicks.SingleOrDefault(d => d.start > msg.start - 0.2d && d.end < msg.end + 0.2d);
-                if (disableClick != null)
+                var disableClick =
+                    disableClicks.SingleOrDefault(d => d.start > msg.start - 0.2d && d.end < msg.end + 0.2d);
+                if (disableClick == null) continue;
+                if (msg.asset is not MsgActionClip msgAsset) return;
+                if (Math.Abs(msg.start - disableClick.start) > 0.000000f)
                 {
-                    var msgAsset = msg.asset as MsgActionClip;
-                    if (msg.start != disableClick.start)
-                    {
-                        Debug.LogError($"错误位置: {msgAsset.blockId} {disableClick.start}");
-                    }
-                    if ((msg.asset as MsgActionClip).autoJumpNext == false)
-                    {
-                        Debug.LogError($"禁止点击需要设置跳转: {msgAsset.blockId}");
-                    }
+                    Debug.LogError($"错误位置: {msgAsset.blockId} {disableClick.start}");
+                }
+
+                if (msgAsset.autoJumpNext == false)
+                {
+                    Debug.LogError($"禁止点击需要设置跳转: {msgAsset.blockId}");
                 }
             }
+        }
+
+
+        private struct MsgData
+        {
+            public int blockId;
+            public string msg;
+            public string[] extMsgArray;
+            public bool autoJumpNext;
+            public double start;
+            public double duration;
         }
 
         /// <summary>
@@ -709,30 +690,22 @@ namespace StoryTool
         /// </summary>
         /// <param name="timeline"></param>
         /// 
-        private struct MsgData
-        {
-            public int blockId;
-            public string msg;
-            public string[] extMsgs;
-            public bool autoJumpNext;
-            public double strat;
-            public double duration;
-        }
         public static void InsertBlock(TimelineAsset timeline)
         {
             var clips = TimelineInfo.GetClips<MsgActionTrack>(timeline);
             var selected = TimelineEditor.selectedClip;
-            var selectedAsset = selected.asset as MsgActionClip;
+            if (selected.asset is not MsgActionClip selectedAsset) return;
             // selected 之后的所有 clip
-            var fromSelectedClips = clips.SkipWhile(c => (c.asset as MsgActionClip).blockId <= selectedAsset.blockId);
+            var fromSelectedClips = clips.SkipWhile(c => ((MsgActionClip)c.asset).blockId <= selectedAsset.blockId)
+                .ToArray();
             // selected 之后的所有 msg 数据
             var fromSelectedData = fromSelectedClips.Select(m => new MsgData
             {
-                blockId = (m.asset as MsgActionClip).blockId,
-                msg = (m.asset as MsgActionClip).msg,
-                extMsgs = (m.asset as MsgActionClip).extMsgs,
-                autoJumpNext = (m.asset as MsgActionClip).autoJumpNext,
-                strat = m.start,
+                blockId = ((MsgActionClip)m.asset).blockId,
+                msg = ((MsgActionClip)m.asset).msg,
+                extMsgArray = ((MsgActionClip)m.asset).extMsgs,
+                autoJumpNext = ((MsgActionClip)m.asset).autoJumpNext,
+                start = m.start,
                 duration = m.duration
             });
 
@@ -740,12 +713,12 @@ namespace StoryTool
             fromSelectedClips.ForEach(a => timeline.DeleteClip(a));
             // set selected msg
             selected.duration -= 0.5d;
-            (selected.asset as MsgActionClip).autoJumpNext = false;
+            selectedAsset.autoJumpNext = false;
 
             // 创建 insert block
             var track = TimelineInfo.GetTracks<MsgActionTrack>(timeline);
             var newClip = track[0].CreateClip<MsgActionClip>();
-            var newClipAsset = newClip.asset as MsgActionClip;
+            if (newClip.asset is not MsgActionClip newClipAsset) return;
             newClip.start = selected.end;
             newClip.duration = 0.5d;
             newClipAsset.blockId = selectedAsset.blockId + 1;
@@ -755,12 +728,12 @@ namespace StoryTool
             foreach (var item in fromSelectedData)
             {
                 var msg = track[0].CreateClip<MsgActionClip>();
-                msg.start = item.strat;
+                msg.start = item.start;
                 msg.duration = item.duration;
-                var msgAsset = msg.asset as MsgActionClip;
+                if (msg.asset is not MsgActionClip msgAsset) return;
                 msgAsset.blockId = item.blockId + 1;
                 msgAsset.msg = item.msg;
-                msgAsset.extMsgs = item.extMsgs;
+                msgAsset.extMsgs = item.extMsgArray;
                 msgAsset.autoJumpNext = item.autoJumpNext;
             }
 

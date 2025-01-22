@@ -1,7 +1,7 @@
 // wwwroot/fileDownload.js
 window.downloadFile = function (fileName, content) {
     // Create a Blob from the content
-    const blob = new Blob([content], { type: 'text/html' });
+    const blob = new Blob([content], {type: 'application/octet-stream'});
 
     // Create a hidden <a> tag
     const link = document.createElement('a');

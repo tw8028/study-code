@@ -3,36 +3,47 @@
 @inject IJSRuntime JsRuntime
 @using BlazorSimpleUI.Components.Template
 
-<PageTitle>Weather</PageTitle>
+<PageTitle>epub to html</PageTitle>
 <h1>Epub to Html</h1>
 <p>可删除不需要的章节</p>
 
 <div>
-    <InputFile OnChange="HandleFileSelected" style="width: 600px"/>
+    <InputFile OnChange="LoadFile" style="width: 600px"/>
     <button type="button" class="btn btn-primary" @onclick="DownloadFile">Download</button>
 </div>
 
-<TddTable Data="@Chapters">
-    <HeaderTemplate>
-        <th>Chapters</th>
-    </HeaderTemplate>
-    <RowTemplate>
-        <td>@context.Key</td>
-    </RowTemplate>
-    <Action Context="row">
-        <td>
-            <button class="btn btn-secondary btn-sm" @onclick="()=>DeleteChapter(row)">delete</button>
-        </td>
-    </Action>
-</TddTable>
+@if (isLoading)
+{
+    <p>IsLoading...</p>
+}
+else
+{
+    <TddTable Data="@Chapters">
+        <HeaderTemplate>
+            <th>Chapters</th>
+        </HeaderTemplate>
+        <RowTemplate>
+            <td>@context.Key</td>
+        </RowTemplate>
+        <Action Context="row">
+            <td>
+                <button class="btn btn-secondary btn-sm" @onclick="()=>DeleteChapter(row)">delete</button>
+            </td>
+        </Action>
+    </TddTable>
+}
+
 
 @code {
     private IBrowserFile? BrowserFile { get; set; }
     private string BookTitle { get; set; } = string.Empty;
     private List<EpubLocalTextContentFile> Chapters { get; set; } = [];
+    private bool isLoading;
+    private const long MaxAllowedSize = 1024 * 1024 * 100;
 
-    private async Task HandleFileSelected(InputFileChangeEventArgs e)
+    private async Task LoadFile(InputFileChangeEventArgs e)
     {
+        isLoading = true;
         string fileName = e.File.Name;
         if (!fileName.EndsWith(".epub"))
         {
@@ -42,12 +53,14 @@
 
         BrowserFile = e.File;
         string path = Path.Combine(HostEnv.WebRootPath, "BrowserFile", BrowserFile.Name);
-        await using var fs = new FileStream(path, FileMode.Create);
-        await BrowserFile.OpenReadStream(maxAllowedSize: 1024 * 1024 * 10).CopyToAsync(fs);
+        await using FileStream fs = new FileStream(path, FileMode.Create);
+        await BrowserFile.OpenReadStream(MaxAllowedSize).CopyToAsync(fs);
         EpubBook book = await EpubReader.ReadBookAsync(fs);
         BookTitle = book.Title;
         Chapters = book.Content.Html.Local.ToList();
+        
         StateHasChanged();
+        isLoading = false;
     }
 
     private void DeleteChapter(EpubLocalTextContentFile row)

@@ -1,74 +1,60 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEditor;
-using UnityEngine.UIElements;
-using PersonBrowser;
-using Sirenix.Utilities;
+﻿using System.IO;
+using Art.temp.Editor.CharacterData;
 using Framework;
-using CharacterData;
-using System.IO;
+using UnityEditor;
+using UnityEngine;
+using UnityEngine.UIElements;
 
-namespace PrefabTool
+namespace Art.temp.Editor.PrefabTool
 {
     public class PrefabBuilderWin : EditorWindow
     {
         [MenuItem("Test/prefab工具/Prefab Builder")]
-        public static void ShowWindow() { GetWindow<PrefabBuilderWin>("Prefab Builder"); }
+        public static void ShowWindow()
+        {
+            GetWindow<PrefabBuilderWin>("Prefab Builder");
+        }
 
         public void CreateGUI()
         {
+            var styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/Art/temp/Editor/CommonUSSFile.uss");
+            rootVisualElement.styleSheets.Add(styleSheet);
             Label label1 = new() { text = "Select fbx to build prefab" };
-            label1.style.unityTextAlign = TextAnchor.MiddleCenter;
-            label1.style.height = 30;
             rootVisualElement.Add(label1);
 
-            Button btn1 = new() { text = "apply" };
-            btn1.style.height = 30;
+            Button btn1 = new() {text ="apply" };
             rootVisualElement.Add(btn1);
-            btn1.RegisterCallback<ClickEvent>(evt => CreatePrefab());
+            btn1.RegisterCallback<ClickEvent>(_ => CreatePrefab());
 
 
-            Label label2 = new() { text = "using prefab to rebuild" };
-            label2.style.unityTextAlign = TextAnchor.MiddleCenter;
-            label2.style.height = 30;
+            Label label2 = new() {  text = "using prefab to rebuild"};
             rootVisualElement.Add(label2);
 
             Button btn2 = new() { text = "story car (select prefab)" };
-            btn2.style.height = 30;
             rootVisualElement.Add(btn2);
-            btn2.RegisterCallback<ClickEvent>(evt => CreateDisplayCar());
+            btn2.RegisterCallback<ClickEvent>(_ => CreateDisplayCar());
 
             Button btn3 = new() { text = "auto battery (select prefab)" };
-            btn3.style.height = 30;
             rootVisualElement.Add(btn3);
-            btn3.RegisterCallback<ClickEvent>(evt => CreateAutoBattery());
+            btn3.RegisterCallback<ClickEvent>(_ => CreateAutoBattery());
 
             Button btn4 = new() { text = "battle story character (by config)" };
-            btn4.style.height = 30;
             rootVisualElement.Add(btn4);
-            btn4.RegisterCallback<ClickEvent>(evt => CreateBattleCharacter());
+            btn4.RegisterCallback<ClickEvent>(_ => CreateBattleCharacter());
 
             Label label3 = new() { text = "test" };
-            label3.style.unityTextAlign = TextAnchor.MiddleCenter;
-            label3.style.height = 30;
             rootVisualElement.Add(label3);
             Button test = new() { text = "combine skinned mesh" };
-            test.style.height = 30;
             rootVisualElement.Add(test);
-            test.RegisterCallback<ClickEvent>(evt => Combine());
+            test.RegisterCallback<ClickEvent>(_ => Combine());
 
             Button show = new() { text = "show object" };
-            show.style.height = 30;
             rootVisualElement.Add(show);
-            show.RegisterCallback<ClickEvent>(evt => ShowInScene());
+            show.RegisterCallback<ClickEvent>(_ => ShowInScene());
         }
 
-        /// <summary>
-        /// 所有 item 变色必须手动创建预制体变体
-        /// </summary>
-        /// <param name="go"></param>
-        public static void CreatePrefab()
+
+        private static void CreatePrefab()
         {
             foreach (GameObject go in Selection.gameObjects)
             {
@@ -116,14 +102,13 @@ namespace PrefabTool
                     Debug.LogWarning("Invalid file name");
                 }
             }
+
             AssetDatabase.Refresh();
         }
 
-        /// <summary>
-        /// 使用 prefab 生成
-        /// </summary>
-        /// <param name="go"></param>
-        public static void CreateDisplayCar()
+
+        // 使用 prefab 生成
+        private static void CreateDisplayCar()
         {
             foreach (GameObject go in Selection.gameObjects)
             {
@@ -138,7 +123,8 @@ namespace PrefabTool
                 car.RebuildDisplay();
             }
         }
-        public static void CreateAutoBattery()
+
+        private static void CreateAutoBattery()
         {
             foreach (GameObject go in Selection.gameObjects)
             {
@@ -148,13 +134,14 @@ namespace PrefabTool
                     Debug.LogWarning("is not battery prefab");
                     return;
                 }
+
                 BatteryInfo battery = new(id);
                 battery.RebuildAuto();
             }
         }
 
         // 战斗角色 由 player npc 等创建
-        public static void CreateBattleCharacter()
+        private static void CreateBattleCharacter()
         {
             var battleCharacterData = EditorTableManager.instance.tables.FightNPCConfig.DataList;
             foreach (var battleCharacter in battleCharacterData)
@@ -169,7 +156,8 @@ namespace PrefabTool
                     // 重命名
                     prefab.name = "P_" + id;
                     // 保存 prefab
-                    PrefabUtility.UnpackPrefabInstance(prefab, PrefabUnpackMode.OutermostRoot, InteractionMode.AutomatedAction);
+                    PrefabUtility.UnpackPrefabInstance(prefab, PrefabUnpackMode.OutermostRoot,
+                        InteractionMode.AutomatedAction);
                     string path = $"Assets/Art/Character/Prefabs/Npc/{prefab.name}.prefab";
                     PrefabUtility.SaveAsPrefabAssetAndConnect(prefab, path, InteractionMode.AutomatedAction);
                     Debug.Log($"创建战斗剧情角色：{prefab}");
@@ -177,9 +165,9 @@ namespace PrefabTool
             }
         }
 
-        public void ShowInScene()
+        private void ShowInScene()
         {
-            GameObject[] objects = Selection.gameObjects;
+            var objects = Selection.gameObjects;
             for (int i = 0; i < objects.Length; i++)
             {
                 GameObject prefab = (GameObject)PrefabUtility.InstantiatePrefab(objects[i]);
@@ -187,13 +175,13 @@ namespace PrefabTool
             }
         }
 
-        public void Combine()
+        private static void Combine()
         {
             GameObject obj = Selection.activeGameObject;
             AnimHelper.PreSetAll(obj);
-            var go = Object.Instantiate<GameObject>(obj);
+            var go = Object.Instantiate(obj);
             var nameId = obj.name.Split('_')[2];
-            var texNames = new string[] { "_MainTex", "_MaskTex" };
+            var texNames = new[] { "_MainTex", "_MaskTex" };
             var parentPath = $"Assets/Art/temp/Prefab/character_{nameId}";
             if (!Directory.Exists(parentPath))
             {

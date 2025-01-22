@@ -1,0 +1,12 @@
+Box {
+    margin-top: 20px;
+}
+
+Button {
+    height: 24px;
+}
+
+Label {
+    -unity-text-align: middle-center;
+    height: 24px;
+}

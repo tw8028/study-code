@@ -1,5 +1,20 @@
 Label {
-	width: 100px;
-	
-	display: inline-block;
+    width: 100px;
+}
+
+Button {
+    width: 160px;
+    height: 30px;
+}
+
+#header {
+    flex-direction: row;
+    height: 30px;
+    font-size: 16px;
+}
+
+#row {
+    flex-direction: row;
+    height: 20px;
+    font-size: 12px;
 }
