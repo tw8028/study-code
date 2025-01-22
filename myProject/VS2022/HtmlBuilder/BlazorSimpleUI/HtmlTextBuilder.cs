@@ -1,7 +1,6 @@
 using System.Text;
-using VersOne.Epub;
 
-namespace HtmlBuilder;
+namespace BlazorSimpleUI;
 
 public static class HtmlTextBuilder
 {

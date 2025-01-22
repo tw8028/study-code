@@ -1,17 +1,16 @@
 ﻿@page "/weather"
+@inject IWebHostEnvironment HostEnv
 @inject IJSRuntime JsRuntime
 @using BlazorSimpleUI.Components.Template
 
-
 <PageTitle>Weather</PageTitle>
 <h1>Epub to Html</h1>
-<p>可删除不需要的章节导出</p>
+<p>可删除不需要的章节</p>
 
-<p>
-    <InputFile OnChange="HandleFileSelected"/>
-</p>
-<button type="button" class="btn btn-primary" @onclick="DownloadFile">Download</button>
-
+<div>
+    <InputFile OnChange="HandleFileSelected" style="width: 600px"/>
+    <button type="button" class="btn btn-primary" @onclick="DownloadFile">Download</button>
+</div>
 
 <TddTable Data="@Chapters">
     <HeaderTemplate>
@@ -27,10 +26,8 @@
     </Action>
 </TddTable>
 
-
-
 @code {
-    private IBrowserFile? EpubFile { get; set; }
+    private IBrowserFile? BrowserFile { get; set; }
     private string BookTitle { get; set; } = string.Empty;
     private List<EpubLocalTextContentFile> Chapters { get; set; } = [];
 
@@ -43,10 +40,11 @@
             return;
         }
 
-        EpubFile = e.File;
-        using var memoryStream = new MemoryStream();
-        await EpubFile.OpenReadStream(maxAllowedSize: 1024 * 1024 * 10).CopyToAsync(memoryStream);
-        EpubBook book = await EpubReader.ReadBookAsync(memoryStream);
+        BrowserFile = e.File;
+        string path = Path.Combine(HostEnv.WebRootPath, "BrowserFile", BrowserFile.Name);
+        await using var fs = new FileStream(path, FileMode.Create);
+        await BrowserFile.OpenReadStream(maxAllowedSize: 1024 * 1024 * 10).CopyToAsync(fs);
+        EpubBook book = await EpubReader.ReadBookAsync(fs);
         BookTitle = book.Title;
         Chapters = book.Content.Html.Local.ToList();
         StateHasChanged();
