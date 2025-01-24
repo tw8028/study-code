@@ -1,0 +1,2 @@
+D:\GitHub\study-code\myProject\VS2022\HtmlBuilder\ConsoleApp1;
+D:\GitHub\study-code\myProject\PycharmProjects\mayaProject
