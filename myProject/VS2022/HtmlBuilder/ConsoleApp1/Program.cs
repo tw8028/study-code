@@ -6,7 +6,7 @@ Runtime.PythonDLL = "Python312";
 
 PythonEngine.Initialize();
 
-// Console.WriteLine("path: " + PythonEngine.PythonPath);
+Console.WriteLine("path: " + PythonEngine.PythonPath);
 
 
 using (Py.GIL())
