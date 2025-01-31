@@ -8,11 +8,7 @@
 
     <ItemGroup>
       <PackageReference Include="Markdig" Version="0.40.0" />
-      <PackageReference Include="VersOne.Epub" Version="3.3.3" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="wwwroot\BrowserFile\" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.1" />
     </ItemGroup>
 
 </Project>

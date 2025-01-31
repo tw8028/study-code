@@ -1,7 +1,38 @@
 ﻿@page "/"
+@inject IWebHostEnvironment HostEnv
+@inject IJSRuntime JsRuntime
 
 <PageTitle>Home</PageTitle>
 
 <h1>Hello, world!</h1>
 
 Welcome to your new app.
+
+<div>
+    <InputFile OnChange="LoadFile" style="width: 600px"/>
+    <button type="button" class="btn btn-primary" @onclick="DownloadFile">Download</button>
+</div>
+
+@code
+{
+    private string path = string.Empty;
+    private string fileName = string.Empty;
+    private const long MaxAllowedSize = 1024 * 1024 * 100;
+    private async Task LoadFile(InputFileChangeEventArgs e)
+    {
+        fileName = e.File.Name;
+        IBrowserFile browserFile = e.File;
+        path = Path.Combine(HostEnv.WebRootPath, "BrowserFile", browserFile.Name);
+        await using FileStream fs = new FileStream(path, FileMode.Create);
+        await browserFile.OpenReadStream(MaxAllowedSize).CopyToAsync(fs);
+        Console.WriteLine(path);
+    }
+    
+    private async Task DownloadFile()
+    {
+        string markDown = await File.ReadAllTextAsync(path);
+        string content = Markdown.ToHtml(markDown);
+        // 调用 JavaScript 函数触发下载
+        await JsRuntime.InvokeVoidAsync("downloadFile", fileName, content);
+    }
+}
