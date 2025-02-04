@@ -3,12 +3,66 @@
 
 <PageTitle>Config</PageTitle>
 
-<TddTable Data="CharacterData"></TddTable>
+<button class="btn btn-primary btn-sm" @onclick="ShowNewModal">New</button>
+
+
+<TddTable Data="CharacterData">
+    <HeaderTemplate>
+        <th>Id</th>
+        <th>Name</th>
+        <th>Description</th>
+        <th>SystemPrompt</th>
+        <th>CreateTime</th>
+        <th>Action</th>
+    </HeaderTemplate>
+
+    <RowTemplate>
+        <td>@context.Id</td>
+        <td>@context.Name</td>
+        <td>@context.Description</td>
+        <td>@context.SystemPrompt</td>
+        <td>@context.CreateTime</td>
+    </RowTemplate>
+
+    <Action Context="row">
+        <td>
+            <button class="btn btn-primary btn-sm" @onclick="()=>ShowEditModal(row)">edit</button>
+            <button class="btn btn-secondary btn-sm" @onclick="()=>ShowDeleteModal(row)">delete</button>
+        </td>
+    </Action>
+</TddTable>
 
 
 
 @code{
     private List<Character> CharacterData => DataBase.GetAllCharactersAsync().Result;
+    [CascadingParameter] public IModalService Modal { get; set; } = default!;
 
+    private async Task ShowNewModal()
+    {
+        var newForm = Modal.Show<ConfigModal>("new character");
+        var result = await newForm.Result;
+        if (result.Confirmed)
+        {
+            var returnData = (Character)result.Data!;
+            await DataBase.AddCharacterAsync(returnData);
+            StateHasChanged();
+        }
+    }
+
+    private async Task ShowEditModal(Character row)
+    {
+        var parameters = new ModalParameters().Add(nameof(ConfigModal.Item), row);
+        var configForm = Modal.Show<ConfigModal>("edit character", parameters);
+        var result = await configForm.Result;
+        if (result.Confirmed)
+        {
+            var returnData = (Character)result.Data!;
+            await DataBase.UpdateCharacterAsync(returnData);
+            StateHasChanged();
+        }
+    }
+
+    private async Task ShowDeleteModal(Character row) => await DataBase.DeleteCharacterAsync(row.Id);
 
 }

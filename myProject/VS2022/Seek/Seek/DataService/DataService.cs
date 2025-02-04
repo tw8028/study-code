@@ -26,6 +26,19 @@ public class DataService
     public async Task<List<Character>> GetAllCharactersAsync()
         => await context.Characters.ToListAsync();
 
+    public async Task<int> UpdateCharacterAsync(Character character)
+    {
+        var existing = await context.Characters.FindAsync(character.Id);
+        if (existing == null) return 0;
+
+        existing.Name = character.Name;
+        existing.Description = character.Description;
+        existing.SystemPrompt = character.SystemPrompt;
+
+        context.Characters.Update(existing);
+        return await context.SaveChangesAsync();
+    }
+
     public async Task<int> DeleteCharacterAsync(int id)
     {
         var character = await context.Characters.FindAsync(id);

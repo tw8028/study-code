@@ -1,0 +1,24 @@
+<EditForm Model="Item" OnValidSubmit="SubmitForm">
+    <label>Name</label>
+    <br/>
+    <InputText @bind-Value="Item.Name"/>
+    <br/>
+    <label>Description</label>
+    <br/>
+    <InputText @bind-Value="Item.Description"/>
+    <br/>
+    <label>SystemPrompt</label>
+    <br/>
+    <InputText @bind-Value="Item.SystemPrompt"/>
+    <br/>
+    <button class="btn btn-primary" style="width:100px; float:right" type="submit">OK</button>
+</EditForm>
+
+
+@code {
+    [Parameter] public Character Item { get; set; } = new();
+    [CascadingParameter] BlazoredModalInstance Modal { get; set; } = default!;
+    
+    private async Task SubmitForm() => await Modal.CloseAsync(ModalResult.Ok(Item));
+}
+

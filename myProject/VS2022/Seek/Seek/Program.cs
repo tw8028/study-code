@@ -1,4 +1,5 @@
 using System.Net.Http.Headers;
+using Blazored.Modal;
 using Seek.Components;
 using Seek.ValueObject;
 using Seek.DataService;
@@ -8,6 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+builder.Services.AddBlazoredModal();
 
 // Add http client service
 var key = Environment.GetEnvironmentVariable("SEEK_API_KEY");
