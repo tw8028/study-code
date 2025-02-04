@@ -8,7 +8,7 @@ namespace Seek.DataService;
 public class SeekDbContext : DbContext
 {
     public DbSet<Character> Characters { get; set; }
-    public DbSet<ChatMessage> ChatMessages { get; set; }
+    public DbSet<Chat> ChatMessages { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) =>
         optionsBuilder.UseSqlite(connectionString:"Data Source=SeekSqlite.dat");
@@ -20,7 +20,7 @@ public class SeekDbContext : DbContext
             entity.HasKey(character => character.Id);
             entity.Property(character => character.CreateTime).HasDefaultValueSql("CURRENT_TIMESTAMP");
         });
-        modelBuilder.Entity<ChatMessage>(entity =>
+        modelBuilder.Entity<Chat>(entity =>
         {
             entity.HasKey(chatMessage => chatMessage.Id);
             entity.Property(chatMessage => chatMessage.Messages)

@@ -13,4 +13,5 @@ public static class MessageFactory
     public static Message System(string content) => new Message(role: "system", content: content);
     public static Message User(string content) => new Message(role: "user", content: content);
     public static Message Assistant(string content) => new Message(role: "assistant", content: content);
+    public static Message Reasoning(string content) => new Message(role: "reasoning", content: content);
 }

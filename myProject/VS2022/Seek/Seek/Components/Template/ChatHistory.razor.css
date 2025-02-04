@@ -1,0 +1,13 @@
+.chat-history {
+    width: 300px;
+    overflow-y: auto;
+}
+
+
+.chat-link {
+    width: 250px;
+    display: inline-block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

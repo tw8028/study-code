@@ -20,7 +20,7 @@ public class ChatResponse
             this.Content = message.GetProperty("content").GetString();
             try
             {
-                this.ReasoningContent = message.GetProperty("reasoningContent").GetString();
+                this.ReasoningContent = message.GetProperty("reasoning_content").GetString();
             }
             catch (Exception)
             {

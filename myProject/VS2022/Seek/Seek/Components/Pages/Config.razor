@@ -1,0 +1,14 @@
+﻿@page "/config"
+@inject DataService DataBase
+
+<PageTitle>Config</PageTitle>
+
+<TddTable Data="CharacterData"></TddTable>
+
+
+
+@code{
+    private List<Character> CharacterData => DataBase.GetAllCharactersAsync().Result;
+
+
+}

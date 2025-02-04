@@ -35,18 +35,30 @@ public class DataService
     }
 
     // ChatMessage CRUD
-    public async Task<int> AddChatMessageAsync(ChatMessage chatMessage)
+    public async Task<int> AddChatMessageAsync(Chat chat)
     {
-        context.ChatMessages.Add(chatMessage);
+        context.ChatMessages.Add(chat);
         return await context.SaveChangesAsync();
     }
 
-    public async Task<ChatMessage?> GetChatMessageAsync(int id)
+    public async Task<Chat?> GetChatMessageAsync(int id)
         => await context.ChatMessages.FindAsync(id);
 
-    public async Task<List<ChatMessage>> GetAllChatMessagesAsync()
+    public async Task<List<Chat>> GetAllChatMessagesAsync()
         => await context.ChatMessages.ToListAsync();
 
+    public async Task<int> UpdateChatMessageAsync(Chat chat)
+    {
+        // context.ChatMessages.Update(chatMessage);
+        var existing = await context.ChatMessages.FindAsync(chat.Id);
+        if (existing == null) return 0;
+
+        existing.Title = chat.Title;
+        existing.Messages = chat.Messages;
+
+        context.ChatMessages.Update(existing);
+        return await context.SaveChangesAsync();
+    }
 
     public async Task<int> DeleteChatMessageAsync(int id)
     {

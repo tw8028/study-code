@@ -1,0 +1,12 @@
+@inject DataService DataBase
+
+<div class="chat-history">
+    @foreach (Chat msg in ChatMessagesData)
+    {
+        <a class="chat-link" href="chat/@msg.Id">@msg.Title</a>
+    }
+</div>
+
+@code{
+    private List<Chat> ChatMessagesData => DataBase.GetAllChatMessagesAsync().Result;
+}

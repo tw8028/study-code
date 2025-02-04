@@ -1,0 +1,107 @@
+﻿@page "/"
+@page "/chat/{Page:int}"
+@inject ChatRequest ChatRequestService
+@inject DataService DataBase
+
+<PageTitle>Chat</PageTitle>
+<div style="display: flex">
+    <ChatHistory/>
+    <div style="display: flex;flex: 1; flex-direction: column; height: 90vh">
+        <div class="input-group mb-3">
+            <a href="/">
+                <button class="btn btn-outline-secondary" type="button" @onclick="NewChat">new</button>
+            </a>
+            <div class="input-group-prepend">
+                <span class="input-group-text" id="basic-addon1">@@system</span>
+            </div>
+            <input type="text" class="form-control" placeholder="character setting" aria-label="character setting"
+                   aria-describedby="basic-addon1" @bind="prompt">
+        </div>
+
+        <div style="flex: 1; overflow-y: auto">
+            @if (currentChat is not null)
+            {
+                foreach (Message msg in currentChat.Messages)
+                {
+                    <h5 style="color:green">@msg.Role</h5>
+                    string content = Markdown.ToHtml(msg.Content);
+                    @((MarkupString)content)
+                }
+            }
+        </div>
+
+        <div class="input-group" style="padding: 20px">
+            <div class="input-group-prepend">
+                <button class="btn btn-success" type="button" @onclick="SubmitText" disabled="@isLoading">Button
+                </button>
+            </div>
+            <textarea class="form-control" aria-label="With textarea" @bind="inputText"></textarea>
+        </div>
+    </div>
+</div>
+
+
+
+@code {
+    [Parameter] public int Page { get; set; }
+    private const string Model = ValueObject.Model.R1;
+    private string? prompt = "你是一个计算机科学家，专门解答C#，.net相关的编程问题。";
+    private string? inputText;
+    private bool isLoading;
+    private Chat? currentChat;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        Chat? chatHistory = await DataBase.GetChatMessageAsync(Page);
+        if (chatHistory is not null)
+        {
+            currentChat = chatHistory;
+        }
+    }
+
+    private async Task SubmitText()
+    {
+        if (string.IsNullOrEmpty(inputText) || string.IsNullOrEmpty(prompt)) return;
+        if (currentChat is null)
+        {
+            // add new ChatMessage
+            currentChat = new Chat()
+            {
+                Title = inputText,
+                Messages = [MessageFactory.System(prompt)]
+            };
+            await DataBase.AddChatMessageAsync(currentChat);
+        }
+
+        currentChat.Messages.Add(MessageFactory.User(inputText));
+        // 请求并接收分析 response
+        inputText = null;
+        isLoading = true;
+
+        List<Message> requestMessages = currentChat.Messages.Where(message => message.Role != "reasoning").ToList();
+        ChatResponse response = await ChatRequestService.GetChatCompletionAsync(requestMessages, Model);
+        if (response.ReasoningContent != null)
+        {
+            currentChat.Messages.Add(MessageFactory.Reasoning(response.ReasoningContent));
+            Console.WriteLine("推理模型");
+        }
+
+        if (response.Content != null)
+        {
+            currentChat.Messages.Add(MessageFactory.Assistant(response.Content));
+            // update ChatMessage
+            await DataBase.UpdateChatMessageAsync(currentChat);
+        }
+
+        // show chat
+        isLoading = false;
+        StateHasChanged();
+    }
+
+    private void NewChat()
+    {
+        currentChat = null;
+        inputText = null;
+    }
+
+}

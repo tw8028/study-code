@@ -1,0 +1,37 @@
+﻿@page "/history"
+@inject DataService DataBase
+
+<PageTitle>History</PageTitle>
+
+<TddTable Data="ChatData">
+    <HeaderTemplate>
+        <th>Id</th>
+        <th>Title</th>
+        <th>CreateTime</th>
+        <th>Action</th>
+    </HeaderTemplate>
+    <RowTemplate>
+        <td>@context.Id</td>
+        <td>
+            <a class="chat-link" href="chat/@context.Id">@context.Title</a>
+        </td>
+        <td>@context.CreateTime</td>
+    </RowTemplate>
+    <Action Context="row">
+        <td>
+            <button class="btn btn-secondary btn-sm" @onclick="()=>DeleteItem(row)">delete</button>
+        </td>
+    </Action>
+</TddTable>
+
+@code{
+    private List<Chat> ChatData => DataBase.GetAllChatMessagesAsync().Result;
+
+    private async Task DeleteItem(Chat row)
+    {
+        await DataBase.DeleteChatMessageAsync(row.Id);
+        ChatData?.Remove(row);
+        StateHasChanged();
+    }
+
+}

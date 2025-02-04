@@ -1,0 +1,7 @@
+.chat-link {
+    width: 500px;
+    display: inline-block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
