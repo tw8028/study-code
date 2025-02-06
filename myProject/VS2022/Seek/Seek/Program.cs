@@ -3,6 +3,7 @@ using Blazored.Modal;
 using Seek.Components;
 using Seek.ValueObject;
 using Seek.DataService;
+using Seek.HttpService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,7 +14,7 @@ builder.Services.AddBlazoredModal();
 
 // Add http client service
 var key = Environment.GetEnvironmentVariable("SEEK_API_KEY");
-builder.Services.AddHttpClient<ChatRequest>(client =>
+builder.Services.AddHttpClient<ChatRequestService>(client =>
 {
     client.BaseAddress = new Uri("https://api.deepseek.com/");
     client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", key);

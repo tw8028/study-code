@@ -1,7 +1,8 @@
 ﻿@page "/"
 @page "/chat/{Page:int}"
 @using Seek.Components.Layout
-@inject ChatRequest ChatRequestService
+@using Seek.HttpService
+@inject ChatRequestService ChatRequestService
 @inject DataService DataBase
 
 <PageTitle>Chat</PageTitle>
@@ -80,7 +81,8 @@
         isLoading = true;
 
         List<Message> requestMessages = currentChat.Messages.Where(message => message.Role != "reasoning").ToList();
-        ChatResponse response = await ChatRequestService.GetChatCompletionAsync(requestMessages, Model);
+        ChatRequest chatRequest = new() { Model = Home.Model , Messages = requestMessages};
+        ChatResponse response = await ChatRequestService.GetChatCompletionAsync(chatRequest);
         if (response.ReasoningContent != null)
         {
             currentChat.Messages.Add(MessageFactory.Reasoning(response.ReasoningContent));
