@@ -8,7 +8,7 @@
         <label>@propertyInfo.Name:</label>
         <br/>
         <input @bind:get="propertyInfo.GetValue(Item)?.ToString()"
-               @bind:set="_CreateInferredReference(propertyInfo.GetValue(Item)?.ToString(), ((v)=>propertyInfo.SetValue(Item,v)))"/>
+               @bind:set="((v)=>propertyInfo.SetValue(Item,v))"/> 
         <br/>
         <br/>
     }
