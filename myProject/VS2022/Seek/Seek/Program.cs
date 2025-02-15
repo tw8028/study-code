@@ -1,7 +1,6 @@
 using System.Net.Http.Headers;
 using Blazored.Modal;
 using Seek.Components;
-using Seek.ValueObject;
 using Seek.DataService;
 using Seek.HttpService;
 
@@ -13,10 +12,11 @@ builder.Services.AddRazorComponents()
 builder.Services.AddBlazoredModal();
 
 // Add http client service
-var key = Environment.GetEnvironmentVariable("SEEK_API_KEY");
+// var key = Environment.GetEnvironmentVariable("nvapi");
+const string key = "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";
 builder.Services.AddHttpClient<ChatRequestService>(client =>
 {
-    client.BaseAddress = new Uri("https://api.deepseek.com/");
+    client.BaseAddress = new Uri("https://integrate.api.nvidia.com/v1/");
     client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", key);
 });
 
