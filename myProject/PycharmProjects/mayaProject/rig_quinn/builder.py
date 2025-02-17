@@ -49,13 +49,13 @@ def create():
     foot_r = Foot('foot_r', 'ball_r')
 
     spine = Spine("spine_05", "spine_04", "spine_03", "spine_02", "spine_01", "pelvis")
-    spine.create_ikjnts()
+    spine.create_ik_joints()
     spine.create_cv()
 
     yield
 
     spine.create_ctrl()
-    spine.constraint_ikjnts()
+    spine.constraint_ik_joints()
     clavicle = Clavicle("clavicle_l", "clavicle_r", spine.end_ctrl)
 
     arm_l = SwitchLimb("upperarm_l", "lowerarm_l", "hand_l", (1, 0, 0))

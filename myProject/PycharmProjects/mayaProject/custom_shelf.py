@@ -138,7 +138,7 @@ def main():
     importlib.reload(switch)
     importlib.reload(neck)
     CustomShelf()
-    print('relord custom shelf...')
+    print('reload custom shelf...')
 
 
 if __name__ == '__main__':

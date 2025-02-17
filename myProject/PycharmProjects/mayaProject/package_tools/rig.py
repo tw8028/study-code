@@ -110,9 +110,12 @@ def twist_drive(driver, no_roll, driven, value):
     multiply_divide.outputX >> pm.PyNode(driven).rotateX
 
 
-def normalaize(vector):
+def normalize(vector):
     norm = (vector[0] ** 2 + vector[1] ** 2 + vector[2] ** 2) ** 0.5
-    return [vector[n] / norm for n in range(3)]
+    if norm == 0:
+        return vector.copy()
+    # return [vector[n] / norm for n in range(3)]
+    return tuple(x / norm for x in vector)
 
 
 # 使用 offset parent Matrix 做矩阵约束的优势:
@@ -136,7 +139,7 @@ def joint_connect(driver, driven):
     return input_point
 
 
-# 在driver上创建对齐到driven的output组，通过约束driven到output组，使driven保持偏移
+# 在driver上创建对齐到driven的output_grp，通过约束driven到output_grp，使driven保持偏移
 # 此函数不考虑 scale offset
 def constraint(driver, driven, *, t=False, ro=False, s=False, mo=False):
     if mo:

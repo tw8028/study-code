@@ -29,7 +29,7 @@ def neck_stretch(neck_01, inset_num):
     part_jnts = jnt.insert(neck_01, inset_num)
 
     rig.stretch_jnt(neck_ctrl, head_ctrl, ik_jnt0, neck_01, *part_jnts)
-    rig.twist_drive(head_ctrl, ik_jnt0, part_jnts)
+    rig.twist_drive(head_ctrl, ik_jnt0, part_jnts, inset_num)
 
     pm.parentConstraint(ik_jnt0, neck_01)
     pm.parentConstraint(ik_jnt1, head)
