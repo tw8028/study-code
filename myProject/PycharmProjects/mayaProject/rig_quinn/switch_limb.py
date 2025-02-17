@@ -64,9 +64,9 @@ class SwitchLimb:
         vec0 = pm.xform(self.ik_upper, q=True, t=True, ws=True)
         vec1 = pm.xform(self.ik_lower, q=True, t=True, ws=True)
         vec2 = pm.xform(self.ik_end, q=True, t=True, ws=True)
-        vec_up = rig.normalaize([vec1[n] - vec0[n] for n in range(3)])
-        vec_down = rig.normalaize([vec1[n] - vec2[n] for n in range(3)])
-        direction_pole_vector = rig.normalaize([vec_up[n] + vec_down[n] for n in range(3)])
+        vec_up = rig.normalize([vec1[n] - vec0[n] for n in range(3)])
+        vec_down = rig.normalize([vec1[n] - vec2[n] for n in range(3)])
+        direction_pole_vector = rig.normalize([vec_up[n] + vec_down[n] for n in range(3)])
         pm.xform(self.pole_offset, t=[vec1[n] + direction_pole_vector[n] * 40 for n in range(3)], ws=True)
         pm.poleVectorConstraint(pole_ctrl, handle)
 

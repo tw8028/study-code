@@ -35,7 +35,6 @@ def offset_grp(*args):
     for i in objs:
         create(i)
 
-
 def main():
     if pm.window('Tools', ex=True):
         pm.deleteUI('Tools')
