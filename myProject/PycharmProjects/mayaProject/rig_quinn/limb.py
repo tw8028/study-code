@@ -8,8 +8,8 @@ import package_tools.rig as rig
 
 
 # mode: ik + mid + stretch + no_flip_ik
-# upperarm_l
-# lowerarm_l
+# upperArm_l
+# lowerArm_l
 # hand_l
 class Limb:
     def __init__(self, upper, lower, end, aim_vector):
