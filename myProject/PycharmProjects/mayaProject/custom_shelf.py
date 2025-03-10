@@ -29,20 +29,15 @@ def align(*args):
 
 # create rig group
 def rig_grp(*args):
-    pm.group(empty=True, name='Group')
-    pm.group(empty=True, name='Geometry')
-    pm.group(empty=True, name='DeformationSystem')
-    pm.group(empty=True, name='MotionSystem')
-    pm.parent('Geometry', 'DeformationSystem', 'MotionSystem', 'Group')
+    master=pm.group(empty=True, name='master')
+    geo=pm.group(empty=True, name='Geometry')
+    ctrl=pm.group(empty=True, name='control')
+    jnt=pm.group(empty=True, name='joint')
+    pm.parent(geo, ctrl, jnt, master)
 
-    pm.group(empty=True, name='MainSystem')
-    pm.circle(nr=(0, 1, 0), r=30, name='world_ctrl', ch=False)
-    pm.circle(nr=(0, 1, 0), r=25, name='local_ctrl', ch=False)
-    pm.circle(nr=(0, 1, 0), r=20, name='Main', ch=False)
-    group_p = 'MotionSystem'
-    for i in ['MainSystem', 'world_ctrl', 'local_ctrl', 'Main']:
-        pm.parent(i, group_p)
-        group_p = i
+    pm.group(empty=True, name='zero_c_world_001')
+    pm.circle(nr=(0, 1, 0), r=30, name='ctrl_c_world_001', ch=False)
+
 
 
 # create offset group
