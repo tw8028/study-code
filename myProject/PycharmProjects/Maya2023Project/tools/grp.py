@@ -1,6 +1,12 @@
 import pymel.core as pm
 
 
+def zero(name, target):
+    zero_group = on_target(name, target)
+    pm.parent(target, zero_group)
+    return zero_group
+
+
 # create a group on the target position
 def on_target(name, target):
     grp = sub(name, target)

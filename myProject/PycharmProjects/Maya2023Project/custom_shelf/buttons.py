@@ -1,4 +1,6 @@
 import pymel.core as pm
+import tools.grp as grp
+import tools.attr as attr
 
 
 def reset(*args):
@@ -19,6 +21,7 @@ def grp_master(*args):
     world_ctrl = pm.circle(nr=(0, 1, 0), r=30, name='ctrl__c__world__001', ch=False)
     pm.parent(world_ctrl, world_zero)
     pm.parent(world_zero, ctrl)
+    attr.lock_hide_transform(world_zero)
 
     pm.addAttr('master', ln='geometryVis', at='bool', dv=1)
     pm.addAttr('master', ln='geoDisplayType', at='enum', enumName='Normal:Template:Reference')
@@ -32,24 +35,17 @@ def grp_master(*args):
     master.geoDisplayType >> geo.overrideDisplayType
     master.controlVis >> ctrl.visibility
     master.jointVis >> jnt.visibility
-
-
-def grp_obj(target, prefix='grp__'):
-    grp_name = prefix + target.split('__', 1)[1]
-    grp = pm.group(empty=True, n=grp_name)
-    pm.parent(grp, target)
-    pm.xform(grp, t=(0, 0, 0), ro=(0, 0, 0), roo=pm.xform(target, q=True, roo=True))
-    pm.parent(grp, w=True)
-    return grp
+    for item in [master, geo, ctrl, jnt]:
+        attr.lock_hide_transform(item)
 
 
 def grp_zero(*args):
     target = pm.selected()[0]
-    zero_grp = grp_obj(target, 'zero__')
-    pm.parent(target, zero_grp)
+    grp_name = 'zero__' + target.split('__', 1)[1]
+    return grp.zero(grp_name, target)
 
 
 def grp_sub(*args):
     target = pm.selected()[0]
-    sub_grp = grp_obj(target, 'sub__')
-    pm.parent(sub_grp, target)
+    grp_name = 'sub__' + target.split('__', 1)[1]
+    return grp.sub(grp_name, target)
