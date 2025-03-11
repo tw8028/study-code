@@ -1,8 +1,11 @@
 import pymel.core as pm
 import importlib
 import custom_shelf.buttons
-import tools.grp
 import tools.attr
+import tools.cv
+import tools.drive
+import tools.grp
+import tools.jnt
 
 
 def add_button(iol, label, func):
@@ -30,10 +33,14 @@ def rebuild():
 
 def main():
     importlib.reload(custom_shelf.buttons)
-    importlib.reload(tools.grp)
     importlib.reload(tools.attr)
+    importlib.reload(tools.cv)
+    importlib.reload(tools.drive)
+    importlib.reload(tools.grp)
+    importlib.reload(tools.jnt)
+
     rebuild()
-    print('reload shelf...')
+    print('rebuild shelf...')
 
 
 if __name__ == '__main__':
