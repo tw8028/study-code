@@ -10,6 +10,7 @@
 
 @code {
 	private string? message;
+
 	protected override void OnInitialized()
 	{
 		message = "……";
@@ -56,4 +57,5 @@
 		await Task.WhenAll(carTable.ToJson());
 		message = carTable.JsonPath;
 	}
+
 }
