@@ -26,6 +26,27 @@ def insert(start_jnt, num=1):
     return jnt_parts
 
 
+def on_curve(curve, num):
+    u_value = 1 / num
+    curve_shape = curve.getShape()
+    loc = pm.spaceLocator()
+    pm.select(cl=True)
+    motion_path = pm.createNode('motionPath')
+    # set Parametirc Length false
+    # Getting uniform positions along a curve
+    motion_path.fractionMode.set(1)
+    curve_shape.worldSpace >> motion_path.geometryPath
+    motion_path.allCoordinates >> loc.translate
+    jnt_p = None
+    for n in range(num + 1):
+        motion_path.uValue.set(n * u_value)
+        jnt = pm.joint(position=pm.xform(loc, q=True, t=True, ws=True))
+        if jnt_p is not None:
+            pm.parent(jnt, jnt_p)
+        jnt_p = jnt
+    pm.delete(loc, motion_path)
+
+
 if __name__ == '__main__':
     sel = pm.selected()[0]
     insert(sel, 2)

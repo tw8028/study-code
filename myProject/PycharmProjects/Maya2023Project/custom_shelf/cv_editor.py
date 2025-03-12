@@ -2,6 +2,7 @@ import pymel.core as pm
 import tools.cv as cv
 import rig.curve_rig as curve_rig
 
+
 def create(*args):
     radio_collection = pm.radioCollection('cv_type', q=True, select=True)
     shape = pm.radioButton(radio_collection, q=True, label=True)
@@ -43,15 +44,16 @@ def change(*args):
 
 def connect(*args):
     sl = pm.selected()
-    curve_rig.connect_line(sl[0], sl[1])
+    cv.connect_line(sl[0], sl[1])
+
 
 def mirror(*args):
-    pass
+    raise NotImplementedError('未实现的功能')
 
 
 def point_ctrl(*args):
     sl = pm.selected()
-    curve_rig.point_ctrl(sl[0])
+    curve_rig.ctrl_by_loc(sl[0])
 
 
 def get_message(*args):
@@ -67,7 +69,7 @@ def get_message(*args):
 def path_cons(*args):
     sl = pm.selected()
     num = pm.intField('path_num', q=True, v=True)
-    curve_rig.path_constraint(sl[0],num)
+    curve_rig.loc_on_curve(sl[0], num)
 
 
 def main():
@@ -89,7 +91,7 @@ def main():
                     pm.radioButton(label='triangle')
 
                 with pm.rowLayout(numberOfColumns=3):
-                    pm.floatField('radius1', value=10)
+                    pm.floatField('radius1', value=1, w=60)
                     pm.button(label='Create', command=create)
                     pm.button(label='Change', command=change)
 
@@ -100,7 +102,7 @@ def main():
                     pm.button(label='point ctrl', command=point_ctrl)
                     pm.button(label='get message', command=get_message)
                 with pm.rowLayout(nc=2):
-                    pm.intField('path_num', value=0, w=40)
+                    pm.intField('path_num', value=0, w=60)
                     pm.button(label='pathConstraint', command=path_cons)
 
         pm.window(name, e=True, title='Curve Editor', wh=(240, 360))

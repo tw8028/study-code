@@ -1,6 +1,7 @@
 import pymel.core as pm
 import tools.attr as attr
 
+
 def zero(name, target):
     zero_group = on_target(name, target)
     pm.parent(target, zero_group)
@@ -20,6 +21,7 @@ def sub(name, target):
     pm.parent(sub_group, target)
     pm.xform(sub_group, t=(0, 0, 0), ro=(0, 0, 0), roo=pm.xform(target, q=True, roo=True))
     return sub_group
+
 
 def master():
     master = pm.group(empty=True, name='master')

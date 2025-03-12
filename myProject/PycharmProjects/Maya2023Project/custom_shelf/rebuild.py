@@ -2,6 +2,8 @@ import pymel.core as pm
 import importlib
 import custom_shelf.buttons
 import custom_shelf.cv_editor
+import custom_shelf.jnt_editor
+import rig.curve_rig
 import tools.attr
 import tools.cv
 import tools.drive
@@ -27,15 +29,19 @@ def clear():
 def rebuild():
     clear()
     add_button('Reset', 'reset attr to zero', 'reset')
-    add_button('Master', 'create rig group', 'grp_master')
-    add_button('Zero', 'create zero group', 'grp_zero')
-    add_button('Sub', 'create sub group', 'grp_sub')
-    add_button('Cv','curve editor','show_cv_editor')
+    add_button('Name', 'rename object', 'name')
+    add_button('gMaster', 'create rig group', 'grp_master')
+    add_button('gZero', 'create zero group', 'grp_zero')
+    add_button('gSub', 'create sub group', 'grp_sub')
+    add_button('wCv', 'curve editor', 'show_cv_editor')
+    add_button('wJnt','joint editor', 'show_jnt_editor')
 
 
 def main():
     importlib.reload(custom_shelf.buttons)
     importlib.reload(custom_shelf.cv_editor)
+    importlib.reload(custom_shelf.jnt_editor)
+    importlib.reload(rig.curve_rig)
     importlib.reload(tools.attr)
     importlib.reload(tools.cv)
     importlib.reload(tools.drive)
