@@ -1,7 +1,6 @@
 import pymel.core as pm
 import tools.grp as grp
-import tools.attr as attr
-import tools.cv as cv
+import custom_shelf.cv_editor as cv_editor
 
 
 def reset(*args):
@@ -27,7 +26,7 @@ def grp_sub(*args):
 
 
 def show_cv_editor(*args):
-    pass
+    cv_editor.main()
 
 
 def show_jnt_editor():

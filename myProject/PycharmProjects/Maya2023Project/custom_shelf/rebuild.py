@@ -1,6 +1,7 @@
 import pymel.core as pm
 import importlib
 import custom_shelf.buttons
+import custom_shelf.cv_editor
 import tools.attr
 import tools.cv
 import tools.drive
@@ -29,10 +30,12 @@ def rebuild():
     add_button('Master', 'create rig group', 'grp_master')
     add_button('Zero', 'create zero group', 'grp_zero')
     add_button('Sub', 'create sub group', 'grp_sub')
+    add_button('Cv','curve editor','show_cv_editor')
 
 
 def main():
     importlib.reload(custom_shelf.buttons)
+    importlib.reload(custom_shelf.cv_editor)
     importlib.reload(tools.attr)
     importlib.reload(tools.cv)
     importlib.reload(tools.drive)
