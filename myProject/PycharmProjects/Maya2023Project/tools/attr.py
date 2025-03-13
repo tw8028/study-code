@@ -2,40 +2,35 @@ import pymel.core as pm
 
 
 def reset(obj):
-    pm.xform(obj, t=(0, 0, 0), ro=(0, 0, 0))
-    # noinspection PyBroadException
-    try:
-        pm.PyNode(obj).jointOrient.set(0, 0, 0)
-    except:
-        pass
+    obj_node = pm.PyNode(obj)
+    if obj_node.hasAttr('jointOrient'):  # type: ignore
+        obj_node.jointOrient.set(0, 0, 0)  # type: ignore
+    pm.xform(obj_node, t=(0, 0, 0), ro=(0, 0, 0))
 
 
-def reset_orient(obj):
-    pm.xform(obj, ro=(0, 0, 0))
-    # noinspection PyBroadException
-    try:
-        pm.PyNode(obj).jointOrient.set(0, 0, 0)
-    except:
-        pass
+def zero_orient(obj):
+    obj_node = pm.PyNode(obj)
+    if obj_node.hasAttr('jointOrient'):  # type: ignore
+        obj_node.jointOrient.set(0, 0, 0)  # type: ignore
+    pm.xform(obj_node, ro=(0, 0, 0))
+
+
+def set_orient(obj, aim, up_obj):
+    aim_constraint = pm.aimConstraint(aim, obj, aimVector=(1, 0, 0), worldUpType='object', worldUpObject=up_obj)
+    pm.delete(aim_constraint)
 
 
 def lock_hide_transform(obj):
     node = pm.PyNode(obj)
-    lock_and_hide(node.translateX)
-    lock_and_hide(node.translateY)
-    lock_and_hide(node.translateZ)
-    lock_and_hide(node.rotateX)
-    lock_and_hide(node.rotateY)
-    lock_and_hide(node.rotateZ)
-    lock_and_hide(node.scaleX)
-    lock_and_hide(node.scaleY)
-    lock_and_hide(node.scaleZ)
+    attributes = ['translateX', 'translateY', 'translateZ',
+                  'rotateX', 'rotateY', 'rotateZ',
+                  'scaleX', 'scaleY', 'scaleZ']
+    for attr in attributes:
+        lock_hide_attr(node.attr(attr))  # type: ignore
 
 
-def lock_and_hide(attr):
-    pm.setAttr(attr, lock=True)
-    pm.setAttr(attr, keyable=False)
-    pm.setAttr(attr, channelBox=False)
+def lock_hide_attr(attr):
+    pm.setAttr(attr, lock=True, keyable=False, channelBox=False)
 
 
 def set_color(obj, color):
@@ -50,41 +45,21 @@ def set_display_type(obj, display_type):
         shape.overrideDisplayType.set(display_type)
 
 
-def orient(obj, aim, up_obj):
-    aim_constraint = pm.aimConstraint(aim, obj, aimVector=(1, 0, 0), worldUpType='object', worldUpObject=up_obj)
-    pm.delete(aim_constraint)
-
-
-def parent_align(obj, parent):
-    pm.parent(obj, parent)
-    pm.xform(obj, roo=pm.xform(parent, q=True, roo=True))
-    reset(obj)
-
-
 # offsetParentMatrix
-def opm_constraint(driver, driven, *, mo=False):
+def opm_constraint(driver, driven):
     driver_node = pm.PyNode(driver)
     driven_node = pm.PyNode(driven)
-    # 获取 driven transform
-    _t = pm.xform(driven, q=1, t=1, ws=1)
-    _ro = pm.xform(driven, q=1, ro=1, ws=1)
-
-    driven_parent = driven_node.getParent()
+    driven_parent = driven_node.getParent()  # type: ignore
     if driven_parent:
-        mult_matrix_nd = pm.createNode("multMatrix", n="multMatrix_" + driver)
+        mult_matrix_nd = pm.createNode("multMatrix", n="mult_matrix__" + driver)
         # driver worldMatrix * driven_parent worldInverseMatrix
-        driver_node.worldMatrix[0] >> mult_matrix_nd.matrixIn[0]
-        driven_parent.worldInverseMatrix[0] >> mult_matrix_nd.matrixIn[1]
-        mult_matrix_nd.matrixSum >> driven_node.offsetParentMatrix
+        var = driver_node.worldMatrix[0] >> mult_matrix_nd.matrixIn[0]  # type: ignore
+        var = driven_parent.worldInverseMatrix[0] >> mult_matrix_nd.matrixIn[1]
+        var = mult_matrix_nd.matrixSum >> driven_node.offsetParentMatrix  # type: ignore
     else:
-        driver_node.worldMatrix[0] >> driven_node.offsetParentMatrix
-    # noinspection PyBroadException
-    try:
-        driven_node.jointOrient.set(0, 0, 0)
-    except:
-        pass
-    # 是否保持偏移
-    if mo:
-        pm.xform(driven, t=_t, ro=_ro, ws=1)
-    else:
-        pm.xform(driven, t=(0, 0, 0), ro=(0, 0, 0))
+        var = driver_node.worldMatrix[0] >> driven_node.offsetParentMatrix  # type: ignore
+    reset(driven_node)
+
+
+if __name__ == '__main__':
+    sl = pm.selected()

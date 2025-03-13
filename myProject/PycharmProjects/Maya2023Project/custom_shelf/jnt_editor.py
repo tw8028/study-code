@@ -1,12 +1,6 @@
 import pymel.core as pm
 import tools.jnt as jnt
-
-
-# 生成的 joint 旋转数值为零, jointOrient 不为零
-def joint_target(*args):
-    sl = pm.ls(sl=True)
-    for obj in sl:
-        jnt.new('jnt__c__joint_001', obj)
+import tools.attr as attr
 
 
 # 只镜像 translate 和 rotate, 不镜像 jointOrient
@@ -23,12 +17,35 @@ def joint_point(*args):
         pm.joint(p=pm.xform(point, q=True, t=True, ws=True))
 
 
+# 生成的 joint 旋转数值为零, jointOrient 不为零
+def joint_target(*args):
+    sl = pm.ls(sl=True)
+    for obj in sl:
+        jnt.new('jnt__c__joint__001', obj)
+
+
 def locator_point(*args):
     sl = pm.ls(sl=True, flatten=True)
     for point in sl:
         t = pm.xform(point, q=True, t=True, ws=True)
         loc = pm.spaceLocator()
         pm.xform(loc, t=t)
+
+
+def locator_target(*args):
+    sl = pm.selected()
+    for target in sl:
+        loc = pm.spaceLocator()
+        pm.parent(loc, target)
+        attr.reset(loc)
+        pm.parent(loc, world=True)
+
+
+def locator_center(*args):
+    sl = pm.selected()
+    loc = pm.spaceLocator()
+    con = pm.pointConstraint(sl[0], sl[1], loc)
+    pm.delete(con)
 
 
 def joint_insert(*args):
@@ -57,7 +74,12 @@ def main():
                 with pm.rowLayout(numberOfColumns=5):
                     pm.button(label='on point', c=joint_point)
                     pm.button(label='on target', c=joint_target)
-                    pm.button(label='locator on point', c=locator_point)
+            with pm.columnLayout():
+                pm.text('create locator')
+                with pm.rowLayout(numberOfColumns=5):
+                    pm.button(label='on point', c=locator_point)
+                    pm.button(label='on target', c=locator_target)
+                    pm.button(label='on center', c=locator_center)
             with pm.columnLayout():
                 pm.text('insert joints')
                 with pm.rowLayout(numberOfColumns=2):

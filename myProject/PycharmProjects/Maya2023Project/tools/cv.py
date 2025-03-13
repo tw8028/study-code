@@ -69,5 +69,5 @@ def connect_line(obj_a, obj_b):
     line = pm.curve(d=1, p=[(0, 0, 0), (1, 0, 0)], k=[0, 1], n=name_line)
     attr.set_display_type(line, 2)
     line_shape = line.getShape()
-    point1.getShape().worldPosition[0] >> line_shape.controlPoints[0]
-    point2.getShape().worldPosition[0] >> line_shape.controlPoints[1]
+    var = point1.getShape().worldPosition[0] >> line_shape.controlPoints[0]
+    var = point2.getShape().worldPosition[0] >> line_shape.controlPoints[1]

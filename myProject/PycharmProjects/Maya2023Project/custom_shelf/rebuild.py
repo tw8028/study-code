@@ -3,6 +3,7 @@ import importlib
 import custom_shelf.buttons
 import custom_shelf.cv_editor
 import custom_shelf.jnt_editor
+import custom_shelf.skin_editor
 import rig.curve_rig
 import tools.attr
 import tools.cv
@@ -28,19 +29,23 @@ def clear():
 def rebuild():
     clear()
     add_button('Reset', 'reset attr to zero', 'reset')
+    add_button('zeroOri', 'zero orient', 'zero_orient')
+    add_button('setOri', 'set orient', 'set_orient')
     add_button('Name', 'rename object', 'name')
+
     add_button('gMaster', 'create rig group', 'grp_master')
     add_button('gZero', 'create zero group', 'grp_zero')
     add_button('gSub', 'create sub group', 'grp_sub')
-    add_button('Orient', 'orient object', 'orient_obj')
     add_button('wCv', 'curve editor', 'show_cv_editor')
-    add_button('wJnt','joint editor', 'show_jnt_editor')
+    add_button('wJnt', 'joint editor', 'show_jnt_editor')
+    add_button('wSkin', 'skin editor', 'show_skin_editor')
 
 
 def main():
     importlib.reload(custom_shelf.buttons)
     importlib.reload(custom_shelf.cv_editor)
     importlib.reload(custom_shelf.jnt_editor)
+    importlib.reload(custom_shelf.skin_editor)
     importlib.reload(rig.curve_rig)
     importlib.reload(tools.attr)
     importlib.reload(tools.cv)

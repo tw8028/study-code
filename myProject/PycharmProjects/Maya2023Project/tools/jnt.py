@@ -31,7 +31,7 @@ def mirror(origin_jnt):
 
 def insert(start_jnt, num=1):
     end_jnt = pm.listRelatives(start_jnt, children=True)[0]
-    jnt_offset = pm.PyNode(end_jnt).translateX.get() / (num + 1)
+    jnt_offset = pm.PyNode(end_jnt).translateX.get() / (num + 1)  # type: ignore
     _roo = pm.xform(start_jnt, q=True, roo=True)
     jnt_parts = []
     n = 1
@@ -55,8 +55,8 @@ def on_curve(curve, num):
     # set Parametric Length false
     # Getting uniform positions along a curve
     motion_path.fractionMode.set(1)
-    curve_shape.worldSpace >> motion_path.geometryPath
-    motion_path.allCoordinates >> loc.translate
+    var = curve_shape.worldSpace >> motion_path.geometryPath
+    var = motion_path.allCoordinates >> loc.translate
     jnt_p = None
     for n in range(num + 1):
         motion_path.uValue.set(n * u_value)

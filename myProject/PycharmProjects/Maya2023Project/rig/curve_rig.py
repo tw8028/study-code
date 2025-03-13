@@ -7,7 +7,7 @@ def ctrl_by_loc(curve):
     for n in range(curve.controlPoints.get(size=True)):
         locator = pm.spaceLocator()
         pm.xform(locator, t=pm.xform(curve.cv[n], q=True, t=True, ws=True))
-        locator.getShape().worldPosition >> curve.getShape().controlPoints[n]
+        var = locator.getShape().worldPosition >> curve.getShape().controlPoints[n]
 
 
 # 生成定位点，随曲线运动
@@ -21,9 +21,9 @@ def loc_on_curve(curve, num):
         path_locator = pm.spaceLocator(n=loc_name)
         pm.addAttr(path_locator, ln='u', at='double', min=0, max=1, dv=u_value * n, k=True, writable=True)
         pm.addAttr(path_locator, ln='pos', at='double', min=0, max=1, dv=u_value * n, k=True)
-        path_locator.u >> point_info.parameter
-        curve.getShape().worldSpace[0] >> point_info.inputCurve
-        point_info.result.position >> path_locator.translate
+        var = path_locator.u >> point_info.parameter
+        var = curve.getShape().worldSpace[0] >> point_info.inputCurve
+        var = point_info.result.position >> path_locator.translate
 
 
 if __name__ == '__main__':

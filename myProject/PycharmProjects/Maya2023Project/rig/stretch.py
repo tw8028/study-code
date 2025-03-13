@@ -84,15 +84,6 @@ def stretch_jnt(start, end_ctrl, joints):
             print("无效的 driven")
 
 
-def main():
-    objs = pm.selected()
-    point1 = objs[0:1][0]
-    point2 = objs[-1:][0]
-    joints = objs[1:-1]
-    stretch_jnt(point1, point2, joints)
-    print('end')
-
-
 if __name__ == '__main__':
     obj = pm.polyCube(name='abb')[0]
     stretch_ik(obj, 'joint1_offset', 'handle_ctrl', 'joint1', 'joint2', 'joint3')

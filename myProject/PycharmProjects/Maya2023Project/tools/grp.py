@@ -24,12 +24,12 @@ def sub(name, target):
 
 
 def master():
-    master = pm.group(empty=True, name='master')
+    master_grp = pm.group(empty=True, name='master')
     geo = pm.group(empty=True, name='geometry')
     geo.overrideEnabled.set(1)
     ctrl = pm.group(empty=True, name='control')
     jnt = pm.group(empty=True, name='joint')
-    pm.parent(geo, ctrl, jnt, master)
+    pm.parent(geo, ctrl, jnt, master_grp)
 
     world_zero = pm.group(empty=True, name='zero__c__world__001')
     world_ctrl = pm.circle(nr=(0, 1, 0), r=30, name='ctrl__c__world__001', ch=False)
@@ -41,13 +41,13 @@ def master():
     pm.addAttr('master', ln='geoDisplayType', at='enum', enumName='Normal:Template:Reference')
     pm.addAttr('master', ln='controlVis', at='bool', dv=1)
     pm.addAttr('master', ln='jointVis', at='bool', dv=1)
-    pm.setAttr(master.geometryVis, channelBox=1)
-    pm.setAttr(master.geoDisplayType, channelBox=1)
-    pm.setAttr(master.controlVis, channelBox=1)
-    pm.setAttr(master.jointVis, channelBox=1)
-    master.geometryVis >> geo.visibility
-    master.geoDisplayType >> geo.overrideDisplayType
-    master.controlVis >> ctrl.visibility
-    master.jointVis >> jnt.visibility
-    for item in [master, geo, ctrl, jnt]:
+    pm.setAttr(master_grp.geometryVis, channelBox=1)
+    pm.setAttr(master_grp.geoDisplayType, channelBox=1)
+    pm.setAttr(master_grp.controlVis, channelBox=1)
+    pm.setAttr(master_grp.jointVis, channelBox=1)
+    var = master_grp.geometryVis >> geo.visibility
+    var = master_grp.geoDisplayType >> geo.overrideDisplayType
+    var = master_grp.controlVis >> ctrl.visibility
+    var = master_grp.jointVis >> jnt.visibility
+    for item in [master_grp, geo, ctrl, jnt]:
         attr.lock_hide_transform(item)
