@@ -6,7 +6,6 @@ import custom_shelf.jnt_editor
 import rig.curve_rig
 import tools.attr
 import tools.cv
-import tools.drive
 import tools.grp
 import tools.jnt
 
@@ -33,6 +32,7 @@ def rebuild():
     add_button('gMaster', 'create rig group', 'grp_master')
     add_button('gZero', 'create zero group', 'grp_zero')
     add_button('gSub', 'create sub group', 'grp_sub')
+    add_button('Orient', 'orient object', 'orient_obj')
     add_button('wCv', 'curve editor', 'show_cv_editor')
     add_button('wJnt','joint editor', 'show_jnt_editor')
 
@@ -44,7 +44,6 @@ def main():
     importlib.reload(rig.curve_rig)
     importlib.reload(tools.attr)
     importlib.reload(tools.cv)
-    importlib.reload(tools.drive)
     importlib.reload(tools.grp)
     importlib.reload(tools.jnt)
 

@@ -1,12 +1,32 @@
 import pymel.core as pm
+import tools.attr as attr
 
 
-#  Create a new joint on the target position
+# 生成的 joint 旋转数值为零, jointOrient 不为零
 def new(name, target):
-    pm.select(target)
-    jnt = pm.joint(name=name, roo=pm.xform(target, q=True, roo=True))
-    pm.select(cl=True)
-    return jnt
+    pm.select(clear=True)
+    joint = pm.joint(name=name, roo=pm.xform(target, q=True, roo=True))
+    pm.parent(joint, target)
+    attr.reset(joint)
+    pm.parent(joint, world=True)
+    return joint
+
+
+# 只镜像 translate 和 rotate, 不镜像 jointOrient, 用于面部
+def mirror(origin_jnt):
+    pm.select(clear=True)
+    old_name = origin_jnt.name()
+    if '__r' in old_name:
+        new_name = old_name.replace('__r', '__l')
+    elif '__l' in old_name:
+        new_name = old_name.replace('__l', '__r')
+    else:
+        new_name = old_name + '_mirrored'
+    mirror_jnt = pm.joint(name=new_name)
+    t = pm.xform(origin_jnt, q=True, t=True)
+    ro = pm.xform(origin_jnt, q=True, ro=True)
+    pm.xform(mirror_jnt, t=(-t[0], t[1], t[2]))
+    pm.xform(mirror_jnt, ro=(ro[0], -ro[1], ro[2]))
 
 
 def insert(start_jnt, num=1):
@@ -32,7 +52,7 @@ def on_curve(curve, num):
     loc = pm.spaceLocator()
     pm.select(cl=True)
     motion_path = pm.createNode('motionPath')
-    # set Parametirc Length false
+    # set Parametric Length false
     # Getting uniform positions along a curve
     motion_path.fractionMode.set(1)
     curve_shape.worldSpace >> motion_path.geometryPath
@@ -45,8 +65,3 @@ def on_curve(curve, num):
             pm.parent(jnt, jnt_p)
         jnt_p = jnt
     pm.delete(loc, motion_path)
-
-
-if __name__ == '__main__':
-    sel = pm.selected()[0]
-    insert(sel, 2)

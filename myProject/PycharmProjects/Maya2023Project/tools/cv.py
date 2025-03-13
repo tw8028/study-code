@@ -71,7 +71,3 @@ def connect_line(obj_a, obj_b):
     line_shape = line.getShape()
     point1.getShape().worldPosition[0] >> line_shape.controlPoints[0]
     point2.getShape().worldPosition[0] >> line_shape.controlPoints[1]
-
-
-if __name__ == '__main__':
-    sl = pm.selected()

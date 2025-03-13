@@ -2,6 +2,7 @@ import pymel.core as pm
 import tools.grp as grp
 import custom_shelf.cv_editor as cv_editor
 import custom_shelf.jnt_editor as jnt_editor
+import tools.attr as attr
 
 
 def reset(*args):
@@ -44,6 +45,11 @@ def grp_sub(*args):
     target = pm.selected()[0]
     grp_name = 'sub__' + target.split('__', 1)[1]
     return grp.sub(grp_name, target)
+
+
+def orient_obj(*args):
+    sl = pm.selected()
+    attr.orient(sl[0], sl[1], sl[2])
 
 
 def show_cv_editor(*args):
