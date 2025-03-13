@@ -28,15 +28,15 @@ def name():
     for obj in sl:
         field = obj.rsplit('_', 1)
         if obj.nodeType() == 'joint':
-            pm.rename(obj, f'jnt__{field[1]}__{field[0]}__001')
+            pm.rename(obj, f'jnt__{field[0]}__{field[1]}__001')
         elif obj.nodeType() == 'transform':
             shape_type = obj.getShape().nodeType()
             if shape_type == 'mesh':
-                pm.rename(obj, f'mesh__{field[1]}__{field[0]}__001')
+                pm.rename(obj, f'mesh__{field[0]}__{field[1]}__001')
             elif shape_type == 'nurbsCurve':
-                pm.rename(obj, f'ctrl__{field[1]}__{field[0]}__001')
+                pm.rename(obj, f'ctrl__{field[0]}__{field[1]}__001')
             elif shape_type == 'locator':
-                pm.rename(obj, f'loc__{field[1]}__{field[0]}__001')
+                pm.rename(obj, f'loc__{field[0]}__{field[1]}__001')
             else:
                 pass
         else:

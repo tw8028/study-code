@@ -7,25 +7,7 @@ def create(*args):
     radio_collection = pm.radioCollection('cv_type', q=True, select=True)
     shape = pm.radioButton(radio_collection, q=True, label=True)
     radius = pm.floatField('radius1', q=True, value=True)
-    if shape == 'cube':
-        return cv.cube(radius=radius)
-    elif shape == 'ball':
-        return cv.ball(radius=radius)
-    elif shape == 'arrow1':
-        return cv.arrow1(radius=radius)
-    elif shape == 'arrow2':
-        return cv.arrow2(radius=radius)
-    elif shape == 'cross1':
-        return cv.cross1(radius=radius)
-    elif shape == 'cross2':
-        return cv.cross2(radius=radius)
-    elif shape == 'square':
-        return cv.square(radius=radius)
-    elif shape == 'triangle':
-        return cv.triangle(radius=radius)
-    else:
-        pass
-
+    return  cv.create(shape,shape,radius)
 
 def change(*args):
     objs = pm.selected()

@@ -3,7 +3,7 @@
 import pymel.core as pm
 
 
-def normalaize(vector):
+def normalize(vector):
     norm = (vector[0] ** 2 + vector[1] ** 2 + vector[2] ** 2) ** 0.5
     return [vector[n] / norm for n in range(3)]
 
