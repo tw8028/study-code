@@ -20,7 +20,7 @@ def zero_orient():
 
 def set_orient():
     sl = pm.selected()
-    attr.set_orient(sl[0], sl[1], sl[2])
+    attr.set_orient(sl[0], aim=sl[1], up_obj=sl[2])
 
 
 def name():
@@ -50,13 +50,13 @@ def grp_master():
 def grp_zero():
     target = pm.selected()[0]
     grp_name = 'zero__' + target.split('__', 1)[1]
-    return grp.zero(grp_name, target)
+    return grp.zero(name=grp_name, target=target)
 
 
 def grp_sub():
     target = pm.selected()[0]
     grp_name = 'sub__' + target.split('__', 1)[1]
-    return grp.sub(grp_name, target)
+    return grp.sub(name=grp_name, target=target)
 
 
 def show_cv_editor():

@@ -5,6 +5,7 @@ import custom_shelf.cv_editor
 import custom_shelf.jnt_editor
 import custom_shelf.skin_editor
 import rig.curve_rig
+import rig.fk_chain
 import tools.attr
 import tools.cv
 import tools.grp
@@ -47,6 +48,7 @@ def main():
     importlib.reload(custom_shelf.jnt_editor)
     importlib.reload(custom_shelf.skin_editor)
     importlib.reload(rig.curve_rig)
+    importlib.reload(rig.fk_chain)
     importlib.reload(tools.attr)
     importlib.reload(tools.cv)
     importlib.reload(tools.grp)

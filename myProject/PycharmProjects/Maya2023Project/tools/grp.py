@@ -3,20 +3,20 @@ import tools.attr as attr
 
 
 def zero(name, target):
-    zero_group = on_target(name, target)
+    zero_group = on_target(name=name, target=target)
     pm.parent(target, zero_group)
     return zero_group
 
 
 # create a group on the target position
-def on_target(name, target):
-    grp = sub(name, target)
+def on_target(*, name, target):
+    grp = sub(name=name, target=target)
     pm.parent(grp, w=True)
     return grp
 
 
 # create a subGroup of the target
-def sub(name, target):
+def sub(*, name, target):
     sub_group = pm.group(empty=True, n=name)
     pm.parent(sub_group, target)
     pm.xform(sub_group, t=(0, 0, 0), ro=(0, 0, 0), roo=pm.xform(target, q=True, roo=True))

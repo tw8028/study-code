@@ -15,7 +15,7 @@ def zero_orient(obj):
     pm.xform(obj_node, ro=(0, 0, 0))
 
 
-def set_orient(obj, aim, up_obj):
+def set_orient(obj, *, aim, up_obj):
     aim_constraint = pm.aimConstraint(aim, obj, aimVector=(1, 0, 0), worldUpType='object', worldUpObject=up_obj)
     pm.delete(aim_constraint)
 
@@ -33,13 +33,13 @@ def lock_hide_attr(attr):
     pm.setAttr(attr, lock=True, keyable=False, channelBox=False)
 
 
-def set_color(obj, color):
+def set_color(obj, *, color):
     for shape in pm.listRelatives(obj, s=True):
         shape.overrideEnabled.set(1)
         shape.overrideColor.set(color)
 
 
-def set_display_type(obj, display_type):
+def set_display_type(obj, *, display_type):
     for shape in pm.listRelatives(obj, s=True):
         shape.overrideEnabled.set(1)
         shape.overrideDisplayType.set(display_type)
@@ -63,3 +63,4 @@ def opm_constraint(driver, driven):
 
 if __name__ == '__main__':
     sl = pm.selected()
+    opm_constraint(sl[0], sl[1])

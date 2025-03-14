@@ -8,7 +8,7 @@ def _create(name, radius, points):
     return pm.curve(name=name, degree=1, point=scaled_points, knot=knot)
 
 
-def create(name, shape, radius):
+def create(*, name, shape, radius):
     if shape == 'cube':
         points = [(-1, -1, 1), (1, -1, 1), (1, -1, -1), (-1, -1, -1), (-1, -1, 1), (-1, 1, 1), (1, 1, 1), (1, -1, 1),
                   (1, 1, 1), (1, 1, -1), (1, -1, -1), (1, 1, -1), (-1, 1, -1), (-1, -1, -1), (-1, 1, -1), (-1, 1, 1)]
@@ -55,7 +55,7 @@ def create(name, shape, radius):
         return pm.circle(nr=(1, 0, 0), c=(0, 0, 0), radius=radius, n=name, ch=False)[0]
 
 
-def ctrl(target, *, name='ctrl__', shape='', radius=2):
+def ctrl(*, name='ctrl__', target, shape='', radius=2):
     curve = create(name=name, shape=shape, radius=radius)
     pm.parent(curve, target)
     attr.reset(curve)
@@ -72,7 +72,11 @@ def connect_line(obj_a, obj_b):
     point2 = pm.spaceLocator(n=name_b)
     pm.pointConstraint(obj_b, point2)
     line = pm.curve(d=1, p=[(0, 0, 0), (1, 0, 0)], k=[0, 1], n=name_line)
-    attr.set_display_type(line, 2)
+    line.inheritsTransform.set(0)
+    attr.set_display_type(line, display_type=2)
     line_shape = line.getShape()
     var = point1.getShape().worldPosition[0] >> line_shape.controlPoints[0]
     var = point2.getShape().worldPosition[0] >> line_shape.controlPoints[1]
+    grp_line = pm.group(name='show__' + obj_a.split('__', 1)[1], empty=True)
+    pm.parent(point1, point2, line, grp_line)
+    return grp_line

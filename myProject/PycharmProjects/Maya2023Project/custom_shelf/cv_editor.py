@@ -7,7 +7,7 @@ def create(*args):
     radio_collection = pm.radioCollection('cv_type', q=True, select=True)
     shape = pm.radioButton(radio_collection, q=True, label=True)
     radius = pm.floatField('radius1', q=True, value=True)
-    return  cv.create(shape,shape,radius)
+    return  cv.create(name=shape,shape=shape,radius=radius)
 
 def change(*args):
     objs = pm.selected()

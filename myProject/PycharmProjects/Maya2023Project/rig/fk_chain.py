@@ -4,9 +4,10 @@ import tools.cv as cv
 import tools.attr as attr
 
 
+# object_list 必须符合命名规范如: jnt__l__finger__001
 def create(object_list):
     def ctrl(target, name):
-        return cv.ctrl(target, name=name, shape='circle', radius=6)
+        return cv.ctrl(name=name, target=target, shape='circle', radius=6)
 
     node_list = [pm.PyNode(i) for i in object_list]
     zero_name_list = ['zero__' + n.name().split('__', 1)[1] for n in node_list]  # type:ignore
@@ -21,6 +22,7 @@ def create(object_list):
         pm.parent(fk_rig[i + 1], fk_rig[i])
     for ctrl, jnt in zip(ctrl_list, node_list):
         attr.opm_constraint(ctrl, jnt)
+    return zero_list[0]
 
 
 if __name__ == '__main__':

@@ -21,7 +21,7 @@ def joint_point(*args):
 def joint_target(*args):
     sl = pm.ls(sl=True)
     for obj in sl:
-        jnt.new('jnt__c__joint__001', obj)
+        jnt.new(name='jnt__c__joint__001', target=obj)
 
 
 def locator_point(*args):

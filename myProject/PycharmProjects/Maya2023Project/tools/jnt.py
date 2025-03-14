@@ -3,7 +3,7 @@ import tools.attr as attr
 
 
 # 生成的 joint 旋转数值为零, jointOrient 不为零
-def new(name, target):
+def new(*,name, target):
     pm.select(clear=True)
     joint = pm.joint(name=name, roo=pm.xform(target, q=True, roo=True))
     pm.parent(joint, target)
