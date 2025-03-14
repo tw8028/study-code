@@ -94,9 +94,9 @@ def create_ik(jnt0):
     vec0 = pm.xform(jnt0, q=True, t=True, ws=True)
     vec1 = pm.xform(jnt1, q=True, t=True, ws=True)
     vec2 = pm.xform(jnt2, q=True, t=True, ws=True)
-    vec_up = normalaize([vec1[n] - vec0[n] for n in range(3)])
-    vec_down = normalaize([vec1[n] - vec2[n] for n in range(3)])
-    direction_pole_vector = normalaize([vec_up[n] + vec_down[n] for n in range(3)])
+    vec_up = normalize([vec1[n] - vec0[n] for n in range(3)])
+    vec_down = normalize([vec1[n] - vec2[n] for n in range(3)])
+    direction_pole_vector = normalize([vec_up[n] + vec_down[n] for n in range(3)])
 
     pm.xform(pole_offset, t=[vec1[n] + direction_pole_vector[n] * 40 for n in range(3)], ws=True)
 
@@ -217,9 +217,9 @@ class Switch:
         vec0 = pm.xform('FK' + self.jnt0, q=True, t=True, ws=True)
         vec1 = pm.xform('FK' + self.jnt1, q=True, t=True, ws=True)
         vec2 = pm.xform('FK' + self.jnt2, q=True, t=True, ws=True)
-        vec_up = normalaize([vec1[n] - vec0[n] for n in range(3)])
-        vec_down = normalaize([vec1[n] - vec2[n] for n in range(3)])
-        dir_pole_vector = normalaize([vec_up[n] + vec_down[n] for n in range(3)])
+        vec_up = normalize([vec1[n] - vec0[n] for n in range(3)])
+        vec_down = normalize([vec1[n] - vec2[n] for n in range(3)])
+        dir_pole_vector = normalize([vec_up[n] + vec_down[n] for n in range(3)])
 
         pm.xform(self.poleCtrl, t=[vec1[n] + dir_pole_vector[n] * 40 for n in range(3)], ws=True)
         self.attr.set(1)
