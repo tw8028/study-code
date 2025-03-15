@@ -1,4 +1,4 @@
 from . import buttons
-from . import cv_editor
-from . import jnt_editor
-from . import skin_editor
+from . import editor_cv
+from . import editor_jnt
+from . import editor_skin
