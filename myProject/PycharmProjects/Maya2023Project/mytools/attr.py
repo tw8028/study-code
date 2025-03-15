@@ -5,7 +5,7 @@ def reset(obj):
     obj_node = pm.PyNode(obj)
     if obj_node.hasAttr('jointOrient'):  # type: ignore
         obj_node.jointOrient.set(0, 0, 0)  # type: ignore
-    pm.xform(obj_node, t=(0, 0, 0), ro=(0, 0, 0))
+    pm.xform(obj_node, t=(0, 0, 0), ro=(0, 0, 0), scale=(1, 1, 1))
 
 
 def zero_orient(obj):
@@ -26,11 +26,15 @@ def lock_hide_transform(obj):
                   'rotateX', 'rotateY', 'rotateZ',
                   'scaleX', 'scaleY', 'scaleZ']
     for attr in attributes:
-        lock_hide_attr(node.attr(attr))  # type: ignore
+        lock_and_hide(node.attr(attr))  # type: ignore
 
 
-def lock_hide_attr(attr):
+def lock_and_hide(attr):
     pm.setAttr(attr, lock=True, keyable=False, channelBox=False)
+
+
+def displayable(attr):
+    pm.setAttr(attr, keyable=False, channelBox=True, lock=False)
 
 
 def set_color(obj, *, color):

@@ -76,14 +76,11 @@ class Limb:
         pm.parent(mytools.jnt.new(name=self.joint2_fk, target=self.joint2), self.joint1_fk)
         pm.parent(mytools.jnt.new(name=self.joint3_fk, target=self.joint3), self.joint2_fk)
 
-        attributes = ['translateX', 'translateY', 'translateZ', 'scaleY', 'scaleZ']
         for joint in [self.joint1_fk, self.joint2_fk, self.joint3_fk]:
             name = joint.split('__', 1)[1]
             ctrl = mytools.cv.ctrl(name='ctrl__' + name, target=joint, shape='circle', radius=10)
             zero = mytools.grp.zero(name='zero__' + name, target=ctrl)
             pm.parent(zero, self.ctrl_gravity)
-            for attr in attributes:
-                pm.setAttr(f'{ctrl}.{attr}', lock=True, keyable=False, channelBox=False)
             pm.orientConstraint(ctrl, joint, )
             var = ctrl.scaleX >> pm.PyNode(joint).scaleX  # type: ignore
 
@@ -114,6 +111,7 @@ class Limb:
     def create_mid(self):
         mytools.cv.create(name=self.ctrl_mid, shape='square', radius=4)
         mytools.grp.zero(name=self.zero_mid, target=self.ctrl_mid)
+        pm.parent(self.zero_mid, self.ctrl_gravity)
         cons = pm.orientConstraint(self.joint1_ik, self.joint2_ik, self.zero_mid)
         cons.interpType.set(2)
         pm.pointConstraint(self.joint2_ik, self.zero_mid)
@@ -127,11 +125,18 @@ class Limb:
                          worldUpObject=self.joint2_ik)
         mytools.attr.opm_constraint(self.joint3_ik, self.joint3_m)
 
+    def stretch(self):
+        pass
+
+    def blend(self):
+        pass
+
     def build(self):
         self.create_gravity()
         self.create_fk()
         self.create_ik()
         self.create_mid()
+        return self.zero_gravity
 
 
 if __name__ == '__main__':

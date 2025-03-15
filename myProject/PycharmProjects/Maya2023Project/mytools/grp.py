@@ -2,7 +2,7 @@ import pymel.core as pm
 import mytools.attr as attr
 
 
-def zero(name, target):
+def zero(*, name, target):
     zero_group = on_target(name=name, target=target)
     pm.parent(target, zero_group)
     return zero_group

@@ -7,7 +7,8 @@ def create(*args):
     radio_collection = pm.radioCollection('cv_type', q=True, select=True)
     shape = pm.radioButton(radio_collection, q=True, label=True)
     radius = pm.floatField('radius1', q=True, value=True)
-    return  cv.create(name=shape,shape=shape,radius=radius)
+    return cv.create(name=shape, shape=shape, radius=radius)
+
 
 def change(*args):
     objs = pm.selected()
@@ -35,7 +36,7 @@ def mirror(*args):
 
 def point_ctrl(*args):
     sl = pm.selected()
-    curve_rig.ctrl_by_loc(sl[0])
+    curve_rig.loc_ctrl_curve(sl[0])
 
 
 def get_message(*args):
@@ -51,7 +52,7 @@ def get_message(*args):
 def path_cons(*args):
     sl = pm.selected()
     num = pm.intField('path_num', q=True, v=True)
-    curve_rig.loc_on_curve(sl[0], num)
+    curve_rig.loc_on_curve(sl[0], num=num)
 
 
 def main():

@@ -61,7 +61,7 @@ def stretch_ikjnt(attr_stretch, jnt0_offset, handle_offset, ik_jnt0, ik_jnt1, ik
 def stretch_jnt(point1, point2, *driven):
     point1 = pm.PyNode(point1)
     point2 = pm.PyNode(point2)
-    distance_between = pm.createNode('distanceBetween', name=point2 + '_db')
+    distance_between = pm.createNode('distanceBetween', name='dist' + point2)
     point1.worldMatrix[0] >> distance_between.inMatrix1
     point2.worldMatrix[0] >> distance_between.inMatrix2
     md = pm.createNode('multiplyDivide', name=point2 + '_md')

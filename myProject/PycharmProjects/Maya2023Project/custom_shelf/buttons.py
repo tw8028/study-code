@@ -57,12 +57,12 @@ def grp_sub():
 
 
 def show_cv_editor():
-    custom_shelf.cv_editor.main()
+    custom_shelf.editor_cv.main()
 
 
 def show_jnt_editor():
-    custom_shelf.jnt_editor.main()
+    custom_shelf.editor_jnt.main()
 
 
 def show_skin_editor():
-    custom_shelf.skin_editor.main()
+    custom_shelf.editor_skin.main()

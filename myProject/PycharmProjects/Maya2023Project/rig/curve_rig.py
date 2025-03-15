@@ -2,7 +2,7 @@ import pymel.core as pm
 
 
 # 生成控制点，控制曲线
-def ctrl_by_loc(curve):
+def loc_ctrl_curve(curve):
     for n in range(curve.controlPoints.get(size=True)):
         locator = pm.spaceLocator()
         pm.xform(locator, t=pm.xform(curve.cv[n], q=True, t=True, ws=True))
@@ -10,7 +10,7 @@ def ctrl_by_loc(curve):
 
 
 # 生成定位点，随曲线运动
-def loc_on_curve(curve, num):
+def loc_on_curve(curve,*, num):
     u_value = 1 / (num - 1)
     for n in range(num):
         node_name = 'pocInfo__' + curve.split('__', 1)[1]

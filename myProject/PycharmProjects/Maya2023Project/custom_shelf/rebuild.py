@@ -38,9 +38,14 @@ import rig
 
 
 def main():
-    importlib.reload(custom_shelf)
-    importlib.reload(mytools)
-    importlib.reload(rig)
+    importlib.reload(custom_shelf.buttons)
+    importlib.reload(custom_shelf.editor_cv)
+    importlib.reload(custom_shelf.editor_jnt)
+    importlib.reload(custom_shelf.editor_skin)
+    importlib.reload(mytools.attr)
+    importlib.reload(mytools.cv)
+    importlib.reload(mytools.grp)
+    importlib.reload(mytools.jnt)
 
     rebuild()
     print('rebuild shelf...')
