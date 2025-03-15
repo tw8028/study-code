@@ -1,26 +1,23 @@
 import pymel.core as pm
-import tools.grp as grp
-import custom_shelf.cv_editor as cv_editor
-import custom_shelf.jnt_editor as jnt_editor
-import custom_shelf.skin_editor as skin_editor
-import tools.attr as attr
+import mytools
+import custom_shelf
 
 
 def reset():
     sl = pm.selected()
     for obj in sl:
-        attr.reset(obj)
+        mytools.attr.reset(obj)
 
 
 def zero_orient():
     sl = pm.selected()
     for obj in sl:
-        attr.zero_orient(obj)
+        mytools.attr.zero_orient(obj)
 
 
 def set_orient():
     sl = pm.selected()
-    attr.set_orient(sl[0], aim=sl[1], up_obj=sl[2])
+    mytools.attr.set_orient(sl[0], aim=sl[1], up_obj=sl[2])
 
 
 def name():
@@ -44,28 +41,28 @@ def name():
 
 
 def grp_master():
-    grp.master()
+    mytools.grp.master()
 
 
 def grp_zero():
     target = pm.selected()[0]
     grp_name = 'zero__' + target.split('__', 1)[1]
-    return grp.zero(name=grp_name, target=target)
+    return mytools.grp.zero(name=grp_name, target=target)
 
 
 def grp_sub():
     target = pm.selected()[0]
     grp_name = 'sub__' + target.split('__', 1)[1]
-    return grp.sub(name=grp_name, target=target)
+    return mytools.grp.sub(name=grp_name, target=target)
 
 
 def show_cv_editor():
-    cv_editor.main()
+    custom_shelf.cv_editor.main()
 
 
 def show_jnt_editor():
-    jnt_editor.main()
+    custom_shelf.jnt_editor.main()
 
 
 def show_skin_editor():
-    skin_editor.main()
+    custom_shelf.skin_editor.main()

@@ -1,5 +1,5 @@
 import pymel.core as pm
-import tools.attr as attr
+import mytools.attr as attr
 
 
 # 生成的 joint 旋转数值为零, jointOrient 不为零

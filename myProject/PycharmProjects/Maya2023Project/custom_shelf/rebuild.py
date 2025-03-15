@@ -1,15 +1,4 @@
 import pymel.core as pm
-import importlib
-import custom_shelf.buttons
-import custom_shelf.cv_editor
-import custom_shelf.jnt_editor
-import custom_shelf.skin_editor
-import rig.curve_rig
-import rig.fk_chain
-import tools.attr
-import tools.cv
-import tools.grp
-import tools.jnt
 
 
 def add_button(iol, label, func):
@@ -42,17 +31,16 @@ def rebuild():
     add_button('wSkin', 'skin editor', 'show_skin_editor')
 
 
+import importlib
+import mytools
+import custom_shelf
+import rig
+
+
 def main():
-    importlib.reload(custom_shelf.buttons)
-    importlib.reload(custom_shelf.cv_editor)
-    importlib.reload(custom_shelf.jnt_editor)
-    importlib.reload(custom_shelf.skin_editor)
-    importlib.reload(rig.curve_rig)
-    importlib.reload(rig.fk_chain)
-    importlib.reload(tools.attr)
-    importlib.reload(tools.cv)
-    importlib.reload(tools.grp)
-    importlib.reload(tools.jnt)
+    importlib.reload(custom_shelf)
+    importlib.reload(mytools)
+    importlib.reload(rig)
 
     rebuild()
     print('rebuild shelf...')

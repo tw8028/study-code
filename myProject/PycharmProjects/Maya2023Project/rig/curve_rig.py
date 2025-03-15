@@ -1,5 +1,4 @@
 import pymel.core as pm
-import tools.attr as attr
 
 
 # 生成控制点，控制曲线

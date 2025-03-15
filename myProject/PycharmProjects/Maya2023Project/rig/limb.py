@@ -1,10 +1,6 @@
 import pymel.core as pm
 import math
-import tools.jnt
-import tools.cv
-import tools.grp
-import rig.fk_chain
-import tools.attr
+import mytools
 
 
 def normalize(vector):
@@ -21,8 +17,8 @@ def pole_ctrl(ik_joint1, ik_joint2, ik_joint3, ctrl_name, zero_name):
     vector_down = normalize([b - c for b, c in zip(t2, t3)])
     direction = normalize([x + y for x, y in zip(vector_up, vector_down)])
 
-    tools.cv.create(name=ctrl_name, shape='ball', radius=5)
-    tools.grp.zero(name=zero_name, target=ctrl_name)
+    mytools.cv.create(name=ctrl_name, shape='ball', radius=5)
+    mytools.grp.zero(name=zero_name, target=ctrl_name)
     pole_position = [x + y * 40 for x, y in zip(t2, direction)]
     pm.xform(zero_name, t=pole_position, worldSpace=True)  # type: ignore
 
@@ -70,21 +66,21 @@ class Limb:
         self.zero_joint3_fk = f'zero__{side}__{joint3}_fk__001'
 
     def create_gravity(self):
-        tools.jnt.new(name=self.joint_gravity, target=self.joint1)
-        tools.cv.ctrl(name=self.ctrl_gravity, target=self.joint1, shape='ball', radius=4)
-        tools.grp.zero(name=self.zero_gravity, target=self.ctrl_gravity)
-        tools.attr.opm_constraint(self.ctrl_gravity, self.joint_gravity)
+        mytools.jnt.new(name=self.joint_gravity, target=self.joint1)
+        mytools.cv.ctrl(name=self.ctrl_gravity, target=self.joint1, shape='ball', radius=4)
+        mytools.grp.zero(name=self.zero_gravity, target=self.ctrl_gravity)
+        mytools.attr.opm_constraint(self.ctrl_gravity, self.joint_gravity)
 
     def create_fk(self):
-        pm.parent(tools.jnt.new(name=self.joint1_fk, target=self.joint1), self.joint_gravity)
-        pm.parent(tools.jnt.new(name=self.joint2_fk, target=self.joint2), self.joint1_fk)
-        pm.parent(tools.jnt.new(name=self.joint3_fk, target=self.joint3), self.joint2_fk)
+        pm.parent(mytools.jnt.new(name=self.joint1_fk, target=self.joint1), self.joint_gravity)
+        pm.parent(mytools.jnt.new(name=self.joint2_fk, target=self.joint2), self.joint1_fk)
+        pm.parent(mytools.jnt.new(name=self.joint3_fk, target=self.joint3), self.joint2_fk)
 
         attributes = ['translateX', 'translateY', 'translateZ', 'scaleY', 'scaleZ']
         for joint in [self.joint1_fk, self.joint2_fk, self.joint3_fk]:
             name = joint.split('__', 1)[1]
-            ctrl = tools.cv.ctrl(name='ctrl__' + name, target=joint, shape='circle', radius=10)
-            zero = tools.grp.zero(name='zero__' + name, target=ctrl)
+            ctrl = mytools.cv.ctrl(name='ctrl__' + name, target=joint, shape='circle', radius=10)
+            zero = mytools.grp.zero(name='zero__' + name, target=ctrl)
             pm.parent(zero, self.ctrl_gravity)
             for attr in attributes:
                 pm.setAttr(f'{ctrl}.{attr}', lock=True, keyable=False, channelBox=False)
@@ -95,16 +91,16 @@ class Limb:
         pm.parentConstraint(self.ctrl_joint2_fk, self.zero_joint3_fk, maintainOffset=True)
 
     def create_ik(self):
-        pm.parent(tools.jnt.new(name=self.joint1_ik, target=self.joint1), self.joint_gravity)
-        pm.parent(tools.jnt.new(name=self.joint2_ik, target=self.joint2), self.joint1_ik)
-        pm.parent(tools.jnt.new(name=self.joint3_ik, target=self.joint3), self.joint2_ik)
+        pm.parent(mytools.jnt.new(name=self.joint1_ik, target=self.joint1), self.joint_gravity)
+        pm.parent(mytools.jnt.new(name=self.joint2_ik, target=self.joint2), self.joint1_ik)
+        pm.parent(mytools.jnt.new(name=self.joint3_ik, target=self.joint3), self.joint2_ik)
 
-        pm.parent(tools.jnt.new(name=self.joint1_m, target=self.joint1), self.joint_gravity)
-        pm.parent(tools.jnt.new(name=self.joint2_m, target=self.joint2), self.joint1_m)
-        pm.parent(tools.jnt.new(name=self.joint3_m, target=self.joint3), self.joint2_m)
+        pm.parent(mytools.jnt.new(name=self.joint1_m, target=self.joint1), self.joint_gravity)
+        pm.parent(mytools.jnt.new(name=self.joint2_m, target=self.joint2), self.joint1_m)
+        pm.parent(mytools.jnt.new(name=self.joint3_m, target=self.joint3), self.joint2_m)
         # 创建 ik 控制器
-        tools.cv.ctrl(name=self.ctrl_ik_handle, target=self.joint3, shape='cube', radius=4)
-        tools.grp.zero(name=self.zero_ik_handle, target=self.ctrl_ik_handle)
+        mytools.cv.ctrl(name=self.ctrl_ik_handle, target=self.joint3, shape='cube', radius=4)
+        mytools.grp.zero(name=self.zero_ik_handle, target=self.ctrl_ik_handle)
         ik_handle = pm.ikHandle(name=self.ik_handle, sj=self.joint1_ik, ee=self.joint3_ik)[0]
         ik_handle.visibility.set(0)
         pm.parent(ik_handle, self.ctrl_ik_handle)
@@ -112,12 +108,12 @@ class Limb:
         # 创建极向量控制器
         pole_ctrl(self.joint1_ik, self.joint2_ik, self.joint3_ik, self.ctrl_pole, self.zero_pole)
         pm.poleVectorConstraint(self.ctrl_pole, self.ik_handle)
-        pm.parent(tools.cv.connect_line(self.ctrl_pole, self.joint2_ik), self.zero_pole)
+        pm.parent(mytools.cv.connect_line(self.ctrl_pole, self.joint2_ik), self.zero_pole)
 
     # noinspection SpellCheckingInspection
     def create_mid(self):
-        tools.cv.create(name=self.ctrl_mid, shape='square', radius=4)
-        tools.grp.zero(name=self.zero_mid, target=self.ctrl_mid)
+        mytools.cv.create(name=self.ctrl_mid, shape='square', radius=4)
+        mytools.grp.zero(name=self.zero_mid, target=self.ctrl_mid)
         cons = pm.orientConstraint(self.joint1_ik, self.joint2_ik, self.zero_mid)
         cons.interpType.set(2)
         pm.pointConstraint(self.joint2_ik, self.zero_mid)
@@ -129,7 +125,7 @@ class Limb:
         pm.pointConstraint(self.ctrl_mid, self.joint2_m)
         pm.aimConstraint(self.joint3_ik, self.joint2_m, aimVector=aim_vector, worldUpType='objectrotation',
                          worldUpObject=self.joint2_ik)
-        tools.attr.opm_constraint(self.joint3_ik, self.joint3_m)
+        mytools.attr.opm_constraint(self.joint3_ik, self.joint3_m)
 
     def build(self):
         self.create_gravity()

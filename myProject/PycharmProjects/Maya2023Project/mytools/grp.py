@@ -1,5 +1,5 @@
 import pymel.core as pm
-import tools.attr as attr
+import mytools.attr as attr
 
 
 def zero(name, target):

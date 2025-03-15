@@ -1,6 +1,6 @@
 import pymel.core as pm
-import tools.jnt as jnt
-import tools.attr as attr
+import mytools.jnt as jnt
+import mytools.attr as attr
 
 
 # 只镜像 translate 和 rotate, 不镜像 jointOrient

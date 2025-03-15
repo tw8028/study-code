@@ -1,5 +1,5 @@
 import pymel.core as pm
-import tools.cv as cv
+import mytools.cv as cv
 import rig.curve_rig as curve_rig
 
 
