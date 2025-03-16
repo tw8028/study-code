@@ -9,12 +9,14 @@ class Limb:
         str_list = name.split('__', 3)
         side = str_list[1]
         limb_name = str_list[2]
+        self.name_id = f'{str_list[2]}_{str_list[1]}'
         self.joint_limb = name
         self.ctrl_limb = f'ctrl__{side}__{limb_name}__001'
         self.zero_limb = f'zero__{side}__{limb_name}__001'
         self.ctrl_attr = f'ctrl__{side}__{limb_name}_attr__001'
         self.zero_attr = f'zero__{side}__{limb_name}_attr__001'
-        self.attr_blend = f'{self.ctrl_attr}.ikFkBlend'
+        self.attr_ik_fk_blend = f'{self.ctrl_attr}.ikFkBlend'
+        self.attr_stretch = f'{self.ctrl_attr}.stretch'
         self.joint1 = joint1
         self.joint2 = joint2
         self.joint3 = joint3
@@ -53,6 +55,14 @@ class Limb:
         mytools.cv.ctrl(name=self.ctrl_limb, target=self.joint1, shape='ball', radius=4)
         mytools.grp.zero(name=self.zero_limb, target=self.ctrl_limb)
         pm.parentConstraint(self.ctrl_limb, self.joint_limb)
+
+        mytools.cv.create(name=self.ctrl_attr, shape='cross1', radius=4)
+        mytools.grp.zero(name=self.zero_attr, target=self.ctrl_attr)
+        pm.addAttr(self.ctrl_attr, longName='stretch', attributeType='bool', defaultValue=1, keyable=True)
+        pm.addAttr(self.ctrl_attr, longName='ikFkBlend', attributeType='float', minValue=0, maxValue=1, dv=0,
+                   keyable=True)
+        # pm.parent(self.zero_attr, self.ctrl_limb)
+        # pm.xform(self.zero_attr, t=(0, 0, 0))
 
     def create_fk(self):
         pm.parent(mytools.jnt.new(name=self.joint1_fk, target=self.joint1), self.joint_limb)
@@ -109,34 +119,27 @@ class Limb:
         mytools.attr.opm_constraint(self.joint3_ik, self.joint3_m)
 
     def stretch(self):
-        mytools.cv.create(name=self.ctrl_attr, shape='cross1', radius=4)
-        mytools.grp.zero(name=self.zero_attr, target=self.ctrl_attr)
-        pm.parent(self.zero_attr, self.ctrl_limb)
-        pm.xform(self.zero_attr, t=(0, 0, 0))
-        rig.stretch_rig.stretch_ik(attr_obj=self.ctrl_attr, jnt1_offset=self.ctrl_limb,
+        rig.stretch_rig.stretch_ik(attr_stretch=self.attr_stretch, jnt1_offset=self.ctrl_limb,
                                    handle_ctrl=self.ctrl_ik_handle, ik_jnt1=self.joint1_ik, ik_jnt2=self.joint2_ik,
                                    ik_jnt3=self.joint3_ik)
         rig.stretch_rig.stretch_jnt(start_point=self.ctrl_limb, end_point=self.ctrl_mid, joints=[self.joint1_m])
         rig.stretch_rig.stretch_jnt(start_point=self.ctrl_mid, end_point=self.ctrl_ik_handle, joints=[self.joint2_m])
 
     def blend(self):
-        pm.addAttr(self.ctrl_attr, longName='ikFkBlend', attributeType='float', minValue=0, maxValue=1, dv=0,
-                   keyable=True)
         reverse_nd = pm.createNode('reverse', name=f'reverse__{self.joint_limb}')
-        pm.PyNode(self.attr_blend) >> reverse_nd.inputX  # type: ignore
+        pm.PyNode(self.attr_ik_fk_blend) >> reverse_nd.inputX  # type: ignore
 
-        rig.stretch_rig.blend_orient(attr_ctrl=self.attr_blend, reverse=reverse_nd, ik_jnt=self.joint1_m,
+        rig.stretch_rig.blend_orient(attr_ctrl=self.attr_ik_fk_blend, reverse=reverse_nd, ik_jnt=self.joint1_m,
                                      fk_jnt=self.joint1_fk, blend_jnt=self.joint1)
-        rig.stretch_rig.blend_orient(attr_ctrl=self.attr_blend, reverse=reverse_nd, ik_jnt=self.joint2_m,
+        rig.stretch_rig.blend_orient(attr_ctrl=self.attr_ik_fk_blend, reverse=reverse_nd, ik_jnt=self.joint2_m,
                                      fk_jnt=self.joint2_fk, blend_jnt=self.joint2)
-        rig.stretch_rig.blend_orient(attr_ctrl=self.attr_blend, reverse=reverse_nd, ik_jnt=self.joint3_m,
+        rig.stretch_rig.blend_orient(attr_ctrl=self.attr_ik_fk_blend, reverse=reverse_nd, ik_jnt=self.joint3_m,
                                      fk_jnt=self.joint3_fk, blend_jnt=self.joint3)
-
-        rig.stretch_rig.blend_scale(attr_ctrl=self.attr_blend, ik_jnt=self.joint1_m, fk_jnt=self.joint1_fk,
+        rig.stretch_rig.blend_scale(attr_ctrl=self.attr_ik_fk_blend, ik_jnt=self.joint1_m, fk_jnt=self.joint1_fk,
                                     blend_jnt=self.joint1)
-        rig.stretch_rig.blend_scale(attr_ctrl=self.attr_blend, ik_jnt=self.joint2_m, fk_jnt=self.joint2_fk,
+        rig.stretch_rig.blend_scale(attr_ctrl=self.attr_ik_fk_blend, ik_jnt=self.joint2_m, fk_jnt=self.joint2_fk,
                                     blend_jnt=self.joint2)
-        rig.stretch_rig.blend_scale(attr_ctrl=self.attr_blend, ik_jnt=self.joint3_m, fk_jnt=self.joint3_fk,
+        rig.stretch_rig.blend_scale(attr_ctrl=self.attr_ik_fk_blend, ik_jnt=self.joint3_m, fk_jnt=self.joint3_fk,
                                     blend_jnt=self.joint3)
 
     def build(self):
@@ -146,7 +149,9 @@ class Limb:
         self.create_mid()
         self.stretch()
         self.blend()
+        print(f'limb rig success! >>> {self.name_id}')
         return self.zero_limb
+
 
 
 if __name__ == '__main__':

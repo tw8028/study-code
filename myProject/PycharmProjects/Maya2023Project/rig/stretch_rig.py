@@ -1,10 +1,10 @@
 import pymel.core as pm
 
 
-def stretch_ik(*, attr_obj, jnt1_offset, handle_ctrl, ik_jnt1, ik_jnt2, ik_jnt3):
+def stretch_ik(*, attr_stretch, jnt1_offset, handle_ctrl, ik_jnt1, ik_jnt2, ik_jnt3):
     """距离大于 ik handle 的极限，则拉伸，否则不拉伸
 
-    :param attr_obj: 拉伸属性开关
+    :param attr_stretch: 拉伸属性开关
     :param jnt1_offset: 起点
     :param handle_ctrl: 末端控制器
     :param ik_jnt1: 用于计算骨骼长度
@@ -12,7 +12,7 @@ def stretch_ik(*, attr_obj, jnt1_offset, handle_ctrl, ik_jnt1, ik_jnt2, ik_jnt3)
     :param ik_jnt3: 用于计算骨骼长度
     :return: none
     """
-    stretch_obj = pm.PyNode(attr_obj)
+    attr_stretch_nd = pm.PyNode(attr_stretch)
     start = pm.PyNode(jnt1_offset)
     end = pm.PyNode(handle_ctrl)
     jnt1 = pm.PyNode(ik_jnt1)
@@ -40,8 +40,7 @@ def stretch_ik(*, attr_obj, jnt1_offset, handle_ctrl, ik_jnt1, ik_jnt2, ik_jnt3)
     var = condition.secondTerm >> blend_attr.input[0]
     var = condition.outColor.outColorR >> blend_attr.input[1]
     var = blend_attr.output >> multiply_divide.input1.input1X
-    pm.addAttr(stretch_obj, longName='stretch', attributeType='bool', defaultValue=1, keyable=True)
-    var = stretch_obj.stretch >> blend_attr.attributesBlender  # type:ignore
+    var = attr_stretch_nd >> blend_attr.attributesBlender  # type:ignore
     var = multiply_divide.outputX >> jnt1.scaleX  # type:ignore
     var = multiply_divide.outputX >> jnt2.scaleX  # type:ignore
 
@@ -98,7 +97,7 @@ def blend_attr(*, attr_ctrl, attr_a, attr_b, attr_blend):
     attr_a_nd = pm.PyNode(attr_a)
     attr_b_nd = pm.PyNode(attr_b)
     attr_blend_nd = pm.PyNode(attr_blend)
-    blend_nd = pm.createNode('blendTwoAttr', name='blend__' + attr_blend.replace('.','_'))
+    blend_nd = pm.createNode('blendTwoAttr', name='blend__' + attr_blend.replace('.', '_'))
     attr_ctrl_nd >> blend_nd.attributesBlender  # type: ignore
     attr_a_nd >> blend_nd.input[0]  # type: ignore
     attr_b_nd >> blend_nd.input[1]  # type: ignore
@@ -123,7 +122,7 @@ def main():
     ik_jnt2 = 'jnt__r__joint2_ik__001'
     ik_jnt3 = 'jnt__r__joint3_ik__001'
 
-    stretch_ik(attr_obj=obj, jnt1_offset=obj, handle_ctrl=handle_ctrl, ik_jnt1=ik_jnt1, ik_jnt2=ik_jnt2,
+    stretch_ik(attr_stretch=obj, jnt1_offset=obj, handle_ctrl=handle_ctrl, ik_jnt1=ik_jnt1, ik_jnt2=ik_jnt2,
                ik_jnt3=ik_jnt3)
 
 
