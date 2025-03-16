@@ -1,6 +1,6 @@
 import pymel.core as pm
 import mytools.cv as cv
-import rig.curve_rig as curve_rig
+import rig
 
 
 def create(*args):
@@ -27,7 +27,7 @@ def change(*args):
 
 def connect(*args):
     sl = pm.selected()
-    cv.connect_line(sl[0], sl[1])
+    rig.curve_rig.connect_line(sl[0], sl[1])
 
 
 def mirror(*args):
@@ -36,7 +36,7 @@ def mirror(*args):
 
 def point_ctrl(*args):
     sl = pm.selected()
-    curve_rig.loc_ctrl_curve(sl[0])
+    rig.curve_rig.loc_ctrl_curve(sl[0])
 
 
 def get_message(*args):
@@ -52,7 +52,7 @@ def get_message(*args):
 def path_cons(*args):
     sl = pm.selected()
     num = pm.intField('path_num', q=True, v=True)
-    curve_rig.loc_on_curve(sl[0], num=num)
+    rig.curve_rig.loc_on_curve(sl[0], num=num)
 
 
 def main():

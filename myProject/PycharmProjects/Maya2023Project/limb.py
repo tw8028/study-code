@@ -1,26 +1,6 @@
 import pymel.core as pm
-import math
 import mytools
-
-
-def normalize(vector):
-    sum_of_squares = vector[0] ** 2 + vector[1] ** 2 + vector[2] ** 2
-    norm = math.sqrt(sum_of_squares)
-    return [i / norm for i in vector]
-
-
-def pole_ctrl(ik_joint1, ik_joint2, ik_joint3, ctrl_name, zero_name):
-    t1 = pm.xform(ik_joint1, q=True, t=True, ws=True)
-    t2 = pm.xform(ik_joint2, q=True, t=True, ws=True)
-    t3 = pm.xform(ik_joint3, q=True, t=True, ws=True)
-    vector_up = normalize([b - a for a, b in zip(t1, t2)])
-    vector_down = normalize([b - c for b, c in zip(t2, t3)])
-    direction = normalize([x + y for x, y in zip(vector_up, vector_down)])
-
-    mytools.cv.create(name=ctrl_name, shape='ball', radius=5)
-    mytools.grp.zero(name=zero_name, target=ctrl_name)
-    pole_position = [x + y * 40 for x, y in zip(t2, direction)]
-    pm.xform(zero_name, t=pole_position, worldSpace=True)  # type: ignore
+import rig
 
 
 class Limb:
@@ -32,6 +12,8 @@ class Limb:
         self.joint_gravity = name
         self.ctrl_gravity = f'ctrl__{side}__{limb_name}__001'
         self.zero_gravity = f'zero__{side}__{limb_name}__001'
+        self.ctrl_attr = f'ctrl__{side}__{limb_name}_attr__001'
+        self.zero_attr = f'zero__{side}__{limb_name}_attr__001'
         self.joint1 = joint1
         self.joint2 = joint2
         self.joint3 = joint3
@@ -69,7 +51,7 @@ class Limb:
         mytools.jnt.new(name=self.joint_gravity, target=self.joint1)
         mytools.cv.ctrl(name=self.ctrl_gravity, target=self.joint1, shape='ball', radius=4)
         mytools.grp.zero(name=self.zero_gravity, target=self.ctrl_gravity)
-        mytools.attr.opm_constraint(self.ctrl_gravity, self.joint_gravity)
+        pm.parentConstraint(self.ctrl_gravity, self.joint_gravity)
 
     def create_fk(self):
         pm.parent(mytools.jnt.new(name=self.joint1_fk, target=self.joint1), self.joint_gravity)
@@ -103,9 +85,9 @@ class Limb:
         pm.parent(ik_handle, self.ctrl_ik_handle)
         pm.orientConstraint(self.ctrl_ik_handle, self.joint3_ik)
         # 创建极向量控制器
-        pole_ctrl(self.joint1_ik, self.joint2_ik, self.joint3_ik, self.ctrl_pole, self.zero_pole)
+        rig.curve_rig.pole_ctrl(self.joint1_ik, self.joint2_ik, self.joint3_ik, self.ctrl_pole, self.zero_pole)
         pm.poleVectorConstraint(self.ctrl_pole, self.ik_handle)
-        pm.parent(mytools.cv.connect_line(self.ctrl_pole, self.joint2_ik), self.zero_pole)
+        pm.parent(rig.curve_rig.connect_line(self.ctrl_pole, self.joint2_ik), self.zero_pole)
 
     # noinspection SpellCheckingInspection
     def create_mid(self):
@@ -126,7 +108,15 @@ class Limb:
         mytools.attr.opm_constraint(self.joint3_ik, self.joint3_m)
 
     def stretch(self):
-        pass
+        mytools.cv.create(name=self.ctrl_attr, shape='cross1', radius=4)
+        mytools.grp.zero(name=self.zero_attr, target=self.ctrl_attr)
+        pm.parent(self.zero_attr, self.ctrl_gravity)
+        pm.xform(self.zero_attr, t=(0, 0, 0))
+        rig.stretch_rig.stretch_ik(attr_obj=self.ctrl_attr, jnt1_offset=self.ctrl_gravity,
+                                   handle_ctrl=self.ctrl_ik_handle, ik_jnt1=self.joint1_ik, ik_jnt2=self.joint2_ik,
+                                   ik_jnt3=self.joint3_ik)
+        rig.stretch_rig.stretch_jnt(start_point=self.ctrl_gravity, end_point=self.ctrl_mid, joints=[self.joint1_m])
+        rig.stretch_rig.stretch_jnt(start_point=self.ctrl_mid, end_point=self.ctrl_ik_handle, joints=[self.joint2_m])
 
     def blend(self):
         pass
@@ -136,6 +126,7 @@ class Limb:
         self.create_fk()
         self.create_ik()
         self.create_mid()
+        self.stretch()
         return self.zero_gravity
 
 

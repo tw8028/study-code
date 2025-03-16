@@ -1,5 +1,5 @@
 import pymel.core as pm
-import mytools.attr as attr
+import mytools
 
 
 def _create(name, radius, points):
@@ -58,27 +58,9 @@ def create(*, name, shape, radius):
 def ctrl(*, name='ctrl__', target, shape='', radius=2):
     curve = create(name=name, shape=shape, radius=radius)
     pm.parent(curve, target)
-    attr.reset(curve)
+    mytools.attr.reset(curve)
     pm.parent(curve, world=True)
     return curve
 
 
-def connect_line(obj_a, obj_b):
-    name_id = obj_a.split('__', 1)[1]
-    name_obj_a = 'loc__' + name_id
-    name_obj_b = 'loc__' + obj_b.split('__', 1)[1]
-    name_line = 'line__' + name_id
-    name_grp = 'show__' + name_id
-    point1 = pm.spaceLocator(n=name_obj_a)
-    pm.pointConstraint(obj_a, point1)
-    point2 = pm.spaceLocator(n=name_obj_b)
-    pm.pointConstraint(obj_b, point2)
-    line = pm.curve(d=1, p=[(0, 0, 0), (1, 0, 0)], k=[0, 1], n=name_line)
-    line.inheritsTransform.set(0)
-    attr.set_display_type(line, display_type=2)
-    line_shape = line.getShape()
-    var = point1.getShape().worldPosition[0] >> line_shape.controlPoints[0]
-    var = point2.getShape().worldPosition[0] >> line_shape.controlPoints[1]
-    grp_line = pm.group(name=name_grp, empty=True)
-    pm.parent(point1, point2, line, grp_line)
-    return grp_line
+

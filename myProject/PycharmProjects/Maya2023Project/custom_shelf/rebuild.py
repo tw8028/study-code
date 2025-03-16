@@ -3,7 +3,7 @@ import pymel.core as pm
 
 def add_button(iol, label, func):
     # a shelf button must be parented to a shelf.
-    command = 'import custom_shelf.buttons;custom_shelf.buttons.{0}()'.format(func)
+    command = 'import custom_shelf;custom_shelf.buttons.{0}()'.format(func)
     pm.shelfButton(image='pythonFamily.png', imageOverlayLabel=iol, label=label, command=command, olb=(0, 0, 0, 0),
                    olc=(0.9, 0.9, 0.9), parent='Custom')
 
@@ -38,14 +38,19 @@ import rig
 
 
 def main():
-    importlib.reload(custom_shelf.buttons)
-    importlib.reload(custom_shelf.editor_cv)
-    importlib.reload(custom_shelf.editor_jnt)
-    importlib.reload(custom_shelf.editor_skin)
     importlib.reload(mytools.attr)
     importlib.reload(mytools.cv)
     importlib.reload(mytools.grp)
     importlib.reload(mytools.jnt)
+    importlib.reload(mytools.math_utils)
+    importlib.reload(rig.curve_rig)
+    importlib.reload(rig.fk_rig)
+    importlib.reload(rig.stretch_rig)
+    importlib.reload(rig.twist_rig)
+    importlib.reload(custom_shelf.buttons)
+    importlib.reload(custom_shelf.editor_cv)
+    importlib.reload(custom_shelf.editor_jnt)
+    importlib.reload(custom_shelf.editor_skin)
 
     rebuild()
     print('rebuild shelf...')

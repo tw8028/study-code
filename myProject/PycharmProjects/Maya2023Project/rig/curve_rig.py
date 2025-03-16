@@ -1,4 +1,5 @@
 import pymel.core as pm
+import mytools
 
 
 # 生成控制点，控制曲线
@@ -10,7 +11,7 @@ def loc_ctrl_curve(curve):
 
 
 # 生成定位点，随曲线运动
-def loc_on_curve(curve,*, num):
+def loc_on_curve(curve, *, num):
     u_value = 1 / (num - 1)
     for n in range(num):
         node_name = 'pocInfo__' + curve.split('__', 1)[1]
@@ -25,8 +26,38 @@ def loc_on_curve(curve,*, num):
         var = point_info.result.position >> path_locator.translate
 
 
+def connect_line(obj_a, obj_b):
+    name_id = obj_a.split('__', 1)[1]
+    name_obj_a = 'loc__' + name_id
+    name_obj_b = 'loc__' + obj_b.split('__', 1)[1]
+    name_line = 'line__' + name_id
+    name_grp = 'show__' + name_id
+    point1 = pm.spaceLocator(n=name_obj_a)
+    pm.pointConstraint(obj_a, point1)
+    point2 = pm.spaceLocator(n=name_obj_b)
+    pm.pointConstraint(obj_b, point2)
+    line = pm.curve(d=1, p=[(0, 0, 0), (1, 0, 0)], k=[0, 1], n=name_line)
+    line.inheritsTransform.set(0)
+    mytools.attr.set_display_type(line, display_type=2)
+    line_shape = line.getShape()
+    var = point1.getShape().worldPosition[0] >> line_shape.controlPoints[0]
+    var = point2.getShape().worldPosition[0] >> line_shape.controlPoints[1]
+    grp_line = pm.group(name=name_grp, empty=True)
+    pm.parent(point1, point2, line, grp_line)
+    return grp_line
+
+def pole_ctrl(ik_joint1, ik_joint2, ik_joint3, ctrl_name, zero_name):
+    t1 = pm.xform(ik_joint1, q=True, t=True, ws=True)
+    t2 = pm.xform(ik_joint2, q=True, t=True, ws=True)
+    t3 = pm.xform(ik_joint3, q=True, t=True, ws=True)
+    direction = mytools.math_utils.direction_pole(t1, t2, t3)
+
+    mytools.cv.create(name=ctrl_name, shape='ball', radius=5)
+    zero_grp = mytools.grp.zero(name=zero_name, target=ctrl_name)
+    pole_position = [x + y * 40 for x, y in zip(t2, direction)]
+    pm.xform(zero_name, t=pole_position, worldSpace=True)  # type: ignore
+    return zero_grp
+
 if __name__ == '__main__':
     sl = pm.selected()
-    # connect_line(sl[0], sl[1])
-    # point_ctrl(sl[0])
-    loc_on_curve(sl[0], 5)
+    loc_ctrl_curve(sl[0])

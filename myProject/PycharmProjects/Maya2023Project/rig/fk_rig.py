@@ -3,7 +3,7 @@ import mytools
 
 
 # object_list 必须符合命名规范如: jnt__l__finger__001
-def create(object_list):
+def fk_chain(object_list):
     def ctrl(target, name):
         return mytools.cv.ctrl(name=name, target=target, shape='circle', radius=6)
 
@@ -28,4 +28,4 @@ def create(object_list):
 
 if __name__ == '__main__':
     sl = pm.selected()
-    create(sl)
+    fk_chain(sl)
