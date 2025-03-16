@@ -177,6 +177,7 @@ class SwitchLimb:
             con2 = pm.orientConstraint(ik_jnt, fk_jnt, skin_jnt)
             ikfk_attr >> pm.PyNode(f'{con2}.{ik_jnt}W0')
             reverse_nd.outputX >> pm.PyNode(f'{con2}.{fk_jnt}W1')
+
             # scaleConstraint对骨骼使用有问题，这里使用 blendTwoAttr node 缩放蒙皮骨骼
             # 使用 blendTwoAttr节点，Switch缩放
             blend_node = pm.createNode('blendTwoAttr', n=skin_jnt + '_bta')

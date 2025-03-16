@@ -84,6 +84,37 @@ def stretch_jnt(*, start_point, end_point, joints):
             print("无效的 driven")
 
 
+def blend_orient(*, attr_ctrl, reverse, ik_jnt, fk_jnt, blend_jnt):
+    attr_ctrl_nd = pm.PyNode(attr_ctrl)
+    reverse_nd = pm.PyNode(reverse)
+    orient_con = pm.orientConstraint(ik_jnt, fk_jnt, blend_jnt)
+    orient_con.interpType.set(2)
+    attr_ctrl_nd >> pm.PyNode(f'{orient_con}.{ik_jnt}W0')  # type: ignore
+    reverse_nd.outputX >> pm.PyNode(f'{orient_con}.{fk_jnt}W1')  # type: ignore
+
+
+def blend_attr(*, attr_ctrl, attr_a, attr_b, attr_blend):
+    attr_ctrl_nd = pm.PyNode(attr_ctrl)
+    attr_a_nd = pm.PyNode(attr_a)
+    attr_b_nd = pm.PyNode(attr_b)
+    attr_blend_nd = pm.PyNode(attr_blend)
+    blend_nd = pm.createNode('blendTwoAttr', name='blend__' + attr_blend.replace('.','_'))
+    attr_ctrl_nd >> blend_nd.attributesBlender  # type: ignore
+    attr_a_nd >> blend_nd.input[0]  # type: ignore
+    attr_b_nd >> blend_nd.input[1]  # type: ignore
+    blend_nd.output >> attr_blend_nd  # type: ignore
+
+
+def blend_scale(*, attr_ctrl, ik_jnt, fk_jnt, blend_jnt):
+    # scaleConstraint对骨骼使用有问题，这里使用 blendTwoAttr node 缩放 blend_jnt
+    blend_attr(attr_ctrl=attr_ctrl, attr_a=f'{fk_jnt}.scaleX', attr_b=f'{ik_jnt}.scaleX',
+               attr_blend=f'{blend_jnt}.scaleX')
+    blend_attr(attr_ctrl=attr_ctrl, attr_a=f'{fk_jnt}.scaleY', attr_b=f'{ik_jnt}.scaleY',
+               attr_blend=f'{blend_jnt}.scaleY')
+    blend_attr(attr_ctrl=attr_ctrl, attr_a=f'{fk_jnt}.scaleZ', attr_b=f'{ik_jnt}.scaleZ',
+               attr_blend=f'{blend_jnt}.scaleZ')
+
+
 def main():
     obj = 'ctrl__r__arm__001'
     jnt1_offset = 'zero__r__arm__001'
