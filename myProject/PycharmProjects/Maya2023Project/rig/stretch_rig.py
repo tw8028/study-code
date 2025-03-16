@@ -83,6 +83,21 @@ def stretch_jnt(*, start_point, end_point, joints):
             print("无效的 driven")
 
 
+def stretch_yz(joint):
+    jnt_nd = pm.PyNode(joint)
+    sqrt_nd = pm.createNode('multiplyDivide', name='sqrt__' + joint)
+    sqrt_nd.operation.set(3)
+    sqrt_nd.input2X.set(0.5)
+    # reciprocal
+    reciprocal_nd = pm.createNode('multiplyDivide', name='reciprocal__' + joint)
+    reciprocal_nd.operation.set(2)
+    reciprocal_nd.input1X.set(1)
+    var = jnt_nd.scaleX >> sqrt_nd.input1X  # type:ignore
+    var = sqrt_nd.outputX >> reciprocal_nd.input2X
+    var = reciprocal_nd.outputX >> jnt_nd.scaleY  # type:ignore
+    var = reciprocal_nd.outputX >> jnt_nd.scaleZ  # type:ignore
+
+
 def blend_orient(*, attr_ctrl, reverse, ik_jnt, fk_jnt, blend_jnt):
     attr_ctrl_nd = pm.PyNode(attr_ctrl)
     reverse_nd = pm.PyNode(reverse)

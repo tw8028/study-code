@@ -74,8 +74,9 @@ class Limb:
             ctrl = mytools.cv.ctrl(name='ctrl__' + name, target=joint, shape='circle', radius=10)
             zero = mytools.grp.zero(name='zero__' + name, target=ctrl)
             pm.parent(zero, self.ctrl_limb)
-            pm.orientConstraint(ctrl, joint, )
+            pm.orientConstraint(ctrl, joint)
             var = ctrl.scaleX >> pm.PyNode(joint).scaleX  # type: ignore
+            rig.stretch_rig.stretch_yz(joint)
 
         pm.parentConstraint(self.ctrl_joint1_fk, self.zero_joint2_fk, maintainOffset=True)
         pm.parentConstraint(self.ctrl_joint2_fk, self.zero_joint3_fk, maintainOffset=True)
@@ -151,7 +152,6 @@ class Limb:
         self.blend()
         print(f'limb rig success! >>> {self.name_id}')
         return self.zero_limb
-
 
 
 if __name__ == '__main__':
