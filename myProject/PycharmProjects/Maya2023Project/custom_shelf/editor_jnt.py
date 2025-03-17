@@ -60,10 +60,11 @@ def joint_on_curve(*args):
     jnt.on_curve(curve, num)
 
 
-def main():
+def show_window():
     win = 'jnt_editor_window'
     if pm.window(win, ex=True):
-        pm.deleteUI(win)
+        print(f'delete win: {win}')
+        pm.deleteUI(win, window=True)
     with pm.window(win):
         with pm.columnLayout(rowSpacing=5, columnAttach=('both', 5), adj=True):
             with pm.columnLayout():
@@ -92,7 +93,3 @@ def main():
                     pm.button(label='apply', c=joint_on_curve)
         pm.window(win, e=True, title='joint tool', wh=(240, 320))
         pm.showWindow(win)
-
-
-if __name__ == '__main__':
-    main()

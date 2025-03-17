@@ -61,10 +61,11 @@ def path_cons(*args):
     rig.curve_rig.loc_on_curve(sl[0], num=num)
 
 
-def main():
+def show_window():
     name = 'curve_editor_window'
     if pm.window(name, q=True, ex=True):
-        pm.deleteUI(name)
+        print(f'delete win: {name}')
+        pm.deleteUI(name, window=True)
     with pm.window(name):
         with pm.columnLayout(rowSpacing=20, adj=True):
             with pm.frameLayout('create a curve or change the shape'):
@@ -97,7 +98,3 @@ def main():
 
         pm.window(name, e=True, title='Curve Editor', wh=(240, 360))
         pm.showWindow(name)
-
-
-if __name__ == '__main__':
-    main()

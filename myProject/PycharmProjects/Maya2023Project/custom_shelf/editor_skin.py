@@ -20,10 +20,11 @@ def copy_weights(*args):
     pm.copySkinWeights(noMirror=True, influenceAssociation='oneToOne', sa='closestPoint')
 
 
-def main():
+def show_window():
     win_name = 'skin_editor_win'
     if pm.window(win_name, ex=True):
-        pm.deleteUI(win_name)
+        print(f'delete win: {win_name}')
+        pm.deleteUI(win_name, window=True)
     with pm.window(win_name):
         with pm.columnLayout(adj=True):
             pm.button(label='select joints', c=select_joints)
