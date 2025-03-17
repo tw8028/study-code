@@ -7,7 +7,7 @@ def reset():
     sl = pm.selected()
     for obj in sl:
         mytools.attr.reset(obj)
-    print('xxxxxxxx')
+
 
 def zero_orient():
     sl = pm.selected()

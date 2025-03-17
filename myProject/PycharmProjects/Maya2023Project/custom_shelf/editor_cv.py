@@ -25,6 +25,12 @@ def change(*args):
         pm.rename(new_shape, name)
 
 
+def freeze(*args):
+    objs = pm.selected()
+    for obj in objs:
+        pm.makeIdentity(obj, apply=True, scale=True)
+
+
 def connect(*args):
     sl = pm.selected()
     rig.curve_rig.connect_line(sl[0], sl[1])
@@ -73,10 +79,11 @@ def main():
                     pm.radioButton(label='square')
                     pm.radioButton(label='triangle')
 
-                with pm.rowLayout(numberOfColumns=3):
+                with pm.rowLayout(numberOfColumns=4):
                     pm.floatField('radius1', value=1, w=60)
                     pm.button(label='Create', command=create)
                     pm.button(label='Change', command=change)
+                    pm.button(label='Freeze Scale', command=freeze)
 
             with pm.frameLayout('others for curve'):
                 with pm.columnLayout():
