@@ -61,11 +61,11 @@ def joint_on_curve(*args):
 
 
 def show_window():
-    win = 'jnt_editor_window'
-    if pm.window(win, ex=True):
-        print(f'delete win: {win}')
-        pm.deleteUI(win, window=True)
-    with pm.window(win):
+    name = 'my_jnt_editor_window'
+    if pm.window(name, ex=True):
+        print(f'delete win: {name}')
+        pm.deleteUI(name, window=True)
+    with pm.window(name):
         with pm.columnLayout(rowSpacing=5, columnAttach=('both', 5), adj=True):
             with pm.columnLayout():
                 pm.text('MirrorJnt (rotateY)')
@@ -91,5 +91,5 @@ def show_window():
                 with pm.rowLayout(numberOfColumns=2):
                     pm.intField('num_on_curve', w=40)
                     pm.button(label='apply', c=joint_on_curve)
-        pm.window(win, e=True, title='joint tool', wh=(240, 320))
-        pm.showWindow(win)
+        pm.window(name, e=True, title='joint tool', wh=(240, 320))
+        pm.showWindow(name)

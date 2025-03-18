@@ -76,7 +76,6 @@ class Limb:
             pm.parent(zero, self.ctrl_limb)
             pm.orientConstraint(ctrl, joint)
             var = ctrl.scaleX >> pm.PyNode(joint).scaleX  # type: ignore
-            rig.stretch_rig.stretch_yz(joint)
 
         pm.parentConstraint(self.ctrl_joint1_fk, self.zero_joint2_fk, maintainOffset=True)
         pm.parentConstraint(self.ctrl_joint2_fk, self.zero_joint3_fk, maintainOffset=True)
@@ -117,14 +116,16 @@ class Limb:
         pm.pointConstraint(self.ctrl_mid, self.joint2_m)
         pm.aimConstraint(self.joint3_ik, self.joint2_m, aimVector=aim_vector, worldUpType='objectrotation',
                          worldUpObject=self.joint2_ik)
-        mytools.attr.opm_constraint(self.joint3_ik, self.joint3_m)
+        pm.orientConstraint(self.joint3_ik, self.joint3_m)
 
     def stretch(self):
         rig.stretch_rig.stretch_ik(attr_stretch=self.attr_stretch, jnt1_offset=self.ctrl_limb,
                                    handle_ctrl=self.ctrl_ik_handle, ik_jnt1=self.joint1_ik, ik_jnt2=self.joint2_ik,
                                    ik_jnt3=self.joint3_ik)
         rig.stretch_rig.stretch_jnt(start_point=self.ctrl_limb, end_point=self.ctrl_mid, joints=[self.joint1_m])
-        rig.stretch_rig.stretch_jnt(start_point=self.ctrl_mid, end_point=self.ctrl_ik_handle, joints=[self.joint2_m])
+        rig.stretch_rig.stretch_jnt(start_point=self.ctrl_mid, end_point=self.joint3_ik, joints=[self.joint2_m])
+        for joint in [self.joint1, self.joint2, self.joint3]:
+            rig.stretch_rig.stretch_yz(joint)
 
     def blend(self):
         reverse_nd = pm.createNode('reverse', name=f'reverse__{self.joint_limb}')
@@ -136,12 +137,12 @@ class Limb:
                                      fk_jnt=self.joint2_fk, blend_jnt=self.joint2)
         rig.stretch_rig.blend_orient(attr_ctrl=self.attr_ik_fk_blend, reverse=reverse_nd, ik_jnt=self.joint3_m,
                                      fk_jnt=self.joint3_fk, blend_jnt=self.joint3)
-        rig.stretch_rig.blend_scale(attr_ctrl=self.attr_ik_fk_blend, ik_jnt=self.joint1_m, fk_jnt=self.joint1_fk,
-                                    blend_jnt=self.joint1)
-        rig.stretch_rig.blend_scale(attr_ctrl=self.attr_ik_fk_blend, ik_jnt=self.joint2_m, fk_jnt=self.joint2_fk,
-                                    blend_jnt=self.joint2)
-        rig.stretch_rig.blend_scale(attr_ctrl=self.attr_ik_fk_blend, ik_jnt=self.joint3_m, fk_jnt=self.joint3_fk,
-                                    blend_jnt=self.joint3)
+        rig.stretch_rig.blend_scale_x(attr_ctrl=self.attr_ik_fk_blend, ik_jnt=self.joint1_m, fk_jnt=self.joint1_fk,
+                                      blend_jnt=self.joint1)
+        rig.stretch_rig.blend_scale_x(attr_ctrl=self.attr_ik_fk_blend, ik_jnt=self.joint2_m, fk_jnt=self.joint2_fk,
+                                      blend_jnt=self.joint2)
+        rig.stretch_rig.blend_scale_x(attr_ctrl=self.attr_ik_fk_blend, ik_jnt=self.joint3_m, fk_jnt=self.joint3_fk,
+                                      blend_jnt=self.joint3)
 
     def build(self):
         self.create_limb()

@@ -62,23 +62,11 @@ def stretch_jnt(*, start_point, end_point, joints):
     divide_nd.operation.set(2)
     divide_nd.input2X.set(distance_nd.distance.get())
     var = distance_nd.distance >> divide_nd.input1X
-    # sqrt
-    sqrt_nd = pm.createNode('multiplyDivide', name='sqrt__' + end)
-    sqrt_nd.operation.set(3)
-    sqrt_nd.input2X.set(0.5)
-    # reciprocal
-    reciprocal_nd = pm.createNode('multiplyDivide', name='reciprocal__' + end)
-    reciprocal_nd.operation.set(2)
-    reciprocal_nd.input1X.set(1)
 
-    var = divide_nd.outputX >> sqrt_nd.input1X
-    var = sqrt_nd.outputX >> reciprocal_nd.input2X
     for i in joints:
         try:
             jnt = pm.PyNode(i)
             var = divide_nd.outputX >> jnt.scaleX  # type:ignore
-            var = reciprocal_nd.outputX >> jnt.scaleY  # type:ignore
-            var = reciprocal_nd.outputX >> jnt.scaleZ  # type:ignore
         except pm.MayaObjectError:
             print("无效的 driven")
 
@@ -119,15 +107,10 @@ def blend_attr(*, attr_ctrl, attr_a, attr_b, attr_blend):
     blend_nd.output >> attr_blend_nd  # type: ignore
 
 
-def blend_scale(*, attr_ctrl, ik_jnt, fk_jnt, blend_jnt):
+def blend_scale_x(*, attr_ctrl, ik_jnt, fk_jnt, blend_jnt):
     # scaleConstraint对骨骼使用有问题，这里使用 blendTwoAttr node 缩放 blend_jnt
     blend_attr(attr_ctrl=attr_ctrl, attr_a=f'{fk_jnt}.scaleX', attr_b=f'{ik_jnt}.scaleX',
                attr_blend=f'{blend_jnt}.scaleX')
-    blend_attr(attr_ctrl=attr_ctrl, attr_a=f'{fk_jnt}.scaleY', attr_b=f'{ik_jnt}.scaleY',
-               attr_blend=f'{blend_jnt}.scaleY')
-    blend_attr(attr_ctrl=attr_ctrl, attr_a=f'{fk_jnt}.scaleZ', attr_b=f'{ik_jnt}.scaleZ',
-               attr_blend=f'{blend_jnt}.scaleZ')
-
 
 def main():
     obj = 'ctrl__r__arm__001'

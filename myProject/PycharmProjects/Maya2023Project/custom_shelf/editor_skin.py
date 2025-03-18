@@ -21,14 +21,14 @@ def copy_weights(*args):
 
 
 def show_window():
-    win_name = 'skin_editor_win'
-    if pm.window(win_name, ex=True):
-        print(f'delete win: {win_name}')
-        pm.deleteUI(win_name, window=True)
-    with pm.window(win_name):
+    name = 'my_skin_editor_win'
+    if pm.window(name, ex=True):
+        print(f'delete win: {name}')
+        pm.deleteUI(name, window=True)
+    with pm.window(name):
         with pm.columnLayout(adj=True):
             pm.button(label='select joints', c=select_joints)
             pm.button(label='copy weights', c=copy_weights)
 
-        pm.window(win_name, e=True, title='skin_tools', wh=(240, 300))
-        pm.showWindow(win_name)
+        pm.window(name, e=True, title='skin_tools', wh=(240, 300))
+        pm.showWindow(name)
