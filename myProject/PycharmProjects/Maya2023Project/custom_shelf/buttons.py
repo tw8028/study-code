@@ -46,20 +46,20 @@ def grp_master():
 
 def grp_zero():
     target = pm.selected()[0]
-    if '__' in target:
+    if '__' in target.name():
         grp_name = 'zero__' + target.split('__', 1)[1]
         return mytools.grp.zero(name=grp_name, target=target)
     else:
-        pm.warning(f'{target} 命名不符合规范')
+        pm.warning(f'{target} 命名不符合规范，无法创建 zero grp')
 
 
 def grp_sub():
     target = pm.selected()[0]
-    if '__' in target:
+    if '__' in target.name():
         grp_name = 'sub__' + target.split('__', 1)[1]
         return mytools.grp.sub(name=grp_name, target=target)
     else:
-        pm.warning(f'{target} 命名不符合规范')
+        pm.warning(f'{target} 命名不符合规范，无法创建 sub grp')
 
 
 def show_cv_editor():

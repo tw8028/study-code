@@ -30,7 +30,7 @@ def change(*args):
 
 def zero_grp(*args):
     ctrl = pm.selected()[0]
-    name = f'zero__c__{ctrl}_001'
+    name = f'zero__c__{ctrl}__001'
     mytools.grp.zero(name=name, target=ctrl)
 
 
