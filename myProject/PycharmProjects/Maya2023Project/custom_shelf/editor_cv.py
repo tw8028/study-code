@@ -1,5 +1,6 @@
 import pymel.core as pm
 import mytools.cv as cv
+import mytools.grp
 import rig
 
 
@@ -7,6 +8,8 @@ def create(*args):
     radio_collection = pm.radioCollection('cv_type', q=True, select=True)
     shape = pm.radioButton(radio_collection, q=True, label=True)
     radius = pm.floatField('radius1', q=True, value=True)
+    if pm.selected():
+        return cv.ctrl(name=shape, target=pm.selected()[0], shape=shape, radius=radius)
     return cv.create(name=shape, shape=shape, radius=radius)
 
 
@@ -25,10 +28,21 @@ def change(*args):
         pm.rename(new_shape, name)
 
 
-def freeze(*args):
-    objs = pm.selected()
-    for obj in objs:
-        pm.makeIdentity(obj, apply=True, scale=True)
+def zero_grp(*args):
+    ctrl = pm.selected()[0]
+    name = f'zero__c__{ctrl}_001'
+    mytools.grp.zero(name=name, target=ctrl)
+
+
+def match_freeze(*args):
+    obj = pm.selected()[0]
+    if obj.getParent() is not None:
+        # match pivots to parent
+        pm.matchTransform(obj, obj.getParent(), pivots=True)
+        # freeze transformation
+        pm.makeIdentity(obj, apply=True, translate=True, rotate=True, scale=True)
+    else:
+        pm.warning(f'{obj} 需要有父节点')
 
 
 def connect(*args):
@@ -80,11 +94,13 @@ def show_window():
                     pm.radioButton(label='square')
                     pm.radioButton(label='triangle')
 
-                with pm.rowLayout(numberOfColumns=4):
+                with pm.rowLayout(numberOfColumns=3):
                     pm.floatField('radius1', value=1, w=60)
                     pm.button(label='Create', command=create)
                     pm.button(label='Change', command=change)
-                    pm.button(label='Freeze Scale', command=freeze)
+                with pm.columnLayout():
+                    pm.button(label='zero group', command=zero_grp)
+                    pm.button(label='Match pivots to parent and Freeze', command=match_freeze)
 
             with pm.frameLayout('others for curve'):
                 with pm.columnLayout():
