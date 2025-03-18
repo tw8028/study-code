@@ -31,7 +31,7 @@ def connect_line(obj_a, obj_b):
     name_obj_a = 'loc__' + name_id
     name_obj_b = 'loc__' + obj_b.split('__', 1)[1]
     name_line = 'line__' + name_id
-    name_grp = 'show__' + name_id
+    name_grp = 'gizmo__' + name_id
     point1 = pm.spaceLocator(n=name_obj_a)
     pm.pointConstraint(obj_a, point1)
     point2 = pm.spaceLocator(n=name_obj_b)
