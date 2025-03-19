@@ -22,7 +22,7 @@ def copy_weights(*args):
 
 def show_window():
     name = 'my_skin_editor_win'
-    if pm.window(name, ex=True):
+    if pm.window(name, query=True, exists=True):
         print(f'delete win: {name}')
         pm.deleteUI(name, window=True)
     with pm.window(name):

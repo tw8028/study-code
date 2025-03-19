@@ -77,7 +77,7 @@ def path_cons(*args):
 
 def show_window():
     name = 'my_curve_editor_window'
-    if pm.window(name, q=True, ex=True):
+    if pm.window(name, query=True, exists=True):
         print(f'delete win: {name}')
         pm.deleteUI(name, window=True)
     with pm.window(name):
