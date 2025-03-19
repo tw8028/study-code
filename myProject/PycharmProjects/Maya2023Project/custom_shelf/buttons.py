@@ -3,10 +3,10 @@ import mytools
 import custom_shelf
 
 
-def reset():
+def zero_transform():
     sl = pm.selected()
     for obj in sl:
-        mytools.attr.reset(obj)
+        mytools.attr.zero_transform(obj)
 
 
 def zero_orient():
@@ -91,7 +91,7 @@ def clear():
 
 def rebuild():
     clear()
-    add_button('Reset', 'reset attr to zero', 'reset')
+    add_button('zeroTrans', 'reset attr to zero', 'zero_transform')
     add_button('zeroOri', 'zero orient', 'zero_orient')
     add_button('setOri', 'set orient', 'set_orient')
     add_button('Name', 'rename object', 'name')
@@ -99,6 +99,7 @@ def rebuild():
     add_button('gMaster', 'create rig group', 'grp_master')
     add_button('gZero', 'create zero group', 'grp_zero')
     add_button('gSub', 'create sub group', 'grp_sub')
+
     add_button('wCv', 'curve editor', 'show_cv_editor')
     add_button('wJnt', 'joint editor', 'show_jnt_editor')
     add_button('wSkin', 'skin editor', 'show_skin_editor')

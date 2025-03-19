@@ -1,7 +1,7 @@
 import pymel.core as pm
 
 
-def reset(obj):
+def zero_transform(obj):
     obj_node = pm.PyNode(obj)
     if obj_node.hasAttr('jointOrient'):  # type: ignore
         obj_node.jointOrient.set(0, 0, 0)  # type: ignore
@@ -62,7 +62,7 @@ def opm_constraint(driver, driven):
         var = mult_matrix_nd.matrixSum >> driven_node.offsetParentMatrix  # type: ignore
     else:
         var = driver_node.worldMatrix[0] >> driven_node.offsetParentMatrix  # type: ignore
-    reset(driven_node)
+    zero_transform(driven_node)
 
 
 if __name__ == '__main__':

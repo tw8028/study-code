@@ -7,7 +7,7 @@ def new(*,name, target):
     pm.select(clear=True)
     joint = pm.joint(name=name, roo=pm.xform(target, q=True, roo=True))
     pm.parent(joint, target)
-    attr.reset(joint)
+    attr.zero_transform(joint)
     pm.parent(joint, world=True)
     return joint
 

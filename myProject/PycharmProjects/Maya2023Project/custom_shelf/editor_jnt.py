@@ -37,7 +37,7 @@ def locator_target(*args):
     for target in sl:
         loc = pm.spaceLocator()
         pm.parent(loc, target)
-        attr.reset(loc)
+        attr.zero_transform(loc)
         pm.parent(loc, world=True)
 
 

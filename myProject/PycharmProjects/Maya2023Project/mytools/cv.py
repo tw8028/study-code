@@ -58,7 +58,7 @@ def create(*, name, shape, radius):
 def ctrl(*, name='ctrl__', target, shape='', radius=2):
     curve = create(name=name, shape=shape, radius=radius)
     pm.parent(curve, target)
-    mytools.attr.reset(curve)
+    mytools.attr.zero_transform(curve)
     pm.parent(curve, world=True)
     return curve
 
