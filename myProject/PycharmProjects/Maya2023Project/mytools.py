@@ -1,3 +1,5 @@
+# Auto-generated entry module
+
 import parts
 import rig
 

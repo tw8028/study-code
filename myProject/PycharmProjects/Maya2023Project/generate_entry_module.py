@@ -44,9 +44,11 @@ def generate_entry_module(package_names: list, output_file: str = "mytools.py"):
         f.write("# Auto-generated entry module\n\n")
 
         # 导入所有方法
-        for method_name, method in all_methods.items():
-            module_name = method.__module__  # 获取方法所在的模块名
-            f.write(f"import {module_name} \n")
+        # for method_name, method in all_methods.items():
+        #    module_name = method.__module__  # 获取方法所在的模块名
+        #    f.write(f"import {module_name} \n")
+        for package_name in package_names:
+            f.write(f"import {package_name} \n")
 
         f.write("\n")
 
@@ -76,5 +78,5 @@ def generate_entry_module(package_names: list, output_file: str = "mytools.py"):
 
 # 示例：扫描多个包并生成入口模块
 if __name__ == "__main__":
-    packages_to_scan = ["parts","rig"]  # 替换为你的包名
+    packages_to_scan = ["parts", "rig"]  # 替换为你的包名
     generate_entry_module(packages_to_scan)
