@@ -2,6 +2,7 @@ import pymel.core as pm
 import importlib
 import parts
 import rig
+import mytools
 import custom_shelf
 
 importlib.reload(parts.attr)
@@ -17,7 +18,10 @@ importlib.reload(custom_shelf.buttons)
 importlib.reload(custom_shelf.editor_cv)
 importlib.reload(custom_shelf.editor_jnt)
 importlib.reload(custom_shelf.editor_skin)
+importlib.reload(mytools)
+
 if not pm.commandPort(":4434", query=True):
     pm.commandPort(name=":4434")
+
 custom_shelf.buttons.rebuild()
 print('reload!!!')
