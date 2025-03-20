@@ -1,5 +1,9 @@
 import pymel.core as pm
-import parts
+import parts.attr
+import parts.cv
+import parts.grp
+import parts.utils
+
 
 
 # 生成控制点，控制曲线

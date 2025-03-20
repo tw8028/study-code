@@ -1,5 +1,6 @@
 import pymel.core as pm
-import parts
+import parts.cv
+import parts.grp
 
 
 # object_list 必须符合命名规范如: jnt__l__finger__001

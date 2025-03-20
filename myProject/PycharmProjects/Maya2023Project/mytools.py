@@ -1,7 +1,14 @@
 # Auto-generated entry module
 
-import parts 
-import rig 
+import parts.attr
+import parts.cv
+import parts.grp
+import parts.jnt
+import parts.utils
+import rig.curve_rig
+import rig.fk_rig
+import rig.stretch_rig
+import rig.twist_rig
 
 
 def displayable(attr):
@@ -150,5 +157,3 @@ def twist_lower():
 
 def twist_upper(jnt_upper, jnt_twist_01, jnt_twist_02, x_axis):
     return rig.twist_rig.twist_upper(jnt_upper, jnt_twist_01, jnt_twist_02, x_axis)
-
-

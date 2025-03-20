@@ -51,12 +51,13 @@ def generate_entry_module(package_names: list, output_file: str = "mytools.py"):
     with open(output_file, "w", encoding="utf-8") as f:
         f.write("# Auto-generated entry module\n\n")
 
-        # 导入所有方法
-        # for method_name, method in all_methods.items():
-        #    module_name = method.__module__  # 获取方法所在的模块名
-        #    f.write(f"import {module_name} \n")
+        # 导入所有 module
+        all_module = []
         for package_name in package_names:
-            f.write(f"import {package_name} \n")
+            modules = get_modules(package_name)
+            all_module.extend(modules)
+        for module in all_module:
+            f.write(f"import {module}\n")
 
         f.write("\n\n")
 
