@@ -6,18 +6,18 @@ import custom_shelf
 def zero_transform():
     sl = pm.selected()
     for obj in sl:
-        mytools.attr.zero_transform(obj)
+        mytools.zero_transform(obj)
 
 
 def zero_orient():
     sl = pm.selected()
     for obj in sl:
-        mytools.attr.zero_orient(obj)
+        mytools.zero_orient(obj)
 
 
 def set_orient():
     sl = pm.selected()
-    mytools.attr.set_orient(sl[0], aim=sl[1], up_obj=sl[2])
+    mytools.set_orient(sl[0], aim_obj=sl[1], up_obj=sl[2])
 
 
 def name():
@@ -41,14 +41,14 @@ def name():
 
 
 def grp_master():
-    mytools.grp.master()
+    mytools.grp_master()
 
 
 def grp_zero():
     target = pm.selected()[0]
     if '__' in target.name():
         grp_name = 'zero__' + target.split('__', 1)[1]
-        return mytools.grp.zero(name=grp_name, target=target)
+        return mytools.grp_zero(name=grp_name, target=target)
     else:
         pm.warning(f'{target} 命名不符合规范，无法创建 zero grp')
 
@@ -57,7 +57,7 @@ def grp_sub():
     target = pm.selected()[0]
     if '__' in target.name():
         grp_name = 'sub__' + target.split('__', 1)[1]
-        return mytools.grp.sub(name=grp_name, target=target)
+        return mytools.grp_sub(name=grp_name, target=target)
     else:
         pm.warning(f'{target} 命名不符合规范，无法创建 sub grp')
 

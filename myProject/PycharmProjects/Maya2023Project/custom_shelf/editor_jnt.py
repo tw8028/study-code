@@ -1,13 +1,12 @@
 import pymel.core as pm
-import mytools.jnt as jnt
-import mytools.attr as attr
+import mytools
 
 
 # 只镜像 translate 和 rotate, 不镜像 jointOrient
 def joint_mirror(*args):
     sl = pm.selected()
     for old_jnt in sl:
-        jnt.mirror(old_jnt)
+        mytools.jnt_mirror(old_jnt)
 
 
 def joint_point(*args):
@@ -21,7 +20,7 @@ def joint_point(*args):
 def joint_target(*args):
     sl = pm.ls(sl=True)
     for obj in sl:
-        jnt.new(name='jnt__c__joint__001', target=obj)
+        mytools.jnt_target(name='jnt__c__joint__001', target=obj)
 
 
 def locator_point(*args):
@@ -37,7 +36,7 @@ def locator_target(*args):
     for target in sl:
         loc = pm.spaceLocator()
         pm.parent(loc, target)
-        attr.zero_transform(loc)
+        mytools.zero_transform(loc)
         pm.parent(loc, world=True)
 
 
@@ -51,13 +50,13 @@ def locator_center(*args):
 def joint_insert(*args):
     start_jnt = pm.selected()[0]
     num_insert = pm.intField('num_insert', q=True, value=True)
-    jnt.insert(start_jnt, num_insert)
+    mytools.jnt_insert(start_jnt, num_insert)
 
 
 def joint_on_curve(*args):
     curve = pm.selected()[0]
     num = pm.intField('num_on_curve', q=True, value=True)
-    jnt.on_curve(curve, num)
+    mytools.jnt_curve(curve, num)
 
 
 def show_window():

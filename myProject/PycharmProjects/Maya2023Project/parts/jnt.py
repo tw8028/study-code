@@ -1,9 +1,9 @@
 import pymel.core as pm
-import mytools.attr as attr
+import parts.attr as attr
 
 
 # 生成的 joint 旋转数值为零, jointOrient 不为零
-def new(*,name, target):
+def jnt_target(name, target):
     pm.select(clear=True)
     joint = pm.joint(name=name, roo=pm.xform(target, q=True, roo=True))
     pm.parent(joint, target)
@@ -13,7 +13,7 @@ def new(*,name, target):
 
 
 # 只镜像 translate 和 rotate, 不镜像 jointOrient, 用于面部
-def mirror(origin_jnt):
+def jnt_mirror(origin_jnt):
     pm.select(clear=True)
     old_name = origin_jnt.name()
     if '__r' in old_name:
@@ -29,7 +29,7 @@ def mirror(origin_jnt):
     pm.xform(mirror_jnt, ro=(ro[0], -ro[1], ro[2]))
 
 
-def insert(start_jnt, num=1):
+def jnt_insert(start_jnt, num):
     end_jnt = pm.listRelatives(start_jnt, children=True)[0]
     jnt_offset = pm.PyNode(end_jnt).translateX.get() / (num + 1)  # type: ignore
     _roo = pm.xform(start_jnt, q=True, roo=True)
@@ -46,7 +46,7 @@ def insert(start_jnt, num=1):
     return jnt_parts
 
 
-def on_curve(curve, num):
+def jnt_curve(curve, num):
     u_value = 1 / num
     curve_shape = curve.getShape()
     loc = pm.spaceLocator()

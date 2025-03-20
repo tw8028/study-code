@@ -1,14 +1,14 @@
 import pymel.core as pm
-import mytools
+import parts
 
 
 # object_list 必须符合命名规范如: jnt__l__finger__001
 def fk_chain(object_list):
     def ctrl(target, name):
-        return mytools.cv.ctrl(name=name, target=target, shape='circle', radius=6)
+        return parts.cv.cv_target(name=name, target=target, shape='circle', radius=6)
 
     def zero(target, name):
-        return mytools.grp.zero(name=name, target=target)
+        return parts.grp.grp_zero(name=name, target=target)
 
     node_list = [pm.PyNode(i) for i in object_list]
     zero_name_list = ['zero__' + n.name().split('__', 1)[1] for n in node_list]  # type:ignore

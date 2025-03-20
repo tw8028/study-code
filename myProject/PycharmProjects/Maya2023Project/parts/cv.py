@@ -1,5 +1,5 @@
 import pymel.core as pm
-import mytools.attr
+import parts.attr as attr
 
 
 def _create(name, radius, points):
@@ -8,7 +8,7 @@ def _create(name, radius, points):
     return pm.curve(name=name, degree=1, point=scaled_points, knot=knot)
 
 
-def create(*, name, shape, radius):
+def cv_create(name, shape, radius):
     if shape == 'cube':
         points = [(-1, -1, 1), (1, -1, 1), (1, -1, -1), (-1, -1, -1), (-1, -1, 1), (-1, 1, 1), (1, 1, 1), (1, -1, 1),
                   (1, 1, 1), (1, 1, -1), (1, -1, -1), (1, 1, -1), (-1, 1, -1), (-1, -1, -1), (-1, 1, -1), (-1, 1, 1)]
@@ -55,12 +55,9 @@ def create(*, name, shape, radius):
         return pm.circle(nr=(1, 0, 0), c=(0, 0, 0), radius=radius, n=name, ch=False)[0]
 
 
-def ctrl(*, name='ctrl__', target, shape='', radius=2):
-    curve = create(name=name, shape=shape, radius=radius)
+def cv_target(name, target, shape, radius):
+    curve = cv_create(name=name, shape=shape, radius=radius)
     pm.parent(curve, target)
-    mytools.attr.zero_transform(curve)
+    attr.zero_transform(curve)
     pm.parent(curve, world=True)
     return curve
-
-
-

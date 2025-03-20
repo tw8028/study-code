@@ -1,5 +1,5 @@
 import pymel.core as pm
-import mytools
+import parts
 
 
 # 生成控制点，控制曲线
@@ -11,7 +11,7 @@ def loc_ctrl_curve(curve):
 
 
 # 生成定位点，随曲线运动
-def loc_on_curve(curve, *, num):
+def loc_on_curve(curve, num):
     u_value = 1 / (num - 1)
     for n in range(num):
         node_name = 'pocInfo__' + curve.split('__', 1)[1]
@@ -38,7 +38,7 @@ def connect_line(obj_a, obj_b):
     pm.pointConstraint(obj_b, point2)
     line = pm.curve(d=1, p=[(0, 0, 0), (1, 0, 0)], k=[0, 1], n=name_line)
     line.inheritsTransform.set(0)
-    mytools.attr.set_display_type(line, display_type=2)
+    parts.attr.set_display_type(line, display_type=2)
     line_shape = line.getShape()
     var = point1.getShape().worldPosition[0] >> line_shape.controlPoints[0]
     var = point2.getShape().worldPosition[0] >> line_shape.controlPoints[1]
@@ -50,10 +50,10 @@ def pole_ctrl(ik_joint1, ik_joint2, ik_joint3, ctrl_name, zero_name):
     t1 = pm.xform(ik_joint1, q=True, t=True, ws=True)
     t2 = pm.xform(ik_joint2, q=True, t=True, ws=True)
     t3 = pm.xform(ik_joint3, q=True, t=True, ws=True)
-    direction = mytools.math_utils.direction_pole(t1, t2, t3)
+    direction = parts.utils.direction_pole(t1, t2, t3)
 
-    mytools.cv.create(name=ctrl_name, shape='ball', radius=5)
-    zero_grp = mytools.grp.zero(name=zero_name, target=ctrl_name)
+    parts.cv.cv_create(name=ctrl_name, shape='ball', radius=5)
+    zero_grp = parts.grp.grp_zero(name=zero_name, target=ctrl_name)
     pole_position = [x + y * 40 for x, y in zip(t2, direction)]
     pm.xform(zero_name, t=pole_position, worldSpace=True)  # type: ignore
     return zero_grp

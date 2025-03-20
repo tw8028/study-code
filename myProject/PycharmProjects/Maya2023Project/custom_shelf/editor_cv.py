@@ -1,7 +1,5 @@
 import pymel.core as pm
-import mytools.cv as cv
-import mytools.grp
-import rig
+import mytools
 
 
 def create(*args):
@@ -9,8 +7,8 @@ def create(*args):
     shape = pm.radioButton(radio_collection, q=True, label=True)
     radius = pm.floatField('radius1', q=True, value=True)
     if pm.selected():
-        return cv.ctrl(name=shape, target=pm.selected()[0], shape=shape, radius=radius)
-    return cv.create(name=shape, shape=shape, radius=radius)
+        return mytools.cv_target(name=shape, target=pm.selected()[0], shape=shape, radius=radius)
+    return mytools.cv_create(name=shape, shape=shape, radius=radius)
 
 
 def change(*args):
@@ -31,7 +29,7 @@ def change(*args):
 def zero_grp(*args):
     ctrl = pm.selected()[0]
     name = f'zero__c__{ctrl}__001'
-    mytools.grp.zero(name=name, target=ctrl)
+    mytools.grp_zero(name=name, target=ctrl)
 
 
 def match_freeze(*args):
@@ -47,7 +45,7 @@ def match_freeze(*args):
 
 def connect(*args):
     sl = pm.selected()
-    rig.curve_rig.connect_line(sl[0], sl[1])
+    mytools.connect_line(sl[0], sl[1])
 
 
 def mirror(*args):
@@ -56,7 +54,7 @@ def mirror(*args):
 
 def point_ctrl(*args):
     sl = pm.selected()
-    rig.curve_rig.loc_ctrl_curve(sl[0])
+    mytools.loc_ctrl_curve(sl[0])
 
 
 def get_message(*args):
@@ -72,7 +70,7 @@ def get_message(*args):
 def path_cons(*args):
     sl = pm.selected()
     num = pm.intField('path_num', q=True, v=True)
-    rig.curve_rig.loc_on_curve(sl[0], num=num)
+    mytools.loc_on_curve(sl[0], num=num)
 
 
 def show_window():

@@ -1,7 +1,7 @@
 import pymel.core as pm
 
 
-def stretch_ik(*, attr_stretch, jnt1_offset, handle_ctrl, ik_jnt1, ik_jnt2, ik_jnt3):
+def stretch_ik(attr_stretch, jnt1_offset, handle_ctrl, ik_jnt1, ik_jnt2, ik_jnt3):
     """距离大于 ik handle 的极限，则拉伸，否则不拉伸
 
     :param attr_stretch: 拉伸属性开关
@@ -45,7 +45,7 @@ def stretch_ik(*, attr_stretch, jnt1_offset, handle_ctrl, ik_jnt1, ik_jnt2, ik_j
     var = multiply_divide.outputX >> jnt2.scaleX  # type:ignore
 
 
-def stretch_jnt(*, start_point, end_point, joints):
+def stretch_jnt(start_point, end_point, joints):
     """根据两点距离，计算缩放，x轴拉伸的同时，yz轴变细
 
     :param start_point: 起点
@@ -86,7 +86,7 @@ def stretch_yz(joint):
     var = reciprocal_nd.outputX >> jnt_nd.scaleZ  # type:ignore
 
 
-def blend_orient(*, attr_ctrl, reverse, ik_jnt, fk_jnt, blend_jnt):
+def blend_orient(attr_ctrl, reverse, ik_jnt, fk_jnt, blend_jnt):
     attr_ctrl_nd = pm.PyNode(attr_ctrl)
     reverse_nd = pm.PyNode(reverse)
     orient_con = pm.orientConstraint(ik_jnt, fk_jnt, blend_jnt)
@@ -95,7 +95,7 @@ def blend_orient(*, attr_ctrl, reverse, ik_jnt, fk_jnt, blend_jnt):
     reverse_nd.outputX >> pm.PyNode(f'{orient_con}.{fk_jnt}W1')  # type: ignore
 
 
-def blend_attr(*, attr_ctrl, attr_a, attr_b, attr_blend):
+def blend_attr(attr_ctrl, attr_a, attr_b, attr_blend):
     attr_ctrl_nd = pm.PyNode(attr_ctrl)
     attr_a_nd = pm.PyNode(attr_a)
     attr_b_nd = pm.PyNode(attr_b)
@@ -107,12 +107,13 @@ def blend_attr(*, attr_ctrl, attr_a, attr_b, attr_blend):
     blend_nd.output >> attr_blend_nd  # type: ignore
 
 
-def blend_scale_x(*, attr_ctrl, ik_jnt, fk_jnt, blend_jnt):
+def blend_scale_x(attr_ctrl, ik_jnt, fk_jnt, blend_jnt):
     # scaleConstraint对骨骼使用有问题，这里使用 blendTwoAttr node 缩放 blend_jnt
     blend_attr(attr_ctrl=attr_ctrl, attr_a=f'{fk_jnt}.scaleX', attr_b=f'{ik_jnt}.scaleX',
                attr_blend=f'{blend_jnt}.scaleX')
 
-def main():
+
+if __name__ == '__main__':
     obj = 'ctrl__r__arm__001'
     jnt1_offset = 'zero__r__arm__001'
     handle_ctrl = 'ctrl__r__arm_ik_handle__001'
@@ -122,7 +123,3 @@ def main():
 
     stretch_ik(attr_stretch=obj, jnt1_offset=obj, handle_ctrl=handle_ctrl, ik_jnt1=ik_jnt1, ik_jnt2=ik_jnt2,
                ik_jnt3=ik_jnt3)
-
-
-if __name__ == '__main__':
-    main()

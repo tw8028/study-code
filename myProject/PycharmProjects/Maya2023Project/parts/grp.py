@@ -1,29 +1,29 @@
 import pymel.core as pm
-import mytools.attr as attr
+import parts.attr as attr
 
 
-def zero(*, name, target):
-    zero_group = on_target(name=name, target=target)
+def grp_zero(name, target):
+    zero_group = grp_target(name=name, target=target)
     pm.parent(target, zero_group)
     return zero_group
 
 
 # create a group on the target position
-def on_target(*, name, target):
-    grp = sub(name=name, target=target)
+def grp_target(name, target):
+    grp = grp_sub(name=name, target=target)
     pm.parent(grp, w=True)
     return grp
 
 
 # create a subGroup of the target
-def sub(*, name, target):
+def grp_sub(name, target):
     sub_group = pm.group(empty=True, n=name)
     pm.parent(sub_group, target)
     pm.xform(sub_group, t=(0, 0, 0), ro=(0, 0, 0), roo=pm.xform(target, q=True, roo=True))
     return sub_group
 
 
-def master():
+def grp_master():
     master_grp = pm.group(empty=True, name='master')
     geo = pm.group(empty=True, name='geometry')
     geo.overrideEnabled.set(1)
