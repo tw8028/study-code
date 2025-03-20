@@ -1,25 +1,27 @@
 import pymel.core as pm
 
 
-def twist_joint(driver, no_roll, driven, value):
+def twist_joint(driver, no_roll, driven_objs):
     driver_pn = pm.PyNode(driver)
     no_roll_pn = pm.PyNode(no_roll)
     mult_matrix = pm.createNode('multMatrix', name=driver_pn + '_mm')
     decompose_matrix = pm.createNode('decomposeMatrix', name=driver_pn + '_dpm')
     quat2euler = pm.createNode('quatToEuler', name=driver_pn + '_q2e')
-    multiply_divide = pm.createNode('multiplyDivide', name=driver_pn + '_md')
-    # 相乘
-    multiply_divide.operation.set(1)
-    multiply_divide.input2X.set(value)
 
-    driver_pn.worldMatrix[0] >> mult_matrix.matrixIn[0]
-    no_roll_pn.worldInverseMatrix[0] >> mult_matrix.matrixIn[1]
+    var = driver_pn.worldMatrix[0] >> mult_matrix.matrixIn[0]  # type:ignore
+    var = no_roll_pn.worldInverseMatrix[0] >> mult_matrix.matrixIn[1]  # type:ignore
+    var = mult_matrix.matrixSum >> decompose_matrix.inputMatrix
+    var = decompose_matrix.outputQuatX >> quat2euler.inputQuatX
+    var = decompose_matrix.outputQuatW >> quat2euler.inputQuatW
 
-    mult_matrix.matrixSum >> decompose_matrix.inputMatrix
-    decompose_matrix.outputQuatX >> quat2euler.inputQuatX
-    decompose_matrix.outputQuatW >> quat2euler.inputQuatW
-    quat2euler.outputRotateX >> multiply_divide.input1X
-    multiply_divide.outputX >> pm.PyNode(driven).rotateX
+    for driven in driven_objs:
+        driven_pn = pm.PyNode(driven)
+        multiply_divide = pm.createNode('multiplyDivide', name=driver_pn + '_md')
+        # 相乘
+        multiply_divide.operation.set(1)
+        multiply_divide.input2X.set(0.5)
+        var = quat2euler.outputRotateX >> multiply_divide.input1X
+        var = multiply_divide.outputX >> driven_pn.rotateX  # type:ignore
 
 
 def twist_upper(jnt_upper, jnt_twist_01, jnt_twist_02, x_axis):
@@ -34,4 +36,4 @@ def twist_lower():
 
 
 if __name__ == '__main__':
-    pass
+    twist_joint(driver='joint1', no_roll='joint2', driven_objs=['joint3_t1', 'joint4_t2'])

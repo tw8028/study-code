@@ -151,5 +151,5 @@ class Limb:
 
 
 if __name__ == '__main__':
-    arm = Limb(name='jnt__r__arm__001', joint1='joint1', joint2='joint2', joint3='joint3')
+    arm = Limb(name='jnt__r__arm__001', joint1='upperarm_r', joint2='lowerarm_r', joint3='hand_r')
     arm.build()
