@@ -1,5 +1,5 @@
 import pymel.core as pm
-import mytools
+import mytools.attr
 
 
 def _create(name, radius, points):

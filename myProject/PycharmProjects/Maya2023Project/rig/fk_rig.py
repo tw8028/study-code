@@ -22,7 +22,7 @@ def fk_chain(object_list):
     for i in range(len(fk_rig) - 1):
         pm.parent(fk_rig[i + 1], fk_rig[i])
     for ctrl, jnt in zip(ctrl_list, node_list):
-        mytools.attr.opm_constraint(ctrl, jnt)
+        pm.orientConstraint(ctrl, jnt)
     return zero_list[0]
 
 
