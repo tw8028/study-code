@@ -27,5 +27,4 @@ def fk_chain(object_list):
 
 
 if __name__ == '__main__':
-    sl = pm.selected()
-    fk_chain(sl)
+    pass

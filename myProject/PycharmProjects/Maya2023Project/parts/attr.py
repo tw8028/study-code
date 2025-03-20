@@ -66,5 +66,4 @@ def opm_constraint(driver, driven):
 
 
 if __name__ == '__main__':
-    sl = pm.selected()
-    opm_constraint(sl[0], sl[1])
+    pass

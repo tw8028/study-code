@@ -6,6 +6,14 @@ import inspect
 from typing import Dict, Callable
 
 
+def get_modules(package_name: str):
+    package = importlib.import_module(package_name)
+    modules = []
+    for _, module_name, _ in pkgutil.walk_packages(package.__path__, prefix=f"{package_name}."):
+        modules.append(module_name)
+    return modules
+
+
 def scan_package(package_name: str) -> Dict[str, Callable]:
     """
     扫描指定包中的所有模块，并提取方法
@@ -50,7 +58,7 @@ def generate_entry_module(package_names: list, output_file: str = "mytools.py"):
         for package_name in package_names:
             f.write(f"import {package_name} \n")
 
-        f.write("\n")
+        f.write("\n\n")
 
         # 为每个方法生成调用函数
         for method_name, method in all_methods.items():
@@ -71,12 +79,29 @@ def generate_entry_module(package_names: list, output_file: str = "mytools.py"):
             # 生成调用函数
             # module_name = method.__module__.rsplit('.', 1)[1]
             f.write(f"def {method_name}({param_str}):\n")
-            f.write(f"    return {method.__module__}.{method_name}({param_str})\n\n")
+            f.write(f"    return {method.__module__}.{method_name}({param_str})\n\n\n")
 
     print(f"Entry module generated: {output_file}")
 
 
+def generate_reload_module(package_names: list, output_file: str = "reload.py"):
+    all_module = []
+    for package_name in package_names:
+        modules = get_modules(package_name)
+        all_module.extend(modules)
+    with open(output_file, "w", encoding="utf-8") as f:
+        f.write("# Auto-generated reload module\n\n")
+        f.write(f"import importlib\n\n")
+        for module in all_module:
+            f.write(f"import {module}\n")
+            f.write(f"importlib.reload({module})\n")
+        f.write(f"print('reload modules...')")
+    print(f"Reload module generated: {output_file}")
+
+
 # 示例：扫描多个包并生成入口模块
 if __name__ == "__main__":
-    packages_to_scan = ["parts", "rig"]  # 替换为你的包名
-    generate_entry_module(packages_to_scan)
+    entry_package = ["parts", "rig"]  # 替换为你的包名
+    generate_entry_module(entry_package)
+    reload_package = ["parts", "rig", "custom_shelf", "system"]
+    generate_reload_module(reload_package)

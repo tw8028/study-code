@@ -1,27 +1,33 @@
-import pymel.core as pm
+# Auto-generated reload module
+
 import importlib
-import parts
-import rig
-import mytools
-import custom_shelf
 
+import parts.attr
 importlib.reload(parts.attr)
+import parts.cv
 importlib.reload(parts.cv)
+import parts.grp
 importlib.reload(parts.grp)
+import parts.jnt
 importlib.reload(parts.jnt)
+import parts.utils
 importlib.reload(parts.utils)
+import rig.curve_rig
 importlib.reload(rig.curve_rig)
+import rig.fk_rig
 importlib.reload(rig.fk_rig)
+import rig.stretch_rig
 importlib.reload(rig.stretch_rig)
+import rig.twist_rig
 importlib.reload(rig.twist_rig)
+import custom_shelf.buttons
 importlib.reload(custom_shelf.buttons)
+import custom_shelf.editor_cv
 importlib.reload(custom_shelf.editor_cv)
+import custom_shelf.editor_jnt
 importlib.reload(custom_shelf.editor_jnt)
+import custom_shelf.editor_skin
 importlib.reload(custom_shelf.editor_skin)
-importlib.reload(mytools)
-
-if not pm.commandPort(":4434", query=True):
-    pm.commandPort(name=":4434")
-
-custom_shelf.buttons.rebuild()
-print('reload!!!')
+import system.limb
+importlib.reload(system.limb)
+print('reload modules...')

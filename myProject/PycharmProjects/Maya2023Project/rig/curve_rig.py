@@ -59,5 +59,4 @@ def pole_ctrl(ik_joint1, ik_joint2, ik_joint3, ctrl_name, zero_name):
     return zero_grp
 
 if __name__ == '__main__':
-    sl = pm.selected()
-    loc_ctrl_curve(sl[0])
+    pass
