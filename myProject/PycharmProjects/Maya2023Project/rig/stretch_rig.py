@@ -94,6 +94,13 @@ def blend_orient(attr_ctrl, reverse, ik_jnt, fk_jnt, blend_jnt):
     attr_ctrl_nd >> pm.PyNode(f'{orient_con}.{ik_jnt}W0')  # type: ignore
     reverse_nd.outputX >> pm.PyNode(f'{orient_con}.{fk_jnt}W1')  # type: ignore
 
+def blend_translate(attr_ctrl, reverse, ik_jnt, fk_jnt, blend_jnt):
+    attr_ctrl_nd = pm.PyNode(attr_ctrl)
+    reverse_nd = pm.PyNode(reverse)
+    point_con = pm.pointConstraint(ik_jnt, fk_jnt, blend_jnt)
+    attr_ctrl_nd >> pm.PyNode(f'{point_con}.{ik_jnt}W0')  # type: ignore
+    reverse_nd.outputX >> pm.PyNode(f'{point_con}.{fk_jnt}W1')  # type: ignore
+
 
 def blend_attr(attr_ctrl, attr_a, attr_b, attr_blend):
     attr_ctrl_nd = pm.PyNode(attr_ctrl)

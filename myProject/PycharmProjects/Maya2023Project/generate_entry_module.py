@@ -96,6 +96,9 @@ def generate_reload_module(package_names: list, output_file: str = "reload.py"):
         for module in all_module:
             f.write(f"import {module}\n")
             f.write(f"importlib.reload({module})\n")
+
+        f.write("import mytools\n")
+        f.write("importlib.reload(mytools)\n")
         f.write(f"print('reload modules...')")
     print(f"Reload module generated: {output_file}")
 

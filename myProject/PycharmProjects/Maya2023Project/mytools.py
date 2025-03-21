@@ -6,6 +6,7 @@ import parts.grp
 import parts.jnt
 import parts.utils
 import rig.curve_rig
+import rig.drive_rig
 import rig.fk_rig
 import rig.stretch_rig
 import rig.twist_rig
@@ -21,10 +22,6 @@ def lock_and_hide(attr):
 
 def lock_hide_transform(obj):
     return parts.attr.lock_hide_transform(obj)
-
-
-def opm_constraint(driver, driven):
-    return parts.attr.opm_constraint(driver, driven)
 
 
 def set_color(obj, color):
@@ -119,6 +116,10 @@ def pole_ctrl(ik_joint1, ik_joint2, ik_joint3, ctrl_name, zero_name):
     return rig.curve_rig.pole_ctrl(ik_joint1, ik_joint2, ik_joint3, ctrl_name, zero_name)
 
 
+def opm_constraint(driver, driven):
+    return rig.drive_rig.opm_constraint(driver, driven)
+
+
 def fk_chain(object_list):
     return rig.fk_rig.fk_chain(object_list)
 
@@ -135,6 +136,10 @@ def blend_scale_x(attr_ctrl, ik_jnt, fk_jnt, blend_jnt):
     return rig.stretch_rig.blend_scale_x(attr_ctrl, ik_jnt, fk_jnt, blend_jnt)
 
 
+def blend_translate(attr_ctrl, reverse, ik_jnt, fk_jnt, blend_jnt):
+    return rig.stretch_rig.blend_translate(attr_ctrl, reverse, ik_jnt, fk_jnt, blend_jnt)
+
+
 def stretch_ik(attr_stretch, jnt1_offset, handle_ctrl, ik_jnt1, ik_jnt2, ik_jnt3):
     return rig.stretch_rig.stretch_ik(attr_stretch, jnt1_offset, handle_ctrl, ik_jnt1, ik_jnt2, ik_jnt3)
 
@@ -147,13 +152,5 @@ def stretch_yz(joint):
     return rig.stretch_rig.stretch_yz(joint)
 
 
-def twist_joint(driver, no_roll, driven, value):
-    return rig.twist_rig.twist_joint(driver, no_roll, driven, value)
-
-
-def twist_lower():
-    return rig.twist_rig.twist_lower()
-
-
-def twist_upper(jnt_upper, jnt_twist_01, jnt_twist_02, x_axis):
-    return rig.twist_rig.twist_upper(jnt_upper, jnt_twist_01, jnt_twist_02, x_axis)
+def twist_joint(driver, no_roll, driven_objs, ro_direction):
+    return rig.twist_rig.twist_joint(driver, no_roll, driven_objs, ro_direction)
