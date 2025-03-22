@@ -6,9 +6,10 @@ def create(*args):
     radio_collection = pm.radioCollection('cv_type', q=True, select=True)
     shape = pm.radioButton(radio_collection, q=True, label=True)
     radius = pm.floatField('radius1', q=True, value=True)
+    name = f'ctrl__c__{shape}__001'
     if pm.selected():
-        return mytools.cv_target(name=shape, target=pm.selected()[0], shape=shape, radius=radius)
-    return mytools.cv_create(name=shape, shape=shape, radius=radius)
+        return mytools.cv_target(name=name, target=pm.selected()[0], shape=shape, radius=radius)
+    return mytools.cv_create(name=name, shape=shape, radius=radius)
 
 
 def change(*args):
@@ -28,7 +29,8 @@ def change(*args):
 
 def zero_grp(*args):
     ctrl = pm.selected()[0]
-    name = f'zero__c__{ctrl}__001'
+    str = ctrl.split('__', 1)[1]
+    name = f'zero__{str}'
     mytools.grp_zero(name=name, target=ctrl)
 
 
