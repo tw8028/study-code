@@ -44,7 +44,7 @@ class Head:
         pm.parent(self.joint_no_roll_02, self.joint_no_roll_01)
         pm.parent(self.joint_no_roll_01, self.joint_root)
         handle = pm.ikHandle(name=f'handle__c__neck__001', startJoint=self.joint_no_roll_01,
-                            endEffector=self.joint_no_roll_02)[0]
+                             endEffector=self.joint_no_roll_02)[0]
         pm.poleVectorConstraint(self.joint_no_roll_01, handle)
         pm.parent(handle, self.ctrl_neck)
 
@@ -64,9 +64,7 @@ class Head:
             jnt_fk_nd = pm.PyNode(jnt)
             var = mult_matrix_nd.matrixSum >> jnt_fk_nd.offsetParentMatrix  # type:ignore
 
-        output_ctrl_neck = mytools.grp_sub(name=f'output_{self.ctrl_neck}', target=self.ctrl_neck)
-        pm.matchTransform(output_ctrl_neck, self.joint_head_fk, position=True)
-        pm.pointConstraint(output_ctrl_neck, self.drive_head)
+        pm.pointConstraint(self.joint_no_roll_02, self.drive_head)
 
     def constraint_deform_joint(self):
         for jnt, jnt_fk in zip(self.joints, self.joints_fk):
