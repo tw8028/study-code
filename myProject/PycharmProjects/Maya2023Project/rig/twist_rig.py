@@ -1,4 +1,5 @@
 import pymel.core as pm
+from pymel.core.nodetypes import DependNode
 
 
 # 1. driver 关节旋转超过180° twist 关节会发生翻转
@@ -28,8 +29,20 @@ def twist_joint(driver, no_roll, driven_objs, ro_direction):
         var = multiply_divide.outputX >> driven_pn.rotateX  # type:ignore
 
 
+def blend_matrix(input: str, target: str, blend_attr: float) -> DependNode:
+    input_obj_nd = pm.PyNode(input)
+    target_obj_nd = pm.PyNode(target)
+    blend_matrix_nd = pm.createNode('blendMatrix', name='blendM_' + input)
+    blend_matrix_nd.envelope.set(blend_attr)
+    var = input_obj_nd.worldMatrix[0] >> blend_matrix_nd.inputMatrix  # type:ignore
+    var = target_obj_nd.worldMatrix[0] >> blend_matrix_nd.target[0].targetMatrix  # type:ignore
+    decompose_matrix_nd = pm.createNode('decomposeMatrix', name='decompose_' + input)
+    var = blend_matrix_nd.outputMatrix >> decompose_matrix_nd.inputMatrix
+    return decompose_matrix_nd
+
+
 if __name__ == '__main__':
-    twist_joint(driver='upperarm_r', no_roll='jnt__r__arm_no_roll__001',
-                driven_objs=['upperarm_twist_02_r', 'upperarm_twist_01_r'], ro_direction=-1)
-    twist_joint(driver='output__r__arm_end__001', no_roll='lowerarm_r', driven_objs=['lowerarm_twist_02_r', 'lowerarm_twist_01_r'],
-                ro_direction=1)
+    decompose_nd = blend_matrix(input='zero__c__cube__001', target='ctrl__c__cube__001', blend_attr=0.3333)
+    for joint in ['joint1', 'joint2', 'joint3']:
+        jnt_nd = pm.PyNode(joint)
+        var = decompose_nd.outputRotate >> jnt_nd.rotate  # type:ignore

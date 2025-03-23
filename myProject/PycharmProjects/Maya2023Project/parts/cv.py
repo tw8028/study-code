@@ -8,7 +8,7 @@ def _create(name, radius, points):
     return pm.curve(name=name, degree=1, point=scaled_points, knot=knot)
 
 
-def cv_create(name, shape, radius):
+def cv_create(name, shape, radius: int):
     if shape == 'cube':
         points = [(-1, -1, 1), (1, -1, 1), (1, -1, -1), (-1, -1, -1), (-1, -1, 1), (-1, 1, 1), (1, 1, 1), (1, -1, 1),
                   (1, 1, 1), (1, 1, -1), (1, -1, -1), (1, 1, -1), (-1, 1, -1), (-1, -1, -1), (-1, 1, -1), (-1, 1, 1)]
@@ -55,7 +55,7 @@ def cv_create(name, shape, radius):
         return pm.circle(nr=(1, 0, 0), c=(0, 0, 0), radius=radius, n=name, ch=False)[0]
 
 
-def cv_target(name, target, shape, radius):
+def cv_target(name, target, shape, radius: int):
     curve = cv_create(name=name, shape=shape, radius=radius)
     pm.parent(curve, target)
     attr.zero_transform(curve)

@@ -15,3 +15,8 @@ def opm_constraint(driver, driven):
     else:
         var = driver_node.worldMatrix[0] >> driven_node.offsetParentMatrix  # type: ignore
     attr.zero_transform(driven_node)
+
+
+def parent_chain(objs: list[str]) -> None:
+    for i in range(len(objs) - 1):
+        pm.parent(objs[i + 1], objs[i])

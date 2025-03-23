@@ -120,6 +120,10 @@ def opm_constraint(driver, driven):
     return rig.drive_rig.opm_constraint(driver, driven)
 
 
+def parent_chain(objs):
+    return rig.drive_rig.parent_chain(objs)
+
+
 def fk_chain(object_list):
     return rig.fk_rig.fk_chain(object_list)
 
@@ -152,5 +156,15 @@ def stretch_yz(joint):
     return rig.stretch_rig.stretch_yz(joint)
 
 
+def DependNode(args, kwargs):
+    return pymel.core.nodetypes.DependNode(args, kwargs)
+
+
+def blend_matrix(input, target, blend_attr):
+    return rig.twist_rig.blend_matrix(input, target, blend_attr)
+
+
 def twist_joint(driver, no_roll, driven_objs, ro_direction):
     return rig.twist_rig.twist_joint(driver, no_roll, driven_objs, ro_direction)
+
+
