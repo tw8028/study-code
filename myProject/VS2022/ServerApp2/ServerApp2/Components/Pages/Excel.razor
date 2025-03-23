@@ -1,5 +1,4 @@
 ﻿@page "/excel"
-@inject FileService fileService
 
 <h3>Excel to Json</h3>
 
@@ -18,25 +17,27 @@
 
 	private async Task PersonToJson()
 	{
-		ExcelToJson personTable = new("personArray");
-		personTable.ExcelPath = "D:/纳罗达人设总表.xlsx";
-		personTable.JsonPath = @"D:\GitHub\NLDClient\ProjectNLD\Assets\Art\temp\Editor\JsonData\PersonData.json";
-		personTable.Category = Category.person;
-		personTable.ColSet = new()
+		const string personFile = "D:/纳罗达人设总表.xlsx";
+		const string jsonFile = @"D:\GitHub\NLDClient\ProjectNLD\Assets\Art\temp\Editor\JsonData\PersonData.json";
+		ExcelToJson personTable = new(listName: "personArray", excelPath: personFile, jsonPath: jsonFile)
 		{
-			{ (int)ColName.A, "id" },
-			{ (int)ColName.D, "name" },
-			{ (int)ColName.K, "weapon" },
-			{ (int)ColName.N, "aniSet" },
-			{ (int)ColName.AB, "model_0" },
-			{ (int)ColName.AC, "skin_0" },
-			{ (int)ColName.AD, "prefab_0" },
-			{ (int)ColName.AG, "model_1" },
-			{ (int)ColName.AH, "skin_1" },
-			{ (int)ColName.AI, "prefab_1" },
-			{ (int)ColName.AJ, "skill" },
-			{ (int)ColName.AK, "bag_0" },
-			{ (int)ColName.AL, "bag_1" },
+			Category = Category.Person,
+			ColSet = new()
+			{
+				{ (int)ColName.A, "id" },
+				{ (int)ColName.D, "name" },
+				{ (int)ColName.K, "weapon" },
+				{ (int)ColName.N, "aniSet" },
+				{ (int)ColName.Ab, "model_0" },
+				{ (int)ColName.Ac, "skin_0" },
+				{ (int)ColName.Ad, "prefab_0" },
+				{ (int)ColName.Ag, "model_1" },
+				{ (int)ColName.Ah, "skin_1" },
+				{ (int)ColName.Ai, "prefab_1" },
+				{ (int)ColName.Aj, "skill" },
+				{ (int)ColName.Ak, "bag_0" },
+				{ (int)ColName.Al, "bag_1" },
+			}
 		};
 
 		await Task.WhenAll(personTable.ToJson());
@@ -45,13 +46,15 @@
 
 	private async Task VehicleToJson()
 	{
-		ExcelToJson carTable = new("vehicleArray");
-		carTable.ExcelPath = $"D:/P_S_载具prefab.xlsx";
-		carTable.JsonPath = @"D:\GitHub\NLDClient\ProjectNLD\Assets\Art\temp\Editor\JsonData\vehicleData.json";
-		carTable.ColSet = new()
+		const string excelFile = "D:/P_S_载具prefab.xlsx";
+		const string jsonFile = @"D:\GitHub\NLDClient\ProjectNLD\Assets\Art\temp\Editor\JsonData\vehicleData.json";
+		ExcelToJson carTable = new(listName: "vehicleArray", excelPath: excelFile, jsonPath: jsonFile)
 		{
-			{ (int)ColName.C, "name" },
-			{ (int)ColName.D, "batteryName" }
+			ColSet = new Dictionary<int, string>
+			{
+				{ (int)ColName.C, "name" },
+				{ (int)ColName.D, "batteryName" }
+			}
 		};
 
 		await Task.WhenAll(carTable.ToJson());
