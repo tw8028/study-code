@@ -1,4 +1,4 @@
-# generate_entry_module.py
+# generate_module.py
 
 import importlib
 import pkgutil
