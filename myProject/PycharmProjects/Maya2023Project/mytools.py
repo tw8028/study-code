@@ -156,15 +156,5 @@ def stretch_yz(joint):
     return rig.stretch_rig.stretch_yz(joint)
 
 
-def DependNode(args, kwargs):
-    return pymel.core.nodetypes.DependNode(args, kwargs)
-
-
-def blend_matrix(input, target, blend_attr):
-    return rig.twist_rig.blend_matrix(input, target, blend_attr)
-
-
 def twist_joint(driver, no_roll, driven_objs, ro_direction):
     return rig.twist_rig.twist_joint(driver, no_roll, driven_objs, ro_direction)
-
-

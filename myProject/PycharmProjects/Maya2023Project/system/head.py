@@ -27,24 +27,32 @@ class Head:
         for jnt, jnt_fk in zip(self.joints, self.joints_fk):
             mytools.jnt_target(name=jnt_fk, target=jnt)
         mytools.parent_chain([self.cog] + self.joints_fk)
-        jnt_neck_fk = self.joints_fk[0]
-        jnt_head_fk = self.joints_fk[-1]
 
         # create neck controller
-        mytools.cv_target(name=self.ctrl_neck, target=jnt_neck_fk, shape='cube', radius=4)
+        mytools.cv_target(name=self.ctrl_neck, target=self.neck_fk, shape='cube', radius=4)
         mytools.grp_zero(name=self.zero_neck, target=self.ctrl_neck)
         # create head controller
-        mytools.cv_target(name=self.ctrl_head, target=jnt_head_fk, shape='cube', radius=4)
+        mytools.cv_target(name=self.ctrl_head, target=self.head_fk, shape='cube', radius=4)
         mytools.grp_zero(name=self.zero_head, target=self.ctrl_head)
         mytools.grp_zero(name=self.drive_head, target=self.zero_head)
 
-        # rig
-        decompose_nd = mytools.blend_matrix(input=self.zero_neck, target=self.ctrl_neck,
-                                            blend_attr=1 / len(self.joints))
+    def rig(self):
+        input_obj_nd = pm.PyNode(self.zero_neck)
+        target_obj_nd = pm.PyNode(self.ctrl_neck)
+        cog_nd = pm.PyNode(self.cog)
+        name = self.cog.split('__', 1)[1]
+        blend_matrix_nd = pm.createNode('blendMatrix', name='blendM__' + name)
+        blend_matrix_nd.envelope.set(1 / len(self.joints))
+        mult_matrix_nd = pm.createNode('multMatrix', name='multM__' + name)
+        var = input_obj_nd.worldMatrix[0] >> blend_matrix_nd.inputMatrix  # type:ignore
+        var = target_obj_nd.worldMatrix[0] >> blend_matrix_nd.target[0].targetMatrix  # type:ignore
+        var = blend_matrix_nd.outputMatrix >> mult_matrix_nd.matrixIn[0]
+        var = cog_nd.worldInverseMatrix[0] >> mult_matrix_nd.matrixIn[1]  # type:ignore
         for jnt in self.joints_fk:
-            jnt_nd = pm.PyNode(jnt)
-            # var = decompose_nd.outputRotate >> jnt_nd.rotate  # type:ignore
-        pm.pointConstraint(jnt_head_fk, self.drive_head)
+            jnt_fk_nd = pm.PyNode(jnt)
+            var = mult_matrix_nd.matrixSum >> jnt_fk_nd.offsetParentMatrix  # type:ignore
+
+        pm.pointConstraint(self.head_fk, self.drive_head)
 
     def constraint_deform_joint(self):
         pass
@@ -53,3 +61,4 @@ class Head:
 if __name__ == '__main__':
     head = Head(joints=['neck_01', 'neck_02', 'head'])
     head.create()
+    head.rig()

@@ -29,20 +29,5 @@ def twist_joint(driver, no_roll, driven_objs, ro_direction):
         var = multiply_divide.outputX >> driven_pn.rotateX  # type:ignore
 
 
-def blend_matrix(input: str, target: str, blend_attr: float) -> DependNode:
-    input_obj_nd = pm.PyNode(input)
-    target_obj_nd = pm.PyNode(target)
-    blend_matrix_nd = pm.createNode('blendMatrix', name='blendM_' + input)
-    blend_matrix_nd.envelope.set(blend_attr)
-    var = input_obj_nd.worldMatrix[0] >> blend_matrix_nd.inputMatrix  # type:ignore
-    var = target_obj_nd.worldMatrix[0] >> blend_matrix_nd.target[0].targetMatrix  # type:ignore
-    decompose_matrix_nd = pm.createNode('decomposeMatrix', name='decompose_' + input)
-    var = blend_matrix_nd.outputMatrix >> decompose_matrix_nd.inputMatrix
-    return decompose_matrix_nd
-
-
 if __name__ == '__main__':
-    decompose_nd = blend_matrix(input='zero__c__cube__001', target='ctrl__c__cube__001', blend_attr=0.3333)
-    for joint in ['joint1', 'joint2', 'joint3']:
-        jnt_nd = pm.PyNode(joint)
-        var = decompose_nd.outputRotate >> jnt_nd.rotate  # type:ignore
+    pass
