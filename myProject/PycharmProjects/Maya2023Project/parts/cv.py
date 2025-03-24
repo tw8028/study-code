@@ -51,6 +51,12 @@ def cv_create(name, shape, radius: int):
         points = [(0.0, 0.0, 0.0), (-1.0, 2.0, 0.0), (1.0, 2.0, 0.0), (0.0, 0.0, 0.0), (0.0, -3.0, 0.0)]
         return _create(name, radius, points)
 
+    elif shape == 'circle':
+        return pm.circle(nr=(1, 0, 0), c=(0, 0, 0), radius=radius, n=name, ch=False)[0]
+
+    elif shape == 'circle_linear':
+        return pm.circle(nr=(1, 0, 0), c=(0, 0, 0), radius=radius, n=name, ch=False, degree=1)[0]
+
     else:
         return pm.circle(nr=(1, 0, 0), c=(0, 0, 0), radius=radius, n=name, ch=False)[0]
 

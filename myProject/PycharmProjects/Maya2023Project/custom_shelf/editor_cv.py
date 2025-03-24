@@ -93,9 +93,11 @@ def show_window():
                     pm.radioButton(label='cross2')
                     pm.radioButton(label='square')
                     pm.radioButton(label='triangle')
+                    pm.radioButton(label='circle')
+                    pm.radioButton(label='circle_linear')
 
                 with pm.rowLayout(numberOfColumns=3):
-                    pm.floatField('radius1', value=1, w=60)
+                    pm.floatField('radius1', value=10, w=60)
                     pm.button(label='Create', command=create)
                     pm.button(label='Change', command=change)
                 with pm.columnLayout():
