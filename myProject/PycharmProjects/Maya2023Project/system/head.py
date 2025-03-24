@@ -60,9 +60,11 @@ class Head:
         var = target_obj_nd.worldMatrix[0] >> blend_matrix_nd.target[0].targetMatrix  # type:ignore
         var = blend_matrix_nd.outputMatrix >> mult_matrix_nd.matrixIn[0]
         var = root_nd.worldInverseMatrix[0] >> mult_matrix_nd.matrixIn[1]  # type:ignore
+        decompose_nd = pm.createNode('decomposeMatrix', name = 'decompose__' + name)
+        var = mult_matrix_nd.matrixSum >> decompose_nd.inputMatrix
         for jnt in self.joints_fk:
             jnt_fk_nd = pm.PyNode(jnt)
-            var = mult_matrix_nd.matrixSum >> jnt_fk_nd.offsetParentMatrix  # type:ignore
+            var = decompose_nd.outputRotate >> jnt_fk_nd.rotate  # type:ignore
 
         pm.pointConstraint(self.joint_no_roll_02, self.drive_head)
 
