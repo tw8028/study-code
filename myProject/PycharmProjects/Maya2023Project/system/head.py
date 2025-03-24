@@ -43,10 +43,12 @@ class Head:
         mytools.jnt_target(name=self.joint_no_roll_02, target=self.joints[-1])
         pm.parent(self.joint_no_roll_02, self.joint_no_roll_01)
         pm.parent(self.joint_no_roll_01, self.joint_root)
+        mytools.zero_orient(self.joint_no_roll_02)
         handle = pm.ikHandle(name=f'handle__c__neck__001', startJoint=self.joint_no_roll_01,
                              endEffector=self.joint_no_roll_02)[0]
         pm.poleVectorConstraint(self.joint_no_roll_01, handle)
         pm.parent(handle, self.ctrl_neck)
+        pm.orientConstraint(self.ctrl_head, self.joint_no_roll_02, maintainOffset=True)
 
     def rig(self):
         input_obj_nd = pm.PyNode(self.zero_neck)
@@ -60,13 +62,17 @@ class Head:
         var = target_obj_nd.worldMatrix[0] >> blend_matrix_nd.target[0].targetMatrix  # type:ignore
         var = blend_matrix_nd.outputMatrix >> mult_matrix_nd.matrixIn[0]
         var = root_nd.worldInverseMatrix[0] >> mult_matrix_nd.matrixIn[1]  # type:ignore
-        decompose_nd = pm.createNode('decomposeMatrix', name = 'decompose__' + name)
+        decompose_nd = pm.createNode('decomposeMatrix', name='decompose__' + name)
         var = mult_matrix_nd.matrixSum >> decompose_nd.inputMatrix
         for jnt in self.joints_fk:
             jnt_fk_nd = pm.PyNode(jnt)
             var = decompose_nd.outputRotate >> jnt_fk_nd.rotate  # type:ignore
 
         pm.pointConstraint(self.joint_no_roll_02, self.drive_head)
+
+        # twist neck
+        mytools.twist_joint(driver=self.joint_no_roll_02, no_roll=self.joint_no_roll_01,
+                            driven_objs=self.joints_fk[0:-1], ro_direction=1, is_chain=True)
 
     def constraint_deform_joint(self):
         for jnt, jnt_fk in zip(self.joints, self.joints_fk):
