@@ -75,11 +75,13 @@ class Head:
                             driven_objs=self.joints_fk[0:-1], ro_direction=1, is_chain=True)
 
     def constraint_deform_joint(self):
-        for jnt, jnt_fk in zip(self.joints, self.joints_fk):
+        for jnt, jnt_fk in zip(self.joints[0:-1], self.joints_fk[0:-1]):
             pm.orientConstraint(jnt_fk, jnt)
+        pm.orientConstraint(self.ctrl_head, self.joints[-1])
 
 
 if __name__ == '__main__':
     head = Head(joints=['neck_01', 'neck_02', 'head'])
     head.create()
     head.rig()
+    head.constraint_deform_joint()
