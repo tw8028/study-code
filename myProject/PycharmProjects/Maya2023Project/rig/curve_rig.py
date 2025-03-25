@@ -8,11 +8,13 @@ import parts.utils
 
 # 生成控制点，控制曲线
 def loc_ctrl_curve(curve):
+    loc_list = []
     for n in range(curve.controlPoints.get(size=True)):
         locator = pm.spaceLocator()
+        loc_list.append(locator)
         pm.xform(locator, t=pm.xform(curve.cv[n], q=True, t=True, ws=True))
         var = locator.getShape().worldPosition >> curve.getShape().controlPoints[n]
-
+    return loc_list
 
 # 生成定位点，随曲线运动
 def loc_on_curve(curve, num):
