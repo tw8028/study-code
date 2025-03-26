@@ -7,6 +7,7 @@ import mytools
 class Head:
     # name: jnt__c__head__001
     def __init__(self, *, joints: list[str]):
+        self.rig_head = 'rig__c__head__001'
         self.joints = joints
         self.joint_root = f'root__c__neck__001'
         self.joints_fk = [f'jnt__c__{i}_fk__001' for i in joints]
@@ -30,12 +31,14 @@ class Head:
         mytools.parent_chain([self.joint_root] + self.joints_fk)
 
         # create neck controller
-        mytools.cv_target(name=self.ctrl_neck, target=self.joint_neck_fk, shape='cube', radius=4)
+        mytools.cv_target(name=self.ctrl_neck, target=self.joint_neck_fk, shape='circle', radius=6)
         mytools.grp_zero(name=self.zero_neck, target=self.ctrl_neck)
         # create head controller
-        mytools.cv_target(name=self.ctrl_head, target=self.joint_head_fk, shape='cube', radius=4)
+        mytools.cv_target(name=self.ctrl_head, target=self.joint_head_fk, shape='cube', radius=6)
         mytools.grp_zero(name=self.zero_head, target=self.ctrl_head)
         mytools.grp_zero(name=self.drive_head, target=self.zero_head)
+        pm.group(name=self.rig_head, empty=True)
+        pm.parent(self.zero_neck, self.drive_head, self.rig_head)
 
         # create no roll joint
         mytools.jnt_target(name=self.joint_no_roll_01, target=self.joints[0])
@@ -77,6 +80,11 @@ class Head:
         for jnt, jnt_fk in zip(self.joints[0:-1], self.joints_fk[0:-1]):
             pm.orientConstraint(jnt_fk, jnt)
         pm.orientConstraint(self.ctrl_head, self.joints[-1])
+
+    def build(self):
+        self.create()
+        self.rig()
+        self.constraint_deform_joint()
 
 
 if __name__ == '__main__':

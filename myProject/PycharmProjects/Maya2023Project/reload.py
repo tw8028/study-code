@@ -15,11 +15,13 @@ import custom_shelf.buttons
 import custom_shelf.editor_cv
 import custom_shelf.editor_jnt
 import custom_shelf.editor_skin
-import system.clavicle
-import system.foot
-import system.head
-import system.limb
-import system.spine
+import system_biped.build
+import system_biped.clavicle
+import system_biped.foot
+import system_biped.head
+import system_biped.limb
+import system_biped.master
+import system_biped.spine
 import mytools
 
 
@@ -38,10 +40,12 @@ def main():
     importlib.reload(custom_shelf.editor_cv)
     importlib.reload(custom_shelf.editor_jnt)
     importlib.reload(custom_shelf.editor_skin)
-    importlib.reload(system.clavicle)
-    importlib.reload(system.foot)
-    importlib.reload(system.head)
-    importlib.reload(system.limb)
-    importlib.reload(system.spine)
+    importlib.reload(system_biped.build)
+    importlib.reload(system_biped.clavicle)
+    importlib.reload(system_biped.foot)
+    importlib.reload(system_biped.head)
+    importlib.reload(system_biped.limb)
+    importlib.reload(system_biped.master)
+    importlib.reload(system_biped.spine)
     importlib.reload(mytools)
     print('reload modules...')

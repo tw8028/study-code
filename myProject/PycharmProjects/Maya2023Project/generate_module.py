@@ -112,5 +112,5 @@ def generate_reload_module(package_names: list, output_file: str = "reload.py"):
 if __name__ == "__main__":
     entry_package = ["parts", "rig"]  # 替换为你的包名
     generate_entry_module(entry_package)
-    reload_package = ["parts", "rig", "custom_shelf", "system"]
+    reload_package = ["parts", "rig", "custom_shelf", "system_biped"]
     generate_reload_module(reload_package)
