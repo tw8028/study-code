@@ -103,3 +103,4 @@ def rebuild():
     add_button('wCv', 'curve editor', 'show_cv_editor')
     add_button('wJnt', 'joint editor', 'show_jnt_editor')
     add_button('wSkin', 'skin editor', 'show_skin_editor')
+    print('rebuild custom shelf...')
