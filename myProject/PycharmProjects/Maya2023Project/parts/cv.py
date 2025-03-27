@@ -1,5 +1,6 @@
 import pymel.core as pm
 import parts.attr as attr
+import parts.grp as grp
 
 
 def _create(name, radius, points):
@@ -67,3 +68,7 @@ def cv_target(name, target, shape, radius: int):
     attr.zero_transform(curve)
     pm.parent(curve, world=True)
     return curve
+
+
+def cv_and_zero(name, target, shape, radius: int):
+    return grp.grp_zero(name='zero' + name[4:], target=cv_target(name, target, shape, radius))

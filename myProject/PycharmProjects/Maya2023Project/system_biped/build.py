@@ -12,12 +12,13 @@ def new():
     # spine
     spine = Spine(joints=['pelvis', 'spine_01', 'spine_02', 'spine_03', 'spine_04', 'spine_05'])
     spine.build()
+    pm.parentConstraint(master.ctrl_world,spine.zero_cog, maintainOffset=True)
 
     # head
     head = Head(joints=['neck_01', 'neck_02', 'head'])
     head.build()
     pm.orientConstraint(spine.ctrl_cog, head.drive_head)
-    pm.parent(head.joint_root, spine.spines_ik[-1])
+    pm.parent(head.joint_root, spine.jnt_list_rig[-1])
     pm.parentConstraint(spine.ctrl_end, head.zero_neck, maintainOffset=True)  # connect to spine
 
     # clavicle

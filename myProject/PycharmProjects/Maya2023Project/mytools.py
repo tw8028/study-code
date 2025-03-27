@@ -44,6 +44,10 @@ def zero_transform(obj):
     return parts.attr.zero_transform(obj)
 
 
+def cv_and_zero(name, target, shape, radius):
+    return parts.cv.cv_and_zero(name, target, shape, radius)
+
+
 def cv_create(name, shape, radius):
     return parts.cv.cv_create(name, shape, radius)
 

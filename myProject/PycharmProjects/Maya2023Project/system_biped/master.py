@@ -10,15 +10,19 @@ class Master:
         self.joint = 'joint'
         self.ctrl_world = 'ctrl__c__world__001'
         self.zero_world = 'zero__c__world__001'
+        self.constraint = 'constraint'
 
     def create(self):
         for name in [self.master, self.geo, self.control, self.joint, self.zero_world]:
             pm.group(name=name, empty=True)
             mytools.lock_hide_transform(name)
         pm.parent(self.geo, self.control, self.joint, self.zero_world, self.master)
+
         pm.circle(nr=(0, 1, 0), r=30, name=self.ctrl_world, ch=False)
         pm.parent(self.ctrl_world, self.zero_world)
         pm.parent(self.zero_world, self.control)
+
+        mytools.grp_sub(name=self.constraint, target=self.control)
 
         pm.addAttr(self.master, ln='geometryVis', at='bool', dv=1)
         pm.addAttr(self.master, ln='geoDisplayType', at='enum', enumName='Normal:Template:Reference')
@@ -36,3 +40,7 @@ class Master:
         var = master_grp.geoDisplayType >> pm.PyNode(self.geo).overrideDisplayType
         var = master_grp.controlVis >> pm.PyNode(self.control).visibility
         var = master_grp.jointVis >> pm.PyNode(self.joint).visibility
+
+
+if __name__ == '__main__':
+    Master().create()
