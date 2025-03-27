@@ -31,13 +31,14 @@ class Spine(Component):
         # create rig joints
         for jnt in self.joints:
             jnt_ik = mytools.jnt_target(name=f'jnt__c__{jnt}_ik__001', target=jnt)
-            self.jnt_list_rig.append(jnt_ik)
-        mytools.parent_chain(self.jnt_list_rig)
-        pm.parent(self.jnt_list_rig[0], self.grp_rig)
+            self.constraint_objs.append(jnt_ik)
+        mytools.parent_chain(self.constraint_objs)
+        pm.parent(self.constraint_objs[0], self.grp_rig)
 
         # create spline ik
         spline_ik = pm.ikHandle(name=self.ik_handle, solver='ikSplineSolver', simplifyCurve=False,
-                                parentCurve=False, startJoint=self.jnt_list_rig[1], endEffector=self.jnt_list_rig[-1])
+                                parentCurve=False, startJoint=self.constraint_objs[1],
+                                endEffector=self.constraint_objs[-1])
         ik_handle = spline_ik[0]
         curve = spline_ik[2]
         pm.parent(ik_handle, curve, self.grp_rig)
@@ -47,8 +48,8 @@ class Spine(Component):
             pm.rename(i, newname=f'loc__c__ctrl_point__001')
 
     def create_ctrl(self):
-        mytools.cv_and_zero(name=self.ctrl_cog, target=self.joints[2], shape='circle_linear', radius=17)
-        mytools.cv_and_zero(name=self.ctrl_pelvis, target=self.joints[2], shape='cube', radius=8)
+        mytools.cv_and_zero(name=self.ctrl_cog, target=self.joints[2], shape='root', radius=1)
+        mytools.cv_and_zero(name=self.ctrl_pelvis, target=self.joints[2], shape='pelvis', radius=1)
         mytools.cv_and_zero(name=self.ctrl_spine01, target=self.joints[2], shape='circle', radius=13)
         mytools.cv_and_zero(name=self.ctrl_spine02, target=self.joints[3], shape='circle', radius=15)
         mytools.cv_and_zero(name=self.ctrl_chest, target=self.joints[4], shape='cube', radius=10)
@@ -57,7 +58,7 @@ class Spine(Component):
         pm.parent(self.zero_pelvis, self.zero_spine01, self.ctrl_cog)
         pm.parent(self.zero_spine02, self.ctrl_spine01)
         pm.parent(self.zero_chest, self.ctrl_spine02)
-        pm.parent(self.zero_end, self.jnt_list_rig[-1])
+        pm.parent(self.zero_end, self.constraint_objs[-1])
         pm.parent(self.zero_cog, self.grp_rig)
 
         pm.parent(self.loc_list[0], self.loc_list[1], self.ctrl_pelvis)
@@ -65,7 +66,7 @@ class Spine(Component):
         pm.parent(self.loc_list[3], self.ctrl_spine02)
         pm.parent(*self.loc_list[4:], self.ctrl_chest)
 
-        pm.parentConstraint(self.ctrl_pelvis, self.jnt_list_rig[0], maintainOffset=True)
+        pm.parentConstraint(self.ctrl_pelvis, self.constraint_objs[0], maintainOffset=True)
 
         # twist
         ik_handle = pm.PyNode(self.ik_handle)

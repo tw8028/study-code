@@ -29,14 +29,11 @@ class Master:
         pm.addAttr(self.master, ln='controlVis', at='bool', dv=1)
         pm.addAttr(self.master, ln='jointVis', at='bool', dv=1)
         master_grp = pm.PyNode(self.master)
-        print('e')
         pm.setAttr(master_grp.geometryVis, channelBox=1)
         pm.setAttr(master_grp.geoDisplayType, channelBox=1)
         pm.setAttr(master_grp.controlVis, channelBox=1)
         pm.setAttr(master_grp.jointVis, channelBox=1)
-        print('a')
         var = master_grp.geometryVis >> pm.PyNode(self.geo).visibility
-        print('b')
         var = master_grp.geoDisplayType >> pm.PyNode(self.geo).overrideDisplayType
         var = master_grp.controlVis >> pm.PyNode(self.control).visibility
         var = master_grp.jointVis >> pm.PyNode(self.joint).visibility

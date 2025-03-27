@@ -1,15 +1,15 @@
 import pymel.core as pm
 import mytools
+from system_biped.component import Component
 
 
 # neck: ctrl_head 控制 neck x轴旋转
 # head: 父层级被重心控制，子层级被 ctrl_head 控制
-class Head:
+class Head(Component):
     # name: jnt__c__head__001
-    def __init__(self, *, joints: list[str]):
+    def __init__(self, *, name: str, side: str, joints: list[str]):
+        super().__init__(name=name, side=side, joints=joints)
         self.rig_head = 'rig__c__head__001'
-        self.joints = joints
-        self.joint_root = f'root__c__neck__001'
         self.joints_fk = [f'jnt__c__{i}_fk__001' for i in joints]
         self.joint_neck_fk = self.joints_fk[0]
         self.joint_head_fk = self.joints_fk[-1]
@@ -23,12 +23,15 @@ class Head:
         self.zero_head = f'zero__c__head__001'
         self.drive_head = f'drive__c__head__001'
 
+        self.ctrl_list = [self.ctrl_neck, self.ctrl_head]
+        self.constraint_objs = self.joints_fk
+
     def create(self):
         # create fk joints
-        mytools.jnt_target(name=self.joint_root, target=self.joints[0])
+        mytools.jnt_target(name=self.jnt_root, target=self.joints[0])
         for jnt, jnt_fk in zip(self.joints, self.joints_fk):
             mytools.jnt_target(name=jnt_fk, target=jnt)
-        mytools.parent_chain([self.joint_root] + self.joints_fk)
+        mytools.parent_chain([self.jnt_root] + self.joints_fk)
 
         # create neck controller
         mytools.cv_target(name=self.ctrl_neck, target=self.joint_neck_fk, shape='circle', radius=6)
@@ -44,7 +47,7 @@ class Head:
         mytools.jnt_target(name=self.joint_no_roll_01, target=self.joints[0])
         mytools.jnt_target(name=self.joint_no_roll_02, target=self.joints[-1])
         pm.parent(self.joint_no_roll_02, self.joint_no_roll_01)
-        pm.parent(self.joint_no_roll_01, self.joint_root)
+        pm.parent(self.joint_no_roll_01, self.jnt_root)
         mytools.zero_orient(self.joint_no_roll_02)
         handle = pm.ikHandle(name=f'handle__c__neck__001', startJoint=self.joint_no_roll_01,
                              endEffector=self.joint_no_roll_02)[0]
@@ -55,8 +58,8 @@ class Head:
     def rig(self):
         input_obj_nd = pm.PyNode(self.zero_neck)
         target_obj_nd = pm.PyNode(self.joint_no_roll_01)
-        root_nd = pm.PyNode(self.joint_root)
-        name = self.joint_root.split('__', 1)[1]
+        root_nd = pm.PyNode(self.jnt_root)
+        name = self.jnt_root.split('__', 1)[1]
         blend_matrix_nd = pm.createNode('blendMatrix', name='blendM__' + name)
         blend_matrix_nd.envelope.set(1 / len(self.joints))
         mult_matrix_nd = pm.createNode('multMatrix', name='multM__' + name)
@@ -84,11 +87,10 @@ class Head:
     def build(self):
         self.create()
         self.rig()
-        self.constraint_deform_joint()
+        self.set_color()
+        self.constraint_deform()
 
 
 if __name__ == '__main__':
     head = Head(joints=['neck_01', 'neck_02', 'head'])
-    head.create()
-    head.rig()
-    head.constraint_deform_joint()
+    head.build()

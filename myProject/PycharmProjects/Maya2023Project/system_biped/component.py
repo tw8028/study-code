@@ -16,14 +16,25 @@ class Component(object):
 
         self.color = 1
         self.ctrl_list = []
-        self.jnt_list_rig = []  # 用于约束蒙皮关节
+        self.constraint_objs = []  # 用于约束蒙皮关节
 
     def set_color(self):
+        if self.side == 'c':
+            self.color = 21
+        elif self.side == 'l':
+            self.color = 6
+        elif self.side == 'r':
+            self.color = 13
+        else:
+            self.color = 24
+
         for ctrl in self.ctrl_list:
             attr.set_color(obj=ctrl, color=self.color)
 
     def constraint_deform(self):
-        for jnt_rig, jnt in zip(self.jnt_list_rig, self.joints):
+        if not pm.objExists('constraint'):
+            pm.group(name='constraint', empty=True)
+        for jnt_rig, jnt in zip(self.constraint_objs, self.joints):
             point_cons = pm.pointConstraint(jnt_rig, jnt)
             orient_cons = pm.orientConstraint(jnt_rig, jnt)
             pm.parent(point_cons, orient_cons, 'constraint')

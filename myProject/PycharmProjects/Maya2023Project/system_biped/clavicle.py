@@ -1,29 +1,36 @@
 import pymel.core as pm
 import mytools
+from system_biped.component import Component
 
 
-class Clavicle:
-    # name: jnt__r__clavicle__001
-    def __init__(self, *, name: str, clavicle: str):
-        self.clavicle = clavicle
-        self.upper_arm = pm.PyNode(clavicle).getChildren()[0]  # type:ignore
+class Clavicle(Component):
+    def __init__(self, *, name: str, side: str, joints: list[str]):
+        super().__init__(name=name, side=side, joints=joints)
+        self.clavicle = joints[0]
+        self.ctrl = f'ctrl__{side}__{name}__001'
+        self.zero = f'zero__{side}__{name}__001'
+        self.output = f'output__{side}__{name}__001'
 
-        self.ctrl = name.format('ctrl')
-        self.zero = name.format('zero')
-        self.shoulder = name.format('shoulder')
+        self.ctrl_list = [self.ctrl]
+        self.constraint_objs = [self.ctrl]
 
     def build(self):
-        mytools.cv_target(name=self.ctrl, target=self.clavicle, shape='cube', radius=2)
-        mytools.grp_zero(name=self.zero, target=self.ctrl)
+        spine_end = pm.PyNode(self.clavicle).getParent()  # type:ignore
+        upper_arm = pm.PyNode(self.clavicle).getChildren()[0]  # type:ignore
 
-        mytools.grp_sub(name=self.shoulder, target=self.ctrl)
-        pm.matchTransform(self.shoulder, self.upper_arm)
-        mytools.lock_hide_transform(self.shoulder)
-        pm.orientConstraint(self.ctrl, self.clavicle)
+        mytools.grp_target(name=self.zero_cog, target=spine_end)
+        mytools.cv_and_zero(name=self.ctrl, target=self.clavicle, shape='cube', radius=2)
+        pm.parent(self.zero_cog, self.grp_rig)
+        pm.parent(self.zero, self.zero_cog)
+        mytools.grp_sub(name=self.output, target=self.ctrl)
+        pm.matchTransform(self.output, upper_arm)
+        mytools.lock_hide_transform(self.output)
+        self.set_color()
+        self.constraint_deform()
 
 
 if __name__ == '__main__':
-    clavicle = Clavicle(name='{0}__l__clavicle__001', clavicle='clavicle_l')
+    clavicle = Clavicle(name='clavicle', side='l', joints=['clavicle_l'])
     clavicle.build()
-    output = clavicle.shoulder
+    output = clavicle.output
     print(output)

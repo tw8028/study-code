@@ -58,6 +58,17 @@ def cv_create(name, shape, radius: int):
     elif shape == 'circle_linear':
         return pm.circle(nr=(1, 0, 0), c=(0, 0, 0), radius=radius, n=name, ch=False, degree=1)[0]
 
+    elif shape == 'root':
+        points = [(0, -10, 15), (0, -10, -15), (0, 10, -15), (0, 15, 0), (0, 10, 15), (0, -10, 15)]
+        return _create(name, radius, points)
+
+    elif shape == 'pelvis':
+        points = [(-22.2, 15.7, 3.1), (-22.2, 15.7, -3.1), (-11.8, 17.9, -6.8), (-8.1, 12.5, -17.4), (-4.2, 1.3, -23.3),
+                  (-2.3, -10.5, -19.0), (-4.4, -15.4, -6.8), (-9.8, -16.9, 0.0), (-4.4, -15.4, 6.8),
+                  (-2.3, -10.5, 19.0),
+                  (-4.2, 1.3, 23.3), (-8.1, 12.5, 17.4), (-11.8, 17.9, 6.8), (-22.2, 15.7, 3.1)]
+        return _create(name, radius, points)
+
     else:
         return pm.circle(nr=(1, 0, 0), c=(0, 0, 0), radius=radius, n=name, ch=False)[0]
 

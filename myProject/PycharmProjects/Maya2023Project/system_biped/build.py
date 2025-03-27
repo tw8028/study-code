@@ -18,7 +18,7 @@ def new():
     head = Head(joints=['neck_01', 'neck_02', 'head'])
     head.build()
     pm.orientConstraint(spine.ctrl_cog, head.drive_head)
-    pm.parent(head.joint_root, spine.jnt_list_rig[-1])
+    pm.parent(head.jnt_root, spine.constraint_objs[-1])
     pm.parentConstraint(spine.ctrl_end, head.zero_neck, maintainOffset=True)  # connect to spine
 
     # clavicle
@@ -31,10 +31,10 @@ def new():
     # arm: joint 冻结变换后反向缩放才有效
     arm_r = Limb(root_name='jnt__r__arm__001', joint1='upperarm_r', joint2='lowerarm_r', joint3='hand_r')
     arm_r.build()
-    pm.pointConstraint(clavicle_r.shoulder, arm_r.zero_main)
+    pm.pointConstraint(clavicle_r.output, arm_r.zero_main)
     arm_l = Limb(root_name='jnt__l__arm__001', joint1='upperarm_l', joint2='lowerarm_l', joint3='hand_l')
     arm_l.build()
-    pm.pointConstraint(clavicle_l.shoulder, arm_l.zero_main)
+    pm.pointConstraint(clavicle_l.output, arm_l.zero_main)
 
     # leg
     leg_r = Limb(root_name='jnt__r__leg__001', joint1='thigh_r', joint2='calf_r', joint3='foot_r')
