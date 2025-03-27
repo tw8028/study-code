@@ -31,10 +31,12 @@ class Component(object):
         for ctrl in self.ctrl_list:
             attr.set_color(obj=ctrl, color=self.color)
 
-    def constraint_deform(self):
+    def constraint_deform(self, point: bool = True):
         if not pm.objExists('constraint'):
             pm.group(name='constraint', empty=True)
         for jnt_rig, jnt in zip(self.constraint_objs, self.joints):
-            point_cons = pm.pointConstraint(jnt_rig, jnt)
+            if point:
+                point_cons = pm.pointConstraint(jnt_rig, jnt)
+                pm.parent(point_cons, 'constraint')
             orient_cons = pm.orientConstraint(jnt_rig, jnt)
-            pm.parent(point_cons, orient_cons, 'constraint')
+            pm.parent(orient_cons, 'constraint')

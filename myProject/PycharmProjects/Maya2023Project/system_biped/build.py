@@ -17,7 +17,7 @@ def new():
     # head
     head = Head(joints=['neck_01', 'neck_02', 'head'])
     head.build()
-    pm.orientConstraint(spine.ctrl_cog, head.drive_head)
+    pm.orientConstraint(spine.ctrl_cog, head.input_head)
     pm.parent(head.jnt_root, spine.constraint_objs[-1])
     pm.parentConstraint(spine.ctrl_end, head.zero_neck, maintainOffset=True)  # connect to spine
 

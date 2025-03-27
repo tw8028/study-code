@@ -9,7 +9,6 @@ class Head(Component):
     # name: jnt__c__head__001
     def __init__(self, *, name: str, side: str, joints: list[str]):
         super().__init__(name=name, side=side, joints=joints)
-        self.rig_head = 'rig__c__head__001'
         self.joints_fk = [f'jnt__c__{i}_fk__001' for i in joints]
         self.joint_neck_fk = self.joints_fk[0]
         self.joint_head_fk = self.joints_fk[-1]
@@ -21,10 +20,10 @@ class Head(Component):
 
         self.ctrl_head = f'ctrl__c__head__001'
         self.zero_head = f'zero__c__head__001'
-        self.drive_head = f'drive__c__head__001'
+        self.input_head = f'input__c__head__001'
 
         self.ctrl_list = [self.ctrl_neck, self.ctrl_head]
-        self.constraint_objs = self.joints_fk
+        self.constraint_objs = [*self.joints_fk[0:-1], self.ctrl_head]
 
     def create(self):
         # create fk joints
@@ -39,9 +38,9 @@ class Head(Component):
         # create head controller
         mytools.cv_target(name=self.ctrl_head, target=self.joint_head_fk, shape='cube', radius=6)
         mytools.grp_zero(name=self.zero_head, target=self.ctrl_head)
-        mytools.grp_zero(name=self.drive_head, target=self.zero_head)
-        pm.group(name=self.rig_head, empty=True)
-        pm.parent(self.zero_neck, self.drive_head, self.rig_head)
+        mytools.grp_zero(name=self.input_head, target=self.zero_head)
+        pm.group(name=self.grp_rig, empty=True)
+        pm.parent(self.zero_neck, self.input_head, self.grp_rig)
 
         # create no roll joint
         mytools.jnt_target(name=self.joint_no_roll_01, target=self.joints[0])
@@ -73,7 +72,7 @@ class Head(Component):
             jnt_fk_nd = pm.PyNode(jnt)
             var = decompose_nd.outputRotate >> jnt_fk_nd.rotate  # type:ignore
 
-        pm.pointConstraint(self.joint_no_roll_02, self.drive_head)
+        pm.pointConstraint(self.joint_no_roll_02, self.input_head)
 
         # twist neck
         mytools.twist_joint(driver=self.joint_no_roll_02, no_roll=self.joint_no_roll_01,
@@ -88,9 +87,9 @@ class Head(Component):
         self.create()
         self.rig()
         self.set_color()
-        self.constraint_deform()
+        self.constraint_deform(point=False)
 
 
 if __name__ == '__main__':
-    head = Head(joints=['neck_01', 'neck_02', 'head'])
+    head = Head(name='neck', side='c', joints=['neck_01', 'neck_02', 'head'])
     head.build()
