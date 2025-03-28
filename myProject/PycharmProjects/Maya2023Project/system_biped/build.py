@@ -1,8 +1,7 @@
 import pymel.core as pm
-from system_biped.spine import Spine
-from system_biped.clavicle import Clavicle
-from system_biped.head import Head
-from system_biped.limb import Limb
+from system_biped.core.spine import Spine
+from system_biped.core.clavicle import Clavicle
+from system_biped.core.head import Head
 from system_biped.master import Master
 
 

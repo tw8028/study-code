@@ -1,9 +1,14 @@
+from abc import ABC
+
 import pymel.core as pm
 import mytools
-from system_biped.component import Component
+from system_biped.core.component import Component
+from system_biped.interface.connection import IConnectionPointUser
+from system_biped.interface.connection import IConnectionPointProvider
+from system_biped.interface.connection import ConnectionType
 
 
-class Head(Component):
+class Head(Component, IConnectionPointUser, ABC):
     def __init__(self, *, joints: list[str]):
         super().__init__(name='head', side='c', joints=joints)
 
@@ -81,6 +86,10 @@ class Head(Component):
         self.create()
         self.rig()
         self.post_process()
+
+    def connect_to(self, provider: IConnectionPointProvider, connection_type=ConnectionType.NECK, **kwargs):
+        connect_point = provider.get_connection_point(connection_type=connection_type)
+        mytools.opm_constraint(connect_point, self.zero_cog)
 
 
 if __name__ == '__main__':
