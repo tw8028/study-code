@@ -10,39 +10,23 @@ def new():
     master = Master()
     master.create()
     # spine
-    spine = Spine(joints=['pelvis', 'spine_01', 'spine_02', 'spine_03', 'spine_04', 'spine_05'])
+    spine = Spine(name='spine', side='c', joints=['pelvis', 'spine_01', 'spine_02', 'spine_03', 'spine_04', 'spine_05'])
     spine.build()
-    pm.parentConstraint(master.ctrl_world,spine.zero_cog, maintainOffset=True)
+    pm.parentConstraint(master.ctrl_world, spine.zero_cog, maintainOffset=True)
 
     # head
-    head = Head(joints=['neck_01', 'neck_02', 'head'])
+    head = Head(name='neck', side='c', joints=['neck_01', 'neck_02', 'head'])
     head.build()
-    pm.orientConstraint(spine.ctrl_cog, head.input_head)
-    pm.parent(head.jnt_root, spine.constraint_objs[-1])
-    pm.parentConstraint(spine.ctrl_end, head.zero_neck, maintainOffset=True)  # connect to spine
+    pm.orientConstraint(spine.ctrl_cog, head.input_list[-1])
+    pm.parentConstraint(spine.ctrl_end, head.zero_cog, maintainOffset=True)  # connect to spine
 
     # clavicle
-    clavicle_l = Clavicle(name='{0}__l__clavicle__001', clavicle='clavicle_l')
+    clavicle_l = Clavicle(name='clavicle', side='l', joints=['clavicle_l'])
     clavicle_l.build()
-    clavicle_r = Clavicle(name='{0}__r__clavicle__001', clavicle='clavicle_r')
+    pm.parentConstraint(spine.ctrl_end, clavicle_l.zero_cog)
+    clavicle_r = Clavicle(name='clavicle', side='r', joints=['clavicle_r'])
     clavicle_r.build()
-    pm.parent(clavicle_l.zero, clavicle_r.zero, spine.ctrl_end)  # connect to spine
-
-    # arm: joint 冻结变换后反向缩放才有效
-    arm_r = Limb(root_name='jnt__r__arm__001', joint1='upperarm_r', joint2='lowerarm_r', joint3='hand_r')
-    arm_r.build()
-    pm.pointConstraint(clavicle_r.output, arm_r.zero_main)
-    arm_l = Limb(root_name='jnt__l__arm__001', joint1='upperarm_l', joint2='lowerarm_l', joint3='hand_l')
-    arm_l.build()
-    pm.pointConstraint(clavicle_l.output, arm_l.zero_main)
-
-    # leg
-    leg_r = Limb(root_name='jnt__r__leg__001', joint1='thigh_r', joint2='calf_r', joint3='foot_r')
-    leg_r.build()
-    pm.parentConstraint(spine.ctrl_pelvis, leg_r.zero_main, maintainOffset=True)
-    leg_l = Limb(root_name='jnt__l__leg__001', joint1='thigh_l', joint2='calf_l', joint3='foot_l')
-    leg_l.build()
-    pm.parentConstraint(spine.ctrl_pelvis, leg_l.zero_main, maintainOffset=True)
+    pm.parentConstraint(spine.ctrl_end, clavicle_r.zero_cog)  # connect to spine
 
 
 if __name__ == '__main__':

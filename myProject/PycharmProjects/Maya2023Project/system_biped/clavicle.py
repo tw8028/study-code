@@ -18,7 +18,7 @@ class Clavicle(Component):
         spine_end = pm.PyNode(self.clavicle).getParent()  # type:ignore
         upper_arm = pm.PyNode(self.clavicle).getChildren()[0]  # type:ignore
 
-        mytools.grp_target(name=self.zero_cog, target=spine_end)
+        mytools.grp_target(name=self.zero_cog, target=spine_end)  # connect to spine
         mytools.cv_and_zero(name=self.ctrl, target=self.clavicle, shape='cube', radius=2)
         pm.parent(self.zero_cog, self.grp_rig)
         pm.parent(self.zero, self.zero_cog)
