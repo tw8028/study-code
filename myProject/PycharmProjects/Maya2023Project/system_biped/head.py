@@ -16,7 +16,7 @@ class Head(Component):
         self.jnt_noRoll_02 = 'jnt__c__neck_noRoll_002'
         self.base = 'base__c__neck__001'
 
-        self.constraint_objs = self.joints_fk
+        self.constraint_objs = self.joints_fk[0:-1]
 
     def create(self):
         rig_list = []
@@ -76,8 +76,7 @@ class Head(Component):
     def build(self):
         self.create()
         self.rig()
-        self.set_color()
-        self.constraint_deform(point=False)
+        self.post_process()
 
 
 if __name__ == '__main__':

@@ -1,18 +1,19 @@
 import pymel.core as pm
 import parts.attr as attr
+from system_biped.master import Master
 
 
 class Component(object):
     def __init__(self, *, name: str, side: str, joints: list[str]):
-        id = '{0}' + f'__{side}__{name}__001'
+        name_id = '{0}' + f'__{side}__{name}__001'
         self.name = name
         self.side = side
         self.joints = joints
 
-        self.grp_rig = pm.group(name=id.format('rig'), empty=True)  # group on origin
-        self.ctrl_cog = id.format('ctrl_cog')  # 重心控制器
-        self.zero_cog = id.format('zero_cog')  # 重心 zero 组，链接到父级控制器
-        self.jnt_root = id.format('root')  # root joint
+        self.grp_rig = pm.group(name=name_id.format('rig'), empty=True)  # group on origin
+        self.ctrl_cog = name_id.format('ctrl_cog')  # 重心控制器
+        self.zero_cog = name_id.format('zero_cog')  # 重心 zero 组，链接到父级控制器
+        self.jnt_root = name_id.format('root')  # root joint
 
         self.color = 1
         self.ctrl_list = []
@@ -32,11 +33,18 @@ class Component(object):
             attr.set_color(obj=ctrl, color=self.color)
 
     def constraint_deform(self, point: bool = True):
-        if not pm.objExists('constraint'):
-            pm.group(name='constraint', empty=True)
+        grp_cons = Master.constraint
+        if not pm.objExists(grp_cons):
+            pm.group(name=grp_cons, empty=True)
         for jnt_rig, jnt in zip(self.constraint_objs, self.joints):
             if point:
                 point_cons = pm.pointConstraint(jnt_rig, jnt)
-                pm.parent(point_cons, 'constraint')
+                pm.parent(point_cons, grp_cons)
             orient_cons = pm.orientConstraint(jnt_rig, jnt)
-            pm.parent(orient_cons, 'constraint')
+            pm.parent(orient_cons, grp_cons)
+
+    def post_process(self, isPointCons: bool = True):
+        self.set_color()
+        self.constraint_deform(point=isPointCons)
+        if pm.objExists(Master.ctrl_root):
+            pm.parent(self.grp_rig, Master.ctrl_root)

@@ -83,8 +83,7 @@ class Spine(Component):
     def build(self):
         self.create_spline_ik()
         self.create_ctrl()
-        self.constraint_deform()
-        self.set_color()
+        self.post_process()
 
 
 if __name__ == '__main__':

@@ -7,19 +7,17 @@ from system_biped.master import Master
 
 
 def new():
-    master = Master()
-    master.create()
+    Master.create()
     # spine
     spine = Spine(name='spine', side='c', joints=['pelvis', 'spine_01', 'spine_02', 'spine_03', 'spine_04', 'spine_05'])
     spine.build()
-    pm.parent(spine.grp_rig, master.ctrl_root)
 
     # head
     head = Head(name='neck', side='c', joints=['neck_01', 'neck_02', 'head'])
     head.build()
     pm.orientConstraint(spine.ctrl_cog, head.input_list[-1])
     pm.parentConstraint(spine.ctrl_end, head.zero_cog, maintainOffset=True)  # connect to spine
-    pm.parent(head.grp_rig, master.ctrl_root)
+    pm.parent(head.grp_rig, Master.ctrl_root)
 
     # clavicle
     clavicle_l = Clavicle(name='clavicle', side='l', joints=['clavicle_l'])
