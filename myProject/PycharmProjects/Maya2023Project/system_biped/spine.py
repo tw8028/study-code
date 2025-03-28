@@ -5,8 +5,8 @@ from system_biped.component import Component
 
 class Spine(Component):
     # name = jnt__c__spine__001
-    def __init__(self, *, name: str, side: str, joints: list[str]):
-        super().__init__(name=name, side=side, joints=joints)
+    def __init__(self, *, joints: list[str]):
+        super().__init__(name='spine', side='c', joints=joints)
         ctrl = 'ctrl__c__{0}__001'
         zero = 'zero__c__{0}__001'
 

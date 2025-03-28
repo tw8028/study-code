@@ -4,17 +4,20 @@ from system_biped.component import Component
 
 
 class Head(Component):
-    def __init__(self, *, name: str, side: str, joints: list[str]):
-        super().__init__(name=name, side=side, joints=joints)
+    def __init__(self, *, joints: list[str]):
+        super().__init__(name='head', side='c', joints=joints)
 
         self.joints_fk = [f'jnt__c__{i}_fk__001' for i in joints]
-        self.ctrl_list = [f'ctrl__c__{i}__001' for i in joints]
-        self.zero_list = [f'zero__c__{i}__001' for i in joints]
-        self.input_list = [f'input__c__{i}__001' for i in joints]
+        self.ctrl_list = [f'ctrl__c__{i}_fk__001' for i in joints]
+        self.zero_list = [f'zero__c__{i}_fk__001' for i in joints]
+        self.input_list = [f'input__c__{i}_fk__001' for i in joints]
 
         self.jnt_noRoll_01 = 'jnt__c__neck_noRoll_001'
         self.jnt_noRoll_02 = 'jnt__c__neck_noRoll_002'
         self.base = 'base__c__neck__001'
+
+        self.ctrl_head = 'ctrl__c__head__001'
+        self.zero_head = 'zero__c__head__001'
 
         self.constraint_objs = self.joints_fk[0:-1]
 
@@ -33,7 +36,6 @@ class Head(Component):
         mytools.jnt_target(name=self.jnt_noRoll_01, target=self.joints[0])
         mytools.jnt_target(name=self.jnt_noRoll_02, target=self.joints[-1])
         pm.parent(self.jnt_noRoll_02, self.jnt_noRoll_01)
-        # mytools.zero_orient(self.jnt_noRoll_02)
         pm.parent(self.jnt_noRoll_01, self.jnt_root)
         ik_handle = pm.ikHandle(name=f'ik_handle__c__neck__001', startJoint=self.jnt_noRoll_01,
                                 endEffector=self.jnt_noRoll_02)[0]
@@ -47,7 +49,9 @@ class Head(Component):
         pm.parent(self.zero_cog, self.grp_rig)
 
         # head
-        pm.parent(self.input_list[-1], self.jnt_noRoll_02)
+        mytools.cv_and_zero(name=self.ctrl_head, target=self.joints[-1], shape='cube', radius=4)
+        pm.parent(self.zero_head, self.jnt_noRoll_02)
+        pm.orientConstraint(self.ctrl_head, self.joints[-1])
 
     def rig(self):
         base_nd = pm.PyNode(self.base)
@@ -70,7 +74,7 @@ class Head(Component):
             var = decompose_nd.outputRotate >> input_nd.rotate  # type:ignore
 
             # twist neck
-            mytools.twist_joint(driver=self.joints_fk[-1], no_roll=self.jnt_noRoll_01,
+            mytools.twist_joint(driver=self.ctrl_head, no_roll=self.jnt_noRoll_01,
                                 driven_objs=self.zero_list[0:-1], ro_direction=1, is_chain=True)
 
     def build(self):
@@ -80,6 +84,5 @@ class Head(Component):
 
 
 if __name__ == '__main__':
-    # head = Head(name='neck', side='c', joints=['neck_01', 'neck_02', 'neck_03', 'neck_04', 'head'])
-    head = Head(name='neck', side='c', joints=['neck_01', 'neck_02', 'head'])
+    head = Head(joints=['neck_01', 'neck_02', 'head'])
     head.build()
