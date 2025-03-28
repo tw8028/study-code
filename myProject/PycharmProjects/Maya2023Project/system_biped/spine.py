@@ -20,6 +20,7 @@ class Spine(Component):
         self.zero_chest = zero.format('chest')
         self.ctrl_end = ctrl.format('spine_end')  # 用于控制肩膀
         self.zero_end = zero.format('spine_end')
+        self.zero_spline_ik = zero.format('spine_ik')
 
         self.ik_handle = 'ik_handle__c__spine__001'
         self.loc_list = []
@@ -33,7 +34,8 @@ class Spine(Component):
             jnt_ik = mytools.jnt_target(name=f'jnt__c__{jnt}_ik__001', target=jnt)
             self.constraint_objs.append(jnt_ik)
         mytools.parent_chain(self.constraint_objs)
-        pm.parent(self.constraint_objs[0], self.grp_rig)
+        pm.parent(self.constraint_objs[0], mytools.grp_target(name=self.zero_spline_ik, target=self.joints[0]))
+        pm.parent(self.zero_spline_ik, self.grp_rig)
 
         # create spline ik
         spline_ik = pm.ikHandle(name=self.ik_handle, solver='ikSplineSolver', simplifyCurve=False,
@@ -41,14 +43,15 @@ class Spine(Component):
                                 endEffector=self.constraint_objs[-1])
         ik_handle = spline_ik[0]
         curve = spline_ik[2]
-        pm.parent(ik_handle, curve, self.grp_rig)
+        curve.inheritsTransform.set(0)
+        pm.parent(ik_handle, curve, self.zero_spline_ik)
         pm.rename(curve, newname='ik_handle__c__curve__001')
         self.loc_list = mytools.loc_ctrl_curve(curve=curve)
         for i in self.loc_list:
             pm.rename(i, newname=f'loc__c__ctrl_point__001')
 
     def create_ctrl(self):
-        mytools.cv_and_zero(name=self.ctrl_cog, target=self.joints[2], shape='root', radius=1)
+        mytools.cv_and_zero(name=self.ctrl_cog, target=self.joints[2], shape='biped_cog', radius=1)
         mytools.cv_and_zero(name=self.ctrl_pelvis, target=self.joints[2], shape='pelvis', radius=1)
         mytools.cv_and_zero(name=self.ctrl_spine01, target=self.joints[2], shape='circle', radius=13)
         mytools.cv_and_zero(name=self.ctrl_spine02, target=self.joints[3], shape='circle', radius=15)

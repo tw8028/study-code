@@ -58,7 +58,7 @@ def cv_create(name, shape, radius: int):
     elif shape == 'circle_linear':
         return pm.circle(nr=(1, 0, 0), c=(0, 0, 0), radius=radius, n=name, ch=False, degree=1)[0]
 
-    elif shape == 'root':
+    elif shape == 'biped_cog':
         points = [(0, -10, 15), (0, -10, -15), (0, 10, -15), (0, 15, 0), (0, 10, 15), (0, -10, 15)]
         return _create(name, radius, points)
 
