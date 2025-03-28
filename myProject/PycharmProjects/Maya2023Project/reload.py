@@ -17,7 +17,6 @@ import custom_shelf.editor_jnt
 import custom_shelf.editor_skin
 import system_biped.build
 import system_biped.core
-import system_biped.core.clavicle
 import system_biped.core.component
 import system_biped.core.foot
 import system_biped.core.head
@@ -46,7 +45,6 @@ def main():
     importlib.reload(custom_shelf.editor_skin)
     importlib.reload(system_biped.build)
     importlib.reload(system_biped.core)
-    importlib.reload(system_biped.core.clavicle)
     importlib.reload(system_biped.core.component)
     importlib.reload(system_biped.core.foot)
     importlib.reload(system_biped.core.head)

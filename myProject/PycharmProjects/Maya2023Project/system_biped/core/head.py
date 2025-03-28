@@ -28,9 +28,9 @@ class Head(Component, IConnectionPointUser, ABC):
 
     def create(self):
         rig_list = []
-        for jnt, jnt_fk, ctrl, zero, input in zip(self.joints, self.joints_fk, self.ctrl_list, self.zero_list,
-                                                  self.input_list):
-            rig_list.append(mytools.grp_target(name=input, target=jnt))
+        for jnt, jnt_fk, ctrl, zero, grp_input in zip(self.joints, self.joints_fk, self.ctrl_list, self.zero_list,
+                                                      self.input_list):
+            rig_list.append(mytools.grp_target(name=grp_input, target=jnt))
             rig_list.append(mytools.grp_target(name=zero, target=jnt))
             rig_list.append(mytools.cv_target(name=ctrl, target=jnt, shape='circle', radius=2))
             rig_list.append(mytools.jnt_target(name=jnt_fk, target=jnt))
@@ -61,9 +61,9 @@ class Head(Component, IConnectionPointUser, ABC):
     def rig(self):
         base_nd = pm.PyNode(self.base)
         ctrl_nd = pm.PyNode(self.jnt_noRoll_01)
-        for input in self.input_list[0:-1]:
-            input_nd = pm.PyNode(input)
-            attr_name = input.split('__')[2] + 'Bias'
+        for grp_input in self.input_list[0:-1]:
+            input_nd = pm.PyNode(grp_input)
+            attr_name = grp_input.split('__')[2] + 'Bias'
             pm.addAttr(self.ctrl_cog, longName=attr_name, attributeType='float', minValue=0, maxValue=1, dv=0.5,
                        keyable=True)
             blend_matrix_nd = pm.createNode('blendMatrix', name='blendMatrix__' + attr_name)
@@ -88,7 +88,7 @@ class Head(Component, IConnectionPointUser, ABC):
         self.post_process()
 
     def connect_to(self, provider: IConnectionPointProvider, connection_type=ConnectionType.NECK, **kwargs):
-        connect_point = provider.get_connection_point(connection_type=connection_type)
+        connect_point = provider.get_connection_point(connection_type=connection_type, side='c')
         mytools.opm_constraint(connect_point, self.zero_cog)
 
 

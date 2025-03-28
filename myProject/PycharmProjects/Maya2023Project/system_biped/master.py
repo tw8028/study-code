@@ -32,14 +32,14 @@ class Master:
         pm.addAttr(cls.master, ln='controlVis', at='bool', dv=1)
         pm.addAttr(cls.master, ln='jointVis', at='bool', dv=1)
         master_grp = pm.PyNode(cls.master)
-        pm.setAttr(master_grp.geometryVis, channelBox=1)
-        pm.setAttr(master_grp.geoDisplayType, channelBox=1)
-        pm.setAttr(master_grp.controlVis, channelBox=1)
-        pm.setAttr(master_grp.jointVis, channelBox=1)
-        var = master_grp.geometryVis >> pm.PyNode(cls.geo).visibility
-        var = master_grp.geoDisplayType >> pm.PyNode(cls.geo).overrideDisplayType
-        var = master_grp.controlVis >> pm.PyNode(cls.control).visibility
-        var = master_grp.jointVis >> pm.PyNode(cls.joint).visibility
+        pm.setAttr(master_grp.geometryVis, channelBox=1)  # type:ignore
+        pm.setAttr(master_grp.geoDisplayType, channelBox=1)  # type:ignore
+        pm.setAttr(master_grp.controlVis, channelBox=1)  # type:ignore
+        pm.setAttr(master_grp.jointVis, channelBox=1)  # type:ignore
+        var = master_grp.geometryVis >> pm.PyNode(cls.geo).visibility  # type:ignore
+        var = master_grp.geoDisplayType >> pm.PyNode(cls.geo).overrideDisplayType  # type:ignore
+        var = master_grp.controlVis >> pm.PyNode(cls.control).visibility  # type:ignore
+        var = master_grp.jointVis >> pm.PyNode(cls.joint).visibility  # type:ignore
 
         if pm.objExists(cls.jnt_root):
             mytools.cv_and_zero(name=cls.ctrl_root, target=cls.jnt_root, shape='cube', radius=2)
