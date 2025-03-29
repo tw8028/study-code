@@ -43,8 +43,8 @@ class Component(object):
             orient_cons = pm.orientConstraint(jnt_rig, jnt)
             pm.parent(orient_cons, grp_cons)
 
-    def post_process(self, isPointCons: bool = True):
+    def post_process(self, is_point_cons: bool = True):
         self.set_color()
-        self.constraint_deform(point=isPointCons)
+        self.constraint_deform(point=is_point_cons)
         if pm.objExists(Master.ctrl_root):
             pm.parent(self.grp_rig, Master.ctrl_root)

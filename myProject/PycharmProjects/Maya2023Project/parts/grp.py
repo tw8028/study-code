@@ -17,10 +17,16 @@ def grp_target(name, target):
 
 # create a subGroup of the target
 def grp_sub(name, target):
-    sub_group = pm.group(empty=True, n=name)
+    sub_group = pm.group(empty=True, name=name)
     pm.parent(sub_group, target)
     pm.xform(sub_group, t=(0, 0, 0), ro=(0, 0, 0), roo=pm.xform(target, q=True, roo=True))
     return sub_group
+
+
+def grp_child(name, parent, position):
+    child = grp_sub(name=name, target=parent)
+    pm.matchTransform(child, position)
+    return child
 
 
 def grp_master():

@@ -2,6 +2,7 @@ import pymel.core as pm
 from system_biped.core.spine import Spine
 from system_biped.core.head import Head
 from system_biped.master import Master
+from system_biped.interface.connection import ConnectionType
 
 
 def new():
@@ -14,6 +15,7 @@ def new():
     # head
     head = Head(joints=['neck_01', 'neck_02', 'head'])
     head.build()
+    head.connect_to(provider=spine, connection_type=ConnectionType.NECK)
 
 
 if __name__ == '__main__':

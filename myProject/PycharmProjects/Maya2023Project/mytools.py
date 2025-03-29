@@ -56,6 +56,10 @@ def cv_target(name, target, shape, radius):
     return parts.cv.cv_target(name, target, shape, radius)
 
 
+def grp_child(name, parent, position):
+    return parts.grp.grp_child(name, parent, position)
+
+
 def grp_master():
     return parts.grp.grp_master()
 

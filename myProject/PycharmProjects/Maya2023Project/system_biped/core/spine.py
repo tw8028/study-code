@@ -1,14 +1,13 @@
-from abc import ABC
-
 import pymel.core as pm
 import mytools
+from abc import ABC
 from system_biped.core.component import Component
 from system_biped.interface.connection import IConnectionPointProvider
 from system_biped.interface.connection import ConnectionType
 
 
 class Spine(Component, IConnectionPointProvider, ABC):
-    # name = jnt__c__spine__001
+    # 肩膀合并到了脊柱中
     def __init__(self, *, joints: list[str], neck, clavicle_l, clavicle_r, hip_l, hip_r):
         super().__init__(name='spine', side='c', joints=joints)
         ctrl = 'ctrl__c__{0}__001'
@@ -24,71 +23,78 @@ class Spine(Component, IConnectionPointProvider, ABC):
         self.zero_chest = zero.format('chest')
         self.ctrl_end = ctrl.format('spine_end')  # 用于控制肩膀
         self.zero_end = zero.format('spine_end')
+
         self.zero_spline_ik = zero.format('spine_ik')
-        self.jnt_ik_list = []
-
+        self.joints_spline_ik = [f'jnt__c__{jnt}_ik__001' for jnt in joints]
         self.ik_handle = 'ik_handle__c__spine__001'
-        self.loc_list = []
+        self.control_points = []
 
-        self.color = 17
-        self.ctrl_list = [self.ctrl_pelvis, self.ctrl_cog, self.ctrl_spine01, self.ctrl_spine02, self.ctrl_chest]
-
-        self.neck = neck
         self.clavicle_l = clavicle_l
         self.clavicle_r = clavicle_r
-        self.shoulder_l = pm.PyNode(clavicle_l).getChildren()  # type:ignore
-        self.shoulder_r = pm.PyNode(clavicle_r).getChildren()  # type:ignore
-        self.hip_l = hip_l
-        self.hip_r = hip_r
         self.ctrl_clavicle_l = ctrl.format('clavicle_l')
         self.zero_clavicle_l = zero.format('clavicle_l')
         self.ctrl_clavicle_r = ctrl.format('clavicle_r')
         self.zero_clavicle_r = zero.format('clavicle_r')
 
-    def create_spline_ik(self):
-        # create rig joints
-        for jnt in self.joints:
-            jnt_ik = mytools.jnt_target(name=f'jnt__c__{jnt}_ik__001', target=jnt)
-            self.jnt_ik_list.append(jnt_ik)
-        mytools.parent_chain(self.jnt_ik_list)
-        pm.parent(self.jnt_ik_list[0], mytools.grp_target(name=self.zero_spline_ik, target=self.joints[0]))
-        pm.parent(self.zero_spline_ik, self.grp_rig)
+        self.neck = neck
+        self.shoulder_l = pm.PyNode(clavicle_l).getChildren()  # type:ignore
+        self.shoulder_r = pm.PyNode(clavicle_r).getChildren()  # type:ignore
+        self.hip_l = hip_l
+        self.hip_r = hip_r
 
-        # create spline ik
-        spline_ik = pm.ikHandle(name=self.ik_handle, solver='ikSplineSolver', simplifyCurve=False,
-                                parentCurve=False, startJoint=self.jnt_ik_list[1],
-                                endEffector=self.jnt_ik_list[-1])
+        self.ctrl_list = [self.ctrl_pelvis, self.ctrl_cog, self.ctrl_spine01, self.ctrl_spine02, self.ctrl_chest]
+
+    def create_spline_ik(self):
+        mytools.grp_child(name=self.zero_spline_ik, parent=self.grp_rig, position=self.joints[0])
+
+        # create ik joint
+        for jnt, jnt_ik in zip(self.joints, self.joints_spline_ik):
+            mytools.jnt_target(name=jnt_ik, target=jnt)
+        mytools.parent_chain(self.joints_spline_ik)
+        pm.parent(self.joints_spline_ik[0], self.zero_spline_ik)
+
+        # start from spine01_ik
+        spline_ik = pm.ikHandle(name=self.ik_handle, solver='ikSplineSolver', simplifyCurve=False, parentCurve=False,
+                                startJoint=self.joints_spline_ik[1], endEffector=self.joints_spline_ik[-1])
         ik_handle = spline_ik[0]
         curve = spline_ik[2]
         curve.inheritsTransform.set(0)
         pm.parent(ik_handle, curve, self.zero_spline_ik)
-        pm.rename(curve, newname='ik_handle__c__curve__001')
-        self.loc_list = mytools.loc_ctrl_curve(curve=curve)
-        for i in self.loc_list:
-            pm.rename(i, newname=f'loc__c__ctrl_point__001')
+        pm.rename(curve, newname='curve__c__spine_ik__001')
+
+        # create control points
+        self.control_points = mytools.loc_ctrl_curve(curve=curve)
+        for i in self.control_points:
+            pm.rename(i, newname=f'loc__c__spine_ik__001')
 
     def create_ctrl(self):
-        mytools.cv_and_zero(name=self.ctrl_cog, target=self.joints[2], shape='biped_cog', radius=1)
+        mytools.cv_and_zero(name=self.ctrl_cog, target=self.joints[2], shape='biped_cog', radius=1)  # 重心
         mytools.cv_and_zero(name=self.ctrl_pelvis, target=self.joints[2], shape='pelvis', radius=1)
         mytools.cv_and_zero(name=self.ctrl_spine01, target=self.joints[2], shape='circle', radius=13)
         mytools.cv_and_zero(name=self.ctrl_spine02, target=self.joints[3], shape='circle', radius=15)
         mytools.cv_and_zero(name=self.ctrl_chest, target=self.joints[4], shape='cube', radius=10)
         mytools.cv_and_zero(name=self.ctrl_end, target=self.joints[-1], shape='cube', radius=1)
 
+        # 创建控制器层级关系
         pm.parent(self.zero_pelvis, self.zero_spine01, self.ctrl_cog)
         pm.parent(self.zero_spine02, self.ctrl_spine01)
         pm.parent(self.zero_chest, self.ctrl_spine02)
-        pm.parent(self.zero_end, self.jnt_ik_list[-1])
+        pm.parent(self.zero_end, self.joints_spline_ik[-1])
         pm.parent(self.zero_cog, self.grp_rig)
 
-        pm.parent(self.loc_list[0], self.loc_list[1], self.ctrl_pelvis)
-        pm.parent(self.loc_list[2], self.ctrl_spine01)
-        pm.parent(self.loc_list[3], self.ctrl_spine02)
-        pm.parent(*self.loc_list[4:], self.ctrl_chest)
+        # 控制点p给控制器
+        pm.parent(self.control_points[0], self.control_points[1], self.ctrl_pelvis)
+        pm.parent(self.control_points[2], self.ctrl_spine01)
+        pm.parent(self.control_points[3], self.ctrl_spine02)
+        pm.parent(*self.control_points[4:], self.ctrl_chest)
 
-        pm.parentConstraint(self.ctrl_pelvis, self.jnt_ik_list[0], maintainOffset=True)
+        # spline ik 不包括 pelvis，直接 pelvis controller output group 控制
+        output_pelvis = mytools.grp_child(name='output__c__pelvis__001', parent=self.ctrl_pelvis,
+                                          position=self.joints[0])
+        mytools.opm_constraint(output_pelvis, self.joints_spline_ik[0])
 
-        # twist
+        # twist strat: pelvis controller
+        # twist end: chest controller
         ik_handle = pm.PyNode(self.ik_handle)
         ik_handle.dTwistControlEnable.set(True)  # type:ignore
         ik_handle.dWorldUpType.set(4)  # type:ignore
@@ -106,39 +112,50 @@ class Spine(Component, IConnectionPointProvider, ABC):
         self.create_spline_ik()
         self.create_ctrl()
         self.create_shoulder()
+
+        # 添加约束对
         self.joints = [*self.joints, self.clavicle_l, self.clavicle_r]
-        self.constraint_objs = [*self.jnt_ik_list, self.ctrl_clavicle_l, self.ctrl_clavicle_r]
+        self.constraint_objs = [*self.joints_spline_ik, self.ctrl_clavicle_l, self.ctrl_clavicle_r]
         self.post_process()
 
     @staticmethod
-    def _create_connect_point(connection_type, side, parent, obj_pos):
+    def _create_connect_point(connection_type, side, parent, position):
         name = f'connect__{side}__{connection_type.value}__001'
-        if not pm.objExists(name):
-            connection_point = mytools.grp_sub(name=f'connect__{side}__{connection_type.value}__001', target=parent)
-            pm.matchTransform(connection_point, obj_pos)
-            return connection_point
-        return pm.PyNode(name)
+        if pm.objExists(name):
+            return pm.PyNode(name)
+        return mytools.grp_child(name=name, parent=parent, position=position)
 
-    def get_connection_point(self, connection_type, side, **kwargs):
-        if connection_type == ConnectionType.NECK:
+    # 通过 type 和 side 创建不同的连接点
+    def get_connection_point(self, connection_type, side):
+        print(f"[DEBUG] 输入参数类型检查:")
+        print(f"connection_type 类型: {type(connection_type)}")
+        print(f"ConnectionType.NECK 类型: {type(ConnectionType.NECK)}")
+        print(f"id(connection_type): {id(connection_type)}")
+        print(f"id(ConnectionType.NECK): {id(ConnectionType.NECK)}")
+        print(f"值比较: {connection_type.value == ConnectionType.NECK.value}")
+        print(f"枚举相等比较: {connection_type == ConnectionType.NECK}")
+        print(f"枚举身份比较: {connection_type is ConnectionType.NECK}")
+
+
+        if connection_type.value == ConnectionType.NECK.value:
             return self._create_connect_point(connection_type=connection_type, side=side, parent=self.ctrl_end,
-                                              obj_pos=self.neck)
-        elif connection_type == ConnectionType.SHOULDER:
+                                              position=self.neck)
+        elif connection_type.value == ConnectionType.SHOULDER.value:
             if side == 'l':
                 return self._create_connect_point(connection_type=connection_type, side=side,
-                                                  parent=self.ctrl_clavicle_l, obj_pos=self.shoulder_l)
+                                                  parent=self.ctrl_clavicle_l, position=self.shoulder_l)
             if side == 'r':
                 return self._create_connect_point(connection_type=connection_type, side=side,
-                                                  parent=self.ctrl_clavicle_r, obj_pos=self.shoulder_r)
-        elif connection_type == ConnectionType.HIP:
+                                                  parent=self.ctrl_clavicle_r, position=self.shoulder_r)
+        elif connection_type.value == ConnectionType.HIP.value:
             if side == 'l':
                 return self._create_connect_point(connection_type=connection_type, side=side, parent=self.ctrl_pelvis,
-                                                  obj_pos=self.hip_l)
+                                                  position=self.hip_l)
             if side == 'r':
                 return self._create_connect_point(connection_type=connection_type, side=side, parent=self.ctrl_pelvis,
-                                                  obj_pos=self.hip_r)
+                                                  position=self.hip_r)
         else:
-            pass
+            print(f'error type or side: {connection_type.value}')
 
 
 if __name__ == '__main__':
