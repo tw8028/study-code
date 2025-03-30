@@ -14,7 +14,7 @@ class Component(object):
         self.grp_rig = name_id.format('rig')  # group on origin
         self.ctrl_cog = name_id.format('ctrl_cog')  # 重心控制器
         self.zero_cog = name_id.format('zero_cog')  # 重心 zero 组，链接到父级控制器
-        self.grp_jnt = name_id.format('grp_jnt')
+        self.grp_jnt = name_id.format('jnt_grp')
 
         self._create()
 
@@ -25,7 +25,7 @@ class Component(object):
 
         for jnt, bone in zip(self.joints, self.bones):
             mytools.jnt_target(name=jnt, target=bone)
-        mytools.grp_child(name=self.grp_jnt, parent=self.zero_cog, position=self.bones[0])
+        mytools.grp_child(name=self.grp_jnt, parent=self.ctrl_cog, position=self.bones[0])
         mytools.parent_chain([self.grp_jnt, *self.joints])
 
     def constraint_bones(self, point: bool = True, orient: bool = True):
