@@ -1,50 +1,44 @@
 import pymel.core as pm
-import parts.attr as attr
+import mytools
 from system_biped.master import Master
 
 
 class Component(object):
-    def __init__(self, *, name: str, side: str, joints: list[str]):
+    def __init__(self, *, name: str, side: str, bones: list[str]):
         name_id = '{0}' + f'__{side}__{name}__001'
         self.name = name
         self.side = side
-        self.joints = joints
+        self.bones = bones
+        self.joints = [f'jnt__{side}__{jnt}__001' for jnt in bones]
 
-        self.grp_rig = pm.group(name=name_id.format('rig'), empty=True)  # group on origin
+        self.grp_rig = name_id.format('rig')  # group on origin
         self.ctrl_cog = name_id.format('ctrl_cog')  # 重心控制器
         self.zero_cog = name_id.format('zero_cog')  # 重心 zero 组，链接到父级控制器
-        self.jnt_root = name_id.format('root')  # root joint
+        self.grp_jnt = name_id.format('grp_jnt')
 
-        self.color = 1
-        self.ctrl_list = []
-        self.constraint_objs = []  # 用于约束蒙皮关节
+        self._create()
 
-    def set_color(self):
-        if self.side == 'c':
-            self.color = 21
-        elif self.side == 'l':
-            self.color = 6
-        elif self.side == 'r':
-            self.color = 13
-        else:
-            self.color = 24
+    def _create(self):
+        pm.group(name=self.grp_rig, empty=True)
+        mytools.cv_and_zero(name=self.ctrl_cog, target=self.bones[0], shape='cube', radius=2)
+        pm.parent(self.zero_cog, self.grp_rig)
 
-        for ctrl in self.ctrl_list:
-            attr.set_color(obj=ctrl, color=self.color)
+        for jnt, bone in zip(self.joints, self.bones):
+            mytools.jnt_target(name=jnt, target=bone)
+        mytools.grp_child(name=self.grp_jnt, parent=self.zero_cog, position=self.bones[0])
+        mytools.parent_chain([self.grp_jnt, *self.joints])
 
-    def constraint_deform(self, point: bool = True):
+    def constraint_bones(self, point: bool = True, orient: bool = True):
         grp_cons = Master.constraint
         if not pm.objExists(grp_cons):
             pm.group(name=grp_cons, empty=True)
-        for jnt_rig, jnt in zip(self.constraint_objs, self.joints):
+        for jnt, bone in zip(self.joints, self.bones):
             if point:
-                point_cons = pm.pointConstraint(jnt_rig, jnt)
+                point_cons = pm.pointConstraint(jnt, bone)
                 pm.parent(point_cons, grp_cons)
-            orient_cons = pm.orientConstraint(jnt_rig, jnt)
-            pm.parent(orient_cons, grp_cons)
+            if orient:
+                orient_cons = pm.orientConstraint(jnt, bone)
+                pm.parent(orient_cons, grp_cons)
 
-    def post_process(self, is_point_cons: bool = True):
-        self.set_color()
-        self.constraint_deform(point=is_point_cons)
         if pm.objExists(Master.ctrl_root):
             pm.parent(self.grp_rig, Master.ctrl_root)

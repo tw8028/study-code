@@ -8,13 +8,12 @@ from system_biped.interface.connection import ConnectionType
 
 
 class Head(Component, IConnectionPointUser, ABC):
-    def __init__(self, *, joints: list[str]):
-        super().__init__(name='head', side='c', joints=joints)
+    def __init__(self, *, bones: list[str]):
+        super().__init__(name='head', side='c', bones=bones)
 
-        self.joints_fk = [f'jnt__c__{i}_fk__001' for i in joints]
-        self.ctrl_list = [f'ctrl__c__{i}_fk__001' for i in joints]
-        self.zero_list = [f'zero__c__{i}_fk__001' for i in joints]
-        self.input_list = [f'input__c__{i}_fk__001' for i in joints]
+        self.ctrl_list = [f'ctrl__c__{i}_fk__001' for i in bones]
+        self.zero_list = [f'zero__c__{i}_fk__001' for i in bones]
+        self.input_list = [f'input__c__{i}_fk__001' for i in bones]
 
         self.jnt_noRoll_01 = 'jnt__c__neck_noRoll_001'
         self.jnt_noRoll_02 = 'jnt__c__neck_noRoll_002'
@@ -23,39 +22,36 @@ class Head(Component, IConnectionPointUser, ABC):
         self.ctrl_head = 'ctrl__c__head__001'
         self.zero_head = 'zero__c__head__001'
 
-        self.constraint_objs = self.joints_fk[0:-1]
-
     def create(self):
         rig_list = []
-        for jnt, jnt_fk, ctrl, zero, grp_input in zip(self.joints, self.joints_fk, self.ctrl_list, self.zero_list,
-                                                      self.input_list):
-            rig_list.append(mytools.grp_target(name=zero, target=jnt))
-            rig_list.append(mytools.grp_target(name=grp_input, target=jnt))
-            rig_list.append(mytools.cv_target(name=ctrl, target=jnt, shape='circle', radius=2))
-            rig_list.append(mytools.jnt_target(name=jnt_fk, target=jnt))
+        for bone, ctrl, zero, grp_input in zip(self.bones, self.ctrl_list, self.zero_list, self.input_list):
+            rig_list.append(mytools.grp_target(name=zero, target=bone))
+            rig_list.append(mytools.grp_target(name=grp_input, target=bone))
+            rig_list.append(mytools.cv_target(name=ctrl, target=bone, shape='circle', radius=2))
         mytools.parent_chain(rig_list)
 
         # create no roll joint
-        mytools.jnt_target(name=self.jnt_root, target=self.joints[0])
-        mytools.jnt_target(name=self.jnt_noRoll_01, target=self.joints[0])
-        mytools.jnt_target(name=self.jnt_noRoll_02, target=self.joints[-1])
+        mytools.jnt_target(name=self.jnt_noRoll_01, target=self.bones[0])
+        mytools.jnt_target(name=self.jnt_noRoll_02, target=self.bones[-1])
         pm.parent(self.jnt_noRoll_02, self.jnt_noRoll_01)
-        pm.parent(self.jnt_noRoll_01, self.jnt_root)
+        pm.parent(self.jnt_noRoll_01, self.grp_jnt)
         ik_handle = pm.ikHandle(name=f'ik_handle__c__neck__001', startJoint=self.jnt_noRoll_01,
                                 endEffector=self.jnt_noRoll_02)[0]
         pm.poleVectorConstraint(self.jnt_noRoll_01, ik_handle)
         zero_ik_handle = mytools.grp_zero(name='zero__c__neck_ikHandle__001', target=ik_handle)
 
-        mytools.cv_and_zero(name=self.ctrl_cog, target=self.joints[0], shape='circle', radius=5)
         mytools.grp_sub(name='base__c__neck__001', target=self.zero_cog)
-        pm.parent(self.input_list[0], self.jnt_root, self.zero_cog)
+        pm.parent(self.zero_list[0], self.zero_cog)
         pm.parent(zero_ik_handle, self.ctrl_cog)
         pm.parent(self.zero_cog, self.grp_rig)
 
         # head
-        mytools.cv_and_zero(name=self.ctrl_head, target=self.joints[-1], shape='cube', radius=4)
+        mytools.cv_and_zero(name=self.ctrl_head, target=self.bones[-1], shape='cube', radius=4)
         pm.parent(self.zero_head, self.jnt_noRoll_02)
-        pm.orientConstraint(self.ctrl_head, self.joints[-1])
+        pm.orientConstraint(self.ctrl_head, self.bones[-1])
+
+        for jnt_fk, jnt in zip(self.ctrl_list, self.joints):
+            pm.orientConstraint(jnt_fk, jnt)
 
     def rig(self):
         base_nd = pm.PyNode(self.base)
@@ -78,12 +74,12 @@ class Head(Component, IConnectionPointUser, ABC):
 
             # twist neck
             mytools.twist_joint(driver=self.ctrl_head, no_roll=self.jnt_noRoll_01,
-                                driven_objs=self.zero_list[0:-1], ro_direction=1, is_chain=True)
+                                driven_objs=self.input_list[0:-1], ro_direction=1, is_chain=True)
 
     def build(self):
         self.create()
         self.rig()
-        self.post_process()
+        self.constraint_bones()
 
     def connect_to(self, provider: IConnectionPointProvider, connection_type: ConnectionType):
         connect_point = provider.get_connection_point(connection_type=connection_type, side=self.side)
@@ -92,5 +88,5 @@ class Head(Component, IConnectionPointUser, ABC):
 
 
 if __name__ == '__main__':
-    head = Head(joints=['neck_01', 'neck_02', 'head'])
+    head = Head(bones=['neck_01', 'neck_02', 'head'])
     head.build()

@@ -4,9 +4,9 @@ from system_biped.core.component import Component
 
 
 class Clavicle(Component):
-    def __init__(self, *, side: str, joints: list[str]):
-        super().__init__(name='clavicle', side=side, joints=joints)
-        self.clavicle = joints[0]
+    def __init__(self, *, side: str, bones: list[str]):
+        super().__init__(name='clavicle', side=side, bones=bones)
+        self.clavicle = bones[0]
         self.ctrl = f'ctrl__{side}__{self.name}__001'
         self.zero = f'zero__{side}__{self.name}__001'
         self.output = f'output__{side}__{self.name}__001'
@@ -29,7 +29,7 @@ class Clavicle(Component):
 
 
 if __name__ == '__main__':
-    clavicle = Clavicle(side='l', joints=['clavicle_l'])
+    clavicle = Clavicle(side='l', bones=['clavicle_l'])
     clavicle.build()
     output = clavicle.output
     print(output)

@@ -8,8 +8,8 @@ from system_biped.interface.connection import ConnectionType
 
 class Spine(Component, IConnectionPointProvider, ABC):
     # 肩膀合并到了脊柱中
-    def __init__(self, *, joints: list[str], neck, clavicle_l, clavicle_r, hip_l, hip_r):
-        super().__init__(name='spine', side='c', joints=joints)
+    def __init__(self, *, bones: list[str], neck, clavicle_l, clavicle_r, hip_l, hip_r):
+        super().__init__(name='spine', side='c', bones=bones)
         ctrl = 'ctrl__c__{0}__001'
         zero = 'zero__c__{0}__001'
 
@@ -24,8 +24,7 @@ class Spine(Component, IConnectionPointProvider, ABC):
         self.ctrl_end = ctrl.format('spine_end')  # 用于控制肩膀
         self.zero_end = zero.format('spine_end')
 
-        self.zero_spline_ik = zero.format('spine_ik')
-        self.joints_spline_ik = [f'jnt__c__{jnt}_ik__001' for jnt in joints]
+        self.joints_spline_ik = self.joints
         self.ik_handle = 'ik_handle__c__spine__001'
         self.control_points = []
 
@@ -42,16 +41,7 @@ class Spine(Component, IConnectionPointProvider, ABC):
         self.hip_l = hip_l
         self.hip_r = hip_r
 
-        self.ctrl_list = [self.ctrl_pelvis, self.ctrl_cog, self.ctrl_spine01, self.ctrl_spine02, self.ctrl_chest]
-
     def create_spline_ik(self):
-        mytools.grp_child(name=self.zero_spline_ik, parent=self.grp_rig, position=self.joints[0])
-
-        # create ik joint
-        for jnt, jnt_ik in zip(self.joints, self.joints_spline_ik):
-            mytools.jnt_target(name=jnt_ik, target=jnt)
-        mytools.parent_chain(self.joints_spline_ik)
-        pm.parent(self.joints_spline_ik[0], self.zero_spline_ik)
 
         # start from spine01_ik
         spline_ik = pm.ikHandle(name=self.ik_handle, solver='ikSplineSolver', simplifyCurve=False, parentCurve=False,
@@ -59,7 +49,7 @@ class Spine(Component, IConnectionPointProvider, ABC):
         ik_handle = spline_ik[0]
         curve = spline_ik[2]
         curve.inheritsTransform.set(0)
-        pm.parent(ik_handle, curve, self.zero_spline_ik)
+        pm.parent(ik_handle, curve, self.grp_jnt)
         pm.rename(curve, newname='curve__c__spine_ik__001')
 
         # create control points
@@ -68,7 +58,7 @@ class Spine(Component, IConnectionPointProvider, ABC):
             pm.rename(i, newname=f'loc__c__spine_ik__001')
 
     def create_ctrl(self):
-        mytools.cv_and_zero(name=self.ctrl_cog, target=self.joints[2], shape='biped_cog', radius=1)  # 重心
+        pm.matchTransform(self.zero_cog, self.joints[2])
         mytools.cv_and_zero(name=self.ctrl_pelvis, target=self.joints[2], shape='pelvis', radius=1)
         mytools.cv_and_zero(name=self.ctrl_spine01, target=self.joints[2], shape='circle', radius=13)
         mytools.cv_and_zero(name=self.ctrl_spine02, target=self.joints[3], shape='circle', radius=15)
@@ -114,9 +104,9 @@ class Spine(Component, IConnectionPointProvider, ABC):
         self.create_shoulder()
 
         # 添加约束对
-        self.joints = [*self.joints, self.clavicle_l, self.clavicle_r]
-        self.constraint_objs = [*self.joints_spline_ik, self.ctrl_clavicle_l, self.ctrl_clavicle_r]
-        self.post_process()
+        self.bones = [*self.bones, self.clavicle_l, self.clavicle_r]
+        self.joints = [*self.joints, self.ctrl_clavicle_l, self.ctrl_clavicle_r]
+        self.constraint_bones()
 
     @staticmethod
     def _create_connect_point(connection_type, side, parent, position):
@@ -135,7 +125,6 @@ class Spine(Component, IConnectionPointProvider, ABC):
         print(f"值比较: {connection_type.value == ConnectionType.NECK.value}")
         print(f"枚举相等比较: {connection_type == ConnectionType.NECK}")
         print(f"枚举身份比较: {connection_type is ConnectionType.NECK}")
-
 
         if connection_type.value == ConnectionType.NECK.value:
             return self._create_connect_point(connection_type=connection_type, side=side, parent=self.ctrl_end,
@@ -159,6 +148,6 @@ class Spine(Component, IConnectionPointProvider, ABC):
 
 
 if __name__ == '__main__':
-    spine = Spine(joints=['pelvis', 'spine_01', 'spine_02', 'spine_03', 'spine_04', 'spine_05'], neck='neck_01',
+    spine = Spine(bones=['pelvis', 'spine_01', 'spine_02', 'spine_03', 'spine_04', 'spine_05'], neck='neck_01',
                   clavicle_l='clavicle_l', clavicle_r='clavicle_r', hip_l='thigh_l', hip_r='thigh_r')
     spine.build()

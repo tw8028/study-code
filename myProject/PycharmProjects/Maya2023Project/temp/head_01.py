@@ -7,9 +7,9 @@ from system_biped.core.component import Component
 # head: 父层级被重心控制，子层级被 ctrl_head 控制
 class Head(Component):
     # name: jnt__c__head__001
-    def __init__(self, *, name: str, side: str, joints: list[str]):
-        super().__init__(name=name, side=side, joints=joints)
-        self.joints_fk = [f'jnt__c__{i}_fk__001' for i in joints]
+    def __init__(self, *, name: str, side: str, bones: list[str]):
+        super().__init__(name=name, side=side, bones=bones)
+        self.joints_fk = [f'jnt__c__{i}_fk__001' for i in bones]
         self.joint_neck_fk = self.joints_fk[0]
         self.joint_head_fk = self.joints_fk[-1]
         self.joint_no_roll_01 = 'jnt__c__neck_no_roll_001'
@@ -27,8 +27,8 @@ class Head(Component):
 
     def create(self):
         # create fk joints
-        mytools.jnt_target(name=self.jnt_root, target=self.joints[0])
-        for jnt, jnt_fk in zip(self.joints, self.joints_fk):
+        mytools.jnt_target(name=self.jnt_root, target=self.bones[0])
+        for jnt, jnt_fk in zip(self.bones, self.joints_fk):
             mytools.jnt_target(name=jnt_fk, target=jnt)
         mytools.parent_chain([self.jnt_root] + self.joints_fk)
 
@@ -43,8 +43,8 @@ class Head(Component):
         pm.parent(self.zero_neck, self.input_head, self.grp_rig)
 
         # create no roll joint
-        mytools.jnt_target(name=self.joint_no_roll_01, target=self.joints[0])
-        mytools.jnt_target(name=self.joint_no_roll_02, target=self.joints[-1])
+        mytools.jnt_target(name=self.joint_no_roll_01, target=self.bones[0])
+        mytools.jnt_target(name=self.joint_no_roll_02, target=self.bones[-1])
         pm.parent(self.joint_no_roll_02, self.joint_no_roll_01)
         pm.parent(self.joint_no_roll_01, self.jnt_root)
         mytools.zero_orient(self.joint_no_roll_02)
@@ -60,7 +60,7 @@ class Head(Component):
         root_nd = pm.PyNode(self.jnt_root)
         name = self.jnt_root.split('__', 1)[1]
         blend_matrix_nd = pm.createNode('blendMatrix', name='blendM__' + name)
-        blend_matrix_nd.envelope.set(1 / len(self.joints))
+        blend_matrix_nd.envelope.set(1 / len(self.bones))
         mult_matrix_nd = pm.createNode('multMatrix', name='multM__' + name)
         var = input_obj_nd.worldMatrix[0] >> blend_matrix_nd.inputMatrix  # type:ignore
         var = target_obj_nd.worldMatrix[0] >> blend_matrix_nd.target[0].targetMatrix  # type:ignore
@@ -79,9 +79,9 @@ class Head(Component):
                             driven_objs=self.joints_fk[0:-1], ro_direction=1, is_chain=True)
 
     def constraint_deform_joint(self):
-        for jnt, jnt_fk in zip(self.joints[0:-1], self.joints_fk[0:-1]):
+        for jnt, jnt_fk in zip(self.bones[0:-1], self.joints_fk[0:-1]):
             pm.orientConstraint(jnt_fk, jnt)
-        pm.orientConstraint(self.ctrl_head, self.joints[-1])
+        pm.orientConstraint(self.ctrl_head, self.bones[-1])
 
     def build(self):
         self.create()
@@ -91,5 +91,5 @@ class Head(Component):
 
 
 if __name__ == '__main__':
-    head = Head(name='neck', side='c', joints=['neck_01', 'neck_02', 'head'])
+    head = Head(name='neck', side='c', bones=['neck_01', 'neck_02', 'head'])
     head.build()

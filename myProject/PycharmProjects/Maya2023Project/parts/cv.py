@@ -78,6 +78,14 @@ def cv_target(name, target, shape, radius: int):
     pm.parent(curve, target)
     attr.zero_transform(curve)
     pm.parent(curve, world=True)
+
+    if '__c__' in name:
+        attr.set_color(obj=curve, color=21)
+    elif '__l__' in name:
+        attr.set_color(obj=curve, color=6)
+    elif '__r__' in name:
+        attr.set_color(obj=curve, color=13)
+
     return curve
 
 
