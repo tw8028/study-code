@@ -24,6 +24,6 @@ class IConnectionPointUser(ABC):
     """连接点使用者接口(如Limb/Head类实现此接口)"""
 
     @abstractmethod
-    def connect_to(self, provider: IConnectionPointProvider, connection_type):
+    def connect_to(self, point_provider: IConnectionPointProvider, connection_type):
         """连接到提供者的指定连接点"""
         pass

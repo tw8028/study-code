@@ -20,7 +20,7 @@ class Component(object):
 
     def _create(self):
         pm.group(name=self.grp_rig, empty=True)
-        mytools.cv_and_zero(name=self.ctrl_cog, target=self.bones[0], shape='cube', radius=2)
+        mytools.cv_and_zero(name=self.ctrl_cog, target=self.bones[0], shape='ball', radius=2)
         pm.parent(self.zero_cog, self.grp_rig)
 
         for jnt, bone in zip(self.joints, self.bones):

@@ -15,7 +15,7 @@ def new():
     # head
     head = Head(bones=['neck_01', 'neck_02', 'head'])
     head.build()
-    head.connect_to(provider=spine, connection_type=ConnectionType.NECK)
+    head.connect_to(point_provider=spine, connection_type=ConnectionType.NECK)
 
 
 if __name__ == '__main__':

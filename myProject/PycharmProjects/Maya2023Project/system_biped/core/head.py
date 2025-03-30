@@ -27,7 +27,7 @@ class Head(Component, IConnectionPointUser, ABC):
         for bone, ctrl, zero, grp_input in zip(self.bones, self.ctrl_list, self.zero_list, self.input_list):
             rig_list.append(mytools.grp_target(name=zero, target=bone))
             rig_list.append(mytools.grp_target(name=grp_input, target=bone))
-            rig_list.append(mytools.cv_target(name=ctrl, target=bone, shape='circle', radius=2))
+            rig_list.append(mytools.cv_target(name=ctrl, target=bone, shape='circle', radius=3))
         mytools.parent_chain(rig_list)
 
         # create no roll joint
@@ -81,8 +81,8 @@ class Head(Component, IConnectionPointUser, ABC):
         self.rig()
         self.constraint_bones()
 
-    def connect_to(self, provider: IConnectionPointProvider, connection_type: ConnectionType):
-        connect_point = provider.get_connection_point(connection_type=connection_type, side=self.side)
+    def connect_to(self, point_provider: IConnectionPointProvider, connection_type: ConnectionType):
+        connect_point = point_provider.get_connection_point(connection_type=connection_type, side=self.side)
         print(connect_point)
         mytools.opm_constraint(connect_point, self.zero_cog)
 

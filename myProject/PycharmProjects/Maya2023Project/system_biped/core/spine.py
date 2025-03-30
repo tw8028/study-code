@@ -13,6 +13,8 @@ class Spine(Component, IConnectionPointProvider, ABC):
         ctrl = 'ctrl__c__{0}__001'
         zero = 'zero__c__{0}__001'
 
+        self.ctrl_root = ctrl.format('biped')
+        self.zero_root = zero.format('biped')
         self.ctrl_pelvis = ctrl.format('pelvis')  # 控制大腿
         self.zero_pelvis = zero.format('pelvis')
         self.ctrl_spine01 = ctrl.format('spine01')
@@ -58,7 +60,7 @@ class Spine(Component, IConnectionPointProvider, ABC):
             pm.rename(i, newname=f'loc__c__spine_ik__001')
 
     def create_ctrl(self):
-        pm.matchTransform(self.zero_cog, self.joints[2])
+        mytools.cv_and_zero(name=self.ctrl_root, target=self.joints[2], shape='biped', radius=1)
         mytools.cv_and_zero(name=self.ctrl_pelvis, target=self.joints[2], shape='pelvis', radius=1)
         mytools.cv_and_zero(name=self.ctrl_spine01, target=self.joints[2], shape='circle', radius=13)
         mytools.cv_and_zero(name=self.ctrl_spine02, target=self.joints[3], shape='circle', radius=15)
@@ -66,11 +68,11 @@ class Spine(Component, IConnectionPointProvider, ABC):
         mytools.cv_and_zero(name=self.ctrl_end, target=self.joints[-1], shape='cube', radius=1)
 
         # 创建控制器层级关系
-        pm.parent(self.zero_pelvis, self.zero_spine01, self.ctrl_cog)
+        pm.parent(self.zero_root, self.ctrl_cog)
+        pm.parent(self.zero_pelvis, self.zero_spine01, self.ctrl_root)
         pm.parent(self.zero_spine02, self.ctrl_spine01)
         pm.parent(self.zero_chest, self.ctrl_spine02)
         pm.parent(self.zero_end, self.joints_spline_ik[-1])
-        pm.parent(self.zero_cog, self.grp_rig)
 
         # 控制点p给控制器
         pm.parent(self.control_points[0], self.control_points[1], self.ctrl_pelvis)
@@ -80,7 +82,7 @@ class Spine(Component, IConnectionPointProvider, ABC):
 
         # spline ik 不包括 pelvis，直接 pelvis controller output group 控制
         output_pelvis = mytools.grp_child(name='output__c__pelvis__001', parent=self.ctrl_pelvis,
-                                          position=self.joints[0])
+                                          position=self.bones[0])
         mytools.opm_constraint(output_pelvis, self.joints_spline_ik[0])
 
         # twist strat: pelvis controller
