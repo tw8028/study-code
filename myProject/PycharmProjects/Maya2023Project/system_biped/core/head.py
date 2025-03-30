@@ -29,8 +29,8 @@ class Head(Component, IConnectionPointUser, ABC):
         rig_list = []
         for jnt, jnt_fk, ctrl, zero, grp_input in zip(self.joints, self.joints_fk, self.ctrl_list, self.zero_list,
                                                       self.input_list):
-            rig_list.append(mytools.grp_target(name=grp_input, target=jnt))
             rig_list.append(mytools.grp_target(name=zero, target=jnt))
+            rig_list.append(mytools.grp_target(name=grp_input, target=jnt))
             rig_list.append(mytools.cv_target(name=ctrl, target=jnt, shape='circle', radius=2))
             rig_list.append(mytools.jnt_target(name=jnt_fk, target=jnt))
         mytools.parent_chain(rig_list)
@@ -63,8 +63,7 @@ class Head(Component, IConnectionPointUser, ABC):
         for grp_input in self.input_list[0:-1]:
             input_nd = pm.PyNode(grp_input)
             attr_name = grp_input.split('__')[2] + 'Bias'
-            pm.addAttr(self.ctrl_cog, longName=attr_name, attributeType='float', minValue=0, maxValue=1, dv=0.5,
-                       keyable=True)
+            pm.addAttr(self.ctrl_cog, longName=attr_name, at='float', minValue=0, maxValue=1, dv=1, keyable=True)
             blend_matrix_nd = pm.createNode('blendMatrix', name='blendMatrix__' + attr_name)
             mult_matrix_nd = pm.createNode('multMatrix', name='multMatrix__' + attr_name)
             var = base_nd.worldMatrix[0] >> blend_matrix_nd.inputMatrix  # type:ignore
