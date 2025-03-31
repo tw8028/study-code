@@ -1,6 +1,7 @@
 import pymel.core as pm
 from system_biped.core.spine import Spine
 from system_biped.core.head import Head
+from system_biped.core.limb import Limb
 from system_biped.master import Master
 from system_biped.interface.connection import ConnectionType
 
@@ -16,6 +17,14 @@ def biped_rig():
     head = Head(bones=['neck_01', 'neck_02', 'head'])
     head.build()
     head.connect_to(point_provider=spine, connection_type=ConnectionType.NECK)
+
+    # arm
+    arm_r = Limb(name='arm', side='r', bones=['upperarm_r', 'lowerarm_r', 'hand_r'])
+    arm_r.build()
+    arm_r.connect_to(point_provider=spine, connection_type=ConnectionType.SHOULDER)
+    arm_l = Limb(name='arm', side='l', bones=['upperarm_l', 'lowerarm_l', 'hand_l'])
+    arm_l.build()
+    arm_l.connect_to(point_provider=spine, connection_type=ConnectionType.SHOULDER)
 
 
 if __name__ == '__main__':

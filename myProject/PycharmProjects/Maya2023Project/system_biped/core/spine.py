@@ -110,13 +110,6 @@ class Spine(Component, IConnectionPointProvider, ABC):
         self.joints = [*self.joints, self.ctrl_clavicle_l, self.ctrl_clavicle_r]
         self.constraint_bones()
 
-    @staticmethod
-    def _create_connect_point(connection_type, side, parent, position):
-        name = f'connect__{side}__{connection_type.value}__001'
-        if pm.objExists(name):
-            return pm.PyNode(name)
-        return mytools.grp_child(name=name, parent=parent, position=position)
-
     # 通过 type 和 side 创建不同的连接点
     def get_connection_point(self, connection_type, side):
         print(f"[DEBUG] 输入参数类型检查:")

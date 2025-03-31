@@ -42,3 +42,10 @@ class Component(object):
 
         if pm.objExists(Master.ctrl_root):
             pm.parent(self.grp_rig, Master.ctrl_root)
+
+    @staticmethod
+    def _create_connect_point(connection_type, side, parent, position):
+        name = f'connect__{side}__{connection_type.value}__001'
+        if pm.objExists(name):
+            return pm.PyNode(name)
+        return mytools.grp_child(name=name, parent=parent, position=position)
