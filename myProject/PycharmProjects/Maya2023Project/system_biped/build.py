@@ -5,7 +5,7 @@ from system_biped.master import Master
 from system_biped.interface.connection import ConnectionType
 
 
-def new():
+def biped_rig():
     Master.create()
     # spine
     spine = Spine(bones=['pelvis', 'spine_01', 'spine_02', 'spine_03', 'spine_04', 'spine_05'], neck='neck_01',
@@ -19,5 +19,5 @@ def new():
 
 
 if __name__ == '__main__':
-    new()
+    biped_rig()
     pm.select(clear=True)
