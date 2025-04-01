@@ -18,7 +18,6 @@ import custom_shelf.editor_skin
 import system_biped.build
 import system_biped.component
 import system_biped.core
-import system_biped.core.blend_two_jnt
 import system_biped.core.center_of_gravity
 import system_biped.core.fk_system
 import system_biped.core.ik_system
@@ -52,7 +51,6 @@ def main():
     importlib.reload(system_biped.build)
     importlib.reload(system_biped.component)
     importlib.reload(system_biped.core)
-    importlib.reload(system_biped.core.blend_two_jnt)
     importlib.reload(system_biped.core.center_of_gravity)
     importlib.reload(system_biped.core.fk_system)
     importlib.reload(system_biped.core.ik_system)

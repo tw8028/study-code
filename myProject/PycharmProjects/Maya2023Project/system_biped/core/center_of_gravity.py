@@ -1,6 +1,7 @@
 import pymel.core as pm
 import mytools
 from system_biped.core.master import Master
+from system_biped.interface.joint_limb import IJoint_limb
 
 
 class CenterOfGravity(object):
@@ -10,6 +11,9 @@ class CenterOfGravity(object):
         self.side = side
         self._bones = bones
         self.joints = [f'jnt__{side}__{jnt}__001' for jnt in bones]
+        # self.joints_fk = [f'jnt__{side}__{jnt}_fk__001' for jnt in bones]
+        # self.joints_ik = [f'jnt__{side}__{jnt}_ik__001' for jnt in bones]
+        # self.joints_mid = [f'jnt__{side}__{jnt}_mid__001' for jnt in bones]
 
         self.grp_rig = name_template.format('rig')  # group on origin
         self.ctrl_cog = name_template.format('ctrl_cog')  # 重心控制器
@@ -50,10 +54,32 @@ class CenterOfGravity(object):
             return pm.PyNode(name)
         return mytools.grp_child(name=name, parent=parent, position=position)
 
+    def blend_jnt(self, fk_system: IJoint_limb, ik_system: IJoint_limb):
+        ctrl_attr = f'ctrl__{self.side}__{self.name}_ikfk__001'
+        zero_attr = f'zero__{self.side}__{self.name}_ikfk__001'
+        attr_blend = f'{ctrl_attr}.ikFkBlend'
+        reverse_node = f'reverse__{self.side}__{self.name}__001'
 
-    def blend_jnt(self):
-        pass
+        mytools.cv_and_zero(name=ctrl_attr, target=self.ctrl_cog, shape='cross1', radius=2)
+        mytools.zero_orient(zero_attr)
+        mytools.lock_hide_transform(ctrl_attr)
+        pm.parent(zero_attr, self.grp_rig)
+        pm.addAttr(ctrl_attr, longName='ikFkBlend', attributeType='float', minValue=0, maxValue=1, dv=1, keyable=True)
 
+        reverse_nd = pm.createNode('reverse', name=reverse_node)
+        pm.PyNode(attr_blend) >> reverse_nd.inputX  # type: ignore
+
+        joints_ik = ik_system.get_rig_joints()
+        joints_fk = fk_system.get_rig_joints()
+
+        mytools.blend_orient(attr_ctrl=attr_blend, reverse=reverse_nd, ik_jnt=joints_ik[0], fk_jnt=joints_fk[0],
+                             blend_jnt=self.joints[0])
+        mytools.blend_orient(attr_ctrl=attr_blend, reverse=reverse_nd, ik_jnt=joints_ik[1], fk_jnt=joints_fk[1],
+                             blend_jnt=self.joints[1])
+        mytools.blend_orient(attr_ctrl=attr_blend, reverse=reverse_nd, ik_jnt=joints_ik[2], fk_jnt=joints_fk[2],
+                             blend_jnt=self.joints[2])
+        mytools.blend_scale_x(attr_ctrl=attr_blend, ik_jnt=joints_ik[0], fk_jnt=joints_fk[0], blend_jnt=self.joints[0])
+        mytools.blend_scale_x(attr_ctrl=attr_blend, ik_jnt=joints_ik[1], fk_jnt=joints_fk[1], blend_jnt=self.joints[1])
 
 
 if __name__ == '__main__':

@@ -1,9 +1,11 @@
 import pymel.core as pm
 import mytools
+from abc import ABC
 from system_biped.core.center_of_gravity import CenterOfGravity
+from system_biped.interface.joint_limb import IJoint_limb
 
 
-class FkSystem:
+class FkSystem(IJoint_limb, ABC):
     def __init__(self, cog: CenterOfGravity):
         self.name = cog.name
         self.side = cog.side
@@ -36,6 +38,9 @@ class FkSystem:
             if len(ctrl_list):
                 pm.parentConstraint(ctrl_list[-1], zero, maintainOffset=True)
             ctrl_list.append(ctrl)
+
+    def get_rig_joints(self):
+        return self.joints_fk
 
 
 if __name__ == '__main__':

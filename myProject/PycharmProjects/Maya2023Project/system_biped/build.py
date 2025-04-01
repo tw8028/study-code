@@ -9,7 +9,6 @@ from system_biped.core.center_of_gravity import CenterOfGravity
 from system_biped.core.fk_system import FkSystem
 from system_biped.core.ik_system import IkSystem
 from system_biped.core.mid_system import MidSystem
-from system_biped.core.blend_two_jnt import BlendTwoJnt
 
 
 def biped_rig():
@@ -38,9 +37,16 @@ def limb_rig():
     fk = FkSystem(cog=base)
     ik = IkSystem(cog=base)
     mid = MidSystem(ik=ik)
-    BlendTwoJnt(fk=fk, ik=mid)
+    base.blend_jnt(fk_system=fk, ik_system=mid)
+
+
+def limb_rig_02():
+    base = CenterOfGravity(name='arm', side='l', bones=['upperarm_l', 'lowerarm_l', 'hand_l'])
+    fk = FkSystem(cog=base)
+    ik = IkSystem(cog=base)
+    base.blend_jnt(fk_system=fk, ik_system=ik)
 
 
 if __name__ == '__main__':
-    limb_rig()
+    limb_rig_02()
     pm.select(clear=True)
