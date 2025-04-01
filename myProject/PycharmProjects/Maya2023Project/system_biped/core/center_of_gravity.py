@@ -51,5 +51,10 @@ class CenterOfGravity(object):
         return mytools.grp_child(name=name, parent=parent, position=position)
 
 
+    def blend_jnt(self):
+        pass
+
+
+
 if __name__ == '__main__':
     jnt_system = CenterOfGravity(name='arm', side='l', bones=['upperarm_l', 'lowerarm_l', 'hand_l'])

@@ -1,26 +1,33 @@
 import pymel.core as pm
 import mytools
+from abc import ABC
 from system_biped.core.center_of_gravity import CenterOfGravity
+from system_biped.interface.joint_limb import IJoint_limb
 
 
-class IkSystem:
+class IkSystem(IJoint_limb, ABC):
     def __init__(self, cog: CenterOfGravity):
+        self.name = cog.name
+        self.side = cog.side
         self.grp_rig = cog.grp_rig
         self.joints = cog.joints
         self.ctrl_cog = cog.ctrl_cog
         self.zero_jnt = cog.zero_jnt
-        self.joints_ik = [jnt.replace('__001', '_ik__001') for jnt in self.joints]
+        self.joints_ik = [f'jnt__{self.side}__{jnt}_ik__001' for jnt in cog._bones]
 
-        side = cog.side
-        name = cog.name
-        self.ik_handle = f'ikHandle__{side}__{name}__001'
-        self.ctrl_ikHandle = f'ctrl__{side}__{name}_ikHandle__001'
-        self.zero_ikHandle = f'zero__{side}__{name}_ikHandle__001'
-        self.ctrl_pole = f'ctrl__{side}__{name}_pole__001'
-        self.zero_pole = f'zero__{side}__{name}_pole__001'
+        self.side = cog.side
+        self.name = cog.name
+        self.ik_handle = f'ikHandle__{self.side}__{self.name}__001'
+        self.ctrl_ikHandle = f'ctrl__{self.side}__{self.name}_ikHandle__001'
+        self.zero_ikHandle = f'zero__{self.side}__{self.name}_ikHandle__001'
+        self.ctrl_pole = f'ctrl__{self.side}__{self.name}_pole__001'
+        self.zero_pole = f'zero__{self.side}__{self.name}_pole__001'
+
+        self.attr_stretch = f'{self.ctrl_ikHandle}.stretch'
 
         self._create_ik_jnt()
         self._rig()
+        self._stretch()
 
     def _create_ik_jnt(self):
         for jnt_ik, jnt in zip(self.joints_ik, self.joints):
@@ -40,3 +47,12 @@ class IkSystem:
         pm.parent(self.zero_pole, self.grp_rig)
         pm.poleVectorConstraint(self.ctrl_pole, self.ik_handle)
         pm.parent(mytools.connect_line(self.ctrl_pole, self.joints_ik[1]), self.grp_rig)
+
+    def _stretch(self):
+        pm.addAttr(self.ctrl_ikHandle, longName='stretch', attributeType='bool', defaultValue=1, keyable=True)
+        mytools.stretch_ik(attr_stretch=self.attr_stretch, jnt1_offset=self.ctrl_cog,
+                           handle_ctrl=self.ctrl_ikHandle, ik_jnt1=self.joints_ik[0], ik_jnt2=self.joints_ik[1],
+                           ik_jnt3=self.joints_ik[2])
+
+    def get_rig_joints(self):
+        return self.joints_ik

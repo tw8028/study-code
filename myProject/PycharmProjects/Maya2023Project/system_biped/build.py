@@ -8,10 +8,12 @@ from system_biped.interface.connection import ConnectionType
 from system_biped.core.center_of_gravity import CenterOfGravity
 from system_biped.core.fk_system import FkSystem
 from system_biped.core.ik_system import IkSystem
+from system_biped.core.mid_system import MidSystem
+from system_biped.core.blend_two_jnt import BlendTwoJnt
 
 
 def biped_rig():
-    Master.create()
+    Master.build()
     # spine
     spine = Spine(bones=['pelvis', 'spine_01', 'spine_02', 'spine_03', 'spine_04', 'spine_05'], neck='neck_01',
                   clavicle_l='clavicle_l', clavicle_r='clavicle_r', hip_l='thigh_l', hip_r='thigh_r')
@@ -30,11 +32,13 @@ def biped_rig():
     arm_l.build()
     arm_l.connect_to(point_provider=spine, connection_type=ConnectionType.SHOULDER)
 
+
 def limb_rig():
     base = CenterOfGravity(name='arm', side='l', bones=['upperarm_l', 'lowerarm_l', 'hand_l'])
     fk = FkSystem(cog=base)
     ik = IkSystem(cog=base)
-
+    mid = MidSystem(ik=ik)
+    BlendTwoJnt(fk=fk, ik=mid)
 
 
 if __name__ == '__main__':

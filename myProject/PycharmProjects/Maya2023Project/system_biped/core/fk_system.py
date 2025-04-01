@@ -5,12 +5,15 @@ from system_biped.core.center_of_gravity import CenterOfGravity
 
 class FkSystem:
     def __init__(self, cog: CenterOfGravity):
+        self.name = cog.name
+        self.side = cog.side
         self.joints = cog.joints
+        self.grp_rig = cog.grp_rig
         self.ctrl_cog = cog.ctrl_cog
         self.zero_jnt = cog.zero_jnt
-        self.joints_fk = [jnt.replace('__001', '_fk__001') for jnt in self.joints]
-        self.ctrl_list = ['ctrl__' + jnt.split('__', 1)[1] for jnt in self.joints_fk]
-        self.zero_list = ['zero__' + jnt.split('__', 1)[1] for jnt in self.joints_fk]
+        self.joints_fk = [f'jnt__{self.side}__{jnt}_fk__001' for jnt in cog._bones]
+        self.ctrl_list = [f'ctrl__{self.side}__{jnt}_fk__001' for jnt in cog._bones]
+        self.zero_list = [f'zero__{self.side}__{jnt}_fk__001' for jnt in cog._bones]
 
         self._create_fk_jnt()
         self._rig()
