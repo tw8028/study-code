@@ -7,3 +7,4 @@ if not pm.commandPort(":4434", query=True):
 
 reload.main()
 custom_shelf.buttons.rebuild()
+

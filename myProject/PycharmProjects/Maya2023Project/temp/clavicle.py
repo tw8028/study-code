@@ -1,6 +1,6 @@
 import pymel.core as pm
 import mytools
-from system_biped.core.component import Component
+from system_biped.component import Component
 
 
 class Clavicle(Component):

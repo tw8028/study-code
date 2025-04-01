@@ -1,8 +1,8 @@
 import pymel.core as pm
-from system_biped.core.spine import Spine
-from system_biped.core.head import Head
-from system_biped.core.limb import Limb
-from system_biped.master import Master
+from system_biped.spine import Spine
+from system_biped.head import Head
+from system_biped.limb import Limb
+from system_biped.core.master import Master
 from system_biped.interface.connection import ConnectionType
 
 

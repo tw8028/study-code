@@ -1,7 +1,7 @@
 import pymel.core as pm
 import mytools
 from abc import ABC
-from system_biped.core.component import Component
+from system_biped.component import Component
 from system_biped.interface.connection import IConnectionPointProvider
 from system_biped.interface.connection import ConnectionType
 

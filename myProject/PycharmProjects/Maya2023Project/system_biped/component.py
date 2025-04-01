@@ -1,6 +1,6 @@
 import pymel.core as pm
 import mytools
-from system_biped.master import Master
+from system_biped.core.master import Master
 
 
 class Component(object):
