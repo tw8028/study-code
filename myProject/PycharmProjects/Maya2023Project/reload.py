@@ -16,20 +16,20 @@ import custom_shelf.editor_cv
 import custom_shelf.editor_jnt
 import custom_shelf.editor_skin
 import system_biped.build
-import system_biped.component
+import temp.component
 import system_biped.core
 import system_biped.core.center_of_gravity
 import system_biped.core.fk_system
 import system_biped.core.ik_system
 import system_biped.core.master
 import system_biped.core.mid_system
-import system_biped.foot
-import system_biped.head
+import temp.foot
+import temp.head
 import system_biped.interface
 import system_biped.interface.connection
 import system_biped.interface.joint_limb
-import system_biped.limb
-import system_biped.spine
+import temp.limb
+import temp.spine
 import mytools
 
 
@@ -49,19 +49,19 @@ def main():
     importlib.reload(custom_shelf.editor_jnt)
     importlib.reload(custom_shelf.editor_skin)
     importlib.reload(system_biped.build)
-    importlib.reload(system_biped.component)
+    importlib.reload(temp.component)
     importlib.reload(system_biped.core)
     importlib.reload(system_biped.core.center_of_gravity)
     importlib.reload(system_biped.core.fk_system)
     importlib.reload(system_biped.core.ik_system)
     importlib.reload(system_biped.core.master)
     importlib.reload(system_biped.core.mid_system)
-    importlib.reload(system_biped.foot)
-    importlib.reload(system_biped.head)
+    importlib.reload(temp.foot)
+    importlib.reload(temp.head)
     importlib.reload(system_biped.interface)
     importlib.reload(system_biped.interface.connection)
     importlib.reload(system_biped.interface.joint_limb)
-    importlib.reload(system_biped.limb)
-    importlib.reload(system_biped.spine)
+    importlib.reload(temp.limb)
+    importlib.reload(temp.spine)
     importlib.reload(mytools)
     print('reload modules...')

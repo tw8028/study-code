@@ -1,7 +1,7 @@
 import pymel.core as pm
-from system_biped.spine import Spine
-from system_biped.head import Head
-from system_biped.limb import Limb
+from temp.spine import Spine
+from temp.head import Head
+from temp.limb import Limb
 from system_biped.core.master import Master
 from system_biped.interface.connection import ConnectionType
 
@@ -41,10 +41,10 @@ def limb_rig():
 
 
 def limb_rig_02():
-    base = CenterOfGravity(name='arm', side='l', bones=['upperarm_l', 'lowerarm_l', 'hand_l'])
-    fk = FkSystem(cog=base)
-    ik = IkSystem(cog=base)
-    base.blend_jnt(fk_system=fk, ik_system=ik)
+    arm_l = CenterOfGravity(name='arm', side='l', bones=['upperarm_l', 'lowerarm_l', 'hand_l'])
+    fk = FkSystem(cog=arm_l)
+    ik = IkSystem(cog=arm_l)
+    arm_l.blend_jnt(fk_system=fk, ik_system=ik)
 
 
 if __name__ == '__main__':

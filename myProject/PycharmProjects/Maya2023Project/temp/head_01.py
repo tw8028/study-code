@@ -1,6 +1,6 @@
 import pymel.core as pm
 import mytools
-from system_biped.component import Component
+from temp.component import Component
 
 
 # neck: ctrl_head 控制 neck x轴旋转
