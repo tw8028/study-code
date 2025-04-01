@@ -5,6 +5,10 @@ from system_biped.limb import Limb
 from system_biped.core.master import Master
 from system_biped.interface.connection import ConnectionType
 
+from system_biped.core.center_of_gravity import CenterOfGravity
+from system_biped.core.fk_system import FkSystem
+from system_biped.core.ik_system import IkSystem
+
 
 def biped_rig():
     Master.create()
@@ -26,7 +30,13 @@ def biped_rig():
     arm_l.build()
     arm_l.connect_to(point_provider=spine, connection_type=ConnectionType.SHOULDER)
 
+def limb_rig():
+    base = CenterOfGravity(name='arm', side='l', bones=['upperarm_l', 'lowerarm_l', 'hand_l'])
+    fk = FkSystem(cog=base)
+    ik = IkSystem(cog=base)
+
+
 
 if __name__ == '__main__':
-    biped_rig()
+    limb_rig()
     pm.select(clear=True)

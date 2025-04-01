@@ -18,16 +18,17 @@ class CenterOfGravity(object):
 
         self._create()
         self._constraint_bones()
+
     def _create(self):
+        pm.group(name=self.grp_rig, empty=True)
+        mytools.cv_and_zero(name=self.ctrl_cog, target=self._bones[0], shape='ball', radius=2)
+        pm.parent(self.zero_cog, self.grp_rig)
+
         for jnt, bone in zip(self.joints, self._bones):
             mytools.jnt_target(name=jnt, target=bone)
         mytools.parent_chain(self.joints)
         mytools.grp_zero(name=self.zero_jnt, target=self.joints[0])
-
-        mytools.cv_and_zero(name=self.ctrl_cog, target=self._bones[0], shape='ball', radius=2)
-
-        pm.group(name=self.grp_rig, empty=True)
-        pm.parent(self.zero_jnt, self.zero_cog, self.grp_rig)
+        pm.parent(self.zero_jnt, self.ctrl_cog)
 
     def _constraint_bones(self):
         grp_cons = Master.constraint
