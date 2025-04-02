@@ -8,7 +8,7 @@ from system_biped.core.center_of_gravity import CenterOfGravity
 from system_biped.core.trunk_connection import TrunkConnection
 
 
-class Spine(IConnectionPointUser, IConnectionPointProvider, ABC):
+class Spine(IConnectionPointProvider, ABC):
     # 肩膀合并到了脊柱中
     def __init__(self, bones: list[str], trunk_connection: TrunkConnection):
         spine = CenterOfGravity(name='spine', side='c', bones=bones)

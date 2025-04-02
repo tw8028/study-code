@@ -8,7 +8,7 @@ class ConnectionType(Enum):
     SHOULDER = "shoulder"  # 肩部连接点
     HIP = "hip"
     WRIST = 'wrist'  # 手腕
-    ANKLE = 'ankle'  # 脚踝
+    FOOT = 'foot'  # 脚踝
 
 
 class IConnectionPointProvider(ABC):

@@ -1,13 +1,7 @@
 import pymel.core as pm
-import mytools
-from abc import ABC
-from system_biped.interface.connection import IConnectionPointProvider
-from system_biped.interface.connection import IConnectionPointUser
-from system_biped.interface.connection import ConnectionType
-from system_biped.core.center_of_gravity import CenterOfGravity
 
 
-class TrunkConnection(IConnectionPointUser, IConnectionPointProvider, ABC):
+class TrunkConnection:
     def __init__(self, neck, clavicle_l, clavicle_r, hip_l, hip_r):
         self.neck = neck
         self.clavicle_l = clavicle_l
