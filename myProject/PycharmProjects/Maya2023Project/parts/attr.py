@@ -49,9 +49,14 @@ def set_display_type(obj, display_type):
         shape.overrideDisplayType.set(display_type)
 
 
-# offsetParentMatrix
-
+def get_children(root):
+    if not pm.PyNode(root).getChildren():  # type:ignore
+        return []
+    child = pm.PyNode(root).getChildren()[0]  # type:ignore
+    return [root, child]  + get_children(child)
 
 
 if __name__ == '__main__':
-    pass
+    sl = pm.selected()[0]
+    joints = get_children(root=sl)
+    print(joints)

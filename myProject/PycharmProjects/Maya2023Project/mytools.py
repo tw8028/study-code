@@ -16,6 +16,10 @@ def displayable(attr):
     return parts.attr.displayable(attr)
 
 
+def get_children(root):
+    return parts.attr.get_children(root)
+
+
 def lock_and_hide(attr):
     return parts.attr.lock_and_hide(attr)
 

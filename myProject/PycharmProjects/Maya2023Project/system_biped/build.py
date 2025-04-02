@@ -7,6 +7,7 @@ from system_biped.core.center_of_gravity import CenterOfGravity
 from system_biped.spine import Spine
 from system_biped.head import Head
 from system_biped.limb import Limb
+from system_biped.hand import Hand
 from system_biped.core.fk_system import FkSystem
 from system_biped.core.ik_system import IkSystem
 from system_biped.core.mid_system import MidSystem
@@ -35,6 +36,10 @@ def biped_rig():
     leg_l.connect_to(point_provider=spine, connection_type=ConnectionType.HIP)
     leg_r = Limb(name='leg', side='r', bones=['thigh_r', 'calf_r', 'foot_r'])
     leg_r.connect_to(point_provider=spine, connection_type=ConnectionType.HIP)
+
+    hand_l = Hand(name='hand', side='l',
+                  bones=['hand_l', 'thumb_01_l', 'index_01_l', 'middle_01_l', 'ring_01_l', 'pinky_01_l'])
+    # hand_l.connect_to(point_provider=arm_l, connection_type=ConnectionType.WRIST)
 
 
 if __name__ == '__main__':
