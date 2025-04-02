@@ -51,9 +51,9 @@ def set_display_type(obj, display_type):
 
 def get_children(root):
     if not pm.PyNode(root).getChildren():  # type:ignore
-        return []
+        return [root]
     child = pm.PyNode(root).getChildren()[0]  # type:ignore
-    return [root, child]  + get_children(child)
+    return [root] + get_children(child)
 
 
 if __name__ == '__main__':

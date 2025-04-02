@@ -37,9 +37,9 @@ def biped_rig():
     leg_r = Limb(name='leg', side='r', bones=['thigh_r', 'calf_r', 'foot_r'])
     leg_r.connect_to(point_provider=spine, connection_type=ConnectionType.HIP)
 
-    hand_l = Hand(name='hand', side='l',
+    hand_l = Hand(name='wrist', side='l',
                   bones=['hand_l', 'thumb_01_l', 'index_01_l', 'middle_01_l', 'ring_01_l', 'pinky_01_l'])
-    # hand_l.connect_to(point_provider=arm_l, connection_type=ConnectionType.WRIST)
+    hand_l.connect_to(point_provider=arm_l, connection_type=ConnectionType.WRIST)
 
 
 if __name__ == '__main__':

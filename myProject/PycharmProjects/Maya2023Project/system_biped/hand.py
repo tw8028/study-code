@@ -12,20 +12,28 @@ from system_biped.core.mid_system import MidSystem
 
 class Hand(IConnectionPointUser, ABC):
     def __init__(self, name: str, side: str, bones: list[str]):
-        hand = CenterOfGravity(name=name, side=side, bones=[bones[0]])
         self.name = name
         self.side = side
-        self.ctrl_cog = hand.ctrl_cog
-        self.zero_cog = hand.zero_cog
+        self.hand = bones[0]
         self.fingers = bones[1:]
+        self.grp_rig = f'rig__{side}__{name}__001'
+        self.ctrl_cog = f'ctrl_cog__{side}__{name}__001'
+        self.zero_cog = f'zero_cog__{side}__{name}__001'
+
+        self._create_cog()
         self._create_all()
+
+    def _create_cog(self):
+        pm.group(name=self.grp_rig, empty=True)
+        mytools.cv_and_zero(name=self.ctrl_cog, target=self.hand, shape='ball', radius=2)
+        pm.parent(self.zero_cog, self.grp_rig)
 
     def _create_ctrl(self, bones):
         ctrl_list = [self.ctrl_cog]
         name = bones[0].split('_', 1)[0]
         for index, bone in enumerate(bones):
-            zero = f'zero__{self.side}__{name}__00{index}'
-            ctrl = f'ctrl__{self.side}__{name}__00{index}'
+            zero = f'zero__{self.side}__{name}__00{index + 1}'
+            ctrl = f'ctrl__{self.side}__{name}__00{index + 1}'
             mytools.cv_and_zero(name=ctrl, target=bone, shape='circle', radius=2)
             pm.orientConstraint(ctrl, bone)
             pm.pointConstraint(ctrl, bone)
@@ -34,12 +42,14 @@ class Hand(IConnectionPointUser, ABC):
 
     def _create_all(self):
         for root in self.fingers:
-            fingers = mytools.get_children(root=root)
-            self._create_ctrl(fingers)
+            joints = mytools.get_children(root=root)
+            print(joints)
+            self._create_ctrl(joints)
 
     def connect_to(self, point_provider: IConnectionPointProvider, connection_type):
         connect_point = point_provider.get_connection_point(connection_type=ConnectionType.WRIST, side=self.side)
         mytools.opm_constraint(connect_point, self.zero_cog)
+
 
 if __name__ == '__main__':
     hand = Hand(name='hand', side='l',
