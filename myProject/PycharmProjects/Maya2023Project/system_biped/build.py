@@ -1,11 +1,11 @@
 import pymel.core as pm
-from temp.spine import Spine
-from temp.head import Head
-from temp.limb import Limb
 from system_biped.core.master import Master
 from system_biped.interface.connection import ConnectionType
 
+from system_biped.core.trunk_connection import TrunkConnection
 from system_biped.core.center_of_gravity import CenterOfGravity
+from system_biped.spine import Spine
+from system_biped.head import Head
 from system_biped.core.fk_system import FkSystem
 from system_biped.core.ik_system import IkSystem
 from system_biped.core.mid_system import MidSystem
@@ -14,13 +14,13 @@ from system_biped.core.mid_system import MidSystem
 def biped_rig():
     Master.build()
     # spine
-    spine = Spine(bones=['pelvis', 'spine_01', 'spine_02', 'spine_03', 'spine_04', 'spine_05'], neck='neck_01',
-                  clavicle_l='clavicle_l', clavicle_r='clavicle_r', hip_l='thigh_l', hip_r='thigh_r')
-    spine.build()
+    ue_trunk_connection = TrunkConnection(neck='neck_01', clavicle_l='clavicle_l', clavicle_r='clavicle_r',
+                                          hip_l='thigh_l', hip_r='thigh_r')
+    spine = Spine(bones=['pelvis', 'spine_01', 'spine_02', 'spine_03', 'spine_04', 'spine_05'],
+                  trunk_connection=ue_trunk_connection)
 
     # head
     head = Head(bones=['neck_01', 'neck_02', 'head'])
-    head.build()
     head.connect_to(point_provider=spine, connection_type=ConnectionType.NECK)
 
     # arm

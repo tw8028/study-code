@@ -9,24 +9,21 @@ from system_biped.core.center_of_gravity import CenterOfGravity
 
 class TrunkConnection(IConnectionPointUser, IConnectionPointProvider, ABC):
     def __init__(self, neck, clavicle_l, clavicle_r, hip_l, hip_r):
+        self.neck = neck
         self.clavicle_l = clavicle_l
         self.clavicle_r = clavicle_r
-
-        self.neck = neck
         self.shoulder_l = pm.PyNode(clavicle_l).getChildren()  # type:ignore
         self.shoulder_r = pm.PyNode(clavicle_r).getChildren()  # type:ignore
         self.hip_l = hip_l
         self.hip_r = hip_r
 
-        ctrl = 'ctrl__c__{0}__001'
-        zero = 'zero__c__{0}__001'
-        self.ctrl_clavicle_l = ctrl.format('clavicle_l')
-        self.zero_clavicle_l = zero.format('clavicle_l')
-        self.ctrl_clavicle_r = ctrl.format('clavicle_r')
-        self.zero_clavicle_r = zero.format('clavicle_r')
+        self.ctrl_clavicle_l = 'ctrl__l__clavicle__001'
+        self.zero_clavicle_l = 'zero__l__clavicle__001'
+        self.ctrl_clavicle_r = 'ctrl__r__clavicle__001'
+        self.zero_clavicle_r = 'zero__r__clavicle__001'
 
-    def create_shoulder(self):
-        mytools.cv_and_zero(name=self.ctrl_clavicle_l, target=self.clavicle_l, shape='cube', radius=4)
-        mytools.cv_and_zero(name=self.ctrl_clavicle_r, target=self.clavicle_r, shape='cube', radius=4)
-        pm.parent(self.zero_clavicle_l, self.zero_clavicle_r, self.ctrl_end)
-
+        self.connect_neck = 'connect__c__neck__001'
+        self.connect_shoulder_l = 'connect__l__shoulder__001'
+        self.connect_shoulder_r = 'connect__r__shoulder__001'
+        self.connect_hip_l = 'connect__l__hip__001'
+        self.connect_hip_r = 'connect__r__hip__001'
