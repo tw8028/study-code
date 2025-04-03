@@ -9,7 +9,7 @@ class CenterOfGravity(object):
         self.name = name
         self.side = side
         self._bones = bones
-        self.joints = [f'jnt__{side}__{jnt}__001' for jnt in bones]
+        self.joints = [f'jnt__{side}__{name}__00{i + 1}' for i in range(0, len(bones))]
 
         self.grp_rig = name_template.format('rig')  # group on origin
         self.ctrl_cog = name_template.format('ctrl_cog')  # 重心控制器

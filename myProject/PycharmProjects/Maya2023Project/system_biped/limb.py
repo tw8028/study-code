@@ -14,9 +14,9 @@ from system_biped.interface.joint_limb import IJoint_limb
 class Limb(IConnectionPointProvider, IConnectionPointUser, ABC):
     def __init__(self, name: str, side: str, bones: list[str]):
         self.limb = CenterOfGravity(name=name, side=side, bones=bones)
-        fk = FkSystem(cog=self.limb)
-        ik = IkSystem(cog=self.limb)
-        mid = MidSystem(ik=ik)
+        self.fk = FkSystem(cog=self.limb)
+        self.ik = IkSystem(cog=self.limb)
+        self.mid = MidSystem(ik=self.ik)
 
         self.side = side
         self.connect_point = f'connect__{side}__{name}__001'
@@ -27,7 +27,7 @@ class Limb(IConnectionPointProvider, IConnectionPointUser, ABC):
         self.attr_blend = f'{self.ctrl_attr}.ikFkBlend'
         self.reverse_node = f'reverse__{side}__{name}__001'
         self._create_ikfk_attr()
-        self._blend_jnt(fk_system=fk, ik_system=mid)
+        self._blend_jnt(fk_system=self.fk, ik_system=self.mid)
 
     def _create_ikfk_attr(self):
         mytools.cv_and_zero(name=self.ctrl_attr, target=self.limb.ctrl_cog, shape='cross1', radius=2)

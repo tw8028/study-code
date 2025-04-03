@@ -13,7 +13,7 @@ class IkSystem(IJoint_limb, ABC):
         self.joints = cog.joints
         self.ctrl_cog = cog.ctrl_cog
         self.zero_jnt = cog.zero_jnt
-        self.joints_ik = [f'jnt__{self.side}__{jnt}_ik__001' for jnt in cog._bones]
+        self.joints_ik = [f'jnt__{cog.side}__{cog.name}_ik__00{i + 1}' for i in range(0, len(cog.joints))]
 
         self.side = cog.side
         self.name = cog.name

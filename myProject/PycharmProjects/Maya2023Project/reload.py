@@ -23,6 +23,7 @@ import system_biped.core.ik_system
 import system_biped.core.master
 import system_biped.core.mid_system
 import system_biped.core.trunk_connection
+import system_biped.foot
 import system_biped.hand
 import system_biped.head
 import system_biped.interface
@@ -56,6 +57,7 @@ def main():
     importlib.reload(system_biped.core.master)
     importlib.reload(system_biped.core.mid_system)
     importlib.reload(system_biped.core.trunk_connection)
+    importlib.reload(system_biped.foot)
     importlib.reload(system_biped.hand)
     importlib.reload(system_biped.head)
     importlib.reload(system_biped.interface)

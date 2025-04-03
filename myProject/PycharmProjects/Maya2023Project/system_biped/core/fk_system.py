@@ -13,9 +13,9 @@ class FkSystem(IJoint_limb, ABC):
         self.grp_rig = cog.grp_rig
         self.ctrl_cog = cog.ctrl_cog
         self.zero_jnt = cog.zero_jnt
-        self.joints_fk = [f'jnt__{self.side}__{jnt}_fk__001' for jnt in cog._bones]
-        self.ctrl_list = [f'ctrl__{self.side}__{jnt}_fk__001' for jnt in cog._bones]
-        self.zero_list = [f'zero__{self.side}__{jnt}_fk__001' for jnt in cog._bones]
+        self.joints_fk = [f'jnt__{cog.side}__{cog.name}_fk__00{i + 1}' for i in range(0, len(cog.joints))]
+        self.ctrl_list = [f'ctrl__{cog.side}__{cog.name}_fk__00{i + 1}' for i in range(0, len(cog.joints))]
+        self.zero_list = [f'zero__{cog.side}__{cog.name}_fk__00{i + 1}' for i in range(0, len(cog.joints))]
 
         self._create_fk_jnt()
         self._rig()

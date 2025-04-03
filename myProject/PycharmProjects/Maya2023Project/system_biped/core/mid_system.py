@@ -11,9 +11,10 @@ class MidSystem(IJoint_limb, ABC):
         self.ctrl_cog = ik.ctrl_cog
         self.zero_jnt = ik.zero_jnt
         self.joints_ik = ik.joints_ik
+        self.side = ik.side
+        self.name = ik.name
 
-        self.joints_mid = [jnt.replace('_ik__001', '_mid__001') for jnt in self.joints_ik]
-
+        self.joints_mid = [f'jnt__{ik.side}__{ik.name}_mid__00{i + 1}' for i in range(0, len(ik.joints))]
         self.ctrl_mid = f'ctrl__{ik.side}__{ik.name}_mid__001'
         self.zero_mid = f'zero__{ik.side}__{ik.name}_mid__001'
 
