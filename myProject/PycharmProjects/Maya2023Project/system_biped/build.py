@@ -30,16 +30,19 @@ def biped_rig():
     arm_r.connect_to(point_provider=spine, connection_type=ConnectionType.SHOULDER)
     arm_l = Limb(name='arm', side='l', bones=['upperarm_l', 'lowerarm_l', 'hand_l'])
     arm_l.connect_to(point_provider=spine, connection_type=ConnectionType.SHOULDER)
+    # hand
+    hand_l = Hand(name='wrist', side='l',
+                  bones=['hand_l', 'thumb_01_l', 'index_01_l', 'middle_01_l', 'ring_01_l', 'pinky_01_l'])
+    hand_l.connect_to(point_provider=arm_l, connection_type=ConnectionType.WRIST)
+    hand_r = Hand(name='wrist', side='r',
+                  bones=['hand_r', 'thumb_01_r', 'index_01_r', 'middle_01_r', 'ring_01_r', 'pinky_01_r'])
+    hand_r.connect_to(point_provider=arm_r, connection_type=ConnectionType.WRIST)
 
     # leg
     leg_l = Limb(name='leg', side='l', bones=['thigh_l', 'calf_l', 'foot_l'])
     leg_l.connect_to(point_provider=spine, connection_type=ConnectionType.HIP)
     leg_r = Limb(name='leg', side='r', bones=['thigh_r', 'calf_r', 'foot_r'])
     leg_r.connect_to(point_provider=spine, connection_type=ConnectionType.HIP)
-
-    hand_l = Hand(name='wrist', side='l',
-                  bones=['hand_l', 'thumb_01_l', 'index_01_l', 'middle_01_l', 'ring_01_l', 'pinky_01_l'])
-    hand_l.connect_to(point_provider=arm_l, connection_type=ConnectionType.WRIST)
 
 
 if __name__ == '__main__':

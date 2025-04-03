@@ -11,9 +11,6 @@ class CenterOfGravity(object):
         self.side = side
         self._bones = bones
         self.joints = [f'jnt__{side}__{jnt}__001' for jnt in bones]
-        # self.joints_fk = [f'jnt__{side}__{jnt}_fk__001' for jnt in bones]
-        # self.joints_ik = [f'jnt__{side}__{jnt}_ik__001' for jnt in bones]
-        # self.joints_mid = [f'jnt__{side}__{jnt}_mid__001' for jnt in bones]
 
         self.grp_rig = name_template.format('rig')  # group on origin
         self.ctrl_cog = name_template.format('ctrl_cog')  # 重心控制器
@@ -22,6 +19,11 @@ class CenterOfGravity(object):
 
         self._create()
         self._constraint_bones()
+
+        self.ctrl_attr = f'ctrl__{self.side}__{self.name}_ikfk__001'
+        self.zero_attr = f'zero__{self.side}__{self.name}_ikfk__001'
+        self.attr_blend = f'{self.ctrl_attr}.ikFkBlend'
+        self.reverse_node = f'reverse__{self.side}__{self.name}__001'
 
     def _create(self):
         pm.group(name=self.grp_rig, empty=True)
@@ -54,20 +56,19 @@ class CenterOfGravity(object):
             return pm.PyNode(name)
         return mytools.grp_child(name=name, parent=parent, position=position)
 
+    def create_ikfk_attr(self):
+        mytools.cv_and_zero(name=self.ctrl_attr, target=self.ctrl_cog, shape='cross1', radius=2)
+        mytools.zero_orient(self.zero_attr)
+        mytools.lock_hide_transform(self.ctrl_attr)
+        pm.parent(self.zero_attr, self.grp_rig)
+        pm.addAttr(self.ctrl_attr, longName='ikFkBlend', attributeType='float', minValue=0, maxValue=1, dv=1,
+                   keyable=True)
+        reverse_nd = pm.createNode('reverse', name=self.reverse_node)
+        pm.PyNode(self.attr_blend) >> reverse_nd.inputX  # type: ignore
+
     def blend_jnt(self, fk_system: IJoint_limb, ik_system: IJoint_limb):
-        ctrl_attr = f'ctrl__{self.side}__{self.name}_ikfk__001'
-        zero_attr = f'zero__{self.side}__{self.name}_ikfk__001'
-        attr_blend = f'{ctrl_attr}.ikFkBlend'
-        reverse_node = f'reverse__{self.side}__{self.name}__001'
-
-        mytools.cv_and_zero(name=ctrl_attr, target=self.ctrl_cog, shape='cross1', radius=2)
-        mytools.zero_orient(zero_attr)
-        mytools.lock_hide_transform(ctrl_attr)
-        pm.parent(zero_attr, self.grp_rig)
-        pm.addAttr(ctrl_attr, longName='ikFkBlend', attributeType='float', minValue=0, maxValue=1, dv=1, keyable=True)
-
-        reverse_nd = pm.createNode('reverse', name=reverse_node)
-        pm.PyNode(attr_blend) >> reverse_nd.inputX  # type: ignore
+        attr_blend = self.attr_blend
+        reverse_nd = self.reverse_node
 
         joints_ik = ik_system.get_rig_joints()
         joints_fk = fk_system.get_rig_joints()

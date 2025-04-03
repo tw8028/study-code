@@ -16,6 +16,7 @@ class Limb(IConnectionPointProvider, IConnectionPointUser, ABC):
         fk = FkSystem(cog=self.limb)
         ik = IkSystem(cog=self.limb)
         mid = MidSystem(ik=ik)
+        self.limb.create_ikfk_attr()
         self.limb.blend_jnt(fk_system=fk, ik_system=mid)
 
         self.side = side
@@ -26,8 +27,11 @@ class Limb(IConnectionPointProvider, IConnectionPointUser, ABC):
         jnt_end = self.limb.joints[-1]
         mytools.grp_sub(name=self.connect_point, target=jnt_end)
 
-    def get_connection_point(self, connection_type=ConnectionType.WRIST, side=''):
-        return self.connect_point
+    def get_connection_point(self, connection_type: ConnectionType, side=''):
+        if connection_type.value == ConnectionType.WRIST:
+            return self.connect_point
+        elif connection_type.value == ConnectionType.FOOT:
+            pass
 
     def connect_to(self, point_provider: IConnectionPointProvider, connection_type: ConnectionType):
         connect_point = point_provider.get_connection_point(connection_type=connection_type, side=self.side)
