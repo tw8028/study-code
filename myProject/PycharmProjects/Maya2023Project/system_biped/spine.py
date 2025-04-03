@@ -2,10 +2,10 @@ import pymel.core as pm
 import mytools
 from abc import ABC
 from system_biped.interface.connection import IConnectionPointProvider
-from system_biped.interface.connection import IConnectionPointUser
 from system_biped.interface.connection import ConnectionType
 from system_biped.core.center_of_gravity import CenterOfGravity
 from system_biped.core.trunk_connection import TrunkConnection
+from system_biped.core.master import Master
 
 
 class Spine(IConnectionPointProvider, ABC):
@@ -100,10 +100,14 @@ class Spine(IConnectionPointProvider, ABC):
         mytools.cv_and_zero(name=tc.ctrl_clavicle_l, target=tc.clavicle_l, shape='cube', radius=4)
         mytools.cv_and_zero(name=tc.ctrl_clavicle_r, target=tc.clavicle_r, shape='cube', radius=4)
         pm.parent(tc.zero_clavicle_l, tc.zero_clavicle_r, self.ctrl_end)
-        pm.orientConstraint(tc.ctrl_clavicle_l, tc.clavicle_l)
-        pm.orientConstraint(tc.ctrl_clavicle_r, tc.clavicle_r)
-        pm.pointConstraint(tc.ctrl_clavicle_l, tc.clavicle_l)
-        pm.pointConstraint(tc.ctrl_clavicle_r, tc.clavicle_r)
+        l_orient_cons = pm.orientConstraint(tc.ctrl_clavicle_l, tc.clavicle_l)
+        r_orient_cons = pm.orientConstraint(tc.ctrl_clavicle_r, tc.clavicle_r)
+        l_point_cons = pm.pointConstraint(tc.ctrl_clavicle_l, tc.clavicle_l)
+        r_point_cons = pm.pointConstraint(tc.ctrl_clavicle_r, tc.clavicle_r)
+        grp_cons = Master.constraint
+        if not pm.objExists(grp_cons):
+            pm.group(name=grp_cons, empty=True)
+        pm.parent(l_orient_cons, r_orient_cons, l_point_cons, r_point_cons, grp_cons)
 
     def _create_connect_point(self):
         tc = self.trunk_connection

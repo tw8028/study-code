@@ -1,13 +1,7 @@
 import pymel.core as pm
 import mytools
-from abc import ABC
-from system_biped.interface.connection import IConnectionPointProvider
-from system_biped.interface.connection import IConnectionPointUser
-from system_biped.interface.connection import ConnectionType
-from system_biped.core.center_of_gravity import CenterOfGravity
 from system_biped.limb import Limb
-from system_biped.core.fk_system import FkSystem
-from system_biped.core.mid_system import MidSystem
+from system_biped.core.master import Master
 
 
 class Foot:
@@ -37,12 +31,20 @@ class Foot:
 
     def _create_main(self):
         pm.group(name=self.grp_rig, empty=True)
+        if pm.objExists(Master.ctrl_root):
+            pm.parent(self.grp_rig, Master.ctrl_root)
+
         pm.group(name=self.grp_jnt, empty=True)
         pm.parent(self.grp_jnt, self.grp_rig)
         mytools.jnt_target(name=self.ball, target=self.bone_ball)
         pm.parent(self.ball, self.grp_jnt)
-        pm.pointConstraint(self.ball, self.bone_ball)
-        pm.orientConstraint(self.ball, self.bone_ball)
+
+        grp_cons = Master.constraint
+        if not pm.objExists(grp_cons):
+            pm.group(name=grp_cons, empty=True)
+        point_cons = pm.pointConstraint(self.ball, self.bone_ball)
+        orient_cons = pm.orientConstraint(self.ball, self.bone_ball)
+        pm.parent(point_cons, orient_cons, grp_cons)
 
     def _create_fk(self):
         jnt = mytools.jnt_target(name=self.ball_fk, target=self.ball)
@@ -90,6 +92,9 @@ class Foot:
 
         # leg ik ctrl connect to ankle_ctrl
         pm.parentConstraint(ankle_ctrl, self.leg.ik.ctrl_ikHandle, maintainOffset=True)
+        mytools.lock_hide_transform(self.leg.ik.ctrl_ikHandle)
+        # delete
+        pm.delete(self.bone_heel, self.bone_tiptoe)
 
     def _blend(self):
         attr_blend = self.leg.attr_blend
@@ -98,7 +103,3 @@ class Foot:
                              blend_jnt=self.ball)
         mytools.blend_translate(attr_ctrl=attr_blend, reverse=reverse_nd, ik_jnt=self.ball_ik, fk_jnt=self.ball_fk,
                                 blend_jnt=self.ball)
-
-
-if __name__ == '__main__':
-    foot_l = Foot(name='foot_l', side='l', bones=['foot_l', 'ball_l', 'tiptoe_l', 'heel_l'])

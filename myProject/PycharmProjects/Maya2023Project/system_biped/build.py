@@ -1,17 +1,12 @@
 import pymel.core as pm
 from system_biped.core.master import Master
 from system_biped.interface.connection import ConnectionType
-
 from system_biped.core.trunk_connection import TrunkConnection
-from system_biped.core.center_of_gravity import CenterOfGravity
 from system_biped.spine import Spine
 from system_biped.head import Head
 from system_biped.limb import Limb
 from system_biped.hand import Hand
 from system_biped.foot import Foot
-from system_biped.core.fk_system import FkSystem
-from system_biped.core.ik_system import IkSystem
-from system_biped.core.mid_system import MidSystem
 
 
 def biped_rig():
@@ -46,6 +41,7 @@ def biped_rig():
     leg_r.connect_to(point_provider=spine, connection_type=ConnectionType.HIP)
     # foot
     foot_l = Foot(name='foot_l', side='l', bones=['foot_l', 'ball_l', 'tiptoe_l', 'heel_l'], leg=leg_l)
+    foot_l = Foot(name='foot_r', side='r', bones=['foot_r', 'ball_r', 'tiptoe_r', 'heel_r'], leg=leg_r)
 
 
 if __name__ == '__main__':

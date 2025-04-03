@@ -4,10 +4,7 @@ from abc import ABC
 from system_biped.interface.connection import IConnectionPointProvider
 from system_biped.interface.connection import IConnectionPointUser
 from system_biped.interface.connection import ConnectionType
-from system_biped.core.center_of_gravity import CenterOfGravity
-from system_biped.core.fk_system import FkSystem
-from system_biped.core.ik_system import IkSystem
-from system_biped.core.mid_system import MidSystem
+from system_biped.core.master import Master
 
 
 class Hand(IConnectionPointUser, ABC):
@@ -27,16 +24,23 @@ class Hand(IConnectionPointUser, ABC):
         pm.group(name=self.grp_rig, empty=True)
         mytools.cv_and_zero(name=self.ctrl_cog, target=self.hand, shape='ball', radius=2)
         pm.parent(self.zero_cog, self.grp_rig)
+        if pm.objExists(Master.ctrl_root):
+            pm.parent(self.grp_rig, Master.ctrl_root)
 
     def _create_ctrl(self, bones):
+        grp_cons = Master.constraint
+        if not pm.objExists(grp_cons):
+            pm.group(name=grp_cons, empty=True)
+
         ctrl_list = [self.ctrl_cog]
         name = bones[0].split('_', 1)[0]
         for index, bone in enumerate(bones):
             zero = f'zero__{self.side}__{name}__00{index + 1}'
             ctrl = f'ctrl__{self.side}__{name}__00{index + 1}'
             mytools.cv_and_zero(name=ctrl, target=bone, shape='circle', radius=2)
-            pm.orientConstraint(ctrl, bone)
-            pm.pointConstraint(ctrl, bone)
+            orient_cons = pm.orientConstraint(ctrl, bone)
+            point_cons = pm.pointConstraint(ctrl, bone)
+            pm.parent(orient_cons, point_cons, grp_cons)
             pm.parent(zero, ctrl_list[-1])
             ctrl_list.append(ctrl)
 
