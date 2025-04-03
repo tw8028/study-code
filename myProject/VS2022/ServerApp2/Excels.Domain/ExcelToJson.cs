@@ -45,7 +45,15 @@ public enum ColName
     Aj,
     Ak,
     Al,
-    Am
+    Am,
+    An,
+    Ao,
+    Ap,
+    Aq,
+    Ar,
+    As,
+    At,
+    Au
 }
 
 public enum Category
