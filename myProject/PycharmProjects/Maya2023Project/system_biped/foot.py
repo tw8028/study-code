@@ -12,6 +12,8 @@ from system_biped.core.mid_system import MidSystem
 
 class Foot:
     def __init__(self, name: str, side: str, bones: list[str], leg: Limb):
+        self.name = name
+        self.side = side
         self.leg = leg
         self.bone_foot = bones[0]
         self.bone_ball = bones[1]
@@ -27,8 +29,11 @@ class Foot:
         self.input_ball_fk = f'input__{side}__ball_fk__001'
 
         self.ball_ik = f'jnt__{side}__ball_ik__001'
+        self.zero_ball_ik = f'zero__{side}__ball_ik__001'
         self._create_main()
         self._create_fk()
+        self._create_ik()
+        self._blend()
 
     def _create_main(self):
         pm.group(name=self.grp_rig, empty=True)
@@ -48,6 +53,51 @@ class Foot:
         pm.parent(input, self.grp_rig)
         pm.parent(self.zero_ball_fk, input)
         mytools.opm_constraint(self.leg.fk.ctrl_list[-1], input)
+
+    def _create_ik(self):
+        name_template = '{0}__' + self.side + '__{1}__001'
+        # back
+        heel_ctrl = name_template.format('ctrl', 'heel')
+        heel_zero = name_template.format('zero', 'heel')
+        mytools.cv_and_zero(name=heel_ctrl, target=self.bone_heel, shape='cube', radius=4)
+        # mid
+        mid_ctrl = name_template.format('ctrl', 'mid')
+        mid_zero = name_template.format('zero', 'mid')
+        mytools.cv_and_zero(name=mid_ctrl, target=self.bone_ball, shape='circle_linear', radius=4)
+        # front
+        tiptoe_ctrl = name_template.format('ctrl', 'tiptoe')
+        tiptoe_zero = name_template.format('zero', 'tiptoe')
+        mytools.cv_and_zero(name=tiptoe_ctrl, target=self.bone_tiptoe, shape='ball', radius=1)
+        # ankle
+        ankle_ctrl = name_template.format('ctrl', 'ankle')
+        ankle_zero = name_template.format('zero', 'ankle')
+        mytools.cv_and_zero(name=ankle_ctrl, target=self.bone_ball, shape='triangle', radius=1.5)
+        # toes
+        toe_ctrl = name_template.format('ctrl', 'toe')
+        toe_zero = name_template.format('zero', 'toe')
+        mytools.cv_and_zero(name=toe_ctrl, target=self.bone_ball, shape='triangle', radius=1.0)
+
+        # parent
+        pm.parent(ankle_zero, toe_zero, tiptoe_ctrl)
+        pm.parent(tiptoe_zero, mid_ctrl)
+        pm.parent(mid_zero, heel_ctrl)
+        zero_ik = mytools.grp_zero(name=f'zero__{self.side}__ball_ik__001', target=heel_zero)
+        pm.parent(zero_ik, self.grp_rig)
+
+        # ik joint
+        mytools.jnt_target(name=self.ball_ik, target=self.ball)
+        pm.parent(self.ball_ik, toe_ctrl)
+
+        # leg ik ctrl connect to ankle_ctrl
+        pm.parentConstraint(ankle_ctrl, self.leg.ik.ctrl_ikHandle, maintainOffset=True)
+
+    def _blend(self):
+        attr_blend = self.leg.attr_blend
+        reverse_nd = self.leg.reverse_node
+        mytools.blend_orient(attr_ctrl=attr_blend, reverse=reverse_nd, ik_jnt=self.ball_ik, fk_jnt=self.ball_fk,
+                             blend_jnt=self.ball)
+        mytools.blend_translate(attr_ctrl=attr_blend, reverse=reverse_nd, ik_jnt=self.ball_ik, fk_jnt=self.ball_fk,
+                                blend_jnt=self.ball)
 
 
 if __name__ == '__main__':
