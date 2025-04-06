@@ -1,11 +1,11 @@
 import pymel.core as pm
 import mytools
-from system_biped.limb import Limb
 from system_biped.core.master import Master
+from system_biped.interface.joint_limb import Ilimb
 
 
 class Foot:
-    def __init__(self, name: str, side: str, bones: list[str], leg: Limb):
+    def __init__(self, name: str, side: str, bones: list[str], leg: Ilimb):
         self.name = name
         self.side = side
         self.leg = leg
@@ -51,10 +51,10 @@ class Foot:
         mytools.cv_and_zero(name=self.ctrl_ball_fk, target=self.ball_fk, shape='circle', radius=4)
         pm.parent(jnt, self.ctrl_ball_fk)
 
-        input = mytools.grp_target(name=self.input_ball_fk, target=self.bone_foot)
-        pm.parent(input, self.grp_rig)
-        pm.parent(self.zero_ball_fk, input)
-        mytools.opm_constraint(self.leg.fk.ctrl_list[-1], input)
+        grp_input = mytools.grp_target(name=self.input_ball_fk, target=self.bone_foot)
+        pm.parent(grp_input, self.grp_rig)
+        pm.parent(self.zero_ball_fk, grp_input)
+        mytools.opm_constraint(self.leg.get_fk_end_control(), grp_input)
 
     def _create_ik(self):
         name_template = '{0}__' + self.side + '__{1}__001'
@@ -91,14 +91,14 @@ class Foot:
         pm.parent(self.ball_ik, toe_ctrl)
 
         # leg ik ctrl connect to ankle_ctrl
-        pm.parentConstraint(ankle_ctrl, self.leg.ik.ctrl_ikHandle, maintainOffset=True)
-        mytools.lock_hide_transform(self.leg.ik.ctrl_ikHandle)
+        pm.parentConstraint(ankle_ctrl, self.leg.get_ik_handle_control(), maintainOffset=True)
+        mytools.lock_hide_transform(self.leg.get_ik_handle_control())
         # delete
         pm.delete(self.bone_heel, self.bone_tiptoe)
 
     def _blend(self):
-        attr_blend = self.leg.attr_blend
-        reverse_nd = self.leg.reverse_node
+        attr_blend = self.leg.get_blend_attribute()
+        reverse_nd = self.leg.get_reverse_node()
         mytools.blend_orient(attr_ctrl=attr_blend, reverse=reverse_nd, ik_jnt=self.ball_ik, fk_jnt=self.ball_fk,
                              blend_jnt=self.ball)
         mytools.blend_translate(attr_ctrl=attr_blend, reverse=reverse_nd, ik_jnt=self.ball_ik, fk_jnt=self.ball_fk,
