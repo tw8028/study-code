@@ -7,16 +7,17 @@ from system_biped.interface.joint_limb import IJoint_limb
 
 class MidSystem(IJoint_limb, ABC):
     def __init__(self, ik: IkSystem):
-        self.name = ik.name
-        self.side = ik.side
-        self.grp_rig = ik.grp_rig
-        self.ctrl_cog = ik.ctrl_cog
-        self.zero_jnt = ik.zero_jnt
+        ik_cog = ik.cog
+        name = ik_cog.name
+        side = ik_cog.side
+        self.grp_rig = ik_cog.grp_rig
+        self.ctrl_cog = ik_cog.ctrl_cog
+        self.zero_jnt = ik_cog.zero_jnt
         self.joints_ik = ik.joints_ik
 
-        self._joints_mid = [f'jnt__{ik.side}__{ik.name}_mid__00{i + 1}' for i in range(0, len(ik._joints))]
-        self._ctrl_mid = f'ctrl__{ik.side}__{ik.name}_mid__001'
-        self._zero_mid = f'zero__{ik.side}__{ik.name}_mid__001'
+        self._joints_mid = [f'jnt__{side}__{name}_mid__00{i + 1}' for i in range(0, len(ik.joints_ik))]
+        self._ctrl_mid = f'ctrl__{side}__{name}_mid__001'
+        self._zero_mid = f'zero__{side}__{name}_mid__001'
 
         self._create_mid_jnt()
         self._rig()
