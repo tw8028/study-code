@@ -1,0 +1,57 @@
+﻿@page "/counter"
+@using ImportAssetsToUnity.Entity
+@using ImportAssetsToUnity.Components.Pages.Template
+
+<PageTitle>Counter</PageTitle>
+
+<div class="btn-group-toggle" data-toggle="buttons">
+    <label class="btn btn-secondary active">
+        @*<input type="checkbox" @onchange="OnChange"> All*@
+    </label>
+</div>
+@if (data.Count() != 0)
+{
+    <TddTable Data="@data">
+        <HeaderTemplate>
+            <th>Name</th>
+            <th>State</th>
+            <th>Action</th>
+        </HeaderTemplate>
+        <RowTemplate>
+            <td>@context.Name</td>
+            <td>
+                @if (context.State == CheckResult.Equal)
+                {
+                    <span class="alert-success">&#10003</span>
+                }
+                else
+                {
+                    <span class="alert-warning">@context.State</span>
+                }
+            </td>
+        </RowTemplate>
+        <Action Context="row">
+            <td>
+                <button class="btn btn-primary btn-sm" @onclick="()=>row.CopyTo()">copy to unity</button>
+            </td>
+        </Action>
+    </TddTable>
+}
+
+@code {
+    [Parameter] public int Category { get; set; }
+    IEnumerable<AssetInfo>? data;
+
+    protected override void OnInitialized()
+    {
+        CategoryConfig skillConfig = new(
+            Name: "skill",
+            SearchPattern: "*.fbx",
+            SourceDirectory: "E:/project_A/03_动作/ani_Skill_player/_fbx",
+            DestDirectory: "D:/GitHub/NLDClient/ProjectNLD/Assets/Art/Animations/Battle/Skill");
+
+        ICategory animFile = new Animation(skillConfig);
+        data = animFile.GetAllAssetInfo();
+    }
+
+}
