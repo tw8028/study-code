@@ -9,34 +9,34 @@ from system_biped.core.master import Master
 
 class Hand(IConnectionPointUser, ABC):
     def __init__(self, name: str, side: str, bones: list[str]):
-        self.name = name
-        self.side = side
-        self.hand = bones[0]
-        self.fingers = bones[1:]
-        self.grp_rig = f'rig__{side}__{name}__001'
-        self.ctrl_cog = f'ctrl_cog__{side}__{name}__001'
-        self.zero_cog = f'zero_cog__{side}__{name}__001'
+        self._name = name
+        self._side = side
+        self._hand = bones[0]
+        self._fingers = bones[1:]
+        self._grp_rig = f'rig__{side}__{name}__001'
+        self._ctrl_cog = f'ctrl_cog__{side}__{name}__001'
+        self._zero_cog = f'zero_cog__{side}__{name}__001'
 
         self._create_cog()
         self._create_all()
 
     def _create_cog(self):
-        pm.group(name=self.grp_rig, empty=True)
-        mytools.cv_and_zero(name=self.ctrl_cog, target=self.hand, shape='ball', radius=2)
-        pm.parent(self.zero_cog, self.grp_rig)
+        pm.group(name=self._grp_rig, empty=True)
+        mytools.cv_and_zero(name=self._ctrl_cog, target=self._hand, shape='ball', radius=2)
+        pm.parent(self._zero_cog, self._grp_rig)
         if pm.objExists(Master.ctrl_root):
-            pm.parent(self.grp_rig, Master.ctrl_root)
+            pm.parent(self._grp_rig, Master.ctrl_root)
 
     def _create_ctrl(self, bones):
         grp_cons = Master.constraint
         if not pm.objExists(grp_cons):
             pm.group(name=grp_cons, empty=True)
 
-        ctrl_list = [self.ctrl_cog]
+        ctrl_list = [self._ctrl_cog]
         name = bones[0].split('_', 1)[0]
         for index, bone in enumerate(bones):
-            zero = f'zero__{self.side}__{name}__00{index + 1}'
-            ctrl = f'ctrl__{self.side}__{name}__00{index + 1}'
+            zero = f'zero__{self._side}__{name}__00{index + 1}'
+            ctrl = f'ctrl__{self._side}__{name}__00{index + 1}'
             mytools.cv_and_zero(name=ctrl, target=bone, shape='circle', radius=2)
             orient_cons = pm.orientConstraint(ctrl, bone)
             point_cons = pm.pointConstraint(ctrl, bone)
@@ -45,14 +45,14 @@ class Hand(IConnectionPointUser, ABC):
             ctrl_list.append(ctrl)
 
     def _create_all(self):
-        for root in self.fingers:
+        for root in self._fingers:
             joints = mytools.get_children(root=root)
             print(joints)
             self._create_ctrl(joints)
 
     def connect_to(self, point_provider: IConnectionPointProvider, connection_type):
-        connect_point = point_provider.get_connection_point(connection_type=ConnectionType.WRIST, side=self.side)
-        mytools.opm_constraint(connect_point, self.zero_cog)
+        connect_point = point_provider.get_connection_point(connection_type=ConnectionType.WRIST, side=self._side)
+        mytools.opm_constraint(connect_point, self._zero_cog)
 
 
 if __name__ == '__main__':

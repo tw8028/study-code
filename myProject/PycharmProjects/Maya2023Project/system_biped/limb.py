@@ -77,7 +77,7 @@ class Limb(IConnectionPointProvider, IConnectionPointUser, Ilimb, ABC):
         return self._ik.ctrl_ikHandle
 
     def get_fk_end_control(self):
-        return self._fk.ctrl_list[-1]
+        return self._fk._ctrl_list[-1]
 
     def get_blend_attribute(self):
         return self._attr_blend
