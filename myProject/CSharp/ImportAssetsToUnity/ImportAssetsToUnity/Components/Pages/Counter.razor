@@ -1,6 +1,8 @@
 ﻿@page "/counter"
-@using ImportAssetsToUnity.Entity
 @using ImportAssetsToUnity.Components.Pages.Template
+@using ImportAssetsToUnity.Domain.Entities
+@using ImportAssetsToUnity.Domain.Services
+@using ImportAssetsToUnity.Domain.ValueObjects
 
 <PageTitle>Counter</PageTitle>
 
@@ -50,8 +52,8 @@
             SourceDirectory: "E:/project_A/03_动作/ani_Skill_player/_fbx",
             DestDirectory: "D:/GitHub/NLDClient/ProjectNLD/Assets/Art/Animations/Battle/Skill");
 
-        ICategory animFile = new Animation(skillConfig);
-        data = animFile.GetAllAssetInfo();
+        IAssetService animFile = new AssetsNoFolder(skillConfig);
+        data = animFile.GetAssetsInfo();
     }
 
 }
