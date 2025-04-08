@@ -5,7 +5,7 @@ namespace ImportAssetsToUnity.Infrastructure;
 
 public static class AssetsFactory
 {
-    public static IAssets[] Get()
+    public static IAssetsType[] Get()
     {
         // animation
         Category skillConfig = new(
@@ -13,14 +13,14 @@ public static class AssetsFactory
             SearchPattern: "*.fbx",
             SourceDirectory: "E:/project_A/03_动作/ani_skill_player/_fbx",
             DestDirectory: "D:/GitHub/NLDClient/ProjectNLD/Assets/Art/Animations/Battle/Skill");
-        IAssets skill = new AssetsNoFolder(skillConfig);
+        IAssetsType skill = new AssetsTypeNoFolder(skillConfig);
 
         Category motionConfig = new(
             Name: "motion",
             SearchPattern: "*.fbx",
             SourceDirectory: "E:/project_A/03_动作/ani_motion/_fbx",
             DestDirectory: "D:/GitHub/NLDClient/ProjectNLD/Assets/Art/Animations/Battle/Motion");
-        IAssets motion = new AssetsNoFolder(motionConfig);
+        IAssetsType motion = new AssetsTypeNoFolder(motionConfig);
 
 
         // character
@@ -29,21 +29,21 @@ public static class AssetsFactory
             SearchPattern: "*.fbx",
             SourceDirectory: "E:/project_A/03_动作/skin_character/_fbx",
             DestDirectory: "D:/GitHub/NLDClient/ProjectNLD/Assets/Art/Character/Models/Players");
-        IAssets player = new AssetsPlayer(playerConfig);
+        IAssetsType player = new AssetsTypePlayer(playerConfig);
 
         Category npcConfig = new(
             Name: "npc",
             SearchPattern: "*.fbx",
             SourceDirectory: "E:/project_A/03_动作/skin_character/_fbx_npc",
             DestDirectory: "D:/GitHub/NLDClient/ProjectNLD/Assets/Art/Character/Models/Npc");
-        IAssets npc = new AssetsPlayer(npcConfig);
+        IAssetsType npc = new AssetsTypePlayer(npcConfig);
 
         Category enemyConfig = new(
             Name: "enemy",
             SearchPattern: "*.fbx",
             SourceDirectory: "E:/project_A/03_动作/skin_character/_fbx_enemy",
             DestDirectory: "D:/GitHub/NLDClient/ProjectNLD/Assets/Art/Character/Models/Enemy");
-        IAssets enemy = new AssetsPlayer(enemyConfig);
+        IAssetsType enemy = new AssetsTypePlayer(enemyConfig);
 
 
         // item
@@ -52,14 +52,14 @@ public static class AssetsFactory
             SearchPattern: "*.fbx",
             SourceDirectory: "E:/project_A/03_动作/skin_item/bag/_fbx",
             DestDirectory: "D:/GitHub/NLDClient/ProjectNLD/Assets/Art/Character/Models/Bag");
-        IAssets bag = new AssetsSingle(bagConfig);
+        IAssetsType bag = new AssetsTypeSingle(bagConfig);
 
         Category gunConfig = new(
             Name: "gun",
             SearchPattern: "*.fbx",
             SourceDirectory: "E:/project_A/03_动作/skin_item/gun/_fbx",
             DestDirectory: "D:/GitHub/NLDClient/ProjectNLD/Assets/Art/Character/Models/Guns");
-        IAssets gun = new AssetsSingle(gunConfig);
+        IAssetsType gun = new AssetsTypeSingle(gunConfig);
 
 
         return [skill, motion, player, npc, enemy, bag, gun];

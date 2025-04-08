@@ -9,12 +9,12 @@
 
 <div class="btn-group-toggle" data-toggle="buttons">
     <label class="btn btn-secondary active">
-        <input type="checkbox" @onchange="OnChange"> All
+        <input type="checkbox" checked="@IsShowAll" @onchange="OnChange"> All
     </label>
 </div>
-@if (data.Count() != 0)
+@if (ShowData.Count() != 0)
 {
-    <TddTable Data="@data">
+    <TddTable Data="@ShowData">
         <HeaderTemplate>
             <th>Name</th>
             <th>State</th>
@@ -43,16 +43,27 @@
 
 @code {
     [Parameter] public string? Category { get; set; }
-    IEnumerable<AssetInfo> data = [];
+    IEnumerable<AssetInfo> Data { get; set; } = [];
+    IEnumerable<AssetInfo> ShowData { get; set; } = [];
+    bool IsShowAll { get; set; }
 
     protected override void OnParametersSet()
     {
-        IAssets? item = AssetsFactory.Get().SingleOrDefault(name => name.GetName() == Category);
-        if (item != null) data = item.GetAssetsInfo();
+        Data = GetAssets();
+        IsShowAll = false;
+        ShowData = Data.Where(x => x.State != CheckResult.Equal);
+    }
+
+    private IEnumerable<AssetInfo> GetAssets()
+    {
+        IAssetsType? item = AssetsFactory.Get().SingleOrDefault(asset => asset.GetName() == Category);
+        return item != null ? item.GetAssetsInfo() : [];
     }
 
     private void OnChange()
     {
+        IsShowAll = !IsShowAll;
+        ShowData = IsShowAll ? Data : Data.Where(x => x.State != CheckResult.Equal); // show all
     }
 
 }

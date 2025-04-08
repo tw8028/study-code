@@ -6,8 +6,7 @@
 
 
 <ul class="nav nav-tabs">
-
-    @foreach (var item in data)
+    @foreach (IAssetsType item in data)
     {
         string href = $"assets-{item.GetName()}";
         <li class="nav-item">
@@ -18,5 +17,5 @@
 @Body
 
 @code {
-    readonly IAssets[] data = AssetsFactory.Get();
+    readonly IAssetsType[] data = AssetsFactory.Get();
 }
