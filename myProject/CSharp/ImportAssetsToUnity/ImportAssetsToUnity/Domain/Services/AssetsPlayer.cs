@@ -3,7 +3,7 @@ using ImportAssetsToUnity.Domain.ValueObjects;
 
 namespace ImportAssetsToUnity.Domain.Services;
 
-public class AssetsPlayer(CategoryConfig config) : IAssetService
+public class AssetsPlayer(Category config) : IAssetService
 {
     public IEnumerable<AssetInfo> GetAssetsInfo()
     {

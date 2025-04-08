@@ -46,13 +46,13 @@
 
     protected override void OnInitialized()
     {
-        CategoryConfig skillConfig = new(
+        Category skill = new(
             Name: "skill",
             SearchPattern: "*.fbx",
             SourceDirectory: "E:/project_A/03_动作/ani_Skill_player/_fbx",
             DestDirectory: "D:/GitHub/NLDClient/ProjectNLD/Assets/Art/Animations/Battle/Skill");
 
-        IAssetService animFile = new AssetsNoFolder(skillConfig);
+        IAssetService animFile = new AssetsNoFolder(skill);
         data = animFile.GetAssetsInfo();
     }
 
