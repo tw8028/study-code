@@ -3,8 +3,13 @@ using ImportAssetsToUnity.Domain.ValueObjects;
 
 namespace ImportAssetsToUnity.Domain.Services;
 
-public class AssetsNoFolder(Category config) : IAssetService
+public class AssetsNoFolder(Category config) : IAssets
 {
+    public string GetName()
+    {
+        return config.Name;
+    }
+
     public IEnumerable<AssetInfo> GetAssetsInfo()
     {
         FileInfo[] fls = FileUtils.GetFilesFromDirectory(config.SourceDirectory, config.SearchPattern);

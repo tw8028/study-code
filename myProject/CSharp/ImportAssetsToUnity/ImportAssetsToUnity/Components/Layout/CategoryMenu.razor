@@ -1,0 +1,22 @@
+@namespace ImportAssetsToUnity.Components.Layout
+@using ImportAssetsToUnity.Domain.Services
+@using ImportAssetsToUnity.Infrastructure
+@inherits LayoutComponentBase
+@layout MainLayout
+
+
+<ul class="nav nav-tabs">
+
+    @foreach (var item in data)
+    {
+        string href = $"assets-{item.GetName()}";
+        <li class="nav-item">
+            <a class="nav-link" href="@href">@item.GetName()</a>
+        </li>
+    }
+</ul>
+@Body
+
+@code {
+    readonly IAssets[] data = AssetsFactory.Get();
+}
