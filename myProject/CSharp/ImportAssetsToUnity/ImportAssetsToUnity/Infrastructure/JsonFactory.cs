@@ -1,10 +1,11 @@
-using ImportAssetsToUnity.ExcelToJson.Entities;
+using ImportAssetsToUnity.ExcelToJson.Services;
 using ImportAssetsToUnity.ExcelToJson.ValueObjects;
 
 namespace ImportAssetsToUnity.Infrastructure;
 
 public static class JsonFactory
 {
+    private static readonly ExcelToJsonService excelToJsonService = new ExcelToJsonService();
     public static void CreatePerson()
     {
         SheetConfig personConfig = new SheetConfig(
@@ -34,7 +35,6 @@ public static class JsonFactory
             }
         );
         
-        ExcelSheet sheet = new ExcelSheet(personConfig);
-        sheet.ToJson();
+       excelToJsonService.CreateJsonFromExcel(personConfig);
     }
 }
