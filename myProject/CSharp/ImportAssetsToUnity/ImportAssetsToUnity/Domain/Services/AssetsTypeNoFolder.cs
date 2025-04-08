@@ -3,7 +3,7 @@ using ImportAssetsToUnity.Domain.ValueObjects;
 
 namespace ImportAssetsToUnity.Domain.Services;
 
-public class AssetsPlayer(Category config) : IAssets
+public class AssetsTypeNoFolder(Category config) : IAssetsType
 {
     public string GetName()
     {
@@ -18,12 +18,7 @@ public class AssetsPlayer(Category config) : IAssets
 
     private AssetInfo CreateAssetInfo(FileInfo fileInfo)
     {
-        string fullName = fileInfo.FullName;
-        string nameId = Path.GetFileNameWithoutExtension(fullName);
-        char[] chars = nameId.ToCharArray();
-        chars[nameId.Length - 4] = '0';
-        string folder = new string(chars)[^6..];
-        string assetPathInUnity = Path.Combine(config.DestDirectory, folder, fileInfo.Name);
-        return new AssetInfo(fullName, assetPathInUnity);
+        string assetPathInUnity = Path.Combine(config.DestDirectory, fileInfo.Name);
+        return new AssetInfo(fileInfo.FullName, assetPathInUnity);
     }
 }
