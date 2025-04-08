@@ -1,5 +1,5 @@
-using ImportAssetsToUnity.Domain.Services;
-using ImportAssetsToUnity.Domain.ValueObjects;
+using ImportAssetsToUnity.AssetsImporter.Domain.Services;
+using ImportAssetsToUnity.AssetsImporter.Domain.ValueObjects;
 
 namespace ImportAssetsToUnity.Infrastructure;
 

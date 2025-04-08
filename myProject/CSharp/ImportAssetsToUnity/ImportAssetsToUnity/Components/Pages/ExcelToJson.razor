@@ -1,0 +1,19 @@
+﻿@page "/excelToJson"
+@using ImportAssetsToUnity.Infrastructure
+
+<PageTitle>ToJson</PageTitle>
+
+<h1>ToJson</h1>
+
+<button class="btn btn-primary btn-sm" @onclick="CreatePersonData">人设总表</button>
+<h6>@Message</h6>
+
+@code {
+    string Message { set; get; } = "......";
+
+    void CreatePersonData()
+    {
+        JsonFactory.CreatePerson();
+        Message = "Finish...";
+    }
+}

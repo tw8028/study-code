@@ -1,4 +1,4 @@
-namespace ImportAssetsToUnity.Domain.Entities;
+namespace ImportAssetsToUnity.AssetsImporter.Domain.Entities;
 
 public enum CheckResult
 {

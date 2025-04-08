@@ -1,7 +1,7 @@
-using ImportAssetsToUnity.Domain.Entities;
-using ImportAssetsToUnity.Domain.ValueObjects;
+using ImportAssetsToUnity.AssetsImporter.Domain.Entities;
+using ImportAssetsToUnity.AssetsImporter.ValueObjects;
 
-namespace ImportAssetsToUnity.Domain.Services;
+namespace ImportAssetsToUnity.AssetsImporter.Domain.Services;
 
 public class AssetsTypePlayer(Category config) : IAssetsType
 {
