@@ -1,4 +1,4 @@
-namespace ImportAssetsToUnity.AssetsImporter.Domain.Services;
+namespace ImportAssetsToUnity.AssetsImporter.Services;
 
 public static class FileUtils
 {

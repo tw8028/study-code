@@ -1,6 +1,6 @@
-using ImportAssetsToUnity.AssetsImporter.Domain.Entities;
+using ImportAssetsToUnity.AssetsImporter.Entities;
 
-namespace ImportAssetsToUnity.AssetsImporter.Domain.Services;
+namespace ImportAssetsToUnity.AssetsImporter.Services;
 
 public interface IAssetsType
 {

@@ -1,5 +1,5 @@
-using ImportAssetsToUnity.ExcelToJson.Domain.Entities;
-using ImportAssetsToUnity.ExcelToJson.Domain.ValueObjects;
+using ImportAssetsToUnity.ExcelToJson.Entities;
+using ImportAssetsToUnity.ExcelToJson.ValueObjects;
 
 namespace ImportAssetsToUnity.Infrastructure;
 

@@ -1,7 +1,7 @@
-using ImportAssetsToUnity.AssetsImporter.Domain.Entities;
+using ImportAssetsToUnity.AssetsImporter.Entities;
 using ImportAssetsToUnity.AssetsImporter.ValueObjects;
 
-namespace ImportAssetsToUnity.AssetsImporter.Domain.Services;
+namespace ImportAssetsToUnity.AssetsImporter.Services;
 
 public class AssetsTypeNoFolder(Category config) : IAssetsType
 {

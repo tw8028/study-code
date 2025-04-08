@@ -1,4 +1,4 @@
-namespace ImportAssetsToUnity.ExcelToJson.Domain.ValueObjects;
+namespace ImportAssetsToUnity.ExcelToJson.ValueObjects;
 
 public enum ColumnId
 {

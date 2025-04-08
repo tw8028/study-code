@@ -1,9 +1,9 @@
 using System.Data;
-using ImportAssetsToUnity.ExcelToJson.Domain.ValueObjects;
-using OfficeOpenXml;
+using ImportAssetsToUnity.ExcelToJson.ValueObjects;
 using Newtonsoft.Json.Linq;
+using OfficeOpenXml;
 
-namespace ImportAssetsToUnity.ExcelToJson.Domain.Entities;
+namespace ImportAssetsToUnity.ExcelToJson.Entities;
 
 public class ExcelSheet(SheetConfig config)
 {
