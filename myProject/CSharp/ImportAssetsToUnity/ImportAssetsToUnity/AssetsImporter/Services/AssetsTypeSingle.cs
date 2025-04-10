@@ -20,7 +20,7 @@ public class AssetsTypeSingle(Category config) : IAssetsType
     {
         string fullName = fileInfo.FullName;
         string folderName = Path.GetFileNameWithoutExtension(fullName);
-        string assetPathInUnity = Path.Combine(config.DestDirectory, folderName, fileInfo.Name);
-        return new AssetInfo(fullName, assetPathInUnity);
+        string destDirectory = Path.Combine(config.DestDirectory, folderName);
+        return new AssetInfo(fullName, destDirectory);
     }
 }

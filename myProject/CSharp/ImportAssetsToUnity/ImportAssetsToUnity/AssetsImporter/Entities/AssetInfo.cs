@@ -9,20 +9,20 @@ public enum CheckResult
     Equal
 }
 
-
-public class AssetInfo(string fullName, string assetPathInUnity)
+public class AssetInfo(string fullName, string destDirectory)
 {
     public string Name => Path.GetFileNameWithoutExtension(fullName);
+    private string FullNameInUnity => Path.Combine(destDirectory, Path.GetFileName(fullName));
     public CheckResult State => GetState();
 
     public void CopyTo()
     {
-        if (!Directory.Exists(assetPathInUnity))
+        if (!Directory.Exists(destDirectory))
         {
-            Directory.CreateDirectory(assetPathInUnity);
+            Directory.CreateDirectory(destDirectory);
         }
 
-        File.Copy(fullName, destFileName: assetPathInUnity, overwrite: true);
+        File.Copy(fullName, destFileName: FullNameInUnity, overwrite: true);
     }
 
     private CheckResult GetState()
@@ -32,17 +32,17 @@ public class AssetInfo(string fullName, string assetPathInUnity)
             return CheckResult.NotFoundSource;
         }
 
-        if (!Directory.Exists(Path.GetDirectoryName(assetPathInUnity)))
+        if (!Directory.Exists(Path.GetDirectoryName(FullNameInUnity)))
         {
             return CheckResult.NotFoundFolder;
         }
 
-        if (!File.Exists(assetPathInUnity))
+        if (!File.Exists(FullNameInUnity))
         {
             return CheckResult.NewFile;
         }
 
-        bool equal = CompareByReadOnlySpan(fullName, assetPathInUnity);
+        bool equal = CompareByReadOnlySpan(fullName, FullNameInUnity);
         return equal ? CheckResult.Equal : CheckResult.Different;
     }
 

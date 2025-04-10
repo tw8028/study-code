@@ -23,7 +23,7 @@ public class AssetsTypePlayer(Category config) : IAssetsType
         char[] chars = nameId.ToCharArray();
         chars[nameId.Length - 4] = '0';
         string folder = new string(chars)[^6..];
-        string assetPathInUnity = Path.Combine(config.DestDirectory, folder, fileInfo.Name);
-        return new AssetInfo(fullName, assetPathInUnity);
+        string destDirectory = Path.Combine(config.DestDirectory, folder);
+        return new AssetInfo(fullName, destDirectory);
     }
 }

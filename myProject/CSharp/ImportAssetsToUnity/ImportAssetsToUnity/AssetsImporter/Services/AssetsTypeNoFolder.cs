@@ -18,7 +18,6 @@ public class AssetsTypeNoFolder(Category config) : IAssetsType
 
     private AssetInfo CreateAssetInfo(FileInfo fileInfo)
     {
-        string assetPathInUnity = Path.Combine(config.DestDirectory, fileInfo.Name);
-        return new AssetInfo(fileInfo.FullName, assetPathInUnity);
+        return new AssetInfo(fileInfo.FullName, config.DestDirectory);
     }
 }
