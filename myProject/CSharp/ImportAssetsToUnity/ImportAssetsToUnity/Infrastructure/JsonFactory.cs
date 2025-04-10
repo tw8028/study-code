@@ -5,7 +5,8 @@ namespace ImportAssetsToUnity.Infrastructure;
 
 public static class JsonFactory
 {
-    private static readonly ExcelToJsonService excelToJsonService = new ExcelToJsonService();
+    private static readonly ExcelToJsonService excelToJsonService = new();
+
     public static void CreatePerson()
     {
         SheetConfig personConfig = new SheetConfig(
@@ -34,7 +35,24 @@ public static class JsonFactory
                 { (int)ColumnId.Au, "brow_color" }
             }
         );
-        
-       excelToJsonService.CreateJsonFromExcel(personConfig);
+
+        excelToJsonService.CreateJsonFromExcel(personConfig);
+    }
+
+    public static void CreateVehicle()
+    {
+        SheetConfig vehicleConfig = new SheetConfig(
+            Sheet: 0,
+            Title: "vehicleArray",
+            ExcelFile: "D:/P_S_载具prefab.xlsx",
+            JsonFile: "D:/GitHub/NLDClient/ProjectNLD/Assets/Art/temp/Editor/JsonData/vehicleData.json",
+            Columns: new Dictionary<int, string>()
+            {
+                { (int)ColumnId.C, "name" },
+                { (int)ColumnId.D, "batteryName" }
+            }
+        );
+
+        excelToJsonService.CreateJsonFromExcel(vehicleConfig);
     }
 }

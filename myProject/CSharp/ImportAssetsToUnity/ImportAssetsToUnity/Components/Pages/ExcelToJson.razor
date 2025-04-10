@@ -6,6 +6,7 @@
 <h1>ToJson</h1>
 
 <button class="btn btn-primary btn-sm" @onclick="CreatePersonData">人设总表</button>
+<button class="btn btn-primary btn-sm" @onclick="CreateVehicleData">载具表</button>
 <h6>@Message</h6>
 
 @code {
@@ -16,4 +17,11 @@
         JsonFactory.CreatePerson();
         Message = "Finish...";
     }
+
+    void CreateVehicleData()
+    {
+        JsonFactory.CreateVehicle();
+        Message = "Finish...";
+    }
+
 }
