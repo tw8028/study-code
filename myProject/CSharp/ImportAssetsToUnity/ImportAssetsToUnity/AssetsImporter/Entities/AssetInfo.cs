@@ -32,7 +32,7 @@ public class AssetInfo(string fullName, string destDirectory)
             return CheckResult.NotFoundSource;
         }
 
-        if (!Directory.Exists(Path.GetDirectoryName(FullNameInUnity)))
+        if (!Directory.Exists(destDirectory))
         {
             return CheckResult.NotFoundFolder;
         }
