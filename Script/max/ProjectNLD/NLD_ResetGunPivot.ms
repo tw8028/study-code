@@ -35,6 +35,12 @@ tooltip:"NLD_调整GunPivot"
 		button btn5 "复制" width:100 height:30
 		button btn6 "粘贴" width:100 height:30
 		
+		
+		label label_4 "" width:100 height:20
+		label label_5 "炮台" width:100 height:20
+		button btn10 "添加 Fire_skill" width:100 height:20
+		
+		
 		on btn0 pressed do
 		(
 			if isSelectOne() then
@@ -164,6 +170,17 @@ tooltip:"NLD_调整GunPivot"
 				$.pos = pos
 			)
 		)
+		on btn10 pressed do
+		(
+			if isSelectOne() then
+			(
+				local pos = $.transform
+				fire_skill = Point size:20
+				fire_skill.transform = pos
+				fire_skill.parent = $.parent
+				fire_skill.name="Fire_skill"
+			)
+		)
 	)
-	createDialog ResetGunPivotWindow 270 500
+	createDialog ResetGunPivotWindow 270 600
 )
