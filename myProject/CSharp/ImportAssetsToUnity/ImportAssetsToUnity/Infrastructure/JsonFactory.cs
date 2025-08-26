@@ -20,19 +20,12 @@ public static class JsonFactory
                 { (int)ColumnId.D, "name" },
                 { (int)ColumnId.K, "weapon" },
                 { (int)ColumnId.N, "aniSet" },
-                { (int)ColumnId.Ab, "model_0" },
-                { (int)ColumnId.Ac, "skin_0" },
-                { (int)ColumnId.Ad, "prefab_0" },
-                { (int)ColumnId.Ag, "model_1" },
-                { (int)ColumnId.Ah, "skin_1" },
-                { (int)ColumnId.Ai, "prefab_1" },
-                { (int)ColumnId.Aj, "skill" },
-                { (int)ColumnId.Ak, "bag_0" },
-                { (int)ColumnId.Al, "bag_1" },
-                { (int)ColumnId.Aq, "brow" },
-                { (int)ColumnId.Ar, "eye" },
-                { (int)ColumnId.At, "eye_color" },
-                { (int)ColumnId.Au, "brow_color" }
+                { (int)ColumnId.Aa, "bag_0" },
+                { (int)ColumnId.Ab, "bag_1" },
+                { (int)ColumnId.Ad, "brow" },
+                { (int)ColumnId.Ae, "eye" },
+                { (int)ColumnId.Ag, "eye_color" },
+                { (int)ColumnId.Ah, "brow_color" }
             }
         );
 
