@@ -53,12 +53,13 @@ namespace Art.temp.Editor.PlayerBrowser
             foreach (Person person in source)
             {
                 string personId = person.id;
-                PlayerInformation player0 = new(personId);
+                var player0 = CharacterFactory.CreatePlayer(personId);
 
                 char[] chars = personId.ToCharArray();
                 chars[personId.Length - 4] = '1';
                 var nameId = new string(chars);
-                PlayerInformation player1 = new(nameId);
+                var player1 = CharacterFactory.CreatePlayer(nameId);
+                
 
                 var row = new VisualElement() { name = "row" };
                 row.Add(new Label(personId));
@@ -84,11 +85,11 @@ namespace Art.temp.Editor.PlayerBrowser
         private static bool IsDone(Person person)
         {
             var personId = person.id;
-            PlayerInformation player0 = new(personId);
+            var player0 = CharacterFactory.CreatePlayer(personId);
             char[] chars = personId.ToCharArray();
             chars[personId.Length - 4] = '1';
             var nameId = new string(chars);
-            PlayerInformation player1 = new(nameId);
+            var player1 = CharacterFactory.CreatePlayer(nameId);
             if (ErrorMsg(player0.Model, person.model_0) != "")
             {
                 return false;

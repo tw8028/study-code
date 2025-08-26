@@ -7,6 +7,7 @@ using Art.temp.Editor.CharacterData;
 using Gameplay.Story.Cmp;
 using Gameplay.Story.Cmp.Timeline.CommonAction;
 using Gameplay.Story.Cmp.Timeline.MsgAction;
+using Gameplay.Story.Cmp.Timeline.PlayerEmojiAction;
 using Gameplay.Story.Cmp.Timeline.PlayerTalkAction;
 using Gameplay.Story.Cmp.Timeline.SendEventAction;
 using Gameplay.Story.Cmp.Timeline.SetNameAction;
@@ -26,10 +27,12 @@ namespace Art.temp.Editor.StoryTool
 {
     public static class TimelineInfo
     {
+        private const string TempPath = "Assets/Art/temp/{0}_{1}.json";
+
         // 获取指定 track 的 clips
         private static TimelineClip[] GetClips<T>(TimelineAsset timeline) where T : TrackAsset
         {
-            return timeline.GetOutputTracks().OfType<T>().SelectMany(a=>a.GetClips()).ToArray();
+            return timeline.GetOutputTracks().OfType<T>().SelectMany(a => a.GetClips()).ToArray();
         }
 
         // 获取指定 track
@@ -385,8 +388,7 @@ namespace Art.temp.Editor.StoryTool
                     {
                         if (msgClip.msg != clipInfo.msg)
                         {
-                            Debug.Log(msgClip.blockId);
-                            Debug.Log(msgClip.msg);
+                            Debug.LogWarning($"{msgClip.blockId}: {msgClip.msg} -->");
                             Debug.LogWarning(clipInfo.msg);
                             msgClip.msg = clipInfo.msg;
                         }
@@ -532,6 +534,7 @@ namespace Art.temp.Editor.StoryTool
                                    @"|(?<!\u2026)\u2026(?!\u2026)" + // 单独存在的…
                                    @"|，$" + // 逗号结尾
                                    @"|[\u8bf6]" + // 诶
+                                   @"|\u5362\u5E03" + // 卢布
                                    @"|！……|？……";
 
             bool match = Regex.IsMatch(input, pattern);
@@ -542,7 +545,7 @@ namespace Art.temp.Editor.StoryTool
         {
             // 确定的修改
             string replacedText = Regex.Replace(text,
-                @"(?<!\u2026)\u2026(?!\u2026)|[「」诶~]|！……|？……",
+                @"(?<!\u2026)\u2026(?!\u2026)|[「」诶~]|！……|？……|\u5362\u5E03",
                 match => match.Value switch
                 {
                     "\u2026" => "……",
@@ -552,6 +555,7 @@ namespace Art.temp.Editor.StoryTool
                     "~" => "——",
                     "！……" => "！",
                     "？……" => "？",
+                    "\u5362\u5E03" => "能元",
                     _ => throw new NotImplementedException()
                 });
             return replacedText;
@@ -739,6 +743,128 @@ namespace Art.temp.Editor.StoryTool
 
             TimelineEditor.Refresh(RefreshReason.ContentsModified);
             EditorUtility.SetDirty(timeline);
+        }
+
+
+        [Serializable]
+        public class ClipData
+        {
+            public TimelineClip[] dataArray;
+        }
+
+        [Serializable]
+        public class EmojiClip
+        {
+            public int emojiId;
+            public string emojiName;
+            public double start;
+            public double duration;
+        }
+
+        [Serializable]
+        public class EmojiData
+        {
+            public EmojiClip[] dataArray;
+        }
+
+        public static void CopyClips(string clipName)
+        {
+            var clip = TimelineEditor.selectedClip;
+            var track = clip.GetParentTrack();
+            var clips = track.GetClips().ToArray();
+            string data = JsonUtility.ToJson(new ClipData { dataArray = clips });
+            string fullName = string.Format(TempPath, track.parent.name, clipName);
+            File.WriteAllText(fullName, data);
+            Debug.Log(fullName);
+        }
+
+        public static void PasteAnimation(TimelineAsset timeline)
+        {
+            var clip = TimelineEditor.selectedClip;
+            var track = clip.GetParentTrack();
+            Debug.Log(track.name);
+            foreach (TimelineClip item in track.GetClips())
+            {
+                timeline.DeleteClip(item);
+            }
+
+            string fullName = string.Format(TempPath, track.parent.name, "animation");
+            TimelineClip[] tempClips = JsonUtility.FromJson<ClipData>(File.ReadAllText(fullName)).dataArray;
+            foreach (TimelineClip c in tempClips)
+            {
+                if (c == null) continue;
+                if (track is not AnimationTrack animTrack) continue;
+                string animName = c.displayName.StartsWith("ani_s_") ? c.displayName : c.displayName[..^5];
+                string path = $"Assets/Art/Animations/compressedShow/compressed_{animName}.anim";
+                AnimationClip anim = AssetDatabase.LoadAssetAtPath<AnimationClip>(path);
+                if (!anim)
+                {
+                    Debug.LogWarning($"找不到动作：{path}");
+                    continue;
+                }
+
+                var newClip = animTrack.CreateClip(anim);
+                newClip.displayName = c.displayName;
+                newClip.start = c.start;
+                newClip.duration = c.duration;
+            }
+
+            Debug.Log("load animation");
+        }
+
+
+        public static void CopyEmojis(string clipName)
+        {
+            var clip = TimelineEditor.selectedClip;
+            var track = clip.GetParentTrack();
+            var clips = track.GetClips().ToArray();
+            var dataArray = clips.Select(c => new EmojiClip()
+            {
+                emojiId = ((PlayerEmojiActionClip)c.asset).emojiId,
+                emojiName = ((PlayerEmojiActionClip)c.asset).emojiName,
+                start = c.start,
+                duration = c.duration
+            });
+            string data = JsonUtility.ToJson(new EmojiData() { dataArray = dataArray.ToArray() });
+            string fullName = string.Format(TempPath, track.parent.name, clipName);
+            File.WriteAllText(fullName, data);
+            Debug.Log(fullName);
+        }
+
+        public static void PasteEmoji(TimelineAsset timeline)
+        {
+            var clip = TimelineEditor.selectedClip;
+            var track = clip.GetParentTrack();
+            string fullName = string.Format(TempPath, track.parent.name, "emoji");
+            if (!File.Exists(fullName))
+            {
+                Debug.LogError($"文件不存在：{fullName}");
+                return;
+            }
+
+            Debug.Log(track.parent.name);
+            foreach (TimelineClip item in track.GetClips())
+            {
+                timeline.DeleteClip(item);
+            }
+
+            AssetDatabase.Refresh();
+
+            EmojiClip[] tempClips = JsonUtility.FromJson<EmojiData>(File.ReadAllText(fullName)).dataArray;
+            foreach (EmojiClip c in tempClips)
+            {
+                if (c == null) continue;
+                if (track is not PlayerEmojiActionTrack emojiTrack) continue;
+
+                var newClip = emojiTrack.CreateClip<PlayerEmojiActionClip>();
+                newClip.start = c.start;
+                newClip.duration = c.duration;
+                if (newClip.asset is not PlayerEmojiActionClip emojiActionClip) continue;
+                emojiActionClip.emojiId = c.emojiId;
+                emojiActionClip.emojiName = c.emojiName;
+            }
+
+            Debug.Log("load emoji");
         }
     }
 }

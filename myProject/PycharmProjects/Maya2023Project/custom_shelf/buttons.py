@@ -24,6 +24,9 @@ def name():
     sl = pm.selected()
     for obj in sl:
         field = obj.rsplit('_', 1)
+        if len(field) < 2:
+            pm.warning(f'命名不符合规范: 边_名字')
+            return
         if obj.nodeType() == 'joint':
             pm.rename(obj, f'jnt__{field[0]}__{field[1]}__001')
         elif obj.nodeType() == 'transform':

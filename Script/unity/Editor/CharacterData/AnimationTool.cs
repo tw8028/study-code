@@ -1,7 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using dnlib.DotNet.Pdb;
+using Gameplay.Character;
+using UltimateGameTools.MeshSimplifier;
 using UnityEditor;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -17,6 +21,9 @@ namespace Art.temp.Editor.CharacterData
 
         public void CreateGUI()
         {
+            var styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/Art/temp/Editor/CommonUSSFile.uss");
+            rootVisualElement.styleSheets.Add(styleSheet);
+
             Box box1 = new();
             box1.Add(new Label("Anim file tool"));
             box1.Add(new Button() { name = "meta_btn", text = "重新生成 meta 文件并设置 avatar" });
@@ -39,8 +46,135 @@ namespace Art.temp.Editor.CharacterData
 
             box2.Q<Button>("renameAssets_btn").RegisterCallback<ClickEvent>(RenameAssets);
             box2.Q<Button>("test").RegisterCallback<ClickEvent>(Test);
+
+            box2.Add(new Button() { name = "MeshSimplify_btn", text = "character mesh simplify" });
+            box2.Q<Button>("MeshSimplify_btn").RegisterCallback<ClickEvent>(SimplifyCharacterMesh);
+
+            box2.Add(new Button() { name = "vehicleShader_btn", text = "vehicleShader" });
+            box2.Q<Button>("vehicleShader_btn").RegisterCallback<ClickEvent>(SetVehicleShader);
+
+            box2.Add(new Button() { name = "AddPoint_btn", text = "添加 hit Points" });
+            box2.Q<Button>("AddPoint_btn").RegisterCallback<ClickEvent>(AddHitPoints);
+
+            box2.Add(new Button() { name = "RemoveObj_btn", text = "移除重复骨骼" });
+            box2.Q<Button>("RemoveObj_btn").RegisterCallback<ClickEvent>(RemoveDuplicateBones);
         }
 
+        private static void AddHitPoints(ClickEvent evt)
+        {
+            GameObject[] gameObjects = Selection.gameObjects;
+            foreach (GameObject go in gameObjects)
+            {
+                GameObject instance = PrefabUtility.InstantiatePrefab(go) as GameObject;
+                if (instance == null) return;
+                if (instance.transform.Find("hit001")) continue;
+                if (instance.name.EndsWith("_b")) continue;
+                var pointEffect = instance.AddComponent<CmpCharacterEffectPoints>();
+                List<GameObject> points = new List<GameObject>();
+                for (int i = 0; i < 4; i++)
+                {
+                    var hit = new GameObject($"hit00{i + 1}");
+                    hit.transform.SetParent(instance.transform);
+                    points.Add(hit);
+                }
+
+                pointEffect.m_CriticalPoints = new[] { points[0].transform };
+                pointEffect.m_OtherPoints = new[] { points[1].transform, points[2].transform, points[3].transform };
+            }
+        }
+
+        private static void RemoveDuplicateBones(ClickEvent evt)
+        {
+            Object[] folders = Selection.objects;
+            string[] folderPaths = folders.Select(AssetDatabase.GetAssetPath).ToArray();
+            IEnumerable<Object> buildingsPrefab =
+                AnimHelper.FindAssetsByFolders<GameObject>("t:GameObject", folderPaths);
+            foreach (Object buildingPrefab in buildingsPrefab)
+            {
+                GameObject prefab = buildingPrefab as GameObject;
+                if (prefab == null) continue;
+                var groups = prefab.GetComponentsInChildren<Transform>()
+                    .GroupBy(p => p.name)
+                    .Where(g => g.Count() > 1)
+                    .ToArray();
+                if (!groups.Any()) continue;
+                foreach (var group in groups)
+                {
+                    foreach (Transform tran in group.ToArray())
+                    {
+                        DestroyImmediate(tran.gameObject, true);
+                    }
+                }
+
+                PrefabUtility.SavePrefabAsset(prefab);
+                Debug.Log(prefab.name + "：删除重复骨骼->" + string.Join(",", groups.Select(g => g.Key)));
+            }
+        }
+
+        private static void SetVehicleShader(ClickEvent evt)
+        {
+            string[] paths = { "Assets/Art/Character/Models/Battery", "Assets/Art/Character/Models/Vehicle" };
+            List<Object> objects = AnimHelper.FindAssetsByFolders<Object>(filter: "t:material", paths).ToList();
+            foreach (Object obj in objects)
+            {
+                if (obj is Material mat)
+                {
+                    mat.shader = Shader.Find("NLD_URP/NLD_Vehicle");
+                    // mat.SetFloat("_Factor", 0.2f);
+                    Debug.Log(mat.name);
+                }
+                else
+                {
+                    Debug.LogWarning(obj.name + " is not a Material");
+                }
+            }
+
+            AssetDatabase.SaveAssets();
+        }
+
+        private static void SimplifyMesh(GameObject instance, float vertexAmount)
+        {
+            Debug.Log(instance.transform.childCount);
+            for (int i = 0; i < instance.transform.childCount; i++)
+            {
+                GameObject meshGameObject = instance.transform.GetChild(i).gameObject;
+                SkinnedMeshRenderer skin = meshGameObject.GetComponent<SkinnedMeshRenderer>();
+
+                if (skin == null) continue;
+                if (skin.sharedMesh == null) break;
+                string dir = Path.GetDirectoryName(AssetDatabase.GetAssetPath(skin.sharedMesh));
+                if (!Directory.Exists(dir)) break;
+
+                var simplify = meshGameObject.GetComponent<MeshSimplify>();
+                if (simplify == null) simplify = meshGameObject.AddComponent<MeshSimplify>();
+                simplify.m_fVertexAmount = vertexAmount;
+                simplify.m_bEnablePrefabUsage = true;
+                simplify.m_strAssetPath = Path.Combine(dir, skin.sharedMesh.name + "_simplyMesh.asset");
+
+                MeshSimplyTool.Create(simplify);
+                PrefabUtility.ApplyPrefabInstance(instance, InteractionMode.UserAction);
+                Debug.Log(Path.Combine(dir, skin.sharedMesh.name));
+            }
+        }
+
+        private static void SimplifyCharacterMesh(ClickEvent evt)
+        {
+            Object[] folders = Selection.objects;
+            string[] folderPaths = folders.Select(AssetDatabase.GetAssetPath).ToArray();
+            IEnumerable<Object> characters = AnimHelper.FindAssetsByFolders<GameObject>("character_", folderPaths);
+
+            int i = -1;
+            foreach (Object obj in characters)
+            {
+                if (obj is not GameObject character) continue;
+                GameObject instance = (GameObject)PrefabUtility.InstantiatePrefab(character);
+                instance.transform.localPosition = new Vector3(i, 0, 0);
+                i--;
+
+                if (instance.name.StartsWith("character_A")) SimplifyMesh(instance, 0.6f);
+                if (instance.name.StartsWith("character_E")) SimplifyMesh(instance, 0.4f);
+            }
+        }
 
         private static void RenameAnim(ClickEvent evt)
         {
@@ -89,7 +223,9 @@ namespace Art.temp.Editor.CharacterData
 
         private static void FindSomething(ClickEvent evt)
         {
-            var objects = AnimHelper.FindAssetsFromSelectedFolders<GameObject>("ani_");
+            Object[] folders = Selection.objects;
+            string[] folderPaths = folders.Select(AssetDatabase.GetAssetPath).ToArray();
+            var objects = AnimHelper.FindAssetsByFolders<GameObject>("ani_", folderPaths);
             foreach (var obj in objects)
             {
                 string fbxPath = AssetDatabase.GetAssetPath(obj);
@@ -101,7 +237,7 @@ namespace Art.temp.Editor.CharacterData
             }
         }
 
-        private void AnimOptimize(AnimationClip clip)
+        private static void AnimOptimize(AnimationClip clip)
         {
             var curveBindings = AnimationUtility.GetCurveBindings(clip);
             for (int ii = 0; ii < curveBindings.Length; ++ii)
@@ -115,7 +251,7 @@ namespace Art.temp.Editor.CharacterData
                 {
                     curve = null;  //有空格，排除了“Bip001”
                 }*/
-                if (propName.Contains("scale"))
+                if (propName.Contains("scale") && !nodeName.Contains("Grip_point01"))
                 {
                     curve = null;
                 }
@@ -147,7 +283,7 @@ namespace Art.temp.Editor.CharacterData
         }
 
         // copy fbx 中一个或多个 anim 到 new path
-        private string[] CopyAnim(GameObject fbx, string destFolder, bool toCompressed = false)
+        private static string[] CopyAnim(GameObject fbx, string destFolder, bool toCompressed = false)
         {
             string fbxPath = AssetDatabase.GetAssetPath(fbx);
             var assets = AssetDatabase.LoadAllAssetRepresentationsAtPath(fbxPath);
@@ -209,21 +345,30 @@ namespace Art.temp.Editor.CharacterData
             AssetDatabase.Refresh();
         }
 
-        private void CopySelectedToCompressedShow(ClickEvent evt)
+        private static void CopySelectedToCompressedShow(ClickEvent evt)
         {
-            var objs = Selection.gameObjects;
+            // const string folder = "Assets/Art/Animations/compressedShow";
+            var objects = Selection.gameObjects;
 
-            const string folder = "Assets/Art/Animations/compressedShow";
+            const string tempFolder = "Assets/Art/temp/Animation";
+            const string destFilePath = "Assets/Art/Animations/compressedShow/{0}";
 
-            foreach (GameObject obj in objs)
+            foreach (GameObject obj in objects)
             {
-                CopyAnim(obj, folder, true);
+                AnimHelper.PreSetModel(obj);
+                string[] fileNames = CopyAnim(obj, tempFolder, true);
+                foreach (string f in fileNames)
+                {
+                    string destFile = string.Format(destFilePath, Path.GetFileName(f));
+                    File.Copy(f, destFile, true);
+                    Debug.Log(destFile);
+                }
             }
 
             AssetDatabase.Refresh();
         }
 
-        private void CopySelectedToTemp(ClickEvent evt)
+        private static void CopySelectedToTemp(ClickEvent evt)
         {
             var objects = Selection.gameObjects;
 
@@ -232,6 +377,7 @@ namespace Art.temp.Editor.CharacterData
 
             foreach (GameObject obj in objects)
             {
+                AnimHelper.PreSetModel(obj);
                 string[] fileNames = CopyAnim(obj, tempFolder, true);
                 foreach (string f in fileNames)
                 {
@@ -248,7 +394,9 @@ namespace Art.temp.Editor.CharacterData
         private static void RenameAssets(ClickEvent evt)
         {
             // 选择的文件中的 GameObject
-            var objects = AnimHelper.FindAssetsFromSelectedFolders<GameObject>("t:GameObject");
+            Object[] folders = Selection.objects;
+            string[] folderPath = folders.Select(AssetDatabase.GetAssetPath).ToArray();
+            var objects = AnimHelper.FindAssetsByFolders<GameObject>("t:GameObject", folderPath);
 
             // 选择的 gameObject
             // var objects = Selection.gameObjects;
@@ -286,9 +434,35 @@ namespace Art.temp.Editor.CharacterData
 
         private static void Test(ClickEvent evt)
         {
-            var go = Selection.activeGameObject;
+            /*var go = Selection.activeGameObject;
             var bones = go.GetComponent<SkinnedMeshRenderer>().bones;
-            Debug.Log(string.Join(',', bones.Select(b => b.name)));
+            Debug.Log(string.Join(',', bones.Select(b => b.name)));*/
+            var persons = JsonData.GetPersons();
+            var names = persons.Where(p => p.weapon == "27" || p.weapon == "28" || p.weapon == "41" || p.weapon == "65")
+                .ToArray();
+            foreach (Person person in names)
+            {
+                Debug.Log(person.name + ":" + person.id + ">>" + person.weapon);
+            }
+        }
+
+        private static void Combine()
+        {
+            GameObject obj = Selection.activeGameObject;
+            AnimHelper.PreSetAll(obj);
+            var go = Object.Instantiate(obj);
+            var nameId = obj.name.Split('_')[2];
+            var texNames = new[] { "_MainTex", "_MaskTex" };
+            var parentPath = $"Assets/Art/temp/Prefab/character_{nameId}";
+            if (!Directory.Exists(parentPath))
+            {
+                Directory.CreateDirectory(parentPath);
+            }
+
+            AnimHelper.CombineSkinSaveAssets(go, texNames, parentPath);
+            // save prefab
+            string path = $"{parentPath}/character_{nameId}.prefab";
+            PrefabUtility.SaveAsPrefabAssetAndConnect(go, path, InteractionMode.AutomatedAction);
         }
     }
 }

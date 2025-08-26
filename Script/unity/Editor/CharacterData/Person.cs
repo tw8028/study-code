@@ -22,6 +22,11 @@ namespace Art.temp.Editor.CharacterData
 		public string skill;
 		public string bag_0;
 		public string bag_1;
+		public string brow;
+		public string eye;
+		public string brow_color;
+		public string eye_color;
+
 	}
 
 	[System.Serializable]

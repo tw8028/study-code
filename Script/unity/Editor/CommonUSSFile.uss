@@ -3,10 +3,10 @@ Box {
 }
 
 Button {
-    height: 24px;
+    height: 30px;
 }
 
 Label {
     -unity-text-align: middle-center;
-    height: 24px;
+    height: 30px;
 }

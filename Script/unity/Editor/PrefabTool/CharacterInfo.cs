@@ -4,19 +4,22 @@ using Art.temp.Editor.CharacterData;
 using MagicaCloth2;
 using UnityEditor;
 using UnityEngine;
+
 // ReSharper disable IdentifierTypo
 
 namespace Art.temp.Editor.PrefabTool
 {
-    public abstract class CharacterInfo
+    public class CharacterInfo
     {
         private readonly string nameId;
         private readonly string personId;
         private readonly string folderId;
+        private readonly string category;
 
-        protected CharacterInfo(string nameId)
+        public CharacterInfo(string nameId, string category)
         {
             this.nameId = nameId; // AA01001
+            this.category = category;
             char[] chars = nameId.ToCharArray();
             chars[nameId.Length - 4] = '0';
             personId = new string(chars);
@@ -24,7 +27,10 @@ namespace Art.temp.Editor.PrefabTool
         }
 
         private const string Head = "Root/Bip001/Bip001 Spine/Bip001 Spine1/Bip001 Neck/Bip001 Head/";
-        private const string Grip01 = "Root/Bip001/Bip001 Spine/Bip001 Spine1/Bip001 R Clavicle/Bip001 R UpperArm/Bip001 R Forearm/Bip001 R Hand/Grip_point01/";
+
+        private const string Grip01 =
+            "Root/Bip001/Bip001 Spine/Bip001 Spine1/Bip001 R Clavicle/Bip001 R UpperArm/Bip001 R Forearm/Bip001 R Hand/Grip_point01/";
+
         private const string Mount01 = "Root/Bip001/Bip001 Spine/Mount_point01/";
 
         private const string AnimPath = "Assets/Art/Animations/Battle/Skill/ani_{0}_skill01.fbx";
@@ -32,22 +38,41 @@ namespace Art.temp.Editor.PrefabTool
         private const string ModelPath = "Assets/Art/Character/Models/{0}/{1}/{2}.fbx";
         private const string PrefabPath = "Assets/Art/Character/Prefabs/{0}/P_{1}.prefab";
         private const string DisplayPath = "Assets/Art/Character/Prefabs/{0}_S/P_S_{1}.prefab";
+        private const string BodyMaterialPath = "Assets/Art/Character/Models/{0}/{1}/Mat/M_{2}_body_01_Display.mat";
 
         private Person Config => JsonData.GetPersons().FirstOrDefault(a => a.id == personId);
-        protected abstract string Category { get; }
-        public GameObject Model => AssetDatabase.LoadAssetAtPath<GameObject>(string.Format(ModelPath, Category, folderId, nameId));
-        public GameObject Prefab => AssetDatabase.LoadAssetAtPath<GameObject>(string.Format(PrefabPath, Category, nameId));
-        public GameObject DisplayPrefab => AssetDatabase.LoadAssetAtPath<GameObject>(string.Format(DisplayPath, Category, nameId));
-        public GameObject AutoPrefab => AssetDatabase.LoadAssetAtPath<GameObject>(string.Format(AutoPath, nameId, Config.weapon));
+
+
+        public GameObject Model =>
+            AssetDatabase.LoadAssetAtPath<GameObject>(string.Format(ModelPath, category, folderId, nameId));
+
+        private Material DisplayBodyMaterial =>
+            AssetDatabase.LoadAssetAtPath<Material>(string.Format(BodyMaterialPath, category, folderId, nameId));
+
+        public GameObject Prefab =>
+            AssetDatabase.LoadAssetAtPath<GameObject>(string.Format(PrefabPath, category, nameId));
+
+        public GameObject DisplayPrefab =>
+            AssetDatabase.LoadAssetAtPath<GameObject>(string.Format(DisplayPath, category, nameId));
+
+        public GameObject AutoPrefab =>
+            AssetDatabase.LoadAssetAtPath<GameObject>(string.Format(AutoPath, nameId, Config.weapon));
+
         public Object Skill => AssetDatabase.LoadAssetAtPath<Object>(string.Format(AnimPath, personId));
 
         // rebuild prefab and display prefab
         public void Rebuild()
         {
+            if (Model == null)
+            {
+                Debug.LogWarning("基础信息不正确，找不到模型文件");
+                return;
+            }
+
             // preset model
             var objPath = AssetDatabase.GetAssetPath(Model);
             var modelImporter = AssetImporter.GetAtPath(objPath) as ModelImporter;
-            if (modelImporter)
+            if (modelImporter!=null)
             {
                 modelImporter.avatarSetup = ModelImporterAvatarSetup.CreateFromThisModel;
                 AssetDatabase.Refresh();
@@ -60,7 +85,8 @@ namespace Art.temp.Editor.PrefabTool
 
             // Add emoji 
             Transform head = objInstance.transform.Find(Head);
-            GameObject emoji = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Art/Character/Models/Emoji/G_emoji.FBX");
+            GameObject emoji =
+                AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Art/Character/Models/Emoji/G_emoji.FBX");
             GameObject emojiInstance = (GameObject)PrefabUtility.InstantiatePrefab(emoji);
             emojiInstance.transform.parent = head;
 
@@ -78,11 +104,12 @@ namespace Art.temp.Editor.PrefabTool
                 {
                     GunInfo gun = new("G" + Config.weapon.PadLeft(5, '0'));
                     Transform grip = objInstance.transform.Find(Grip01);
-                    if(grip == null)
+                    if (grip == null)
                     {
                         Debug.LogError("没有武器挂点，终止");
                         return;
                     }
+
                     PrefabUtility.InstantiatePrefab(gun.Prefab, grip);
                 }
                 else
@@ -104,8 +131,11 @@ namespace Art.temp.Editor.PrefabTool
                 // add animator controller
                 if (Config.aniSet != "")
                 {
+                    string aniSet = Config.aniSet[..3];
                     // ReSharper disable once StringLiteralTypo
-                    string acPath = $"Assets/Art/Animations/animator/display_ovrride_{Config.aniSet}.overrideController";
+                    string acPath =
+                        $"Assets/Art/Animations/animator/display_ovrride_{aniSet}.overrideController";
+                    Debug.Log(Config.aniSet + "<-set->" + aniSet);
                     // config animator controller
                     Animator animator = objInstance.GetComponent<Animator>();
                     var controller = AssetDatabase.LoadAssetAtPath<RuntimeAnimatorController>(acPath);
@@ -124,13 +154,42 @@ namespace Art.temp.Editor.PrefabTool
                 }
             }
 
-            string displayPath = string.Format(DisplayPath, Category, nameId);
-            string prefabPath = string.Format(PrefabPath, Category, nameId);
-            PrefabUtility.SaveAsPrefabAssetAndConnect(prefab, displayPath, InteractionMode.AutomatedAction);
+
+            // save to Player
+            string prefabPath = string.Format(PrefabPath, category, nameId);
             PrefabUtility.SaveAsPrefabAsset(prefab, prefabPath);
+            Debug.Log(prefabPath);
+
+            // save to Player_S
+            if (Model.name.StartsWith("A"))
+            {
+                Transform body = objInstance.transform.Find($"G_{nameId}_body");
+                if (body == null)
+                {
+                    Debug.LogError($"{nameId}: 无法找到 body mesh");
+                    return;
+                }
+
+                if (DisplayBodyMaterial == null)
+                {
+                    Debug.LogError($"{nameId}: 无法找到 display material");
+                    return;
+                }
+
+                if (DisplayBodyMaterial.shader != Shader.Find("NLD_URP/NLD_Charactor_Display"))
+                {
+                    Debug.LogError($"{nameId}: 展示用 prefab shader error");
+                    return;
+                }
+
+                body.GetComponent<SkinnedMeshRenderer>().materials = new[] { DisplayBodyMaterial };
+            }
+
+            string displayPath = string.Format(DisplayPath, category, nameId);
+            PrefabUtility.SaveAsPrefabAssetAndConnect(prefab, displayPath, InteractionMode.AutomatedAction);
             Debug.Log(displayPath);
-            Debug.Log(prefab);
         }
+
         // ReSharper disable once IdentifierTypo
         private static void AddMagicaCloth(GameObject go)
         {
@@ -187,25 +246,11 @@ namespace Art.temp.Editor.PrefabTool
         }
     }
 
-    public class PlayerInformation : CharacterInfo
+
+    public static class CharacterFactory
     {
-        public PlayerInformation(string nameId) : base(nameId) { }
-
-        protected override string Category => "Players";
-    }
-
-
-    public class EnemyInformation : CharacterInfo
-    {
-        public EnemyInformation(string nameId) : base(nameId) { }
-
-        protected override string Category => "Enemy";
-    }
-
-    public class NpcInformation : CharacterInfo
-    {
-        public NpcInformation(string nameId) : base(nameId) { }
-
-        protected override string Category => "Npc";
+        public static CharacterInfo CreatePlayer(string nameId) => new CharacterInfo(nameId, "Players");
+        public static CharacterInfo CreateNpc(string nameId) => new CharacterInfo(nameId, "Npc");
+        public static CharacterInfo CreateEmeny(string nameId) => new CharacterInfo(nameId, "Enemy");
     }
 }

@@ -6,11 +6,11 @@
     },
     {
       "name": "P_C00002_01",
-      "batteryName": "无炮台"
+      "batteryName": "P_R00038_01"
     },
     {
       "name": "P_C00002_02",
-      "batteryName": "无炮台"
+      "batteryName": "P_R00038_01"
     },
     {
       "name": "P_C00003_01",
@@ -155,6 +155,94 @@
     {
       "name": "P_C00038_01",
       "batteryName": "P_R00034_01"
+    },
+    {
+      "name": "P_C00039_01",
+      "batteryName": "P_R00035_01"
+    },
+    {
+      "name": "P_C00040_01",
+      "batteryName": "P_R00036_01"
+    },
+    {
+      "name": "P_C00041_01",
+      "batteryName": "P_R00037_01"
+    },
+    {
+      "name": "P_C00042_01",
+      "batteryName": "P_R00032_02"
+    },
+    {
+      "name": "P_C00043_01",
+      "batteryName": "P_R00039_01"
+    },
+    {
+      "name": "P_C00044_01",
+      "batteryName": "P_R00040_01"
+    },
+    {
+      "name": "P_C00045_01",
+      "batteryName": "P_R00041_01"
+    },
+    {
+      "name": "P_C00047_01",
+      "batteryName": "P_R00043_01"
+    },
+    {
+      "name": "P_C00049_01",
+      "batteryName": "P_R00045_01"
+    },
+    {
+      "name": "P_C00051_01",
+      "batteryName": "P_R00047_01"
+    },
+    {
+      "name": "P_C00053_01",
+      "batteryName": "P_R00048_01"
+    },
+    {
+      "name": "P_C00054_01",
+      "batteryName": "P_R00049_01"
+    },
+    {
+      "name": "P_C00056_01",
+      "batteryName": "P_R00050_01"
+    },
+    {
+      "name": "P_C00057_01",
+      "batteryName": "P_R00051_01"
+    },
+    {
+      "name": "P_C00058_01",
+      "batteryName": "P_R00022_01"
+    },
+    {
+      "name": "P_C00019_01",
+      "batteryName": "P_R00053_01"
+    },
+    {
+      "name": "P_C00061_01",
+      "batteryName": "P_R00009_02"
+    },
+    {
+      "name": "P_C00062_01",
+      "batteryName": "P_R00054_01"
+    },
+    {
+      "name": "P_C00063_01",
+      "batteryName": "P_R00055_01"
+    },
+    {
+      "name": "P_C00028_01",
+      "batteryName": "P_R00004_02"
+    },
+    {
+      "name": "P_C00028_01",
+      "batteryName": "P_R00011_01"
+    },
+    {
+      "name": "P_C00066_01",
+      "batteryName": "P_R00056_01"
     }
   ]
 }

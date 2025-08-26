@@ -79,9 +79,23 @@ namespace Art.temp.Editor.StoryTool
             Button characterBtn2 = new() { text = "名字_删除无效标签" };
             characterBtn2.RegisterCallback<ClickEvent>(_ => TimelineInfo.RemoveNoneSetNameClips(CurrentTimeline));
 
+            Button characterBtn3 = new() { text = "copy animation clip" };
+            characterBtn3.RegisterCallback<ClickEvent>(_ => TimelineInfo.CopyClips("animation"));
+            Button characterBtn4 = new() { text = "paste animation clip" };
+            characterBtn4.RegisterCallback<ClickEvent>(_ => TimelineInfo.PasteAnimation(CurrentTimeline));
+
+            Button characterBtn5 = new() { text = "copy emoji" };
+            characterBtn5.RegisterCallback<ClickEvent>(_ => TimelineInfo.CopyEmojis("emoji"));
+            Button characterBtn6 = new() { text = "paste emoji" };
+            characterBtn6.RegisterCallback<ClickEvent>(_ => TimelineInfo.PasteEmoji(CurrentTimeline));
+
             boxCharacter.Add(label2);
             boxCharacter.Add(characterBtn1);
             boxCharacter.Add(characterBtn2);
+            boxCharacter.Add(characterBtn3);
+            boxCharacter.Add(characterBtn4);
+            boxCharacter.Add(characterBtn5);
+            boxCharacter.Add(characterBtn6);
 
             // 相机
             // UI
@@ -109,12 +123,15 @@ namespace Art.temp.Editor.StoryTool
             btnTool3.RegisterCallback<ClickEvent>(_ => PasteTransform());
             Button btnTool4 = new() { text = "Insert Block" };
             btnTool4.RegisterCallback<ClickEvent>(_ => TimelineInfo.InsertBlock(CurrentTimeline));
+            Button btnTool5 = new() { text = "生成 player points" };
+            btnTool5.RegisterCallback<ClickEvent>(_ => CreatePlayerPoints());
 
             boxTool.Add(label3);
             // boxTool.Add(btnTool1);
             boxTool.Add(btnTool2);
             boxTool.Add(btnTool3);
             boxTool.Add(btnTool4);
+            boxTool.Add(btnTool5);
         }
 
         /// <summary>
@@ -151,6 +168,19 @@ namespace Art.temp.Editor.StoryTool
             trans.localPosition = pos;
             trans.localEulerAngles = ro;
             trans.localScale = scale;
+        }
+
+        private static void CreatePlayerPoints()
+        {
+            Transform playerPointsRoot = GameObject.Find("StoryManager").transform.Find("player_points");
+            Transform playersRoot = GameObject.Find("StoryManager/players").transform;
+            for (int i = 1; i < playersRoot.childCount; i++)
+            {
+                string playerName = playersRoot.GetChild(i).name.Split("_")[3];
+                string pointName = $"pos (0) {playerName}";
+                GameObject playerPoint = new GameObject(pointName);
+                playerPoint.transform.SetParent(playerPointsRoot);
+            }
         }
     }
 }

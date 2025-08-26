@@ -1,5 +1,4 @@
-﻿using System.IO;
-using Art.temp.Editor.CharacterData;
+﻿using Art.temp.Editor.CharacterData;
 using Framework;
 using UnityEditor;
 using UnityEngine;
@@ -9,7 +8,7 @@ namespace Art.temp.Editor.PrefabTool
 {
     public class PrefabBuilderWin : EditorWindow
     {
-        [MenuItem("Test/prefab工具/Prefab Builder")]
+        [MenuItem("Tools/*角色工具/Prefab Builder")]
         public static void ShowWindow()
         {
             GetWindow<PrefabBuilderWin>("Prefab Builder");
@@ -22,12 +21,12 @@ namespace Art.temp.Editor.PrefabTool
             Label label1 = new() { text = "Select fbx to build prefab" };
             rootVisualElement.Add(label1);
 
-            Button btn1 = new() {text ="apply" };
+            Button btn1 = new() { text = "apply" };
             rootVisualElement.Add(btn1);
             btn1.RegisterCallback<ClickEvent>(_ => CreatePrefab());
 
 
-            Label label2 = new() {  text = "using prefab to rebuild"};
+            Label label2 = new() { text = "using prefab to rebuild" };
             rootVisualElement.Add(label2);
 
             Button btn2 = new() { text = "story car (select prefab)" };
@@ -44,9 +43,9 @@ namespace Art.temp.Editor.PrefabTool
 
             Label label3 = new() { text = "test" };
             rootVisualElement.Add(label3);
-            Button test = new() { text = "combine skinned mesh" };
+            /*Button test = new() { text = "combine skinned mesh" };
             rootVisualElement.Add(test);
-            test.RegisterCallback<ClickEvent>(_ => Combine());
+            test.RegisterCallback<ClickEvent>(_ => Combine());*/
 
             Button show = new() { text = "show object" };
             rootVisualElement.Add(show);
@@ -84,18 +83,15 @@ namespace Art.temp.Editor.PrefabTool
 
                 else if (id.StartsWith("A"))
                 {
-                    PlayerInformation player = new(id);
-                    player.Rebuild();
+                    CharacterFactory.CreatePlayer(id).Rebuild();
                 }
                 else if (id.StartsWith("E"))
                 {
-                    EnemyInformation enemy = new(id);
-                    enemy.Rebuild();
+                    CharacterFactory.CreateEmeny(id).Rebuild();
                 }
                 else if (id.StartsWith("N"))
                 {
-                    NpcInformation npc = new(id);
-                    npc.Rebuild();
+                   CharacterFactory.CreateNpc(id).Rebuild();
                 }
                 else
                 {
@@ -165,7 +161,7 @@ namespace Art.temp.Editor.PrefabTool
             }
         }
 
-        private void ShowInScene()
+        private static void ShowInScene()
         {
             var objects = Selection.gameObjects;
             for (int i = 0; i < objects.Length; i++)
@@ -173,25 +169,6 @@ namespace Art.temp.Editor.PrefabTool
                 GameObject prefab = (GameObject)PrefabUtility.InstantiatePrefab(objects[i]);
                 prefab.transform.localPosition = new Vector3(-i, 0, 0);
             }
-        }
-
-        private static void Combine()
-        {
-            GameObject obj = Selection.activeGameObject;
-            AnimHelper.PreSetAll(obj);
-            var go = Object.Instantiate(obj);
-            var nameId = obj.name.Split('_')[2];
-            var texNames = new[] { "_MainTex", "_MaskTex" };
-            var parentPath = $"Assets/Art/temp/Prefab/character_{nameId}";
-            if (!Directory.Exists(parentPath))
-            {
-                Directory.CreateDirectory(parentPath);
-            }
-
-            AnimHelper.CombineSkinSaveAssets(go, texNames, parentPath);
-            // save prefab
-            string path = $"{parentPath}/character_{nameId}.prefab";
-            PrefabUtility.SaveAsPrefabAssetAndConnect(go, path, InteractionMode.AutomatedAction);
         }
     }
 }

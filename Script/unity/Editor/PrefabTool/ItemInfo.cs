@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Art.temp.Editor.CharacterData;
 using Gameplay.Character;
@@ -78,10 +79,32 @@ namespace Art.temp.Editor.PrefabTool
 
         protected override string Category => "Battery";
 
+        private readonly List<string> anims = new() { "attack01", "idle", "skill" };
+
         public void RebuildAuto()
         {
             GameObject newPrefab = (GameObject)PrefabUtility.InstantiatePrefab(Prefab);
             Transform instance = newPrefab.transform.GetChild(0);
+
+            Transform[] transforms = instance.gameObject.GetComponentsInChildren<Transform>();
+
+            Transform fire = transforms.SingleOrDefault(transform => transform.name == "Fire");
+            if (fire == null)
+            {
+                Debug.LogError($"not find Fire: {instance.name}");
+                return;
+            }
+
+            Transform fireSkill = transforms.SingleOrDefault(transform => transform.name == "Fire_skill");
+            if (fireSkill == null)
+            {
+                Debug.LogWarning($"not find Fire_skill to create new: {instance.name}");
+                GameObject fireSkillObj = new("Fire_skill");
+                fireSkillObj.transform.SetParent(fire.transform.parent);
+                fireSkillObj.transform.localPosition = fire.localPosition;
+                fireSkillObj.transform.localRotation = fire.localRotation;
+            }
+
 
             if (instance.GetComponent<Animator>() == null)
             {
@@ -94,29 +117,24 @@ namespace Art.temp.Editor.PrefabTool
                     "Assets/Art/Animations/animator/Battery/animator_battery.controller");
             AnimatorOverrideController overrideController = new(controller);
 
-            AnimationClip attackClip =
-                AssetDatabase.LoadAssetAtPath<AnimationClip>(
-                    $"Assets/Art/Animations/Battery/{nameId}/ani_{nameId}_attack01.fbx");
-            if (attackClip == null)
+            foreach (string anim in anims)
             {
-                Debug.LogError($"缺少动作文件：ani_{nameId}_attack01.fbx");
-                return;
+                AnimationClip clip =
+                    AssetDatabase.LoadAssetAtPath<AnimationClip>(
+                        $"Assets/Art/Animations/Battery/{nameId}/ani_{nameId}_{anim}.fbx");
+                if (clip == null)
+                {
+                    Debug.LogWarning($"缺少动作文件：ani_{nameId}_{anim}.fbx");
+                    overrideController[$"ani_R00001_{anim}"] =
+                        AssetDatabase.LoadAssetAtPath<AnimationClip>(
+                            $"Assets/Art/Animations/compressed/compressed_ani_{nameId}_idle.anim");
+                }
+                else
+                {
+                    AnimationClip compressedAttackClip = LTCompressor.AutoCompress(clip);
+                    overrideController[$"ani_R00001_{anim}"] = compressedAttackClip;
+                }
             }
-
-            AnimationClip compressedAttackClip = LTCompressor.AutoCompress(attackClip);
-            overrideController["ani_R00001_attack01"] = compressedAttackClip;
-
-            AnimationClip idleClip =
-                AssetDatabase.LoadAssetAtPath<AnimationClip>(
-                    $"Assets/Art/Animations/Battery/{nameId}/ani_{nameId}_idle.fbx");
-            if (idleClip == null)
-            {
-                Debug.LogError($"缺少动作文件：ani_{nameId}_idle.fbx");
-                return;
-            }
-
-            AnimationClip compressedIdleClip = LTCompressor.AutoCompress(idleClip);
-            overrideController["ani_R00001_idle"] = compressedIdleClip;
 
             // 创建 auto 文件夹
             string folder = $"Assets/Art_Out/AutoGen/Battery/{newPrefab.name}";
@@ -169,17 +187,23 @@ namespace Art.temp.Editor.PrefabTool
 
             if (!string.IsNullOrEmpty(config.batteryName))
             {
-                BatteryInfo batteryInfo = new(config.batteryName.Split('_')[1]);
+                IEnumerable<Object> batteryPrefabs = AnimHelper.FindAssetsByFolders<GameObject>(config.batteryName,
+                    new[] { "Assets/Art/Character/Prefabs/Battery" });
+
                 string pointFullName = $"Root/G_{nameId}_bone001/Battery_point01";
                 Transform pointBattery = newPrefab.transform.GetChild(0).Find(pointFullName);
-                PrefabUtility.InstantiatePrefab(batteryInfo.Prefab, pointBattery);
+                if (pointBattery == null)
+                    pointBattery = newPrefab.transform.GetChild(0).Find("Root/cog/Battery_point01");
+                if (batteryPrefabs != null)
+                    PrefabUtility.InstantiatePrefab(batteryPrefabs.ElementAt(0), pointBattery);
             }
             else
             {
                 Debug.LogWarning($"没有炮台: {nameId}");
             }
 
-            PrefabUtility.UnpackPrefabInstance(newPrefab, PrefabUnpackMode.Completely, InteractionMode.AutomatedAction);
+            PrefabUtility.UnpackPrefabInstance(newPrefab, PrefabUnpackMode.Completely,
+                InteractionMode.AutomatedAction);
             var displayPrefab =
                 PrefabUtility.SaveAsPrefabAssetAndConnect(newPrefab, DisplayPrefabPath,
                     InteractionMode.AutomatedAction);
@@ -204,6 +228,12 @@ namespace Art.temp.Editor.PrefabTool
             var effectPointComponent = instance.AddComponent<CmpCharacterEffectPoints>();
             var bones = root.GetComponentsInChildren<Transform>();
             var hits = bones.Where(x => x.name.StartsWith("hit")).ToArray();
+            if (!bones.Any(x => x.name.StartsWith("hit")))
+            {
+                Debug.LogError($"{nameId}: has no hit points");
+                return;
+            }
+
             effectPointComponent.m_CriticalPoints = hits.Where(a => a.name == "hit02").ToArray();
             effectPointComponent.m_OtherPoints = hits.Where(b => b.name != "hit02").ToArray();
 

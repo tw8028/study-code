@@ -13,12 +13,14 @@ namespace Art.temp.Editor.PlayerBrowser
     {
         private VisualElement a00Pane;
         private VisualElement a01Pane;
-        [MenuItem("Test/prefab工具/角色浏览器")]
+
+        [MenuItem("Tools/*角色工具/角色浏览器")]
         public static void ShowEditor()
         {
             var win = GetWindow<PlayerBrowserWindow>("Player Browser");
             win.minSize = new Vector2(900, 400);
         }
+
         public void CreateGUI()
         {
             // 布局
@@ -46,8 +48,8 @@ namespace Art.temp.Editor.PlayerBrowser
                 chars[personId.Length - 4] = '1';
                 string nameId = new(chars);
 
-                PlayerInformation player1 = new(personId);
-                PlayerInformation player2 = new(nameId);
+                var player1 = CharacterFactory.CreatePlayer(personId);
+                var player2 = CharacterFactory.CreatePlayer(nameId);
                 if (player1.AutoPrefab)
                 {
                     ((Label)item).style.color = Color.green;
@@ -55,9 +57,9 @@ namespace Art.temp.Editor.PlayerBrowser
                 else
                 {
                     if (
-                    player1.Skill
-                    && (player1.Model ? player1.Model.transform.Find("Root") : null)
-                    && (player2.Model ? player2.Model.transform.Find("Root") : null)
+                        player1.Skill
+                        && (player1.Model ? player1.Model.transform.Find("Root") : null)
+                        && (player2.Model ? player2.Model.transform.Find("Root") : null)
                     )
                     {
                         ((Label)item).style.color = Color.yellow;
@@ -77,7 +79,7 @@ namespace Art.temp.Editor.PlayerBrowser
         {
             a00Pane.Clear();
             a01Pane.Clear();
-            if(selectedItems.First() is not Person selectedPerson) return;
+            if (selectedItems.First() is not Person selectedPerson) return;
             string personId = selectedPerson.id;
 
             CreateVe(a00Pane, personId);
@@ -89,7 +91,9 @@ namespace Art.temp.Editor.PlayerBrowser
 
         private static void CreateVe(VisualElement pane, string nameId)
         {
-            PlayerInformation player = new(nameId);
+            var player = CharacterFactory.CreatePlayer(nameId);
+            var personArray = JsonData.GetPersons().Where(a => a.id[0] == 'A').ToArray();
+            var person = personArray.FirstOrDefault(a => a.id == nameId);
 
             pane.Add(new Label("资源完成度"));
             pane.Add(new ObjectField("模型") { value = player.Model });
@@ -97,6 +101,21 @@ namespace Art.temp.Editor.PlayerBrowser
             pane.Add(new ObjectField("技能") { value = player.Skill });
             pane.Add(new ObjectField("Display Prefab") { value = player.DisplayPrefab });
             pane.Add(new ObjectField("Auto Prefab") { value = player.AutoPrefab });
+
+            pane.Add(new Label("表情设定"));
+            if (person != null) pane.Add(new TextField("brow") { value = person.brow });
+            if (person != null) pane.Add(new TextField("eye") { value = person.eye });
+            if (person != null) pane.Add(new TextField("brow color") { value = person.brow_color });
+            if (person != null) pane.Add(new TextField("eye color") { value = person.eye_color });
+            int faceId = 0;
+            if (person != null)
+            {
+                int.TryParse(person.brow, out var a);
+                int.TryParse(person.eye, out var b);
+                faceId = (a - 1) * 5 + b;
+            }
+
+            if (person != null) pane.Add(new TextField("DefaultEmojiImgId") { value = faceId.ToString() });
         }
     }
 }

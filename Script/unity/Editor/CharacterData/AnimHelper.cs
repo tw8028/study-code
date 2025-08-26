@@ -16,17 +16,17 @@ namespace Art.temp.Editor.CharacterData
             {
                 case 'A':
                 {
-                    PlayerInformation player = new(nameId);
+                    var player = CharacterFactory.CreatePlayer(nameId);
                     return player.DisplayPrefab;
                 }
                 case 'E':
                 {
-                    EnemyInformation enemy = new(nameId);
+                    var enemy = CharacterFactory.CreateEmeny(nameId);
                     return enemy.DisplayPrefab;
                 }
                 case 'N':
                 {
-                    NpcInformation npc = new(nameId);
+                    var npc = CharacterFactory.CreateNpc(nameId);
                     return npc.DisplayPrefab;
                 }
                 default:
@@ -36,24 +36,13 @@ namespace Art.temp.Editor.CharacterData
 
 
         // filter = "name t:xx l:xx" Name Labels Types
-        private static IEnumerable<Object> FindAssetsByFolders<T>(string filter, string[] folders)
+        public static IEnumerable<Object> FindAssetsByFolders<T>(string filter, string[] folders)
         {
+            // FindAssets 能找子文件夹
             string[] guids = AssetDatabase.FindAssets(filter, folders);
-            var paths = guids.Select(AssetDatabase.GUIDToAssetPath);
+            IEnumerable<string> paths = guids.Select(AssetDatabase.GUIDToAssetPath);
             return paths.Select(e => AssetDatabase.LoadAssetAtPath(e, typeof(T)));
         }
-
-        private static string[] GetSelectFolder()
-        {
-            var folders = Selection.GetFiltered<Object>(SelectionMode.Assets);
-            return folders.Select(AssetDatabase.GetAssetPath).ToArray();
-        }
-
-        public static IEnumerable<Object> FindAssetsFromSelectedFolders<T>(string filter)
-        {
-            return FindAssetsByFolders<T>(filter, GetSelectFolder());
-        }
-
 
         /// <summary>
         /// 合并 prefab 中的 mesh, 要求只有一个材质，并且合并后只有一个 material
