@@ -24,6 +24,7 @@ public static class JsonFactory
                 { (int)ColumnId.Ab, "bag_1" },
                 { (int)ColumnId.Ad, "brow" },
                 { (int)ColumnId.Ae, "eye" },
+                { (int)ColumnId.Af, "mouth" },
                 { (int)ColumnId.Ag, "eye_color" },
                 { (int)ColumnId.Ah, "brow_color" }
             }
@@ -41,7 +42,8 @@ public static class JsonFactory
             JsonFile: "D:/GitHub/NLDClient/ProjectNLD/Assets/Art/temp/Editor/JsonData/vehicleData.json",
             Columns: new Dictionary<int, string>()
             {
-                { (int)ColumnId.C, "name" },
+                { (int)ColumnId.B, "id" },
+                { (int)ColumnId.C, "vehicleName" },
                 { (int)ColumnId.D, "batteryName" }
             }
         );

@@ -174,7 +174,7 @@ namespace Art.temp.Editor.PrefabTool
 
         public void RebuildDisplay()
         {
-            Vehicle config = JsonData.GetVehicles().FirstOrDefault(x => x.name == Prefab.name);
+            Vehicle config = JsonData.GetVehicles().FirstOrDefault(x => x.vehicleName == Prefab.name);
             if (config == null)
             {
                 Debug.Log($"未配置 vehicle json: {nameId}");

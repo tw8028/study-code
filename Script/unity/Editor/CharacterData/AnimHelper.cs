@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using Art.temp.Editor.PrefabTool;
+using HeurekaGames.Utils;
 using Sirenix.Utilities;
 using UnityEditor;
 using UnityEngine;
@@ -196,6 +197,54 @@ namespace Art.temp.Editor.CharacterData
             modelImporter.avatarSetup = ModelImporterAvatarSetup.CreateFromThisModel;
             AssetDatabase.Refresh();
             modelImporter.SaveAndReimport();
+        }
+
+        public static void SetFaceMaterial(GameObject model)
+        {
+            const string browTexPath = "Assets/Art_Out/Manual/Emoji/Tex/T_emoji_eyebows_{0}_01.png";
+            const string browMaskPath = "Assets/Art_Out/Manual/Emoji/Tex/T_emoji_eyebows_{0}_01_mask.png";
+            const string eyeTexPath = "Assets/Art_Out/Manual/Emoji/Tex/T_emoji_eyes_0{0}.png";
+            const string eyeMaskPath = "Assets/Art_Out/Manual/Emoji/Tex/T_emoji_eyes_0{0}_mask.png";
+            const string mouthPath = "Assets/Art_Out/Manual/Emoji/Tex/T_emoji_mouth_0{0}.png";
+
+            string nameId = model.name;
+            Person person = JsonData.GetPersons().FirstOrDefault(p => p.id == nameId);
+            if (person == null)
+            {
+                Debug.LogWarning($"{nameId} not found face config");
+                return;
+            }
+
+            GameObject emoji = model.transform
+                .Find("Root/Bip001/Bip001 Spine/Bip001 Spine1/Bip001 Neck/Bip001 Head/G_emoji").gameObject;
+            Material[] mats = emoji.GetComponent<MeshRenderer>().sharedMaterials;
+
+            if (!string.IsNullOrEmpty(person.brow_color))
+            {
+                ColorUtility.TryParseHtmlString(person.brow_color, out Color browColor);
+                mats[0].SetColor("_MainColor", browColor);
+                Debug.LogWarning($"{person.id}: brow_color = {person.brow_color}");
+            }
+
+            if (!string.IsNullOrEmpty(person.eye_color))
+            {
+                ColorUtility.TryParseHtmlString(person.eye_color, out Color eyeColor);
+                mats[1].SetColor("_MainColor", eyeColor);
+                Debug.LogWarning($"{person.id}: eye color = {person.eye_color}");
+            }
+
+            Texture2D browTex = AssetDatabase.LoadAssetAtPath<Texture2D>(string.Format(browTexPath, person.brow));
+            Texture2D browMask = AssetDatabase.LoadAssetAtPath<Texture2D>(string.Format(browMaskPath, person.brow));
+            mats[0].SetTexture("_MainTex", browTex);
+            mats[0].SetTexture("_MaskTex", browMask);
+
+            Texture2D eyeTex = AssetDatabase.LoadAssetAtPath<Texture2D>(string.Format(eyeTexPath, person.eye));
+            Texture2D eyeMask = AssetDatabase.LoadAssetAtPath<Texture2D>(string.Format(eyeMaskPath, person.eye));
+            mats[1].SetTexture("_MainTex", eyeTex);
+            mats[1].SetTexture("_MaskTex", eyeMask);
+
+            Texture2D mouthTex = AssetDatabase.LoadAssetAtPath<Texture2D>(string.Format(mouthPath, person.mouth));
+            mats[2].SetTexture("_MainTex", mouthTex);
         }
     }
 }

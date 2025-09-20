@@ -1,13 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using dnlib.DotNet.Pdb;
 using Gameplay.Character;
-using UltimateGameTools.MeshSimplifier;
 using UnityEditor;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UIElements;
+using SaadKhawaja.InstantScreenshot;
+using UnityEngine.Rendering;
 
 namespace Art.temp.Editor.CharacterData
 {
@@ -58,7 +57,96 @@ namespace Art.temp.Editor.CharacterData
 
             box2.Add(new Button() { name = "RemoveObj_btn", text = "移除重复骨骼" });
             box2.Q<Button>("RemoveObj_btn").RegisterCallback<ClickEvent>(RemoveDuplicateBones);
+
+            box2.Add(new Button() { name = "show_player", text = "角色截屏" });
+            box2.Q<Button>("show_player").RegisterCallback<ClickEvent>(ShotPlayerTest);
         }
+
+        private static void ShotAutoPlayer(GameObject character)
+        {
+            GameObject prefab = (GameObject)PrefabUtility.InstantiatePrefab(character);
+            GameObject instance = prefab.transform.GetChild(0).gameObject;
+            GameObject mesh = prefab.transform.GetChild(1).gameObject;
+            SkinnedMeshRenderer skin = mesh.GetComponent<SkinnedMeshRenderer>();
+            string dir = Path.GetDirectoryName(AssetDatabase.GetAssetPath(skin.sharedMesh));
+            Mesh meshFile = AssetDatabase.LoadAssetAtPath<Mesh>(dir + "/mesh_" + prefab.name.Split('_')[1] + ".asset");
+            skin.sharedMesh = meshFile;
+
+            RuntimeAnimatorController controller =
+                AssetDatabase.LoadAssetAtPath<RuntimeAnimatorController>(
+                    "Assets/Art/temp/Animation/animator_show.controller");
+            Animator animator = instance.GetComponent<Animator>();
+            animator.runtimeAnimatorController = controller;
+
+            var clips = animator.runtimeAnimatorController.animationClips;
+            AnimationMode.StartAnimationMode();
+            AnimationMode.SampleAnimationClip(instance.gameObject, clips[0], 1f);
+            AnimationMode.EndSampling();
+            Debug.LogWarning("截取角色");
+
+            InstantScreenshot.TakeScreenshot("E:/project_A/screenshot/character01", $"{instance.name}.png", Camera.main,
+                2048,
+                2048, 2, true);
+            DestroyImmediate(prefab);
+        }
+
+        private static void ShotDisplayPlayer(GameObject character)
+        {
+            GameObject prefab = (GameObject)PrefabUtility.InstantiatePrefab(character);
+            Transform instance = prefab.transform.GetChild(0);
+            
+            // 重绘面部
+            AnimHelper.SetFaceMaterial(instance.gameObject);
+
+            // set anim
+            AnimationClip clip =
+                AssetDatabase.LoadAssetAtPath<AnimationClip>("Assets/Art/temp/Animation/ani_s_stand01.anim");
+            AnimationMode.StartAnimationMode();
+            AnimationMode.SampleAnimationClip(instance.gameObject, clip, 1f);
+            AnimationMode.EndSampling();
+
+            InstantScreenshot.TakeScreenshot("E:/project_A/screenshot/player_s", $"{instance.name}.png", Camera.main,
+                2048, 2048, 2, true);
+            // DestroyImmediate(prefab);
+        }
+
+        private static void ShotVehicle(ClickEvent evt)
+        {
+            foreach (GameObject go in Selection.gameObjects)
+            {
+                GameObject prefab = (GameObject)PrefabUtility.InstantiatePrefab(go);
+                Transform instance = prefab.transform.GetChild(0);
+                InstantScreenshot.TakeScreenshot("E:/project_A/screenshot/vehicle", $"{prefab.name.Split('_')[2]}.png",
+                    Camera.main,
+                    2048,
+                    2048, 2, true);
+                DestroyImmediate(prefab);
+            }
+        }
+
+
+        private static void ShotPlayerTest(ClickEvent evt)
+        {
+            ShotDisplayPlayer(Selection.activeGameObject);
+        }
+
+        private static void ShotPlayer(ClickEvent evt)
+        {
+            var assets =
+                AnimHelper.FindAssetsByFolders<GameObject>("t:GameObject",
+                    new[] { "Assets/Art_Out/AutoGen/Characters" });
+            Object[] characters = assets.GroupBy(p => p.name).Select(g => g.First())
+                .Where(c => c.name.Split('_')[1].StartsWith("A01"))
+                .ToArray();
+            foreach (Object character in characters)
+            {
+                if (character is GameObject player)
+                {
+                    ShotAutoPlayer(player);
+                }
+            }
+        }
+
 
         private static void AddHitPoints(ClickEvent evt)
         {
@@ -119,13 +207,10 @@ namespace Art.temp.Editor.CharacterData
             {
                 if (obj is Material mat)
                 {
+                    if (mat.shader == Shader.Find("NLD_URP/NLD_Vehicle")) continue;
                     mat.shader = Shader.Find("NLD_URP/NLD_Vehicle");
                     // mat.SetFloat("_Factor", 0.2f);
                     Debug.Log(mat.name);
-                }
-                else
-                {
-                    Debug.LogWarning(obj.name + " is not a Material");
                 }
             }
 
@@ -394,20 +479,20 @@ namespace Art.temp.Editor.CharacterData
         private static void RenameAssets(ClickEvent evt)
         {
             // 选择的文件中的 GameObject
-            Object[] folders = Selection.objects;
-            string[] folderPath = folders.Select(AssetDatabase.GetAssetPath).ToArray();
-            var objects = AnimHelper.FindAssetsByFolders<GameObject>("t:GameObject", folderPath);
+            // Object[] folders = Selection.objects;
+            // string[] folderPath = folders.Select(AssetDatabase.GetAssetPath).ToArray();
+            // var objects = AnimHelper.FindAssetsByFolders<GameObject>("t:GameObject", folderPath);
 
             // 选择的 gameObject
-            // var objects = Selection.gameObjects;
+            var objects = Selection.gameObjects.Where(g => g.name.EndsWith("_01"));
 
             // 选择的 文件夹
             // var objects = Selection.GetFiltered<Object>(SelectionMode.Assets);
 
-            foreach (Object obj in objects)
+            foreach (GameObject obj in objects)
             {
-                string name = obj.name;
-                string newName = "Bui" + name[3..];
+                string name = obj.name.Split("_")[2];
+                string newName = "3" + name[1..];
                 string path = AssetDatabase.GetAssetPath(obj);
                 AssetDatabase.RenameAsset(path, newName);
             }

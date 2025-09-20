@@ -26,30 +26,31 @@ namespace Art.temp.Editor.PrefabTool
             btn1.RegisterCallback<ClickEvent>(_ => CreatePrefab());
 
 
-            Label label2 = new() { text = "using prefab to rebuild" };
+            Label label2 = new() { text = "select prefab" };
             rootVisualElement.Add(label2);
 
-            Button btn2 = new() { text = "story car (select prefab)" };
-            rootVisualElement.Add(btn2);
-            btn2.RegisterCallback<ClickEvent>(_ => CreateDisplayCar());
-
-            Button btn3 = new() { text = "auto battery (select prefab)" };
+            Button btn3 = new() { text = "create auto battery" };
             rootVisualElement.Add(btn3);
             btn3.RegisterCallback<ClickEvent>(_ => CreateAutoBattery());
 
-            Button btn4 = new() { text = "battle story character (by config)" };
+            Button show = new() { text = "show game object" };
+            rootVisualElement.Add(show);
+            show.RegisterCallback<ClickEvent>(_ => ShowInScene());
+
+            Label label3 = new() { text = "create all prefabs by config" };
+            rootVisualElement.Add(label3);
+
+            Button btn2 = new() { text = "display vehicle" };
+            rootVisualElement.Add(btn2);
+            btn2.RegisterCallback<ClickEvent>(_ => CreateDisplayCar());
+
+            Button btn4 = new() { text = "battle story character" };
             rootVisualElement.Add(btn4);
             btn4.RegisterCallback<ClickEvent>(_ => CreateBattleCharacter());
 
-            Label label3 = new() { text = "test" };
-            rootVisualElement.Add(label3);
             /*Button test = new() { text = "combine skinned mesh" };
             rootVisualElement.Add(test);
             test.RegisterCallback<ClickEvent>(_ => Combine());*/
-
-            Button show = new() { text = "show object" };
-            rootVisualElement.Add(show);
-            show.RegisterCallback<ClickEvent>(_ => ShowInScene());
         }
 
 
@@ -91,7 +92,7 @@ namespace Art.temp.Editor.PrefabTool
                 }
                 else if (id.StartsWith("N"))
                 {
-                   CharacterFactory.CreateNpc(id).Rebuild();
+                    CharacterFactory.CreateNpc(id).Rebuild();
                 }
                 else
                 {
@@ -103,20 +104,43 @@ namespace Art.temp.Editor.PrefabTool
         }
 
 
-        // 使用 prefab 生成
+        // 使用 json 配置生成载具 300001
         private static void CreateDisplayCar()
         {
-            foreach (GameObject go in Selection.gameObjects)
+            Vehicle[] config = JsonData.GetVehicles();
+            foreach (Vehicle v in config)
             {
-                string id = go.name.Split('_')[1];
-                if (!id.StartsWith("C"))
+                if (string.IsNullOrEmpty(v.id) || string.IsNullOrEmpty(v.vehicleName) ||
+                    string.IsNullOrEmpty(v.batteryName))
                 {
-                    Debug.LogWarning("is not car prefab");
-                    return;
+                    Debug.LogWarning($"{v.id}: 配置不全");
+                    continue;
                 }
 
-                VehicleInfo car = new(id);
-                car.RebuildDisplay();
+                GameObject carAsset = AssetDatabase.LoadAssetAtPath<GameObject>(
+                    $"Assets/Art/Character/Prefabs/Vehicle/{v.vehicleName}.prefab"); // P_C00001_01
+                GameObject batteryAsset = AssetDatabase.LoadAssetAtPath<GameObject>(
+                    $"Assets/Art/Character/Prefabs/Battery/{v.batteryName}.prefab"); // P_R0001_01
+                if (carAsset == null || batteryAsset == null)
+                {
+                    Debug.LogWarning($"{v.id}: 缺少底盘或炮台资源");
+                    continue;
+                }
+
+                string nameId = v.vehicleName.Split('_')[1];
+                GameObject instance = (GameObject)PrefabUtility.InstantiatePrefab(carAsset);
+                Transform pointBattery =
+                    instance.transform.GetChild(0).Find($"Root/G_{nameId}_bone001/Battery_point01");
+                if (pointBattery == null)
+                    pointBattery = instance.transform.GetChild(0).Find("Root/cog/Battery_point01");
+                PrefabUtility.InstantiatePrefab(batteryAsset, pointBattery);
+                PrefabUtility.UnpackPrefabInstance(instance, PrefabUnpackMode.Completely,
+                    InteractionMode.AutomatedAction);
+
+                string path = $"Assets/Art/Character/Prefabs/Vehicle_S/{v.id}.prefab";
+                PrefabUtility.SaveAsPrefabAssetAndConnect(instance, path, InteractionMode.AutomatedAction);
+                instance.name = v.id;
+                Debug.Log(path);
             }
         }
 

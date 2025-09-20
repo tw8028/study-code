@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Art.temp.Editor.CharacterData
 {
@@ -13,17 +14,11 @@ namespace Art.temp.Editor.CharacterData
 		public string name;
 		public string aniSet;
 		public string weapon;
-		public string model_0;
-		public string model_1;
-		public string skin_0;
-		public string skin_1;
-		public string prefab_0;
-		public string prefab_1;
-		public string skill;
 		public string bag_0;
 		public string bag_1;
 		public string brow;
 		public string eye;
+		public string mouth;
 		public string brow_color;
 		public string eye_color;
 
@@ -43,8 +38,11 @@ namespace Art.temp.Editor.CharacterData
 	[System.Serializable]
 	public class Vehicle
 	{
+		// 300001
+		public string id;
+		
 		// prefab name: P_C00001_01
-		public string name;
+		public string vehicleName;
 
 		// prefab name: P_R00001_01
 		public string batteryName;
