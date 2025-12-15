@@ -35,6 +35,7 @@ tooltip:"NLD_批量输出Fbx"
 	(
 		frameRate = 30
 		$Root.boneEnable = true	
+		$Root.position = [0,0,0]
 		
 		lc = Link_Constraint()
 		trans = $Grip_point01.transform
@@ -65,7 +66,7 @@ tooltip:"NLD_批量输出Fbx"
 		FBXExporterSetParam "ResetExport"
 		FBXExporterSetParam "BakeAnimation" true
 		exportFile exportPath #noPrompt selectedOnly:true using:FBXEXP
-		resetMaxFile #noPrompt
+		-- resetMaxFile #noPrompt
 	)
 	
 	

@@ -1,4 +1,5 @@
 import pymel.core as pm
+import system_biped.build
 
 
 def select_joints(*args):
@@ -20,6 +21,11 @@ def copy_weights(*args):
     pm.copySkinWeights(noMirror=True, influenceAssociation='oneToOne', sa='closestPoint')
 
 
+def ue_rig(*args):
+    system_biped.build.biped_rig()
+    pm.select(clear=True)
+
+
 def show_window():
     name = 'my_skin_editor_win'
     if pm.window(name, query=True, exists=True):
@@ -29,6 +35,7 @@ def show_window():
         with pm.columnLayout(adj=True):
             pm.button(label='select joints', c=select_joints)
             pm.button(label='copy weights', c=copy_weights)
+            pm.button(label='create ue rig', c=ue_rig)
 
         pm.window(name, e=True, title='skin_tools', wh=(240, 300))
         pm.showWindow(name)
