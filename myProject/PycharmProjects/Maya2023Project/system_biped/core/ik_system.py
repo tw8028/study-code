@@ -18,7 +18,7 @@ class IkSystem:
         self.ctrl_ikHandle = f'ctrl__{side}__{name}_ikHandle__001'
         self._zero_ikHandle = f'zero__{side}__{name}_ikHandle__001'
         self._ctrl_pole = f'ctrl__{side}__{name}_pole__001'
-        self._zero_pole = f'zero__{side}__{name}_pole__001'
+        self.zero_pole = f'zero__{side}__{name}_pole__001'
 
         self.attr_stretch = f'{self.ctrl_ikHandle}.stretch'
 
@@ -40,8 +40,8 @@ class IkSystem:
         pm.parent(self._zero_ikHandle, self._grp_rig)
         pm.orientConstraint(self.ctrl_ikHandle, self.joints_ik[2])
 
-        mytools.pole_ctrl(self.joints_ik[0], self.joints_ik[1], self.joints_ik[2], self._ctrl_pole, self._zero_pole)
-        pm.parent(self._zero_pole, self._grp_rig)
+        mytools.pole_ctrl(self.joints_ik[0], self.joints_ik[1], self.joints_ik[2], self._ctrl_pole, self.zero_pole)
+        pm.parent(self.zero_pole, self._grp_rig)
         pm.poleVectorConstraint(self._ctrl_pole, self._ik_handle)
         pm.parent(mytools.connect_line(self._ctrl_pole, self.joints_ik[1]), self._grp_rig)
 

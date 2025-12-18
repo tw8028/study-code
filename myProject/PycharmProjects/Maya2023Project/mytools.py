@@ -170,5 +170,3 @@ def stretch_yz(joint):
 
 def twist_joint(driver, no_roll, driven_objs, ro_direction, is_chain):
     return rig.twist_rig.twist_joint(driver, no_roll, driven_objs, ro_direction, is_chain)
-
-
