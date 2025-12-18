@@ -8,11 +8,9 @@ from system_biped.core.center_of_gravity import CenterOfGravity
 from system_biped.core.fk_system import FkSystem
 from system_biped.core.ik_system import IkSystem
 from system_biped.core.mid_system import MidSystem
-from system_biped.interface.joint_limb import IJoint_limb
-from system_biped.interface.joint_limb import Ilimb
 
 
-class Limb(IConnectionPointProvider, IConnectionPointUser, Ilimb, ABC):
+class Limb(IConnectionPointProvider, IConnectionPointUser, ABC):
     def __init__(self, name: str, side: str, bones: list[str]):
         self._limb = CenterOfGravity(name=name, side=side, bones=bones)
         self._fk = FkSystem(cog=self._limb)
@@ -40,12 +38,12 @@ class Limb(IConnectionPointProvider, IConnectionPointUser, Ilimb, ABC):
         reverse_nd = pm.createNode('reverse', name=self._reverse_node)
         pm.PyNode(self._attr_blend) >> reverse_nd.inputX  # type: ignore
 
-    def _blend_jnt(self, fk_system: IJoint_limb, ik_system: IJoint_limb):
+    def _blend_jnt(self, fk_system, ik_system):
         attr_blend = self._attr_blend
         reverse_nd = self._reverse_node
 
-        joints_ik = ik_system.get_rig_joints()
-        joints_fk = fk_system.get_rig_joints()
+        joints_ik = ik_system.joints_ik
+        joints_fk = fk_system.joints_fk
 
         mytools.blend_orient(attr_ctrl=attr_blend, reverse=reverse_nd, ik_jnt=joints_ik[0], fk_jnt=joints_fk[0],
                              blend_jnt=self._limb.joints[0])

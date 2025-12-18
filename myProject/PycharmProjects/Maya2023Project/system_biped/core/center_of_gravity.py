@@ -16,10 +16,10 @@ class CenterOfGravity(object):
         self.zero_cog = name_template.format('zero_cog')  # 重心 zero，链接到父级控制器
         self.zero_jnt = name_template.format('zero_jnt')
 
-        self._create()
+        self._create_joints()
         self._constraint_bones()
 
-    def _create(self):
+    def _create_joints(self):
         pm.group(name=self.grp_rig, empty=True)
         mytools.cv_and_zero(name=self.ctrl_cog, target=self._bones[0], shape='ball', radius=2)
         pm.parent(self.zero_cog, self.grp_rig)

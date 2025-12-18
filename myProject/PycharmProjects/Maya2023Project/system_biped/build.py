@@ -42,7 +42,7 @@ def biped_rig():
     # foot
     foot_l = Foot(name='foot_l', side='l', bones=['foot_l', 'ball_l', 'tiptoe_l', 'heel_l'], leg=leg_l)
     foot_l = Foot(name='foot_r', side='r', bones=['foot_r', 'ball_r', 'tiptoe_r', 'heel_r'], leg=leg_r)
-
+    print('...build rig successful...')
 
 if __name__ == '__main__':
     biped_rig()

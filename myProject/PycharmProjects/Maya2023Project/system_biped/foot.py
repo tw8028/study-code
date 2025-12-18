@@ -1,11 +1,10 @@
 import pymel.core as pm
 import mytools
 from system_biped.core.master import Master
-from system_biped.interface.joint_limb import Ilimb
 
 
 class Foot:
-    def __init__(self, name: str, side: str, bones: list[str], leg: Ilimb):
+    def __init__(self, name: str, side: str, bones: list[str], leg):
         self._name = name
         self._side = side
         self._leg = leg

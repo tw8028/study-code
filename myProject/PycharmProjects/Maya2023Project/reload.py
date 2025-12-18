@@ -28,7 +28,6 @@ import system_biped.hand
 import system_biped.head
 import system_biped.interface
 import system_biped.interface.connection
-import system_biped.interface.joint_limb
 import system_biped.limb
 import system_biped.spine
 import mytools
@@ -62,7 +61,6 @@ def main():
     importlib.reload(system_biped.head)
     importlib.reload(system_biped.interface)
     importlib.reload(system_biped.interface.connection)
-    importlib.reload(system_biped.interface.joint_limb)
     importlib.reload(system_biped.limb)
     importlib.reload(system_biped.spine)
     importlib.reload(mytools)

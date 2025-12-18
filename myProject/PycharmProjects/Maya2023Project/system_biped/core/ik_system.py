@@ -1,11 +1,9 @@
 import pymel.core as pm
 import mytools
-from abc import ABC
 from system_biped.core.center_of_gravity import CenterOfGravity
-from system_biped.interface.joint_limb import IJoint_limb
 
 
-class IkSystem(IJoint_limb, ABC):
+class IkSystem:
     def __init__(self, cog: CenterOfGravity):
         self.cog = cog
         name = cog.name
@@ -52,6 +50,3 @@ class IkSystem(IJoint_limb, ABC):
         mytools.stretch_ik(attr_stretch=self.attr_stretch, jnt1_offset=self._ctrl_cog,
                            handle_ctrl=self.ctrl_ikHandle, ik_jnt1=self.joints_ik[0], ik_jnt2=self.joints_ik[1],
                            ik_jnt3=self.joints_ik[2])
-
-    def get_rig_joints(self):
-        return self.joints_ik

@@ -47,7 +47,6 @@ class Hand(IConnectionPointUser, ABC):
     def _create_all(self):
         for root in self._fingers:
             joints = mytools.get_children(root=root)
-            print(joints)
             self._create_ctrl(joints)
 
     def connect_to(self, point_provider: IConnectionPointProvider, connection_type):
