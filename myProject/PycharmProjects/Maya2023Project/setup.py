@@ -16,9 +16,13 @@ for name in list(sys.modules.keys()):
 # 2. 清除导入缓存
 importlib.invalidate_caches()
 
-# 3. 重新导入（这里必须reload一次mytools和hot_reload,否则maya中报错）
-import mytools
-importlib.reload(mytools)
+# 3. 先reload基础模块（这里必须reload）
 import hot_reload
+
 importlib.reload(hot_reload)
 hot_reload.main()
+
+# 4. 重新导入mytools（这里必须reload）
+import mytools
+
+importlib.reload(mytools)
