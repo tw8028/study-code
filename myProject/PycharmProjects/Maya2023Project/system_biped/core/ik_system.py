@@ -25,6 +25,7 @@ class IkSystem:
         self._create_ik_jnt()
         self._rig()
         self._stretch()
+        mytools.no_flip_ik(self.joints_ik, self.ctrl_ikHandle,self.zero_pole)
 
     def _create_ik_jnt(self):
         for jnt_ik, jnt in zip(self.joints_ik, self._joints):

@@ -9,6 +9,7 @@ import parts.utils
 import rig.curve_rig
 import rig.drive_rig
 import rig.fk_rig
+import rig.ik_rig
 import rig.stretch_rig
 import rig.twist_rig
 import custom_shelf.buttons
@@ -43,6 +44,7 @@ def main():
     importlib.reload(rig.curve_rig)
     importlib.reload(rig.drive_rig)
     importlib.reload(rig.fk_rig)
+    importlib.reload(rig.ik_rig)
     importlib.reload(rig.stretch_rig)
     importlib.reload(rig.twist_rig)
     importlib.reload(custom_shelf.buttons)

@@ -72,7 +72,7 @@ class Leg(IConnectionPointUser, ABC):
         ctrl_ikHandle = self._ikSystem.ctrl_ikHandle
         pm.parentConstraint(foot.ankle_ctrl, ctrl_ikHandle, maintainOffset=True)
         mytools.lock_hide_transform(ctrl_ikHandle)
-        mytools.set_display_type(ctrl_ikHandle, 1)
+        # mytools.set_display_type(ctrl_ikHandle, 1)
 
         # Foot5ctrl系统中toe_ctrl，控制腿部ik系统中的toe/ball骨骼
         pm.orientConstraint(foot.toe_ctrl, self._joints_ik[-1])

@@ -8,6 +8,7 @@ import parts.utils
 import rig.curve_rig
 import rig.drive_rig
 import rig.fk_rig
+import rig.ik_rig
 import rig.stretch_rig
 import rig.twist_rig
 
@@ -140,6 +141,10 @@ def fk_chain(object_list):
     return rig.fk_rig.fk_chain(object_list)
 
 
+def no_flip_ik(joints_ik, ctrl_ikHandle, zero_pole):
+    return rig.ik_rig.no_flip_ik(joints_ik, ctrl_ikHandle, zero_pole)
+
+
 def blend_attr(attr_ctrl, attr_a, attr_b, attr_blend):
     return rig.stretch_rig.blend_attr(attr_ctrl, attr_a, attr_b, attr_blend)
 
@@ -170,3 +175,5 @@ def stretch_yz(joint):
 
 def twist_joint(driver, no_roll, driven_objs, ro_direction, is_chain):
     return rig.twist_rig.twist_joint(driver, no_roll, driven_objs, ro_direction, is_chain)
+
+
