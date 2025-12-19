@@ -3,15 +3,14 @@ import mytools
 
 
 class Foot5ctrl:
-    def __init__(self, name: str, side: str, bones: list[str]):
-        self._name = name
+    def __init__(self, side: str, bones: list[str]):
         self._side = side
         self._bone_foot = bones[0]
         self._bone_ball = bones[1]
         self._bone_tiptoe = bones[2]
         self._bone_heel = bones[3]
 
-        self.grp_rig = f'rig__{side}__{name}__001'
+        self.grp_rig = f'rig__{side}__foot__001'
         self.ankle_ctrl = None
         self.toe_ctrl = None
         self._create_ctrl()

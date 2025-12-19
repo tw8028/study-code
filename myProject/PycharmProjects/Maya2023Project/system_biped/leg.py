@@ -23,8 +23,8 @@ class Leg(IConnectionPointUser, ABC):
         self._joints_mid = self._midSystem.joints_mid
         self._joints_fk = self._fkSystem.joints_fk
 
-        self._ctrl_attr = f'ctrl__{side}__{name}_ikfk__001'
-        self._zero_attr = f'zero__{side}__{name}_ikfk__001'
+        self._ctrl_attr = f'ctrl__{side}__{name}_ikfkSwitch__001'
+        self._zero_attr = f'zero__{side}__{name}_ikfkSwitch__001'
         self._attr_blend = f'{self._ctrl_attr}.ikFkBlend'
         self._reverse_node = f'reverse__{side}__{name}__001'
         self._create_ikfk_attr()
@@ -65,7 +65,7 @@ class Leg(IConnectionPointUser, ABC):
 
     # ik system 的脚部控制
     def _foot_ctrl(self):
-        foot = Foot5ctrl(name='foot', side=self._side, bones=self._joints[2:])
+        foot = Foot5ctrl(side=self._side, bones=self._joints[2:])
         pm.parent(foot.grp_rig, self._limb.grp_rig)
 
         # Foot5ctrl系统中ankle_ctrl，控制腿部ik系统中的ikHandle

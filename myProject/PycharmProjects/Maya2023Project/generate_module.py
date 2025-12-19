@@ -85,7 +85,7 @@ def generate_entry_module(package_names: list, output_file: str = "mytools.py"):
     print(f"Entry module generated: {output_file}")
 
 
-def generate_reload_module(package_names: list, output_file: str = "reload.py"):
+def generate_reload_module(package_names: list, output_file: str = "hot_reload.py"):
     all_module = []
     for package_name in package_names:
         modules = get_modules(package_name)
