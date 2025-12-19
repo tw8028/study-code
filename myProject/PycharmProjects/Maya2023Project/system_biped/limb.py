@@ -13,20 +13,20 @@ from system_biped.core.mid_system import MidSystem
 class Limb(IConnectionPointProvider, IConnectionPointUser, ABC):
     def __init__(self, name: str, side: str, bones: list[str]):
         self._limb = CenterOfGravity(name=name, side=side, bones=bones)
-        self._fk = FkSystem(cog=self._limb)
-        self._ik = IkSystem(cog=self._limb, no_flip=False)
-        self._mid = MidSystem(ik=self._ik)
+        self._fkSystem = FkSystem(cog=self._limb)
+        self._ikSystem = IkSystem(cog=self._limb, no_flip=False)
+        self._midSystem = MidSystem(ik=self._ikSystem)
 
         self._side = side
         self._connect_point = f'connect__{side}__{name}__001'
         self._create_connect_point()
 
-        self._ctrl_attr = f'ctrl__{side}__{name}_ikfk__001'
-        self._zero_attr = f'zero__{side}__{name}_ikfk__001'
+        self._ctrl_attr = f'ctrl__{side}__{name}_ikfkSwitch__001'
+        self._zero_attr = f'zero__{side}__{name}_ikfkSwitch__001'
         self._attr_blend = f'{self._ctrl_attr}.ikFkBlend'
         self._reverse_node = f'reverse__{side}__{name}__001'
         self._create_ikfk_attr()
-        self._blend_jnt(fk_system=self._fk, mid_system=self._mid)
+        self._blend_jnt()
 
     def _create_ikfk_attr(self):
         mytools.cv_and_zero(name=self._ctrl_attr, target=self._limb.ctrl_cog, shape='cross1', radius=2)
@@ -38,12 +38,12 @@ class Limb(IConnectionPointProvider, IConnectionPointUser, ABC):
         reverse_nd = pm.createNode('reverse', name=self._reverse_node)
         pm.PyNode(self._attr_blend) >> reverse_nd.inputX  # type: ignore
 
-    def _blend_jnt(self, fk_system, mid_system):
+    def _blend_jnt(self):
         attr_blend = self._attr_blend
         reverse_nd = self._reverse_node
 
-        joints_mid = mid_system.joints_mid
-        joints_fk = fk_system.joints_fk
+        joints_mid = self._midSystem.joints_mid
+        joints_fk = self._fkSystem.joints_fk
 
         mytools.blend_orient(attr_ctrl=attr_blend, reverse=reverse_nd, ik_jnt=joints_mid[0], fk_jnt=joints_fk[0],
                              blend_jnt=self._limb.joints[0])

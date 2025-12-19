@@ -11,10 +11,10 @@ class CenterOfGravity(object):
         self._bones = bones
         self.joints = [f'jnt__{side}__{name}__00{i + 1}' for i in range(0, len(bones))]
 
-        self.grp_rig = name_template.format('rig')  # group on origin
+        self.grp_rig = name_template.format('rig')  # 原点的组
+        self.zero_cog = name_template.format('zero_cog')  # 重心 zero，connect to Provider
         self.ctrl_cog = name_template.format('ctrl_cog')  # 重心控制器
-        self.zero_cog = name_template.format('zero_cog')  # 重心 zero，链接到父级控制器
-        self.zero_jnt = name_template.format('zero_jnt')
+        self.zero_jnt = name_template.format('zero_jnt')  # 下面是骨骼
 
         self._create_joints()
         self._constraint_bones()

@@ -12,7 +12,7 @@ class IkSystem:
         self._grp_rig = cog.grp_rig
         self._ctrl_cog = cog.ctrl_cog
         self._zero_jnt = cog.zero_jnt
-        self.joints_ik = [f'jnt__{cog.side}__{cog.name}_ik__00{i + 1}' for i in range(0, len(cog.joints))]
+        self.joints_ik = [f'jnt__{side}__{name}_ik__00{i + 1}' for i in range(0, len(cog.joints))]
 
         self._ik_handle = f'ikHandle__{side}__{name}__001'
         self.ctrl_ikHandle = f'ctrl__{side}__{name}_ikHandle__001'
