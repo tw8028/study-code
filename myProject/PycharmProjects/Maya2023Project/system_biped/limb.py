@@ -14,7 +14,7 @@ class Limb(IConnectionPointProvider, IConnectionPointUser, ABC):
     def __init__(self, name: str, side: str, bones: list[str]):
         self._limb = CenterOfGravity(name=name, side=side, bones=bones)
         self._fk = FkSystem(cog=self._limb)
-        self._ik = IkSystem(cog=self._limb)
+        self._ik = IkSystem(cog=self._limb, no_flip=False)
         self._mid = MidSystem(ik=self._ik)
 
         self._side = side
@@ -26,7 +26,7 @@ class Limb(IConnectionPointProvider, IConnectionPointUser, ABC):
         self._attr_blend = f'{self._ctrl_attr}.ikFkBlend'
         self._reverse_node = f'reverse__{side}__{name}__001'
         self._create_ikfk_attr()
-        self._blend_jnt(fk_system=self._fk, ik_system=self._mid)
+        self._blend_jnt(fk_system=self._fk, mid_system=self._mid)
 
     def _create_ikfk_attr(self):
         mytools.cv_and_zero(name=self._ctrl_attr, target=self._limb.ctrl_cog, shape='cross1', radius=2)
@@ -38,22 +38,22 @@ class Limb(IConnectionPointProvider, IConnectionPointUser, ABC):
         reverse_nd = pm.createNode('reverse', name=self._reverse_node)
         pm.PyNode(self._attr_blend) >> reverse_nd.inputX  # type: ignore
 
-    def _blend_jnt(self, fk_system, ik_system):
+    def _blend_jnt(self, fk_system, mid_system):
         attr_blend = self._attr_blend
         reverse_nd = self._reverse_node
 
-        joints_ik = ik_system.joints_ik
+        joints_mid = mid_system.joints_mid
         joints_fk = fk_system.joints_fk
 
-        mytools.blend_orient(attr_ctrl=attr_blend, reverse=reverse_nd, ik_jnt=joints_ik[0], fk_jnt=joints_fk[0],
+        mytools.blend_orient(attr_ctrl=attr_blend, reverse=reverse_nd, ik_jnt=joints_mid[0], fk_jnt=joints_fk[0],
                              blend_jnt=self._limb.joints[0])
-        mytools.blend_orient(attr_ctrl=attr_blend, reverse=reverse_nd, ik_jnt=joints_ik[1], fk_jnt=joints_fk[1],
+        mytools.blend_orient(attr_ctrl=attr_blend, reverse=reverse_nd, ik_jnt=joints_mid[1], fk_jnt=joints_fk[1],
                              blend_jnt=self._limb.joints[1])
-        mytools.blend_orient(attr_ctrl=attr_blend, reverse=reverse_nd, ik_jnt=joints_ik[2], fk_jnt=joints_fk[2],
+        mytools.blend_orient(attr_ctrl=attr_blend, reverse=reverse_nd, ik_jnt=joints_mid[2], fk_jnt=joints_fk[2],
                              blend_jnt=self._limb.joints[2])
-        mytools.blend_scale_x(attr_ctrl=attr_blend, ik_jnt=joints_ik[0], fk_jnt=joints_fk[0],
+        mytools.blend_scale_x(attr_ctrl=attr_blend, ik_jnt=joints_mid[0], fk_jnt=joints_fk[0],
                               blend_jnt=self._limb.joints[0])
-        mytools.blend_scale_x(attr_ctrl=attr_blend, ik_jnt=joints_ik[1], fk_jnt=joints_fk[1],
+        mytools.blend_scale_x(attr_ctrl=attr_blend, ik_jnt=joints_mid[1], fk_jnt=joints_fk[1],
                               blend_jnt=self._limb.joints[1])
 
     def _create_connect_point(self):

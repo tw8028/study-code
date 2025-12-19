@@ -17,10 +17,10 @@ class Leg(IConnectionPointUser, ABC):
         self._side = side
         self._limb = CenterOfGravity(name=name, side=side, bones=bones[:-2])
         self._fkSystem = FkSystem(cog=self._limb)
-        self._ikSystem = IkSystem(cog=self._limb)
-        self._mid = MidSystem(ik=self._ikSystem)
+        self._ikSystem = IkSystem(cog=self._limb, no_flip=True)
+        self._midSystem = MidSystem(ik=self._ikSystem)
 
-        self._joints_ik = self._ikSystem.joints_ik
+        self._joints_mid = self._midSystem.joints_mid
         self._joints_fk = self._fkSystem.joints_fk
 
         self._ctrl_attr = f'ctrl__{side}__{name}_ikfk__001'
@@ -45,22 +45,22 @@ class Leg(IConnectionPointUser, ABC):
     def _blend_jnt(self):
         attr_blend = self._attr_blend
         reverse_nd = self._reverse_node
-        joints_ik = self._joints_ik
+        joints_mid = self._joints_mid
         joints_fk = self._joints_fk
         joints_cog = self._limb.joints
 
-        mytools.blend_orient(attr_ctrl=attr_blend, reverse=reverse_nd, ik_jnt=joints_ik[0], fk_jnt=joints_fk[0],
+        mytools.blend_orient(attr_ctrl=attr_blend, reverse=reverse_nd, ik_jnt=joints_mid[0], fk_jnt=joints_fk[0],
                              blend_jnt=joints_cog[0])  # thigh
-        mytools.blend_orient(attr_ctrl=attr_blend, reverse=reverse_nd, ik_jnt=joints_ik[1], fk_jnt=joints_fk[1],
+        mytools.blend_orient(attr_ctrl=attr_blend, reverse=reverse_nd, ik_jnt=joints_mid[1], fk_jnt=joints_fk[1],
                              blend_jnt=joints_cog[1])  # calf
-        mytools.blend_orient(attr_ctrl=attr_blend, reverse=reverse_nd, ik_jnt=joints_ik[2], fk_jnt=joints_fk[2],
+        mytools.blend_orient(attr_ctrl=attr_blend, reverse=reverse_nd, ik_jnt=joints_mid[2], fk_jnt=joints_fk[2],
                              blend_jnt=joints_cog[2])  # foot
-        mytools.blend_orient(attr_ctrl=attr_blend, reverse=reverse_nd, ik_jnt=joints_ik[3], fk_jnt=joints_fk[3],
+        mytools.blend_orient(attr_ctrl=attr_blend, reverse=reverse_nd, ik_jnt=joints_mid[3], fk_jnt=joints_fk[3],
                              blend_jnt=joints_cog[3])  # ball/toe
 
-        mytools.blend_scale_x(attr_ctrl=attr_blend, ik_jnt=joints_ik[0], fk_jnt=joints_fk[0],
+        mytools.blend_scale_x(attr_ctrl=attr_blend, ik_jnt=joints_mid[0], fk_jnt=joints_fk[0],
                               blend_jnt=joints_cog[0])
-        mytools.blend_scale_x(attr_ctrl=attr_blend, ik_jnt=joints_ik[1], fk_jnt=joints_fk[1],
+        mytools.blend_scale_x(attr_ctrl=attr_blend, ik_jnt=joints_mid[1], fk_jnt=joints_fk[1],
                               blend_jnt=joints_cog[1])
 
     # ik system 的脚部控制
@@ -72,10 +72,10 @@ class Leg(IConnectionPointUser, ABC):
         ctrl_ikHandle = self._ikSystem.ctrl_ikHandle
         pm.parentConstraint(foot.ankle_ctrl, ctrl_ikHandle, maintainOffset=True)
         mytools.lock_hide_transform(ctrl_ikHandle)
-        # mytools.set_display_type(ctrl_ikHandle, 1)
+        mytools.set_display_type(ctrl_ikHandle, 2)
 
         # Foot5ctrl系统中toe_ctrl，控制腿部ik系统中的toe/ball骨骼
-        pm.orientConstraint(foot.toe_ctrl, self._joints_ik[-1])
+        pm.orientConstraint(foot.toe_ctrl, self._joints_mid[-1])
 
     def connect_to(self, point_provider: IConnectionPointProvider, connection_type: ConnectionType):
         connect_point = point_provider.get_connection_point(connection_type=connection_type, side=self._side)

@@ -4,7 +4,7 @@ from system_biped.core.center_of_gravity import CenterOfGravity
 
 
 class IkSystem:
-    def __init__(self, cog: CenterOfGravity):
+    def __init__(self, cog: CenterOfGravity, no_flip: bool):
         self.cog = cog
         name = cog.name
         side = cog.side
@@ -25,7 +25,8 @@ class IkSystem:
         self._create_ik_jnt()
         self._rig()
         self._stretch()
-        mytools.no_flip_ik(self.joints_ik, self.ctrl_ikHandle,self.zero_pole)
+        if (no_flip):
+            mytools.no_flip_ik(self.joints_ik, self.ctrl_ikHandle, self.zero_pole)
 
     def _create_ik_jnt(self):
         for jnt_ik, jnt in zip(self.joints_ik, self._joints):
