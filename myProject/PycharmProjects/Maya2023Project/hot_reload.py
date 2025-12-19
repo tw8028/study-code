@@ -32,9 +32,6 @@ import system_biped.interface.connection
 import system_biped.leg
 import system_biped.limb
 import system_biped.spine
-import mytools
-
-
 def main():
     importlib.reload(parts.attr)
     importlib.reload(parts.cv)
@@ -67,5 +64,4 @@ def main():
     importlib.reload(system_biped.leg)
     importlib.reload(system_biped.limb)
     importlib.reload(system_biped.spine)
-    importlib.reload(mytools)
     print('reload modules...')
