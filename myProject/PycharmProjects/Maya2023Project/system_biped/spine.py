@@ -25,10 +25,10 @@ class Spine(IConnectionPointProvider, ABC):
         self._zero_root = zero.format('biped')
         self._ctrl_pelvis = ctrl.format('pelvis')
         self._zero_pelvis = zero.format('pelvis')
-        self._ctrl_spine01 = ctrl.format('spine01')
-        self._zero_spine01 = zero.format('spine01')
         self._ctrl_spine02 = ctrl.format('spine02')
         self._zero_spine02 = zero.format('spine02')
+        self._ctrl_spine03 = ctrl.format('spine03')
+        self._zero_spine03 = zero.format('spine03')
         self._ctrl_chest = ctrl.format('chest')
         self._zero_chest = zero.format('chest')
         self._ctrl_end = ctrl.format('spine_end')
@@ -58,24 +58,24 @@ class Spine(IConnectionPointProvider, ABC):
             pm.rename(i, newname=f'loc__c__spine_ik__001')
 
     def _create_ctrl(self):
-        mytools.cv_and_zero(name=self._ctrl_root, target=self._joints[2], shape='biped', radius=1)
+        mytools.cv_and_zero(name=self._ctrl_root, target=self._joints[0], shape='biped', radius=1)
         mytools.cv_and_zero(name=self._ctrl_pelvis, target=self._joints[2], shape='pelvis', radius=1)
-        mytools.cv_and_zero(name=self._ctrl_spine01, target=self._joints[2], shape='circle', radius=13)
-        mytools.cv_and_zero(name=self._ctrl_spine02, target=self._joints[3], shape='circle', radius=15)
+        mytools.cv_and_zero(name=self._ctrl_spine02, target=self._joints[2], shape='circle', radius=13)
+        mytools.cv_and_zero(name=self._ctrl_spine03, target=self._joints[3], shape='circle', radius=15)
         mytools.cv_and_zero(name=self._ctrl_chest, target=self._joints[4], shape='cube', radius=10)
         mytools.cv_and_zero(name=self._ctrl_end, target=self._joints[-1], shape='cube', radius=1)
 
         # 创建控制器层级关系
         pm.parent(self._zero_root, self._ctrl_cog)
-        pm.parent(self._zero_pelvis, self._zero_spine01, self._ctrl_root)
-        pm.parent(self._zero_spine02, self._ctrl_spine01)
-        pm.parent(self._zero_chest, self._ctrl_spine02)
+        pm.parent(self._zero_pelvis, self._zero_spine02, self._ctrl_root)
+        pm.parent(self._zero_spine03, self._ctrl_spine02)
+        pm.parent(self._zero_chest, self._ctrl_spine03)
         pm.parent(self._zero_end, self._joints[-1])
 
         # 控制点p给控制器
         pm.parent(self._control_points[0], self._control_points[1], self._ctrl_pelvis)
-        pm.parent(self._control_points[2], self._ctrl_spine01)
-        pm.parent(self._control_points[3], self._ctrl_spine02)
+        pm.parent(self._control_points[2], self._ctrl_spine02)
+        pm.parent(self._control_points[3], self._ctrl_spine03)
         pm.parent(*self._control_points[4:], self._ctrl_chest)
 
         # spline ik 不包括 pelvis，直接 pelvis controller output group 控制

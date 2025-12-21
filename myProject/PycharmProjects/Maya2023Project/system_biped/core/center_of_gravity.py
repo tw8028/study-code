@@ -9,7 +9,7 @@ class CenterOfGravity(object):
         self.name = name
         self.side = side
         self._bones = bones
-        self.joints = [f'jnt__{side}__{name}__00{i + 1}' for i in range(0, len(bones))]
+        self.joints = [f'jnt__{side}__{name}__00{i}' for i in range(0, len(bones))]
 
         self.grp_rig = name_template.format('rig')  # 原点的组
         self.zero_cog = name_template.format('zero_cog')  # 重心 zero，connect to Provider
