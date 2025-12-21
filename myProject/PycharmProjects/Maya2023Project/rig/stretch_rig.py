@@ -71,6 +71,23 @@ def stretch_jnt(start_point, end_point, joints):
             print("无效的 driven")
 
 
+def stretch_jnt_by_curve(curve, joints):
+    curve_shape = pm.PyNode(curve).getShape()  # type:ignore
+    curve_info_nd = pm.createNode('curveInfo', name='info_' + curve)
+    var = curve_shape.worldSpace[0] >> curve_info_nd.inputCurve
+    length = curve_info_nd.arcLength.get()
+    divide_nd = pm.createNode('multiplyDivide', name='divide_' + curve)
+    var = curve_info_nd.arcLength >> divide_nd.input1X
+    divide_nd.operation.set(2)
+    divide_nd.input2X.set(length)
+    for i in joints:
+        try:
+            jnt = pm.PyNode(i)
+            var = divide_nd.outputX >> jnt.scaleX  # type:ignore
+        except pm.MayaObjectError:
+            print("无效的 driven")
+
+
 def stretch_yz(joint):
     jnt_nd = pm.PyNode(joint)
     sqrt_nd = pm.createNode('multiplyDivide', name='sqrt__' + joint)
@@ -93,6 +110,7 @@ def blend_orient(attr_ctrl, reverse, ik_jnt, fk_jnt, blend_jnt):
     orient_con.interpType.set(2)
     attr_ctrl_nd >> pm.PyNode(f'{orient_con}.{ik_jnt}W0')  # type: ignore
     reverse_nd.outputX >> pm.PyNode(f'{orient_con}.{fk_jnt}W1')  # type: ignore
+
 
 def blend_translate(attr_ctrl, reverse, ik_jnt, fk_jnt, blend_jnt):
     attr_ctrl_nd = pm.PyNode(attr_ctrl)
@@ -121,12 +139,5 @@ def blend_scale_x(attr_ctrl, ik_jnt, fk_jnt, blend_jnt):
 
 
 if __name__ == '__main__':
-    obj = 'ctrl__r__arm__001'
-    jnt1_offset = 'zero__r__arm__001'
-    handle_ctrl = 'ctrl__r__arm_ik_handle__001'
-    ik_jnt1 = 'jnt__r__joint1_ik__001'
-    ik_jnt2 = 'jnt__r__joint2_ik__001'
-    ik_jnt3 = 'jnt__r__joint3_ik__001'
-
-    stretch_ik(attr_stretch=obj, jnt1_offset=obj, handle_ctrl=handle_ctrl, ik_jnt1=ik_jnt1, ik_jnt2=ik_jnt2,
-               ik_jnt3=ik_jnt3)
+    joints = ['jnt__c__spine__000','jnt__c__spine__001','jnt__c__spine__002','jnt__c__spine__003','jnt__c__spine__004']
+    stretch_jnt_by_curve('curve__c__spine_ik__001',joints)

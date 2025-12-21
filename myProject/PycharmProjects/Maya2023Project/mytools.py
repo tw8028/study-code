@@ -169,6 +169,10 @@ def stretch_jnt(start_point, end_point, joints):
     return rig.stretch_rig.stretch_jnt(start_point, end_point, joints)
 
 
+def stretch_jnt_by_curve(curve, joints):
+    return rig.stretch_rig.stretch_jnt_by_curve(curve, joints)
+
+
 def stretch_yz(joint):
     return rig.stretch_rig.stretch_yz(joint)
 
