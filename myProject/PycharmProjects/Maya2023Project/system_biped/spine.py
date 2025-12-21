@@ -82,7 +82,7 @@ class Spine(IConnectionPointProvider, ABC):
         pm.parent(self._control_points[3], self._ctrl_spine03)
         pm.parent(*self._control_points[4:], self._ctrl_chest)
 
-        # spline ik 不包括 pelvis，直接 pelvis controller output group 控制
+        # pelvis骨骼控制方法：不创建控制骨骼，由pelvis控制器的子物体直接将约束
         output_ctrl_pelvis = mytools.grp_child(name='output__c__pelvis__001', parent=self._ctrl_pelvis,
                                                position=self._jnt_pelvis)
         mytools.opm_constraint(output_ctrl_pelvis, self._jnt_pelvis)
