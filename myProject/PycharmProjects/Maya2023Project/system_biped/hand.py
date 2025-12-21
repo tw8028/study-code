@@ -3,7 +3,6 @@ import mytools
 from abc import ABC
 from system_biped.interface.connection import IConnectionPointProvider
 from system_biped.interface.connection import IConnectionPointUser
-from system_biped.interface.connection import ConnectionType
 from system_biped.core.master import Master
 
 
@@ -49,9 +48,10 @@ class Hand(IConnectionPointUser, ABC):
             joints = mytools.get_children(root=root)
             self._create_ctrl(joints)
 
-    def connect_to(self, point_provider: IConnectionPointProvider, connection_type):
-        connect_point = point_provider.get_connection_point(connection_type=ConnectionType.WRIST, side=self._side)
+    def connect_to(self, point_provider: IConnectionPointProvider):
+        connect_point = point_provider.get_connection_point()
         mytools.opm_constraint(connect_point, self._zero_cog)
+        print(f'to connect {self._zero_cog}')
 
 
 if __name__ == '__main__':

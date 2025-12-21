@@ -77,10 +77,13 @@ class Leg(IConnectionPointUser, ABC):
         # Foot5ctrl系统中toe_ctrl，控制腿部ik系统中的toe/ball骨骼
         pm.orientConstraint(foot.toe_ctrl, self._joints_mid[-1])
 
-    def connect_to(self, point_provider: IConnectionPointProvider, connection_type: ConnectionType):
-        connect_point = point_provider.get_connection_point(connection_type=connection_type, side=self._side)
-        print(connect_point)
+    def connect_to(self, point_provider: IConnectionPointProvider):
+        if self._side == 'l':
+            connect_point = point_provider.get_connection_point(connection_type=ConnectionType.HIP_L)
+        else:
+            connect_point = point_provider.get_connection_point(connection_type=ConnectionType.HIP_R)
         mytools.opm_constraint(connect_point, self._limb.zero_cog)
+        print(f'to connect {self._limb.zero_cog}')
 
 
 if __name__ == '__main__':

@@ -96,9 +96,10 @@ class Head(IConnectionPointUser, ABC):
             mytools.twist_joint(driver=self._ctrl_head, no_roll=self._jnt_noRoll_01,
                                 driven_objs=self._input_fk_list[0:-1], ro_direction=1, is_chain=True)
 
-    def connect_to(self, point_provider: IConnectionPointProvider, connection_type: ConnectionType):
-        connect_point = point_provider.get_connection_point(connection_type=connection_type, side='c')
+    def connect_to(self, point_provider: IConnectionPointProvider):
+        connect_point = point_provider.get_connection_point(connection_type=ConnectionType.NECK)
         mytools.opm_constraint(connect_point, self._zero_cog)
+        print(f'to connect {self._zero_cog}')
 
 
 if __name__ == '__main__':

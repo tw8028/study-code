@@ -19,7 +19,6 @@ class Limb(IConnectionPointProvider, IConnectionPointUser, ABC):
 
         self._side = side
         self._connect_point = f'connect__{side}__{name}__001'
-        self._create_connect_point()
 
         self._ctrl_attr = f'ctrl__{side}__{name}_ikfkSwitch__001'
         self._zero_attr = f'zero__{side}__{name}_ikfkSwitch__001'
@@ -27,6 +26,7 @@ class Limb(IConnectionPointProvider, IConnectionPointUser, ABC):
         self._reverse_node = f'reverse__{side}__{name}__001'
         self._create_ikfk_attr()
         self._blend_jnt()
+        mytools.grp_sub(name=self._connect_point, target=self._limb.joints[-1])
 
     def _create_ikfk_attr(self):
         mytools.cv_and_zero(name=self._ctrl_attr, target=self._limb.ctrl_cog, shape='cross1', radius=2)
@@ -56,17 +56,13 @@ class Limb(IConnectionPointProvider, IConnectionPointUser, ABC):
         mytools.blend_scale_x(attr_ctrl=attr_blend, ik_jnt=joints_mid[1], fk_jnt=joints_fk[1],
                               blend_jnt=self._limb.joints[1])
 
-    def _create_connect_point(self):
-        jnt_end = self._limb.joints[-1]
-        mytools.grp_sub(name=self._connect_point, target=jnt_end)
+    def get_connection_point(self, connection_type=ConnectionType.DEFAULT):
+        return self._connect_point
 
-    def get_connection_point(self, connection_type: ConnectionType, side=''):
-        if connection_type.value == ConnectionType.WRIST.value:
-            return self._connect_point
-        elif connection_type.value == ConnectionType.FOOT.value:
-            pass
-
-    def connect_to(self, point_provider: IConnectionPointProvider, connection_type: ConnectionType):
-        connect_point = point_provider.get_connection_point(connection_type=connection_type, side=self._side)
-        print(connect_point)
+    def connect_to(self, point_provider: IConnectionPointProvider):
+        if self._side == 'l':
+            connect_point = point_provider.get_connection_point(connection_type=ConnectionType.SHOULDER_L)
+        else:
+            connect_point = point_provider.get_connection_point(connection_type=ConnectionType.SHOULDER_R)
         mytools.opm_constraint(connect_point, self._limb.zero_cog)
+        print(f'to connect {self._limb.zero_cog}')

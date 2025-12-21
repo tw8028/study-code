@@ -82,7 +82,7 @@ class Spine(IConnectionPointProvider, ABC):
         pm.parent(self._control_points[3], self._ctrl_spine03)
         pm.parent(*self._control_points[4:], self._ctrl_chest)
 
-        # pelvis骨骼控制方法：不创建控制骨骼，由pelvis控制器的子物体直接将约束
+        # pelvis骨骼控制方法：不创建控制骨骼，由pelvis控制器的子物体直接约束
         output_ctrl_pelvis = mytools.grp_child(name='output__c__pelvis__001', parent=self._ctrl_pelvis,
                                                position=self._jnt_pelvis)
         mytools.opm_constraint(output_ctrl_pelvis, self._jnt_pelvis)
@@ -119,15 +119,15 @@ class Spine(IConnectionPointProvider, ABC):
         mytools.grp_child(name=tc.connect_hip_l, parent=self._ctrl_pelvis, position=tc.hip_l)
         mytools.grp_child(name=tc.connect_hip_r, parent=self._ctrl_pelvis, position=tc.hip_r)
 
-    def get_connection_point(self, connection_type, side):
+    def get_connection_point(self, connection_type=ConnectionType.DEFAULT):
         tc = self._trunk_connection
         if connection_type.value == ConnectionType.NECK.value:
             return tc.connect_neck
-        elif connection_type.value == ConnectionType.SHOULDER.value and side == 'l':
+        elif connection_type.value == ConnectionType.SHOULDER_L.value:
             return tc.connect_shoulder_l
-        elif connection_type.value == ConnectionType.SHOULDER.value and side == 'r':
+        elif connection_type.value == ConnectionType.SHOULDER_R.value:
             return tc.connect_shoulder_r
-        elif connection_type.value == ConnectionType.HIP.value and side == 'l':
+        elif connection_type.value == ConnectionType.HIP_L.value:
             return tc.connect_hip_l
-        elif connection_type.value == ConnectionType.HIP.value and side == 'r':
+        elif connection_type.value == ConnectionType.HIP_R.value:
             return tc.connect_hip_r

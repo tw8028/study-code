@@ -1,6 +1,5 @@
 import pymel.core as pm
 from system_biped.core.master import Master
-from system_biped.interface.connection import ConnectionType
 from system_biped.core.trunk_connection import TrunkConnection
 from system_biped.leg import Leg
 from system_biped.spine import Spine
@@ -19,26 +18,26 @@ def biped_rig():
 
     # head
     head = Head(bones=['neck_01', 'neck_02', 'head'])
-    head.connect_to(point_provider=spine, connection_type=ConnectionType.NECK)
+    head.connect_to(point_provider=spine)
 
     # arm
     arm_r = Limb(name='arm', side='r', bones=['upperarm_r', 'lowerarm_r', 'hand_r'])
-    arm_r.connect_to(point_provider=spine, connection_type=ConnectionType.SHOULDER)
+    arm_r.connect_to(point_provider=spine)
     arm_l = Limb(name='arm', side='l', bones=['upperarm_l', 'lowerarm_l', 'hand_l'])
-    arm_l.connect_to(point_provider=spine, connection_type=ConnectionType.SHOULDER)
+    arm_l.connect_to(point_provider=spine)
     # hand
     hand_l = Hand(name='wrist', side='l',
                   bones=['hand_l', 'thumb_01_l', 'index_01_l', 'middle_01_l', 'ring_01_l', 'pinky_01_l'])
-    hand_l.connect_to(point_provider=arm_l, connection_type=ConnectionType.WRIST)
+    hand_l.connect_to(point_provider=arm_l)
     hand_r = Hand(name='wrist', side='r',
                   bones=['hand_r', 'thumb_01_r', 'index_01_r', 'middle_01_r', 'ring_01_r', 'pinky_01_r'])
-    hand_r.connect_to(point_provider=arm_r, connection_type=ConnectionType.WRIST)
+    hand_r.connect_to(point_provider=arm_r)
 
     # leg
     leg_l = Leg(name='leg', side='l', bones=['thigh_l', 'calf_l', 'foot_l', 'ball_l', 'tiptoe_l', 'heel_l'])
-    leg_l.connect_to(point_provider=spine, connection_type=ConnectionType.HIP)
+    leg_l.connect_to(point_provider=spine)
     leg_r = Leg(name='leg', side='r', bones=['thigh_r', 'calf_r', 'foot_r', 'ball_r', 'tiptoe_r', 'heel_r'])
-    leg_r.connect_to(point_provider=spine, connection_type=ConnectionType.HIP)
+    leg_r.connect_to(point_provider=spine)
 
     print('...build rig successful...')
 
