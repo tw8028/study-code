@@ -1,6 +1,9 @@
 import pymel.core as pm
+import sys
+import importlib
 import mytools
 import custom_shelf
+import hot_reload
 
 
 def zero_transform():
@@ -77,6 +80,24 @@ def show_skin_editor():
     custom_shelf.editor_skin.show_window()
 
 
+def reload_custom_module():
+    importlib.reload(hot_reload)
+    hot_reload.main()
+
+    # 1. 从 sys.modules 中删除 mytools
+    for module_name in list(sys.modules.keys()):
+        if module_name == 'mytools' or module_name.startswith('mytools.'):
+            print(f"Deleting: {module_name}")
+            del sys.modules[module_name]
+
+    # 2. 清除导入缓存
+    importlib.invalidate_caches()
+
+    # 3. 重新导入mytools（这里必须reload）
+    import mytools
+    importlib.reload(mytools)
+
+
 def add_button(iol, label, func):
     # a shelf button must be parented to a shelf.
     command = 'import custom_shelf.buttons;custom_shelf.buttons.{0}()'.format(func)
@@ -106,4 +127,5 @@ def rebuild():
     add_button('wCv', 'curve editor', 'show_cv_editor')
     add_button('wJnt', 'joint editor', 'show_jnt_editor')
     add_button('wSkin', 'skin editor', 'show_skin_editor')
+    add_button('reload', 'hot reload module', 'reload_custom_module')
     print('rebuild custom shelf...')

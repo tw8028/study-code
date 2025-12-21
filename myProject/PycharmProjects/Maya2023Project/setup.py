@@ -1,28 +1,25 @@
-import pymel.core as pm
+# maya.env  PYTHONPATH = D:\github\study-code\PycharmProjects\mayaProject
+# file path = C:\Users\Administrator\Documents\maya\2023
 
-if not pm.commandPort(":4434", query=True):
-    pm.commandPort(name=":4434")
+# userSetup.py
+# file path = C:\Users\Administrator\Documents\maya\2023\scripts
+# 注意语言，中文版文件位置不一样
 
-# 在Script Editor执行这个，只重载mytools
-import sys
+import maya.cmds as cmds
+
+if not cmds.commandPort(":4434", query=True):  # type: ignore
+    cmds.commandPort(name=":4434")  # type: ignore
+
+import custom_shelf
 import importlib
 
-# 1. 从 sys.modules 中删除 mytools
-for name in list(sys.modules.keys()):
-    if name == 'mytools' or name.startswith('mytools.'):
-        print(f"Deleting: {name}")
-        del sys.modules[name]
+importlib.reload(custom_shelf.buttons)
+custom_shelf.buttons.rebuild()
 
-# 2. 清除导入缓存
-importlib.invalidate_caches()
-
-# 3. 先reload基础模块（这里必须reload）
-import hot_reload
-
-importlib.reload(hot_reload)
-hot_reload.main()
-
-# 4. 重新导入mytools（这里必须reload）
-import mytools
-
-importlib.reload(mytools)
+# We are using the evalDeferred() command, because maya loads the userSetup.py file as it is starting,
+# so we are not sure if the shelfLayout is already in place as it gets executed.
+# Therefore, evalDeferred() helps us call our script after maya has been initialized.
+'''
+pm.evalDeferred("importlib.reload(custom_shelf.buttons)")
+pm.evalDeferred("custom_shelf.buttons.rebuild()")
+'''
