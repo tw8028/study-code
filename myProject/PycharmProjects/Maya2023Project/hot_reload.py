@@ -64,4 +64,3 @@ def main():
     importlib.reload(system_biped.leg)
     importlib.reload(system_biped.limb)
     importlib.reload(system_biped.spine)
-    print('reload modules...')

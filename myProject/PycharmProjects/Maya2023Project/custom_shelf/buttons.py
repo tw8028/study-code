@@ -80,14 +80,21 @@ def show_skin_editor():
     custom_shelf.editor_skin.show_window()
 
 
-def reload_custom_module():
+def setup_maya():
+    print('------------------------------')
+    print('设置maya：')
+    if not pm.commandPort(":4434", query=True):
+        pm.commandPort(name=":4434")
+    print('1. commandPort: 4434')
+
     importlib.reload(hot_reload)
     hot_reload.main()
+    print('2. reload custom base module...')
 
     # 1. 从 sys.modules 中删除 mytools
     for module_name in list(sys.modules.keys()):
         if module_name == 'mytools' or module_name.startswith('mytools.'):
-            print(f"Deleting: {module_name}")
+            # print(f"    Deleting: {module_name}")
             del sys.modules[module_name]
 
     # 2. 清除导入缓存
@@ -96,6 +103,7 @@ def reload_custom_module():
     # 3. 重新导入mytools（这里必须reload）
     import mytools
     importlib.reload(mytools)
+    print('3. reload mytools...')
 
 
 def add_button(iol, label, func):
@@ -127,5 +135,9 @@ def rebuild():
     add_button('wCv', 'curve editor', 'show_cv_editor')
     add_button('wJnt', 'joint editor', 'show_jnt_editor')
     add_button('wSkin', 'skin editor', 'show_skin_editor')
-    add_button('reload', 'hot reload module', 'reload_custom_module')
+    add_button('setup', 'set maya', 'setup_maya')
     print('rebuild custom shelf...')
+
+
+if __name__ == '__main__':
+    rebuild()
