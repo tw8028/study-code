@@ -12,7 +12,7 @@ class Spine(IConnectionPointProvider, ABC):
     # 肩膀合并到了脊柱中
     def __init__(self, bones: list[str], trunk_connection: TrunkConnection):
         self._jnt_pelvis = bones[0]
-        spine = CenterOfGravity(name='spine', side='c', bones=bones[1:])
+        spine = CenterOfGravity(name='spine_ik', side='c', bones=bones[1:])
         self._joints_spine = spine.joints
         self._grp_rig = spine.grp_rig
         self._ctrl_cog = spine.ctrl_cog
