@@ -57,8 +57,8 @@ class Spine(IConnectionPointProvider, ABC):
         for i in self._control_points:
             pm.rename(i, newname=f'loc__c__spine_ik__001')
 
-        # stretch spine
-        mytools.stretch_jnt_by_curve(curve, self._joints[:-1])
+        # 拉伸绑定骨骼，蒙皮骨骼并不拉伸
+        mytools.stretch_jnt_by_curve(curve, self._joints[1:-1])
 
     def _create_ctrl(self):
         mytools.cv_and_zero(name=self._ctrl_root, target=self._joints[0], shape='biped', radius=1)
